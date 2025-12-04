@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-4507 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-4507</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-4507</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-98.html">extraction-schema-98</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of LLMs being used to process scholarly papers and extract qualitative laws, principles, patterns, or theories from them.</div>
+                <p><strong>Paper ID:</strong> paper-b770d84055c32febe922be9931c453fdbebe9002</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/b770d84055c32febe922be9931c453fdbebe9002" target="_blank">Fact or Fiction: Verifying Scientific Claims</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> This work introduces scientific claim verification, a new task to select abstracts from the research literature containing evidence that supports or refutes a given scientific claim, and to identify rationales justifying each decision.</p>
+                <p><strong>Paper Abstract:</strong> We introduce scientific claim verification, a new task to select abstracts from the research literature containing evidence that supports or refutes a given scientific claim, and to identify rationales justifying each decision. To study this task, we construct SciFact, a dataset of 1.4K expert-written scientific claims paired with evidence-containing abstracts annotated with labels and rationales. We develop baseline models for SciFact, and demonstrate that these models benefit from combined training on a large dataset of claims about Wikipedia articles, together with the new SciFact data. We show that our claim verification system is able to identify plausible evidence for 23 / 36 claims relevant to COVID-19 on the CORD-19 corpus. Our results and experiments strongly suggest that our new task and data will support significant future research efforts.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-4507",
+    "paper_id": "paper-b770d84055c32febe922be9931c453fdbebe9002",
+    "extraction_schema_id": "extraction-schema-98",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0055839999999999996,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Fact or Fiction: Verifying Scientific Claims</h1>
+<p>David Wadden ${ }^{\dagger *}$ Shanchuan Lin ${ }^{\dagger}$ Kyle Lo ${ }^{\ddagger}$ Lucy Lu Wang ${ }^{\ddagger}$<br>Madeleine van Zuylen ${ }^{\ddagger}$ Arman Cohan ${ }^{\ddagger}$ Hannaneh Hajishirzi ${ }^{\dagger \ddagger}$<br>${ }^{\dagger}$ University of Washington, Seattle, WA, USA<br>${ }^{\ddagger}$ Allen Institute for Artificial Intelligence, Seattle, WA, USA<br>{dwadden, linsh, hannaneh}@cs.washington.edu<br>{kylel, lucyw, madeleinev, armanc}@allenai.org</p>
+<h4>Abstract</h4>
+<p>We introduce scientific claim verification, a new task to select abstracts from the research literature containing evidence that SuPPoRTS or REFUTES a given scientific claim, and to identify rationales justifying each decision. To study this task, we construct ScIFACT, a dataset of 1.4 K expert-written scientific claims paired with evidence-containing abstracts annotated with labels and rationales. We develop baseline models for SciFact, and demonstrate that simple domain adaptation techniques substantially improve performance compared to models trained on Wikipedia or political news. We show that our system is able to verify claims related to COVID-19 by identifying evidence from the CORD-19 corpus. Our experiments indicate that SciFact will provide a challenging testbed for the development of new systems designed to retrieve and reason over corpora containing specialized domain knowledge. Data and code for this new task are publicly available at https:// github.com/allenai/scifact. A leaderboard and COVID-19 fact-checking demo are available at https://scifact.apps. allenai.org.</p>
+<h2>1 Introduction</h2>
+<p>Due to rapid growth in the scientific literature, it is difficult for researchers - and the general public even more so - to stay up to date on the latest findings. This challenge is especially acute during public health crises like the current COVID-19 pandemic, due to the extremely fast rate at which new findings are reported and the risks associated with making decisions based on outdated or incomplete information. As a result, there is a need for automated tools to assist researchers and the public in evaluating the veracity of scientific claims.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: A scientific claim, supported by evidence identified by our system. To correctly verify this claim, the system must possess background knowledge that troponin is a protein found in cardiac muscle and that elevated levels of troponin are a marker of cardiac injury. In addition, it must be able to reason about directional relationships between scientific processes: replacing higher with lower would cause the rationale to REFUTE the claim rather than SUPPORT it. Finally, the system should interpret $p&lt;0.001$ as an indication that the reported finding is statistically significant.</p>
+<p>Fact-checking - a task in which the veracity of an input claim is verified against a corpus of documents that support or refute the claim - has been studied to combat the proliferation of misinformation in political news, social media, and on the web (Thorne et al., 2018; Hanselowski et al., 2019). However, verifying scientific claims poses new challenges to both dataset construction and effective modeling. While political claims are readily available on fact-checking websites and can be verified by crowd workers, annotators with extensive domain knowledge are required to generate and verify scientific claims.</p>
+<p>In addition, NLP systems for scientific claim verification must possess additional capabilities beyond those required to verify factoid claims. For instance, to verify the claim shown in Figure 1, a</p>
+<p>Claim 1: Lopinavir / ritonavir have exhibited favorable clinical responses when used as a treatment for coronavirus.
+Supports: ...Interestingly, after lopinavir/ritonavir (Kaletra, AbbVie) was administered, $\beta$-coronavirus viral loads significantly decreased and no or little coronavirus titers were observed.
+Refutes: The focused drug repurposing of known approved drugs (such as lopinavir/ritonavir) has been reported failed for curing SARS-CoV-2 infected patients. It is urgent to generate new chemical entities against this virus ...</p>
+<p>Claim 2: The coronavirus cannot thrive in warmer climates.
+Supports: ...most outbreaks display a pattern of clustering in relatively cool and dry areas...This is because the environment can mediate human-to-human transmission of SARS-CoV-2, and unsuitable climates can cause the virus to destabilize quickly...
+Refutes: ...significant cases in the coming months are likely to occur in more humid (warmer) climates, irrespective of the climate-dependence of transmission and that summer temperatures will not substrantially limit pandemic growth.</p>
+<p>Table 1: Evidence identified by our system as supporting and refuting two claims concerning COVID-19.
+system must have the ability to access scientific background knowledge, reason over increases and decreases in quantities or measurements, and make sense of specialized statistical language.</p>
+<p>In this paper, we introduce the task of scientific claim verification to evaluate the veracity of scientific claims against a scientific corpus. Table 1 presents some examples. To facilitate research on this task, we construct SCIFACT, an expert-annotated dataset of 1,409 scientific claims accompanied by abstracts that support or refute each claim, and annotated with rationales (Lei et al., 2016) justifying each SUPPORTS / REFUTES decision. To create the dataset, we develop a novel annotation protocol in which annotators re-formulate naturally occurring claims in the scientific literature - citation sentences - into atomic scientific claims. Using citation sentences as a source of claims both speeds the claim generation process and guarantees that the topics discussed in SCIFACT are representative of the research literature. In addition, citation links indicate the exact documents likely to contain evidence necessary to verify a given claim.</p>
+<p>We establish performance baselines on SCIFACT with an approach similar to DeYoung et al. (2020a), which achieves strong performance on the FEVER claim verification dataset (Thorne et al., 2018). Our baseline is a pipeline system which retrieves abstracts related to an input claim, uses a BERTbased (Devlin et al., 2019) sentence selector to identify rationale sentences, and labels each abstract as SUPPORTS, REFUTES, or NoINFO with respect to the claim. We demonstrate that our baseline can benefit from training on claims from domains including Wikipedia articles and politics.</p>
+<p>We showcase the ability of our model to verify expert-written claims concerning the novel coronavirus COVID-19 against the newly-released</p>
+<p>CORD-19 corpus (Wang et al., 2020). Expert annotators judge retrieved evidence to be plausible for 23 of 36 claims. ${ }^{1}$ Our results and analyses demonstrate the importance of the new task and dataset to support significant future research in this domain.</p>
+<p>In summary, our contributions include: (1) We introduce and formalize the scientific claim verification task. (2) We develop a novel annotation protocol to generate and verify 1.4 K naturallyoccurring claims about scientific findings. (3) We establish strong baselines on this task, and identify substantial opportunities for improvement at all stages of the modeling pipeline. (4) We demonstrate the efficacy of our system in a real-world case study verifying claims about COVID-19 against the research literature.</p>
+<h2>2 Background and task definition</h2>
+<p>As illustrated in Figure 1, scientific claim verification is the task of identifying evidence from the research literature that SUPPORTS or REFUTES a given scientific claim. Table 1 shows the results of our system applied to claims about the novel coronavirus COVID-19. For each claim, the system identifies relevant scientific abstracts, and labels the relation of each abstract to the claim as either SUPPORTS or REFUTES. Verifying scientific claims is challenging and requires domain-specific background knowledge - for instance, in order to identify the evidence supporting Claim 1 in Table 1, the system must determine that a reduction in coronavirus viral load indicates a favorable clinical response, even though this fact is never mentioned.
+Scientific claims In SCIFACT, a scientific claim is an atomic verifiable statement expressing a finding</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>about one aspect of a scientific entity or process, which can be verified from a single source. ${ }^{2}$ For instance, "The $R_{0}$ of the novel coronavirus is 2.5 " is valid, but opinion-based statements like "The government should require people to stand six feet apart to stop coronavirus" are not. Compound claims like "Aerosolized coronavirus droplets can travel at least 6 feet and can remain in the air for 3 hours" should be split into two atomic claims.</p>
+<p>Claims in SciFact are natural - they are derived from citation sentences, or citances (Nakov et al., 2004), that occur naturally in scientific articles. This is similar to political fact-checking datasets such as UKP Snopes (Hanselowski et al., 2019), which use political fact-checking websites as a source of natural claims. On the other hand, claims in the popular FEVER dataset (Thorne et al., 2018) are synthetic, since they are created by annotators by mutating sentences from the Wikipedia articles that will serve as evidence.</p>
+<p>Supporting and refuting evidence In most factchecking work, claims are assigned a global truth label based on the entirety of the available evidence. For example in FEVER, the claim "Barack Obama was the $44^{\text {th }}$ President of the United States" can be verified using Wikipedia as an evidence source.</p>
+<p>While SciFact claims are indeed verifiable assertions about scientific findings, accurately assigning a global truth label to a scientific claim (given a fixed scientific corpus) requires a systematic review by a team of experts. In this work we focus on the simpler task of assigning SUPPORTS or REFUTES relations to individual claim-abstract pairs.</p>
+<p>Each Supports or Refutes relation between claim and abstract must be justified by at least one rationale. A rationale is a minimal collection of sentences which, taken together as premises in the context of the abstract, can reasonably be judged by a domain expert as implying the claim. Rationales facilitate the development of interpretable models which not only have the ability to make label predictions, but can also identify the exact sentences that are necessary for their decisions.</p>
+<h2>3 The SciFact dataset</h2>
+<p>The SciFact dataset consists of 1,409 scientific claims $^{3}$ verified against a corpus of 5,183 abstracts.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Corpus construction. Citing abstracts are identified for each seed document. A claim is written based on the source citance in the citing abstract.</p>
+<p>Abstracts that support or refute each claim are annotated with rationales. We describe our corpus creation and annotation process.</p>
+<h3>3.1 Data source and corpus construction</h3>
+<p>To construct SciFact, we use S2ORC (Lo et al., 2020), a publicly-available corpus of millions of scientific articles. To ensure that documents in our dataset are of high quality, we randomly sample articles from a manually curated collection of wellregarded journals spanning domains from basic science (e.g., Cell, Nature) to clinical medicine (e.g., JAMA, BMJ). The full list of journals is included in Appendix C.1. We restrict to articles with at least 10 citations. The resulting collection is referred to as our seed set. We use the S2ORC citation graph to sample source citances from citing articles which cite these seed articles. If a citance cites other articles not in the seed set, we refer to these as co-cited articles and add them to the corpus, as depicted in Figure 2. The content of the cited abstracts encompasses a diverse array of topics within biomedicine, as shown in Figure 3. The majority of citances used for SciFact cite only the seed article (no co-cited articles), as we found in initial annotation experiments that these citances tended to yield specific, easy-to-verify claims.</p>
+<p>To expand the corpus, we identify five papers cited in the same paper as each source citance but in a different paragraph, and add these to the corpus as distractor abstracts. These abstracts often</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Most frequently occurring Medical Subject Headings (MeSH) terms (y-axis) among cited abstracts. MeSH is a controlled vocabulary used for indexing articles in PubMed. Topics range from clinical trial reports ("Humans", "Risk Factors") to molecular biology ("Cell Line", "RNA").
+discuss similar topics to the evidence documents, increasing the difficulty of abstract retrieval and making our metrics more accurately reflect the system's performance on a large research corpus.</p>
+<h3>3.2 Claim writing</h3>
+<p>Annotation Annotators are shown a source citance in the context of an article, and are asked to write up to three claims based on the content of the citance; see Appendix C. 2 for an example. This results in natural claims because the annotator does not see the cited article's abstract - the cited abstract - at the time of claim writing. Annotators are asked to skip citances that do not make statements about specific scientific findings.</p>
+<p>The claim writers included four experts with background in scientific NLP, fifteen undergraduates studying the life sciences, and four graduate students (doctoral or medical) in the life sciences. Detailed information on the annotator training process can be found in Appendix C.3. The claimwriting interface is shown in Appendix D.
+Claim negation Unless the authors of the source citance were mistaken, cited articles should provide supporting evidence for the claims made in a citance. To obtain examples where an abstract REFUTES a claim, an NLP expert wrote negations of existing claims, taking precautions not to bias the negations by using obvious keywords like "not" (Schuster et al., 2019; Gururangan et al., 2018). In $\S 6.1$, we demonstrate that a "claim-only" verifi-
+cation model performs poorly, suggesting that the negation process did not introduce severe artifacts.</p>
+<h3>3.3 Claim verification</h3>
+<p>Annotation For each claim, all of the claim's cited abstracts are annotated for evidence. Annotators are shown a single claim - cited abstract pair, and asked to label the pair as SUPPORTS, REFUTES, or NoINFO. Although our task definition allows for a single claim to be both supported and refuted (by different abstracts) - an occurrence we observe on real-world COVID-19 claims (§6.3) - this never occurs in our dataset. Each claim has a single label. Counts for each label are shown in Table 2a. Overall, the annotators found evidence in $63 \%$ of cited abstracts. If the annotator assigns a SUPPORTS or REFUTES label, they must also identify all rationales as defined in $\S 2$. Table 2 b provides statistics on the number of sentences per rationale, the number of rationales per claim / abstract pair, and the number of evidence abstracts per claim. No abstract has more than 3 rationales for a given claim, and all rationales consist of at most three sentences. Rationales in SciFACT are mutually exclusive. 28 rationales contain non-contiguous sentences.</p>
+<p>The verifiers included three NLP experts, five life science undergraduates, and five graduate students studying life sciences. Annotators verified claims that they did not write themselves. Annotation guidelines are provided in Appendix D.</p>
+<p>SCIFACT claims are verified against abstracts rather than full articles since (1) abstracts can be annotated more scalably, (2) evidence is found in the abstract in more than $60 \%$ of cases, and (3) previous attempts at full-document annotation suffered from low annotator agreement (§7).
+Quality We assign 232 claim-abstract pairs for independent re-annotation. The label agreement is 0.75 Cohen's $\kappa$, comparable with the 0.68 Fleiss' $\kappa$ reported in Thorne et al. (2018), and 0.70 Cohen's $\kappa$ reported in Hanselowski et al. (2019). To measure rationale agreement, we treat each sentence as either classified as "part of a rationale" or "not part of a rationale" and compute sentence-level agreement. The resulting Cohen's $\kappa$ is 0.71 .</p>
+<h2>4 The SciFact task</h2>
+<p>Task Formulation The inputs to our task are a scientific claim $c$ and a corpus of abstracts $\mathcal{A}$. All abstracts $a \in \mathcal{A}$ are labeled as $y(c, a) \in{\mathrm{SuPPORTS}$, REFUTES, NoINFO $}$ with respect to a claim $c$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Fold</th>
+<th style="text-align: center;">Supports</th>
+<th style="text-align: center;">NOINFO</th>
+<th style="text-align: center;">Refutes</th>
+<th style="text-align: center;">All</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Train</td>
+<td style="text-align: center;">332</td>
+<td style="text-align: center;">304</td>
+<td style="text-align: center;">173</td>
+<td style="text-align: center;">809</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dev</td>
+<td style="text-align: center;">124</td>
+<td style="text-align: center;">112</td>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">300</td>
+</tr>
+<tr>
+<td style="text-align: left;">Test</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">300</td>
+</tr>
+<tr>
+<td style="text-align: left;">All</td>
+<td style="text-align: center;">556</td>
+<td style="text-align: center;">516</td>
+<td style="text-align: center;">337</td>
+<td style="text-align: center;">1409</td>
+</tr>
+</tbody>
+</table>
+<p>(a) Distribution of claim labels in SCIFACT.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">$3+$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Cited abstracts per claim</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1278</td>
+<td style="text-align: center;">86</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Evidence abstracts per claim</td>
+<td style="text-align: center;">516</td>
+<td style="text-align: center;">830</td>
+<td style="text-align: center;">37</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Rationales per abstract</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">552</td>
+<td style="text-align: center;">290</td>
+<td style="text-align: center;">153</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Sentences per rationale</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1542</td>
+<td style="text-align: center;">92</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>(b) Evidence counts at various levels of granularity. For example, Column 2 of the row "Rationales / abstract" indicates that 290 claim / abstract pairs are supported by 2 distinct rationales.</p>
+<p>Table 2: Statistics on claim labels, and the number of evidence abstracts and rationales per claim.</p>
+<p>The abstracts that either SUPPORT or REFUTE $c$ are referred to as evidence abstracts for $c$, denoted as $\mathcal{E}(c)$. Each evidence abstract $a \in \mathcal{E}(c)$ is annotated with rationales. A single rationale $R_{i}$ is a collection of sentences $\left{r_{1}(c, a), \ldots, r_{m}(c, a)\right}$, where $m$ is the number of sentences in rationale $R_{i}$. We denote the set of all rationales as $\mathcal{R}(c, a)=$ $\left{R_{1}(c, a), \ldots, R_{n}(c, a)\right}$.</p>
+<p>Given a claim $c$ and a corpus $\mathcal{A}$, the system must predict a set of evidence abstracts $\widetilde{\mathcal{E}}(c)$. For each abstract $a \in \widetilde{\mathcal{E}}(c)$, it must predict a label $\widehat{y}(c, a)$, and a collection of rationale sentences $\widehat{S}(c, a)=\left{\widehat{s}<em _ell="\ell">{1}(c, a), \ldots, \widehat{s}</em>(c, a)\right}$. Note that although the gold annotations may contain multiple separate rationales, to simplify the prediction task we only require the model to predict a single collection of rationale sentences; these sentences may encompass multiple gold rationales.</p>
+<p>Task Evaluation We evaluate the task at two levels of granularity. For abstract-level evaluation, we assess the model's ability to identify the abstracts that support or refute the claim. For sentence-level evaluation, we evaluate the model's performance at identifying the sentences sufficient to justify the abstract-level predictions. We conduct evaluations in both the "Open" FEVER-style (Thorne et al., 2018) setting where the evidence abstracts must be retrieved, and the "Oracle abstract" ERASERstyle (DeYoung et al., 2020a) setting where the gold evidence abstracts $\mathcal{E}(c)$ are provided.
+Abstract-level evaluation is inspired by the FEVER score. Given a claim $c$, a predicted evidence abstract $a \in \widetilde{\mathcal{E}}(c)$ is correctly labeled if (1) $a$ is a
+gold evidence abstract for $c$, and (2) The predicted label is correct: $\widehat{y}(c, a)=y(c, a)$. It is correctly rationalized if, in addition, the predicted rationale sentences contain a gold rationale, i.e., there exists some gold rationale $R_{i}(c, a) \subseteq \widehat{S}(c, a)$.</p>
+<p>Like FEVER, which limits the maximum number of predicted rationale sentences to five, SCIFACT limits to three predicted rationale sentences. Overall performance is measured by the micro-F1 of the precision and recall over the correctly-labeled and correctly-rationalized evidence abstracts. We refer to these evaluations as Abstract ${ }<em _Label_Rationale="{Label+Rationale" _text="\text">{\text {Label-Only }}$ and Abstract ${ }</em>$, respectively.
+Sentence-level evaluation measures performance in identifying individual rationale sentences. Unlike the abstract-level metrics, this evaluation penalizes the prediction of extra rationale sentences.}</p>
+<p>A predicted rationale sentence $\widehat{s}(c, a)$ is correctly selected if (1) It is a member of some gold rationale $R_{i}(c, a)$, (2) all other sentences from the same gold rationale $R_{i}(c, a)$ are among the predicted $\widehat{S}(c, a)$, and (3) $\widehat{y}(c, a) \neq$ NoINFO $^{4}$. It is correctly labeled if, in addition, the abstract $a$ is correctly labeled: $\widehat{y}(c, a)=y(c, a)$.</p>
+<p>Overall performance is measured by the microF1 of the precision and recall of correctly-selected and correctly-labeled rationale sentences, denoted Sentence ${ }<em _Selection_Label="{Selection+Label" _text="\text">{\text {Selection-Only }}$ and Sentence ${ }</em>$. For sentence-level evaluation, we do not limit the number of predicted rationale sentences, since the evaluation penalizes models that over-predict.}</p>
+<h2>5 VERISCI: Baseline model</h2>
+<p>We develop a baseline (referred to as VERISCI) that takes a claim $c$ and corpus $\mathcal{A}$ as input, identifies evidence abstracts $\widetilde{\mathcal{E}}(c)$, and predicts a label $\widehat{y}(c, a)$ and rationale sentences $\widehat{S}(c, a)$ for each $a \in \widetilde{\mathcal{E}}(c)$. Following the "BERT-to-BERT" model presented in DeYoung et al. (2020a); Soleimani et al. (2019), VERISCI is a pipeline of three components:</p>
+<ol>
+<li>AbstractRetrieval retrieves $k$ abstracts with highest TF-IDF similarity to the claim.</li>
+<li>RATIONALESELECTION identifies rationale sentences $\widehat{S}(c, a)$ for each abstract.</li>
+<li>LABELPREDICTION makes the final label prediction $\widehat{y}(c, a)$.
+Rationale selection Given a claim $c$ and abstract $a$, we train a model to predict $z_{i} \triangleq$</li>
+</ol>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>$\mathbb{1}\left[a_{i}\right.$ is a rationale sentence] for each sentence $a_{i}$ in $a$. For each sentence, we encode the concatenated sequence $w_{i}=\left[a_{i}, \mathrm{SEP}, c\right]$ using a BERTstyle language model and predict a score $\hat{z}<em i="i">{i}=$ $\sigma\left[f\left(\operatorname{CLS}\left(w</em>}\right)\right)\right]$, where $\sigma$ is the sigmoid function, $f$ is a linear layer and $\operatorname{CLS}\left(w_{i}\right)$ is the CLS token from the encoding of $w_{i}$. We train the model on pairs of claims and their cited abstracts and minimize cross-entropy loss between $z_{i}$ and $\hat{z<em i="i">{i}$. For each claim, we use cited abstracts labeled NoINFO, as well as non-rationale sentences from abstracts labeled SUPPORTS and REFUTES as negative examples. To make predictions, we select all sentences $a</em>&gt;t$ as rationale sentences, where $t \in[0,1]$ is tuned on the dev set (Appendix A.1).
+Label prediction Sentences identified by the rationale selector are passed to a separate BERTbased model to make the final labeling decision. Given a claim $c$ and abstract $a$, we concatenate the claim and the predicted rationale sentences $u=\left[\widetilde{s}}$ with $\hat{z_{i}<em _ell="\ell">{1}(c, a), \ldots \widetilde{s}</em>(c, a)$ and the true label $y(c, a)$.}(c, a), \mathrm{SEP}, c\right]^{5}$, and predict $\tilde{y}(c, a)=\phi[f(\operatorname{CLS}(u))]$, where $\phi$ is the softmax function, and $f$ is a linear layer with three outputs representing the {SUPPORTS, REFUTES, NoINFO $}$ labels. We minimize the cross-entropy loss between $\tilde{y</p>
+<p>We train the model on pairs of claims and their cited abstracts using gold rationales as input. For cited abstracts labeled NoINFO, we choose the $k$ sentences from the cited abstract with highest TF-IDF similarity to the claim as input rationales. For prediction, we use the predicted rationale sentences $\widehat{S}(c, a)$ as input and predict $\hat{y}(c, a)=\operatorname{argmax} \tilde{y}(c, a)$. NoINFO is predicted for abstracts with no rationale sentences.</p>
+<p>We experimented with a label prediction model which encodes entire abstracts via the Longformer (Beltagy et al., 2020), and makes predictions using the document-level CLS token. Performance was not competitive with our pipeline setup, likely because the label predictor struggles to identify relevant information when given full abstracts.</p>
+<h2>6 Experiments</h2>
+<p>In our experiments, we (1) analyze the performance of each individual component of VERISCI, (2) evaluate full task performance in both the "Oracle abstract" and "Open" settings, (3) present promising results verifying claims about COVID-19 using</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 3: Comparison of different training datasets, encoders, and model inputs for RATIONALESELECTION and LABELPREDICTION, evaluated on the SCIFACT dev set. The claim-only model cannot select rationales.</p>
+<p>VERISCI, and (4) discuss some modeling challenges presented by the dataset.</p>
+<h3>6.1 Pipeline components</h3>
+<p>We examine the effects of different training datasets, sentence encoders, and model inputs on the performance of the RATIONALESELECTION and LABELPREDICTION modules. The RATIONALESELECTION module is evaluated on its ability to select rationale sentences given gold abstracts ${ }^{6}$. The LABELPREDICTION module is evaluated on its 3-way label classification accuracy given gold rationales from cited abstracts. Cited abstracts labeled NoINFO are included in the evaluation. These abstracts have no gold rationale sentences; as in $\S 5$, we provide the $k$ most similar sentences from the abstract as input (more details in Appendix A).
+Training Data We train on (1) FEVER, (2) UKP Snopes, (3) SciFact, and (4) FEVER pretraining followed by SciFact fine-tuning. RoBERTa-large (Liu et al., 2019) is used as the sentence encoder.
+Sentence encoder We fine-tune SciBERT (Beltagy et al., 2019), BioMedRoBERTa (Gururangan et al., 2020), RoBERTa-base, and RoBERTa-large. SCIFACT is used as training data.
+Model Inputs We examine the performance of "claim-only" and "abstract-only" models trained on SCIFACT, using RoBERTa-large as the sentence encoder. The claim-only model makes label predic-</p>
+<p><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Retrieval</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Sentence-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Abstract-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection+Label</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label+Rationale</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Oracle abstract</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">100.0</td>
+<td style="text-align: center;">80.5</td>
+<td style="text-align: center;">$89.2_{2.1}$</td>
+<td style="text-align: center;">89.6</td>
+<td style="text-align: center;">72.2</td>
+<td style="text-align: center;">$79.9_{3.0}$</td>
+<td style="text-align: center;">90.1</td>
+<td style="text-align: center;">77.5</td>
+<td style="text-align: center;">$83.3_{2.4}$</td>
+<td style="text-align: center;">90.1</td>
+<td style="text-align: center;">77.5</td>
+<td style="text-align: center;">$83.3_{2.4}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">42.5</td>
+<td style="text-align: center;">45.1</td>
+<td style="text-align: center;">$43.8_{2.0}$</td>
+<td style="text-align: center;">36.1</td>
+<td style="text-align: center;">38.4</td>
+<td style="text-align: center;">$37.2_{2.3}$</td>
+<td style="text-align: center;">86.9</td>
+<td style="text-align: center;">53.6</td>
+<td style="text-align: center;">$66.3_{3.1}$</td>
+<td style="text-align: center;">67.9</td>
+<td style="text-align: center;">41.9</td>
+<td style="text-align: center;">$51.8_{3.4}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">76.1</td>
+<td style="text-align: center;">63.8</td>
+<td style="text-align: center;">$69.4_{2.6}$</td>
+<td style="text-align: center;">66.5</td>
+<td style="text-align: center;">55.7</td>
+<td style="text-align: center;">$\mathbf{6 0 . 6}_{3.1}$</td>
+<td style="text-align: center;">87.3</td>
+<td style="text-align: center;">65.3</td>
+<td style="text-align: center;">$74.7_{2.8}$</td>
+<td style="text-align: center;">84.9</td>
+<td style="text-align: center;">63.5</td>
+<td style="text-align: center;">$\mathbf{7 2 . 7}_{2.9}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">100.0</td>
+<td style="text-align: center;">56.5</td>
+<td style="text-align: center;">$72.2_{3.3}$</td>
+<td style="text-align: center;">87.6</td>
+<td style="text-align: center;">49.5</td>
+<td style="text-align: center;">$63.2_{3.7}$</td>
+<td style="text-align: center;">88.9</td>
+<td style="text-align: center;">54.1</td>
+<td style="text-align: center;">$67.2_{3.2}$</td>
+<td style="text-align: center;">88.9</td>
+<td style="text-align: center;">54.1</td>
+<td style="text-align: center;">$67.2_{3.2}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">28.7</td>
+<td style="text-align: center;">37.6</td>
+<td style="text-align: center;">$32.5_{2.3}$</td>
+<td style="text-align: center;">23.7</td>
+<td style="text-align: center;">31.1</td>
+<td style="text-align: center;">$26.9_{2.3}$</td>
+<td style="text-align: center;">56.0</td>
+<td style="text-align: center;">42.3</td>
+<td style="text-align: center;">$48.2_{3.3}$</td>
+<td style="text-align: center;">42.3</td>
+<td style="text-align: center;">32.0</td>
+<td style="text-align: center;">$36.4_{3.3}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">45.0</td>
+<td style="text-align: center;">47.3</td>
+<td style="text-align: center;">$46.1_{3.0}$</td>
+<td style="text-align: center;">38.6</td>
+<td style="text-align: center;">40.5</td>
+<td style="text-align: center;">$\mathbf{3 9 . 5}_{3.0}$</td>
+<td style="text-align: center;">47.5</td>
+<td style="text-align: center;">47.3</td>
+<td style="text-align: center;">$47.4_{3.1}$</td>
+<td style="text-align: center;">46.6</td>
+<td style="text-align: center;">46.4</td>
+<td style="text-align: center;">$\mathbf{4 6 . 5}_{3.1}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Test set performance on SCIFACT, according to the metrics from $\S 4$. For the "Oracle abstract" rows, the system is provided with gold evidence abstracts. "Oracle rationale" rows indicate that the gold rationales are provided as input. "Zero-shot" indicates zero-shot performance of a verification system trained on FeVER. Additionally, standard deviations are reported as subscripts for all F1 scores. See Appendix B for standard deviations on all reported metrics.
+tions based on the claim text alone, without access to evidence abstracts. The abstract-only model selects rationale sentences and makes label predictions without access to the claim.</p>
+<p>Results The results are shown in Table 3. For LABELPREDICTION, the best performance is achieved by training first on the large FEVER dataset and then fine-tuning on the smaller in-domain SCIFACT training set. To understand the benefits of FEVER pretraining, we examined the claim / evidence pairs where the FEVER + SCIFACT- trained model made correct predictions but the SCIFACT- trained model did not. In 36 / 44 of these cases, the SCIFACTtrained model predicts NoINFO. Thus pretraining on FEVER appears to improve the model's ability to recognize textual entailment relationships between evidence and claim - particularly relationships indicated by non-domain-specific cues like "is associated with" or "has an important role in".</p>
+<p>For RATIONALESELECTION, training on SCIFACT alone produces the best results. We examined the rationales that the SCIFACT- trained model identified but the FEVER- trained model missed, and found that they generally contain sciencespecific vocabulary. Thus, training on additional out-of-domain data provides little benefit.</p>
+<p>RoBERTa-large exhibits the strongest performance on label prediction, while ScIBERT has a slight edge on rationale selection. The "claimonly" model exhibits very poor performance, which provides some reassurance that the claim negation procedure described in $\S 3.2$ does not introduce obvious statistical artifacts. Similarly, the poor performance of the "abstract-only" model indicates that the model needs access to the claim being verified
+in order to identify relevant evidence.</p>
+<h3>6.2 Full task</h3>
+<p>Experimental setup Based on the results from §6.1, we use the RATIONALESELECTION module trained on SCIFACT only, and the LABELPREDICTION module trained on FEVER + SCIFACT for our final end-to-end system VERISCI. Although SCIBERT performs slightly better on rationale selection, using RoBERTa-large for both RATIONALESELECTION and LABELPREDICTION gave the best fullpipeline performance on the dev set, so we use RoBERTa-large for both components. For the ABSTRACTRETRIEVAL module, the best dev set fullpipeline performance was achieved by retrieving the top $k=3$ documents.
+Model comparisons We report performance of three model variants. For the "Oracle rationale" setting, the RATIONALESELECTION module is replaced by an oracle which outputs gold rationales for correctly retrieved documents, and no rationales for incorrect retrievals. The "Zero-shot" setting reports the zero-shot generalization performance of a model trained on FEVER (the results on UKP Snopes were slightly worse). VERISCI reports the performance of our best system.
+Results The results are shown in Table 4. In the oracle abstract setting, the abstract-level F1 scores are roughly comparable to label classification accuracies, and the Abstract ${ }_{\text {Label+Rationale }}$ score in Row 3 implies an end-to-end classification accuracy of roughly $70 \%$, given gold abstracts.</p>
+<p>Access to in-domain data during training clearly improves performance. Despite the small size of SCIFACT, training on these data</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Reasoning type</th>
+<th style="text-align: center;">Example</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Science background</td>
+<td style="text-align: center;">Claim: <br> Evidence: <br> Gold Verdict: <br> Reasoning:</td>
+<td style="text-align: center;">Rapamycin slows aging in fruit flies. <br> ...feeding rapamycin to adult Drosophila produces life span extension ... <br> SUPPORTS <br> Drosophila is a type of fruit fly.</td>
+</tr>
+<tr>
+<td style="text-align: center;">Directionality</td>
+<td style="text-align: center;">Claim: <br> Evidence: <br> Gold Verdict: <br> Reasoning:</td>
+<td style="text-align: center;">Inhibiting glucose-6-phospate dehydrogenase impairs lipogenesis <br> ...suppression of 6PGD increased lipogenesis <br> REFUTES <br> A decrease (not increase) in lipogenesis would indicate lipogenesis impairment.</td>
+</tr>
+<tr>
+<td style="text-align: center;">Numerical reasoning</td>
+<td style="text-align: center;">Claim: <br> Evidence: <br> Gold Verdict: <br> Reasoning:</td>
+<td style="text-align: center;">Bariatric surgery improves resolution of diabetes. <br> Strong associations were found between bariatric surgery and the resolution of T2DM, with a HR of 9.29 (95\% CI 6.84-12.62)... <br> SUPPORTS <br> A HR (hazard ratio) that is greater than 1 with $95 \%$ confidence indicates improvement.</td>
+</tr>
+<tr>
+<td style="text-align: center;">Cause and effect</td>
+<td style="text-align: center;">Claim: <br> Evidence: <br> Gold Verdict: <br> Reasoning:</td>
+<td style="text-align: center;">Major vault protein (MVP) functions to decrease tumor aggression. <br> Knockout of MVP leads to miR-193a accumulation...inhibiting tumor progression REFUTES <br> Knocking out (removing) MVP inhibits tumor progression $\rightarrow$ MVP increases tumor aggression.</td>
+</tr>
+<tr>
+<td style="text-align: center;">Coreference</td>
+<td style="text-align: center;">Claim: <br> Evidence: <br> Gold Verdict: <br> Reasoning:</td>
+<td style="text-align: center;">Low saturated fat diets have adverse effects on the development of infants Neurological development of children in the intervention group was at least as good as ... the control group <br> REFUTES <br> The intervention group in this study was placed on a low saturated fat diet.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Reasoning types required to verify SCIFACT claims which are classified incorrectly by our modeling baseline. Words crucial for correct verification are highlighted.
+leads to relative improvements of $47 \%$ on open Sentence $<em _Label_Rationale="{Label+Rationale" _text="\text">{\text {Selection+Label }}$, and $28 \%$ on open Abstract ${ }</em>$ F1 (Row 6 vs. Row 4). Replacing ABSTRACTRETRIEVAL with an oracle as well leads to a gain of roughly 20 more points (Row 4 vs. Row 1).}}$ over FEVER alone (Row 6 vs. Row 5). The three pipeline components make similar contributions to the overall model error. Replacing RATIONALESELECTION with an oracle leads to a roughly 20-point rise in Sentence ${ }_{\text {Selection+Label }</p>
+<p>Nearly all correctly-labeled abstracts are supported by at least one rationale. There is only a twopoint difference in F1 between Abstract ${ }<em _Label_Rationale="{Label+Rationale" _text="\text">{\text {Label-Only }}$ and Abstract ${ }</em>$ in the oracle setting (Row 3), and a one-point difference in the open setting (Row 6). The differences between Sentence $}<em _Selection_Label="{Selection+Label" _text="\text">{\text {Selection-Only }}$ and Sentence $</em>$ are larger, caused by examples where the model finds the evidence but fails to predict its relationship to the claim. We examine these in $\S 6.4$.}</p>
+<p>We evaluate the statistical robustness of our results by generating 10,000 bootstrap-resampled versions of the test set (Dror et al., 2018) and computing the standard deviation of all performance metrics. Table 4 shows the standard deviations in F1 score. Uncertainties on all metrics for both the dev and test set can be found in Appendix B. The re-
+sults indicate that the observed differences in model performance are statistically robust and cannot be attributed to random variation in the dataset.</p>
+<h3>6.3 Verifying claims about COVID-19</h3>
+<p>We conduct exploratory experiments using our system to verify claims concerning COVID-19. We tasked a medical student to write 36 COVID-related claims. For each claim $c$, we used VERISCI to predict evidence abstracts $\widehat{\mathcal{E}}(c)$. The annotator examined each $(c, \widehat{\mathcal{E}}(c))$ pair. A pair was labeled plausible if $\widehat{\mathcal{E}}(c)$ was nonempty, and at least half of the evidence abstracts in $\widehat{\mathcal{E}}(c)$ were judged to have reasonable rationales and labels. For 23 / 36 claims, the response of VERISCI was deemed plausible by our annotator, demonstrating that VERISCI is able to successfully retrieve and classify evidence in many cases. Two examples are shown in Table 1. In both cases, our system identifies both supporting and refuting evidence.</p>
+<h3>6.4 Error analysis</h3>
+<p>To better understand the errors made by VERISCI, we conduct a manual analysis of test set predictions where an evidence abstract was correctly retrieved, but where the model failed to identify any relevant rationales or predicted an incorrect label. We iden-</p>
+<p>tify five modeling capabilities required to correct these mistakes (Table 5 provides examples):
+Science background includes knowledge of domain-specific lexical relationships.
+Directionality requires understanding increases or decreases in scientific quantities.
+Numerical reasoning involves interpreting numerical or statistical findings.
+Cause and effect requires reasoning about counterfactuals.
+Coreference involves drawing conclusions using context stated outside of a rationale sentence.</p>
+<h2>7 Related work</h2>
+<p>Fact checking and rationalized NLP models Fact-checking datasets include PolitiFact (Vlachos and Riedel, 2014), Emergent (Ferreira and Vlachos, 2016), LIAR (Wang, 2017), SemEval 2017 Task 8 RumorEval (Derczynski et al., 2017), Snopes (Popat et al., 2017), CLEF-2018 CheckThat! (Barrón-Cedeño et al., 2018), Verify (Baly et al., 2018), Perspectrum (Chen et al., 2019), FEVER (Thorne et al., 2018), and UKP Snopes (Hanselowski et al., 2019). Hanselowski et al. (2019) provides a thorough review. To our knowledge, there are no existing data sets for scientific claim verification. We refer to our task as "claim verification" rather than "fact-checking" to emphasize that our focus is to help researchers make sense of scientific findings, not to counter disinformation.</p>
+<p>Fact-checking is one of a number of tasks where a model is required to justify a prediction via rationales from the source document. The ERASER dataset (DeYoung et al., 2020a) provides a suite of benchmark datasets (including SciFact) for evaluating rationalized NLP models.
+Related scientific NLP tasks The citation contextualization task (Cohan et al., 2015; Jaidka et al., 2017) is to identify spans in a cited document that are relevant to a particular citation in a citing document. Unlike SCIFACT, these citations are not re-written into atomic claims and are therefore more difficult to verify. Expert annotators achieved very low ( $21.7 \%$ ) inter-annotator agreement on the BioMedSumm dataset (Cohen et al., 2014), which contains 314 citations referencing 20 papers.</p>
+<p>Biomedical question answering datasets include BioASQ (Tsatsaronis et al., 2015) and PubMedQA (Jin et al., 2019), which contain 855 and 1,000 "yes / no" questions respectively (Gu et al., 2020). Claim verification and question answering are both-
+knowledge intensive tasks which require an understanding of the relationship between an input query and relevant supporting text.</p>
+<p>Automated evidence synthesis (Marshall and Wallace, 2019; Beller et al., 2018; Tsafnat et al., 2014; Marshall et al., 2017) seeks to automate the process of creating systematic reviews of the medical literature ${ }^{7}$ - for instance, by extracting PICO snippets (Nye et al., 2018) and inferring the outcomes of clinical trials (Lehman et al., 2019; DeYoung et al., 2020b). We hope that systems for claim verification will serve as components in future evidence synthesis frameworks.</p>
+<h2>8 Conclusion and future work</h2>
+<p>Claim verification allows us to trace the sources and measure the veracity of scientific claims. These abilities have emerged as particularly important in the context of the current pandemic, and the broader reproducibility crisis in science. In this article, we formalize the task of scientific claim verification, and release a dataset (SCIFACT) and models (VERISCI) to support work on this task. Our results indicate that it is possible to train models for scientific fact-checking and deploy them with reasonable efficacy on real-world claims related to COVID-19.</p>
+<p>Scientific claim verification presents a number of promising avenues for research on models capable of incorporating background information, reasoning about scientific processes, and assessing the strength and provenance of various evidence sources. This last challenge will be especially crucial for future work that seeks to verify scientific claims against sources other than the research literature - for instance, social media and the news. We hope that the resources presented in this paper encourage future research on these important challenges, and help facilitate progress toward the broader goal of scientific document understanding.</p>
+<h2>Acknowledgments</h2>
+<p>This research was supported by the ONR MURI N00014-18-1-2670, ONR N00014-18-1-2826, DARPA N66001-19-2-4031, NSF (IIS 1616112), Allen Distinguished Investigator Award, and the Sloan fellowship. We thank the Semantic Scholar team at AI2, UW-NLP, and H2lab at UW for helpful comments and feedback.</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>References</h2>
+<p>Ramy Baly, Mitra Mohtarami, James Glass, Lluís Màrquez, Alessandro Moschitti, and Preslav Nakov. 2018. Integrating stance detection and fact checking in a unified corpus. In NAACL.</p>
+<p>Alberto Barrón-Cedeño, Tamer Elsayed, Reem Suwaileh, Lluís Màrquez i Villodre, Pepa Atanasova, Wajdi Zaghouani, Spas Kyuchukov, Giovanni Da San Martino, and Preslav Nakov. 2018. Overview of the clef-2018 checkthat! lab on automatic identification and verification of political claims. task 2: Factuality. In CLEF.</p>
+<p>Elaine Beller, Justin Clark, Guy Tsafnat, Clive Elliott Adams, Heinz Diehl, Hans Lund, Mourad Ouzzani, Kristina Thayer, James Thomas, Tari Turner, J. S. Xia, Karen A. Robinson, and Paul P Glasziou. 2018. Making progress with the automation of systematic reviews: principles of the international collaboration for the automation of systematic reviews (icasr). Systematic Reviews, 7.</p>
+<p>Iz Beltagy, Kyle Lo, and Arman Cohan. 2019. Scibert: A pretrained language model for scientific text. In EMNLP.</p>
+<p>Iz Beltagy, Matthew E. Peters, and Arman Cohan. 2020. Longformer: The long-document transformer. ArXiv, abs/2004.05150.</p>
+<p>Taylor Berg-Kirkpatrick, David Burkett, and Dan Klein. 2012. An empirical investigation of statistical significance in nlp. In EMNLP.</p>
+<p>Sihao Chen, Daniel Khashabi, Wenpeng Yin, Chris Callison-Burch, and Dan Roth. 2019. Seeing things from a different angle: Discovering diverse perspectives about claims. In NAACL.</p>
+<p>Arman Cohan, Luca Soldaini, and Nazli Goharian. 2015. Matching citation text and cited spans in biomedical literature: a search-oriented approach. In NAACL.</p>
+<p>Kevin Bretonnel Cohen, Hoa Trang Dang, Anita de Waard, Prabha Yadav, and Lucy Vanderwende. 2014. Tac 2014 biomedical summarization track. https://tac.nist.gov/2014/BiomedSumm/.</p>
+<p>Leon Derczynski, Kalina Bontcheva, Maria Liakata, Rob Procter, Geraldine Wong Sak Hoi, and Arkaitz Zubiaga. 2017. SemEval-2017 task 8: RumourEval: Determining rumour veracity and support for rumours. In SemEval.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. Bert: Pre-training of deep bidirectional transformers for language understanding. In NAACL.</p>
+<p>Jay DeYoung, Sarthak Jain, Nazneen Fatema Rajani, Eric Lehman, Caiming Xiong, Richard Socher, and Byron C. Wallace. 2020a. Eraser: A benchmark to evaluate rationalized nlp models. In $A C L$.</p>
+<p>Jay DeYoung, Eric Lehman, Ben Nye, Iain James Marshall, and Byron C. Wallace. 2020b. Evidence inference 2.0: More data, better models. In BioNLP@ACL.</p>
+<p>Rotem Dror, Gili Baumer, Segev Shlomov, and Roi Reichart. 2018. The hitchhiker's guide to testing statistical significance in natural language processing. In $A C L$.</p>
+<p>Bradley Efron and Robert Tibshirani. 1993. An introduction to the bootstrap.</p>
+<p>William Ferreira and Andreas Vlachos. 2016. Emergent: a novel data-set for stance classification. In NAACL.</p>
+<p>Yu Gu, Robert Tinn, Hao Cheng, M. Lucas, Naoto Usuyama, Xiaodong Liu, Tristan Naumann, Jianfeng Gao, and Hoifung Poon. 2020. Domain-specific language model pretraining for biomedical natural language processing. ArXiv, abs/2007.15779.</p>
+<p>Suchin Gururangan, Ana Marasovic, Swabha Swayamdipta, Kyle Lo, Iz Beltagy, Doug Downey, and Noah A. Smith. 2020. Don't stop pretraining: Adapt language models to domains and tasks. In $A C L$.</p>
+<p>Suchin Gururangan, Swabha Swayamdipta, Omer Levy, Roy Schwartz, Samuel R. Bowman, and Noah A. Smith. 2018. Annotation artifacts in natural language inference data. In NAACL.</p>
+<p>Andreas Hanselowski, Christian Stab, Claudia Schulz, Zile Li, and Iryna Gurevych. 2019. A richly annotated corpus for different tasks in automated factchecking. In CoNLL.</p>
+<p>Kokil Jaidka, Muthu Kumar Chandrasekaran, Devanshu Jain, and Min-Yen Kan. 2017. The cl-scisumm shared task 2017: Results and key insights. In BIRNDL@JCDL.</p>
+<p>Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William W. Cohen, and Xinghua Lu. 2019. Pubmedqa: A dataset for biomedical research question answering. In EMNLP.</p>
+<p>Eric Lehman, Jay DeYoung, Regina Barzilay, and Byron C. Wallace. 2019. Inferring which medical treatments work from reports of clinical trials. In NAACL.</p>
+<p>Tao Lei, Regina Barzilay, and Tommi S. Jaakkola. 2016. Rationalizing neural predictions. In $A C L$.</p>
+<p>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. 2019. Roberta: A robustly optimized bert pretraining approach. ArXiv, abs/1907.11692.</p>
+<p>Kyle Lo, Lucy Lu Wang, Mark Neumann, Rodney Kinney, and Daniel S. Weld. 2020. S2ORC: The Semantic Scholar Open Research Corpus. In ACL.</p>
+<p>Yi Luan, Luheng He, Mari Ostendorf, and Hannaneh Hajishirzi. 2018. Multi-task identification of entities, relations, and coreference for scientific knowledge graph construction. In EMNLP.</p>
+<p>Iain James Marshall, Joël Kuiper, Edward Banner, and Byron C. Wallace. 2017. Automating biomedical evidence synthesis: Robotreviewer. $A C L$.</p>
+<p>Iain James Marshall and Byron C. Wallace. 2019. Toward systematic review automation: a practical guide to using machine learning tools in research synthesis. Systematic Reviews, 8.</p>
+<p>Preslav I Nakov, Ariel S Schwartz, and Marti Hearst. 2004. Citances: Citation sentences for semantic analysis of bioscience text. In SIGIR workshop on Search and Discovery in Bioinformatics.</p>
+<p>Benjamin Nye, Junyi Jessy Li, Roma Patel, Yinfei Yang, Iain James Marshall, Ani Nenkova, and Byron C. Wallace. 2018. A corpus with multi-level annotations of patients, interventions and outcomes to support language processing for medical literature. In $A C L$.</p>
+<p>Kashyap Popat, Subhabrata Mukherjee, Jannik Strötgen, and Gerhard Weikum. 2017. Where the truth lies: Explaining the credibility of emerging claims on the web and social media. In WWW.</p>
+<p>Tal Schuster, Darsh J. Shah, Yun Jie Serene Yeo, Daniel Filizzola, Enrico Santus, and Regina Barzilay. 2019. Towards debiasing fact verification models. In EMNLP.</p>
+<p>Amir Soleimani, Christof Monz, and Marcel Worring. 2019. Bert for evidence retrieval and claim verification. In European Conference on Information Retrieval.</p>
+<p>James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal. 2018. Fever: a large-scale dataset for fact extraction and verification. In NAACL.</p>
+<p>Guy Tsafnat, Paul P Glasziou, Miew Keen Choong, Adam G. Dunn, Filippo Galgani, and Enrico W. Coiera. 2014. Systematic review automation technologies. Systematic Reviews, 3:74-74.</p>
+<p>George Tsatsaronis, Georgios Balikas, Prodromos Malakasiotis, Ioannis Partalas, Matthias Zschunke, Michael R. Alvers, Dirk Weissenborn, Anastasia Krithara, Sergios Petridis, Dimitris Polychronopoulos, Yannis Almirantis, John Pavlopoulos, Nicolas Baskiotis, Patrick Gallinari, Thierry Artières, Axel-Cyrille Ngonga Ngomo, Norman Heino, Éric Gaussier, Liliana Barrio-Alvers, Michael Schroeder, Ion Androutsopoulos, and Georgios Paliouras. 2015. An overview of the bioasq large-scale biomedical semantic indexing and question answering competition. In BMC Bioinformatics.</p>
+<p>Andreas Vlachos and Sebastian Riedel. 2014. Fact checking: Task definition and dataset construction. In ACL Workshop on Language Technologies and Computational Social Science.</p>
+<p>Lucy Lu Wang, Kyle Lo, Yoganand Chandrasekhar, Russell Reas, Jiangjiang Yang, Darrin Eide, Kathryn Funk, Rodney Kinney, Ziyang Liu, William. Merrill, Paul Mooney, Dewey A. Murdick, Devvret Rishi, Jerry Sheehan, Zhihong Shen, Brandon Stilson, Alex D. Wade, Kuansan Wang, Christopher Wilhelm, Boya Xie, Douglas M. Raymond, Daniel S. Weld, Oren Etzioni, and Sebastian Kohlmeier. 2020. Cord-19: The covid-19 open research dataset. ArXiv, abs/2004.10706.</p>
+<p>William Yang Wang. 2017. "liar, liar pants on fire": A new benchmark dataset for fake news detection. In $A C L$.</p>
+<p>Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, R'emi Louf, Morgan Funtowicz, and Jamie Brew. 2019. Huggingface's transformers: State-of-the-art natural language processing. ArXiv, abs/1910.03771.</p>
+<h2>A Model implementation details</h2>
+<p>All models are implemented using the Huggingface Transformers package (Wolf et al., 2019).</p>
+<h2>A. 1 Parameters for the final VERISCI system</h2>
+<p>For the AbstractRetrieval module, VERISCI retrieves the top $k=3$ documents ranked by TFIDF similarity using unigram + bigram features. These parameters are tuned on the SCIFACT development set.</p>
+<p>When making predictions using the RationALESELECTION module described in $\S 5$, we find that the usual decision rule of predicting $\hat{z}<em i="i">{i}=1$ when $\hat{z}</em>} \geq 0.5$ works well for models trained on SCIFACT. However, for models trained on FEVER and UKP Snopes, we achieve better performance by tuning the classification threshold $t$, such that $\hat{z<em i="i">{i}=1$ when $\hat{z}</em> \geq t$, on the SCIFACT dev set. The best threshold was $t=0.025$ when training on FEVER, and $t=0.75$ when training on UKP Snopes.</p>
+<h2>A. 2 Training the RATIONALESELECTION module</h2>
+<p>We experiment with various learning rates when training SCIBERT, BioMedRoBERTa, RoBERTabase, and RoBERTa-large. Below we describe the setting for training RoBERTa-large.</p>
+<p>For models trained on SCIFACT, we use an initial learning rate of $1 \mathrm{e}-5$ on the transformer base and $1 \mathrm{e}-3$ on the linear layer. For FEVER + ScIFACT, the learning rate is set to $1 \mathrm{e}-5$ for the entire model for pre-training on FEVER and fine-tuning on Scifact. We use a batch size of 256 through gradient accumulation and apply cosine learning rate decay over 20 epochs to find the best performing model on the dev set.</p>
+<p>For models trained on FEVER, we set the learning rate to $5 \mathrm{e}-6$ for the transformer base and $5 \mathrm{e}-5$ for the linear layer. For models trained on UKP Snopes, we set the learning rate $1 \mathrm{e}-5$ for the transformer base and $1 \mathrm{e}-4$ for the linear layer. We find that these learning rates help the models converge. We only train the model for 3 epochs on FEVER and 5 epochs on UKP Snopes because they are larger datasets and the models converged within early epochs.</p>
+<h2>A. 3 Training the LABELPREDICTION module</h2>
+<p>We adopt similar settings as we used for the RATIONALESELECTION module and only change the learning rate to $1 \mathrm{e}-5$ for the transformer base and le-4 for the linear layer for models trained on ScIFACT, FEVER, and UKP Snopes. When training on claim / cited abstract pairs labeled NoINFO, we use the $k$ sentences in the abstract with greatest similarity to the claim as rationales (§5). $k$ is sampled from ${0,1}$ with uniform probability.</p>
+<h2>A. 4 Additional training details</h2>
+<p>All models are trained using a single Nvidia P100 GPU on Google Colabortoary Pro platform. ${ }^{8}$ For the RATIONALESELECTION module, it takes about 150 minutes to train on SCIFACT for 20 epochs. 120 minutes on UKP Snopes for 5 epochs, and 700 minutes on FEVER for 3 epochs. For the LABELPREDICTION module, it takes about 130 minutes to train on SCIFACT for 20 epochs, 160 minutes on UKP Snopes for 5 epochs, and 640 minutes on FEVER for 3 epochs.</p>
+<h2>A. 5 Hyperparameter search</h2>
+<p>The learning rate, batch size, and number of epochs are the most important hyperparameters. We perform manual tuning and select the hyperparameters that produce the highest F1 on the development set. For the learning rate, we experiment with 1e-3, le-4, 5e-5, 1e-5, and 5e-6. For batch size, we experiment with 64 and 256. The number of epochs are cutoff after the model converges.</p>
+<h2>B Statistical analysis</h2>
+<p>We assess the uncertainty in the results reported in the main results (Table 4) using a simple bootstrap approach (Dror et al., 2018; Berg-Kirkpatrick et al., 2012; Efron and Tibshirani, 1993). Given our test set with $n_{\text {test }}=300$ claims, we generate $n_{\text {boot }}=10,000$ bootstrap-resampled test sets by resampling (uniformly, with replacement) $n_{\text {test }}$ claims from the test set. For each resampled test set, we compute the metrics in Table 4. Table 6 reports the mean and standard deviation of these metrics, computed over the bootstrap samples. Table 7 reports dev set metrics. Our conclusion that training on SCIFACT improves performance is robust to the uncertainties presented in these tables.</p>
+<p><sup id="fnref7:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Retrieval</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Row</th>
+<th style="text-align: center;">Sentence-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection+Label</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Oracle abstract</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$100.0_{0.0}$</td>
+<td style="text-align: center;">$80.5_{3.3}$</td>
+<td style="text-align: center;">$89.2_{2.1}$</td>
+<td style="text-align: center;">$89.6_{2.7}$</td>
+<td style="text-align: center;">$72.2_{3.7}$</td>
+<td style="text-align: center;">$79.9_{3.0}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">$42.6_{2.2}$</td>
+<td style="text-align: center;">$45.2_{3.2}$</td>
+<td style="text-align: center;">$43.8_{2.0}$</td>
+<td style="text-align: center;">$36.2_{2.5}$</td>
+<td style="text-align: center;">$38.4_{3.0}$</td>
+<td style="text-align: center;">$37.2_{2.3}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$76.2_{2.9}$</td>
+<td style="text-align: center;">$63.9_{3.6}$</td>
+<td style="text-align: center;">$69.4_{2.6}$</td>
+<td style="text-align: center;">$66.5_{3.4}$</td>
+<td style="text-align: center;">$55.7_{3.7}$</td>
+<td style="text-align: center;">$60.6_{3.1}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">$100.0_{0.0}$</td>
+<td style="text-align: center;">$56.6_{4.0}$</td>
+<td style="text-align: center;">$72.2_{3.3}$</td>
+<td style="text-align: center;">$87.6_{3.5}$</td>
+<td style="text-align: center;">$49.5_{3.9}$</td>
+<td style="text-align: center;">$63.2_{3.7}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">$28.7_{2.3}$</td>
+<td style="text-align: center;">$37.6_{3.4}$</td>
+<td style="text-align: center;">$32.5_{2.3}$</td>
+<td style="text-align: center;">$23.8_{2.3}$</td>
+<td style="text-align: center;">$31.1_{3.1}$</td>
+<td style="text-align: center;">$26.9_{2.3}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">$45.0_{3.0}$</td>
+<td style="text-align: center;">$47.4_{3.8}$</td>
+<td style="text-align: center;">$46.1_{3.0}$</td>
+<td style="text-align: center;">$38.5_{3.0}$</td>
+<td style="text-align: center;">$40.6_{3.6}$</td>
+<td style="text-align: center;">$39.5_{3.0}$</td>
+</tr>
+</tbody>
+</table>
+<p>(a) Sentence-level results.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Retrieval</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Row</th>
+<th style="text-align: center;">Label-Only</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Abstract-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label+Rationale</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Oracle abstract</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$90.1_{2.2}$</td>
+<td style="text-align: center;">$77.5_{2.8}$</td>
+<td style="text-align: center;">$83.3_{2.4}$</td>
+<td style="text-align: center;">$90.1_{2.2}$</td>
+<td style="text-align: center;">$77.5_{2.8}$</td>
+<td style="text-align: center;">$83.3_{2.4}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">$86.9_{2.9}$</td>
+<td style="text-align: center;">$53.6_{3.4}$</td>
+<td style="text-align: center;">$66.3_{3.1}$</td>
+<td style="text-align: center;">$67.9_{3.9}$</td>
+<td style="text-align: center;">$41.9_{3.2}$</td>
+<td style="text-align: center;">$51.8_{3.4}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$87.3_{2.6}$</td>
+<td style="text-align: center;">$65.3_{3.2}$</td>
+<td style="text-align: center;">$74.7_{2.8}$</td>
+<td style="text-align: center;">$84.9_{2.8}$</td>
+<td style="text-align: center;">$63.5_{3.2}$</td>
+<td style="text-align: center;">$72.6_{2.9}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">$88.9_{2.7}$</td>
+<td style="text-align: center;">$54.1_{3.5}$</td>
+<td style="text-align: center;">$67.2_{3.2}$</td>
+<td style="text-align: center;">$88.9_{2.7}$</td>
+<td style="text-align: center;">$54.1_{3.5}$</td>
+<td style="text-align: center;">$67.2_{3.2}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">$56.0_{3.9}$</td>
+<td style="text-align: center;">$42.3_{3.4}$</td>
+<td style="text-align: center;">$48.2_{3.3}$</td>
+<td style="text-align: center;">$42.3_{4.0}$</td>
+<td style="text-align: center;">$32.0_{3.2}$</td>
+<td style="text-align: center;">$36.4_{3.3}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">$47.5_{3.3}$</td>
+<td style="text-align: center;">$47.3_{3.5}$</td>
+<td style="text-align: center;">$47.4_{3.1}$</td>
+<td style="text-align: center;">$46.6_{3.3}$</td>
+<td style="text-align: center;">$46.4_{3.5}$</td>
+<td style="text-align: center;">$46.4_{3.1}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>(b) Abstract-level results</p>
+<p>Table 6: Test set results as in Table 4, reporting mean and standard deviation over 10,000 bootstrap samples. Standard deviations are reported as subscripts. Some means reported here are slightly different from Table 4 due to sampling variability.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Sentence-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Selection+Label</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Retrieval</td>
+<td style="text-align: center;">Model</td>
+<td style="text-align: center;">Row</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Oracle abstract</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$100.0_{0.0}$</td>
+<td style="text-align: center;">$81.9_{3.2}$</td>
+<td style="text-align: center;">$90.0_{1.9}$</td>
+<td style="text-align: center;">$91.4_{2.5}$</td>
+<td style="text-align: center;">$74.9_{3.6}$</td>
+<td style="text-align: center;">$82.3_{2.9}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">$40.7_{2.1}$</td>
+<td style="text-align: center;">$48.1_{3.4}$</td>
+<td style="text-align: center;">$44.0_{2.1}$</td>
+<td style="text-align: center;">$36.1_{2.5}$</td>
+<td style="text-align: center;">$42.6_{3.4}$</td>
+<td style="text-align: center;">$39.0_{2.5}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$79.4_{2.7}$</td>
+<td style="text-align: center;">$59.0_{3.6}$</td>
+<td style="text-align: center;">$67.7_{2.8}$</td>
+<td style="text-align: center;">$71.4_{3.5}$</td>
+<td style="text-align: center;">$53.0_{3.6}$</td>
+<td style="text-align: center;">$60.8_{3.3}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">$100.0_{0.0}$</td>
+<td style="text-align: center;">$58.4_{4.3}$</td>
+<td style="text-align: center;">$73.7_{3.4}$</td>
+<td style="text-align: center;">$90.2_{3.3}$</td>
+<td style="text-align: center;">$52.7_{4.3}$</td>
+<td style="text-align: center;">$66.4_{3.9}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">$28.6_{2.0}$</td>
+<td style="text-align: center;">$38.5_{3.6}$</td>
+<td style="text-align: center;">$32.8_{2.3}$</td>
+<td style="text-align: center;">$24.8_{2.2}$</td>
+<td style="text-align: center;">$33.4_{3.4}$</td>
+<td style="text-align: center;">$28.4_{2.4}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">$52.5_{3.5}$</td>
+<td style="text-align: center;">$43.8_{3.7}$</td>
+<td style="text-align: center;">$47.7_{3.2}$</td>
+<td style="text-align: center;">$46.9_{3.7}$</td>
+<td style="text-align: center;">$39.2_{3.6}$</td>
+<td style="text-align: center;">$42.6_{3.2}$</td>
+</tr>
+</tbody>
+</table>
+<p>(a) Sentence-level results.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Abstract-level</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label-Only</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Label+Rationale</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Retrieval</td>
+<td style="text-align: center;">Model</td>
+<td style="text-align: center;">Row</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;">R</td>
+<td style="text-align: center;">F1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Oracle abstract</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$91.4_{2.2}$</td>
+<td style="text-align: center;">$76.1_{3.0}$</td>
+<td style="text-align: center;">$83.0_{2.5}$</td>
+<td style="text-align: center;">$91.4_{2.2}$</td>
+<td style="text-align: center;">$76.1_{3.0}$</td>
+<td style="text-align: center;">$83.0_{2.5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">$88.9_{2.8}$</td>
+<td style="text-align: center;">$58.3_{3.7}$</td>
+<td style="text-align: center;">$70.4_{3.2}$</td>
+<td style="text-align: center;">$69.2_{3.9}$</td>
+<td style="text-align: center;">$45.4_{3.5}$</td>
+<td style="text-align: center;">$54.8_{3.5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$91.0_{2.3}$</td>
+<td style="text-align: center;">$67.4_{3.3}$</td>
+<td style="text-align: center;">$77.4_{2.7}$</td>
+<td style="text-align: center;">$85.2_{2.9}$</td>
+<td style="text-align: center;">$63.2_{3.5}$</td>
+<td style="text-align: center;">$72.5_{3.1}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Open</td>
+<td style="text-align: center;">Oracle rationale</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">$91.0_{2.6}$</td>
+<td style="text-align: center;">$53.1_{3.8}$</td>
+<td style="text-align: center;">$67.0_{3.4}$</td>
+<td style="text-align: center;">$91.0_{2.6}$</td>
+<td style="text-align: center;">$53.1_{3.8}$</td>
+<td style="text-align: center;">$67.0_{3.4}$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Zero-shot</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">$52.7_{3.7}$</td>
+<td style="text-align: center;">$41.6_{3.7}$</td>
+<td style="text-align: center;">$46.5_{3.4}$</td>
+<td style="text-align: center;">$43.6_{3.7}$</td>
+<td style="text-align: center;">$34.4_{3.5}$</td>
+<td style="text-align: center;">$38.4_{3.3}$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">VERISCI</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">$55.4_{3.7}$</td>
+<td style="text-align: center;">$47.5_{3.6}$</td>
+<td style="text-align: center;">$51.0_{3.3}$</td>
+<td style="text-align: center;">$52.6_{3.7}$</td>
+<td style="text-align: center;">$45.1_{3.6}$</td>
+<td style="text-align: center;">$48.5_{3.3}$</td>
+</tr>
+</tbody>
+</table>
+<p>(b) Abstract-level results</p>
+<p>Table 7: Dev set results as in Table 4, reporting mean and standard deviation over 10,000 bootstrap samples.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Journal</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">BMJ</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr>
+<td style="text-align: left;">Blood</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cancer Cell</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cell</td>
+<td style="text-align: right;">51</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cell Metabolism</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cell Stem Cell</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr>
+<td style="text-align: left;">Circulation</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td style="text-align: left;">Immunity</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr>
+<td style="text-align: left;">JAMA</td>
+<td style="text-align: right;">79</td>
+</tr>
+<tr>
+<td style="text-align: left;">Molecular Cell</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr>
+<td style="text-align: left;">Molecular Systems Biology</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature Cell Biology</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature Communications</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature Genetics</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature Medicine</td>
+<td style="text-align: right;">89</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature Methods</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nucleic Acids Research</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plos Biology</td>
+<td style="text-align: right;">36</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plos Medicine</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr>
+<td style="text-align: left;">Science</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Science Translational Medicine</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;">The Lancet</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr>
+<td style="text-align: left;">Other</td>
+<td style="text-align: right;">120</td>
+</tr>
+<tr>
+<td style="text-align: left;">Total</td>
+<td style="text-align: right;">741</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Number of cited documents by journal. Some co-cited articles (§3.1) come from journals outside our curated set; these are indicated by "Other".</p>
+<h2>C Dataset collection and corpus statistics</h2>
+<h2>C. 1 Corpus</h2>
+<p>Source journals Table 8 shows the number of cited abstracts from each of our selected journals. The "Other" category includes "co-cited" (§3.1) abstracts that came from journals not among our pre-defined set.</p>
+<p>Distractor abstracts In §3.1, we mention how we increase the size of the corpus by adding distractor abstracts. The reason why we do not use the entirety of a large research corpus like S2ORC as our fact-checking corpus is that doing so would introduce many false negative retrievals: abstracts containing evidence relevant to a given claim, but not mentioned in the claim's source citance. This can occur either because the citance authors simply were not aware of these abstracts, or because the abstracts were published after the citance was writ-</p>
+<h2>Source citance</h2>
+<p>"Future studies are also warranted to evaluate the potential association between WNTSA/PCP signaling in adipose tissue and atherosclerotic CVD, given the major role that IL-6 signaling plays in this condition as revealed by large Mendelian randomization studies 44, 45 ."</p>
+<h2>Claim</h2>
+<p>IL-6 signaling plays a major role in
+atherosclerotic cardiovascular disease.</p>
+<p>Figure 4: A claim written based on a citance. Material unrelated to the citation is removed. The acronym "CVD" is expanded to "cardiovascular disease".
+ten. These retrievals would be incorrectly marked wrong by our evaluation metrics.</p>
+<p>Distractor abstracts as defined in $\S 3.1$ have two qualities that make them a good addition to the SCIFACT corpus: (1) They are cited in the same articles as our evidence abstracts, meaning that they often discuss similar topics and increase the difficulty of abstract retrieval methods based on lexical similarity. (2) The authors of our citances were aware of the distractor abstracts, and chose not to mention them in the citances used to generate claims. This makes them unlikely to be a source of false negative retrievals.</p>
+<h2>C. 2 Annotation examples</h2>
+<p>Converting citances to claims Figure 4 shows an example of a citance re-written as a claim. The citance discusses the relationship between "atherosclerotic CVD" and "IL-6", and cites two papers (44 and 45) as evidence. To convert to a claim, the acronym "CVD" is expanded to "cardiovascular disease", irrelevant information is removed, and the claim is written as an atomic factual statement.</p>
+<p>Multiple rationales Figure 5 shows a claim supported by two rationales from the same abstract. The text of each rationale on its own is sufficient to entail the claim.</p>
+<h2>C. 3 Annotators and quality control</h2>
+<p>Claim writing Student claim writers attended an in-person training session where they were introduced to the task and received in-person feedback from the four experts. Following training, student annotators continued writing claims remotely. The expert annotators monitored claims for quality during the remote annotation process, and provided</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 5: A claim supported by two rationales from the same abstract. The text of each rationale on its own provides sufficient evidence to verify the claim.
+feedback when necessary; low-quality claims were returned to the annotators for re-writing. As a final check, all submitted claims were proofread (and edited if necessary) by an undergraduate whose claims were deemed especially high-quality by the expert annotators.</p>
+<p>Claim negations As mentioned in §3.2, an expert annotator wrote claim negations to introduce cases where an abstract REFUTES a claim. The annotator skipped claims that could only be negated by adding obvious triggers like "not". The majority of claim negations involved a reversal of effect direction; for instance "A high microerythrocyte count protects against severe anemia" can be negated as "A high microerythrocyte count raises vulnerability to severe anemia".</p>
+<p>Claim verification Annotations were performed remotely through a web interface. Annotators were required to pass a 10 -question "quiz" before annotating their own claims. After passing the quiz, subsequent submissions were reviewed by an NLP expert until that expert deemed the annotator reliable. Approved annotators were then assigned to review each others' submissions. In general, graduate students were assigned to review annotations from undergraduates.</p>
+<h2>D Annotation interfaces and guidelines</h2>
+<p>We show a screenshot of the claim writing interface in Figure 6, and the claim verification interface in Figure 7. The complete annotation guide for claim verification is available at the following URL:
+https://scifact.s3-us-west-2.amazonaws. com/doc/evidence-annotation-instructions. pdf.</p>
+<p>FOXK2 Elicits Massive Transcription Repression and Suppresses the Hypoxic Response and Breast Cancer Carcinogenesis.</p>
+<h2>Citation context</h2>
+<p>During breast cancer progression, lost of FOXK2 will lead to the derepression of the hypoxia signaling, the activation of which promotes EMT and metastasis (Sahlgren et al., 2008; Zhang et al., 2013) . Interestingly, our experiments demonstrated that HIF1b is a downstream target of FOXK2, supporting the fluctuation of HIF1b level under hypoxia and its importance in breast cancer progression. EZH2 is highly expressed in various malignancies including breast cancer, and overexpression of EZH2 is often correlated with advanced stages of cancer progression and poor prognosis (Sauvageau and Sauvageau, 2010). This scenario is consistent with our working model in which the expression of EZH2 is transrepressed by FOXK2. Thus, when the expression of FOXK2 is lost during breast cancer progression, the level of EZH2 is elevated.</p>
+<h2>Citation paragraph Abstract</h2>
+<p>We report that FOXK2 acts as a transcription repressor. We showed that the transcriptional regulatory activity of FOXK2 is dependent on HDAC activities, and we found that FOXK2 indeed physically interacts with multiple corepressor complexes that all contain HDAC activities. These results are consistent with previous reports (Bowman et al., 2014; Ji et al., 2014; Okino et al., 2015). The physical association of FOXK2 with multiple transcription corepressor complexes in one cell lineage is surprising and puzzling. One possibility for this is that FOXK2 is able to interact with all of these protein complexes simultaneously (the simultaneous model). An alternative and more convenient explanation is that FOXK2 is associated with a particular corepressor complex under a particular cellular environment (the differential model). Although, due to the limitation of current technologies, the differential model cannot be definitively excluded, at least in our experiments, by detection of the association of FOXK2 with the four corepressor complexes in synchronized cells, the simultaneous model is favored. The question is: what is the biological significance or evolution advantage for one transcription factor to nucleate multiple corepressor complexes? In this regard, it is worth noting that nuclear receptors also engage in multiple complexes, accounting for the diversity of gene-regulatory networks and heterogeneity of tumors (Cui et al., 2011; Sharma et al., 2006). Analogously, by interacting with multiple corepressor complexes, the genes regulated by FOXK2 expand and the scope and variety of the impact of FOXK2 extend. Perhaps equally important, each cellular signaling pathway is constituted by multiple</p>
+<h2>Claim history</h2>
+<p>Write out the claim(s) expressed in this citation, following the guidelines in the annotation instructions. For each claim, write down the entity that is the subject of the claim. If you cannot write any claims, hit the "skip" button.</p>
+<h2>Skip this example</h2>
+<p>Overexpression of EZH2 is correlated with advanced stages of cancer progress and poor prognosis.</p>
+<p>Overexpression of EZH2</p>
+<p>Add claim
+Remove last claim</p>
+<h2>Claims written:</h2>
+<ul>
+<li>EZH2 is highly expressed in breast cancer.</li>
+</ul>
+<p>Submit claims</p>
+<p>Figure 6: The claim-writing interface. The citation sentence is highlighted in blue on the top left. Additional context is provided on bottom left. The right side shows two claims that could be written based on this citation sentence.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Citem</th>
+<th style="text-align: center;">New Submission</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">(CONFIDENTIAL)</td>
+<td style="text-align: center;">ADD EVIDENCE</td>
+<td style="text-align: center;">SE</td>
+<td style="text-align: center;">SUBMIT (2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">IL-6 signaling plays a major role in atherosclerotic cardiovascular disease.</td>
+<td style="text-align: center;">Flag submission as need attention</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Interleukin-6 receptor pathways in coronary heart disease: a collaborative meta-analysis of 82 studies</td>
+<td style="text-align: center;">Evidence Set</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\checkmark$</td>
+</tr>
+<tr>
+<td style="text-align: center;">BACKGROUND Persistent inflammation has been proposed to contribute to various stages in the pathogenesis of cardiovascular disease. Interleukin-6 receptor (IL6R) signalling propagates downstream inflammation cascades. To assess whether this pathway is causally relevant to coronary heart disease, we studied a functional genetic variant known to affect IL6R signalling.</td>
+<td style="text-align: center;">INTERPRETATION Large-scale human genetic and biomarker data are consistent with a causal association between IL6R-related pathways and coronary heart disease.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">METHODS In a collaborative meta-analysis, we studied Asp358Ala (rs2228145) in IL6R in relation to a panel of conventional risk factors and inflammation biomarkers in 125,222 participants. We also compared the frequency of Asp358Ala in 51,441 patients with coronary heart disease and in 136,226 controls. To gain insight into possible mechanisms, we assessed Asp358Ala in relation to localized gene expression and to postlipopolysaccharide stimulation of interleukin 6.</td>
+<td style="text-align: center;">Support: Fully Support</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">FINDINGS The minor allele frequency of Asp358Ala was 39\%. Asp358Ala was not associated with lipid concentrations, blood pressure, adiposity, dysglycemia, or smoking (a value for association per minor allele $\alpha 0.04$ for each). By contrast, for every copy of 358Ala inherited, mean concentration of IL6R increased by $34.3 \%$ ( $95 \%$ CI $30.4-38.2$ ) and of interleukin 6 by $14.6 \%$ (10.7-18.4), and mean concentration of C reactive protein was reduced by $7.5 \%$ (5.9-9.1) and of fibrinogen by $1.0 \%$ (0.71.3). For every copy of 358Ala inherited, risk of coronary heart disease was reduced by $3.4 \%$ (1.8-5.0). Asp358Ala was not related to IL6R mRNA levels or interleukin-6 production in minisicytes.</td>
+<td style="text-align: center;">Selected Evidence (3)</td>
+<td style="text-align: center;">$\times$</td>
+<td style="text-align: center;">$\checkmark$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">INTERPRETATION Large-scale human genetic and biomarker data are consistent with a causal association between IL6R-related pathways and coronary heart disease.</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Supplemental Primary</td>
+<td style="text-align: center;">$\times$</td>
+</tr>
+<tr>
+<td style="text-align: center;">FUNDING British Heart Foundation; UK Medical Research Council; UK National Institute of Health Research, Cambridge Biomedical Research Centre; BUPA Foundation.</td>
+<td style="text-align: center;">To assess whether this pathway is causally relevant to coronary heart disease, we studied a functional genetic variant known to affect IL6R signalling.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Support: Fully Support</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Evidence Set</td>
+<td style="text-align: center;">$\times$</td>
+<td style="text-align: center;">$\checkmark$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Selected Evidence (3)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$\checkmark$ Supplemental</td>
+<td style="text-align: center;">Primary</td>
+<td style="text-align: center;">$\times$</td>
+</tr>
+<tr>
+<td style="text-align: center;">To assess whether this pathway is causally relevant to coronary heart disease, we studied a functional genetic variant known to affect IL6R signalling.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Supplemental Primary</td>
+<td style="text-align: center;">$\times$</td>
+</tr>
+<tr>
+<td style="text-align: center;">By contrast, for every copy of 358Ala inherited, mean concentration of IL6R increased by $34.3 \%$ ( $95 \%$ CI $30.4-38.2$ ) and of interleukin 6 by $14.6 \%$ (10.7-18.4), and mean concentration of C-reactive protein was reduced by $7.0 \%$ (5.9-9.1) and of fibrinogen by $1.0 \%$ (0.7-1.3).</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Supplemental Primary</td>
+<td style="text-align: center;">$\times$</td>
+</tr>
+<tr>
+<td style="text-align: center;">For every copy of 358Ala inherited, risk of coronary heart disease was reduced by $3.4 \%$ (1.8-5.0).</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Level of Support / Contradict</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">FULL</td>
+<td style="text-align: center;">PART</td>
+<td style="text-align: center;">PART</td>
+<td style="text-align: center;">FULL</td>
+</tr>
+<tr>
+<td style="text-align: center;">SUPPORT</td>
+<td style="text-align: center;">SUPPORT</td>
+<td style="text-align: center;">CONTRADICT</td>
+<td style="text-align: center;">CONTRADICT</td>
+</tr>
+</tbody>
+</table>
+<p>Figure 7: The evidence collection interface.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{8}$ https://colab.research.google.com/&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{6}$ Our FEVER-trained RATIONALESELECTION module achieves 79.9 sentence-level F1 on the FEVER test set, virtually identical to 79.6 reported in DeYoung et al. (2020a).&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

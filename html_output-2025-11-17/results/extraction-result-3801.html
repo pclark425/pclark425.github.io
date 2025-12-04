@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-3801 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-3801</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-3801</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-90.html">extraction-schema-90</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of large language models (LLMs) being used to distill, extract, or discover quantitative laws, equations, or mathematical relationships from large numbers of scholarly input papers, including details of the methods, domains, results, benchmarks, and challenges.</div>
+                <p><strong>Paper ID:</strong> paper-d103f20f0a30eb055d0ae44b3b5b8ab44b0c7913</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/d103f20f0a30eb055d0ae44b3b5b8ab44b0c7913" target="_blank">Neural Symbolic Regression that Scales</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Machine Learning</p>
+                <p><strong>Paper TL;DR:</strong> This paper procedurally generate an unbounded set of equations, and simultaneously pre-train a Transformer to predict the symbolic equation from a corresponding set of input-output-pairs, and shows empirically that this approach can re-discover a set of well-known physical equations and that it improves over time with more data and compute.</p>
+                <p><strong>Paper Abstract:</strong> Symbolic equations are at the core of scientific discovery. The task of discovering the underlying equation from a set of input-output pairs is called symbolic regression. Traditionally, symbolic regression methods use hand-designed strategies that do not improve with experience. In this paper, we introduce the first symbolic regression method that leverages large scale pre-training. We procedurally generate an unbounded set of equations, and simultaneously pre-train a Transformer to predict the symbolic equation from a corresponding set of input-output-pairs. At test time, we query the model on a new set of points and use its output to guide the search for the equation. We show empirically that this approach can re-discover a set of well-known physical equations, and that it improves over time with more data and compute.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-3801",
+    "paper_id": "paper-d103f20f0a30eb055d0ae44b3b5b8ab44b0c7913",
+    "extraction_schema_id": "extraction-schema-90",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.006586,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Neural Symbolic Regression that Scales</h1>
+<p>Luca Biggio<em>12 Tommaso Bendinelli</em>2 Alexander Neitz ${ }^{3}$ Aurelien Lucchi ${ }^{1}$ Giambattista Parascandolo ${ }^{13}$</p>
+<h4>Abstract</h4>
+<p>Symbolic equations are at the core of scientific discovery. The task of discovering the underlying equation from a set of input-output pairs is called symbolic regression. Traditionally, symbolic regression methods use hand-designed strategies that do not improve with experience. In this paper, we introduce the first symbolic regression method that leverages large scale pre-training. We procedurally generate an unbounded set of equations, and simultaneously pre-train a Transformer to predict the symbolic equation from a corresponding set of input-output-pairs. At test time, we query the model on a new set of points and use its output to guide the search for the equation. We show empirically that this approach can re-discover a set of well-known physical equations, and that it improves over time with more data and compute.</p>
+<h2>1. Introduction</h2>
+<p>Since the early ages of Natural Sciences in the sixteenth century, the process of scientific discovery has rooted in the formalization of novel insights and intuitions about the natural world into compact symbolic representations of such new acquired knowledge, namely, mathematical equations.
+Mathematical equations encode both objective descriptions of experimental data and our inductive biases about the regularity we attribute to natural phenomena. When seen under the perspective of modern machine learning, they present a number of appealing properties: (i) They provide compressed and explainable representations of complex phenomena. (ii) They allow to easily incorporate prior knowledge. (iii) When relevant aspects about the data generating process are captured, they often generalize well beyond the distribution of the observations from which they were derived.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>The process of discovering symbolic expressions from experimental data is hard and has traditionally been one of the hallmarks of human intelligence. Symbolic regression is a branch of regression analysis that tries to emulate such a process. More formally, given a set of $n$ input-output pairs $\left{\left(x_{i}, y_{i}\right)\right}<em e="e">{i=1}^{n} \sim \mathcal{X} \times \mathcal{Y}$, the goal is to find a symbolic equation $e$ and corresponding function $f</em>$. In other words, the goal of symbolic regression is to infer both model structure and model parameters in a data-driven fashion. Even assuming that the vocabulary of primitives - e.g. ${\sin , \exp ,+, \ldots}$ - is sufficient to express the correct equation behind the observed data, symbolic regression is a hard problem to tackle. The number of functions associated with a string of symbols grows exponentially with the string length, and the presence of numeric constants further exacerbates its difficulty.}$ such that $y \approx f_{e}(x)$ for all $(x, y) \in \mathcal{X} \times \mathcal{Y</p>
+<p>Due to its challenging combinatorial nature, existing approaches to symbolic regression are mainly based on searchtechniques whose goal is typically to minimize a prespecified fitness function measuring the distance between the predicted expression and the available data. The two main drawbacks of such methods are that: (i) They do not improve with experience. As every equation is regressed from scratch, the system does not improve if access to more data from different equations is given. (ii) The inductive bias is opaque. It is difficult for the user to steer the prior towards a specific class of equations (e.g. polynomials, etc.). In other words, even though most symbolic regression algorithms generate their prediction starting from a fixed set of primitives reflecting the user's prior knowledge, such elementary building blocks can be combined in many arbitrary ways, providing little control over the equation distribution. To overcome both drawbacks, in this paper we take a step back, and let the model learn the task of symbolic regression over time, on a user-defined prior over equations.</p>
+<p>Building on the recent successes of large models trained on large datasets (Brown et al., 2020; Devlin et al., 2018; Chen et al., 2020a;b), we show that a strong symbolic regressor can be purely learned from data. The key factor behind our approach is that computers can generate unbounded amounts of data with perfect accuracy and at virtually no cost. The distribution over equations used during pre-training strongly influences the prior over equations of the final system. Such a prior thus becomes easy to understand and control.</p>
+<p>The main contributions of this paper are the following:</p>
+<ul>
+<li>We introduce a simple, flexible, and powerful framework for symbolic regression, the first approach (to the best of our knowledge) to improve over time with data and compute.</li>
+<li>We demonstrate that learning the task of symbolic regression from data is sufficient to significantly outperform state-of-the-art approaches relying on handdesigned strategies.</li>
+<li>We release our code and largest pre-trained model ${ }^{1}$</li>
+</ul>
+<p>In Section 2, we detail related work in the literature. In Section 3, we present our algorithm for neural symbolic regression that scales. We evaluate the method in the experiments described in Section 4 and 5 and compare it to state-of-the-art baselines. In Section 6 we discuss results, limitations, and potential for future work.</p>
+<h2>2. Related Work</h2>
+<p>Genetic Programming for Symbolic Regression Traditional approaches to symbolic regression are based on genetic algorithms (Forrest, 1993) and, in particular, genetic programming (GP) (Koza, 1994). GP methods used for symbolic regression iteratively "evolve" a population of candidate mathematical expressions via mutation and recombination. The most popular GP-based technique applied to symbolic regression is undoubtedly the commercial software Eureqa (Dubčáková, 2011) which is based on the approach proposed by Schmidt \&amp; Lipson (2009). Despite having shown for the first time the potential of datadriven approaches to the problem of function discovery, GP-based techniques do not scale well to high dimensional problems and are highly sensitive to hyperparameters (Petersen, 2021).</p>
+<p>Neural Networks for Symbolic Regression A more recent line of research explores the potential of deep neural networks to tackle the combinatorial challenge of symbolic regression. Martius \&amp; Lampert (2016) propose a simple fully-connected neural network where standard activation functions are replaced with symbolic building blocks (e.g. " $\sin (\cdot)$ ", " $\cos (\cdot)$ ", "+", "Identity $(\cdot)$ "). Once the model is trained, a symbolic formula can be automatically read off from the network architecture and weights. This method inherits the ability of neural networks to deal with highdimensional data and scales well with the number of inputoutput pairs. However, it requires specific extensions (Sahoo et al., 2018) to deal with functions involving divisions between elementary building blocks (e.g. $\frac{\sin (\cdot x)}{x^{2}}$ ) and the inclusion of exponential and logarithmic activations result in exploding gradients and numerical issues.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Another approach to circumvent the discrete combinatorial search inherent in the symbolic regression framework is proposed in (Kusner et al., 2017). Here, a variational autoencoder (Kingma \&amp; Welling, 2013) is first trained to reconstruct symbolic expressions and the search for the best fitting function is then performed over the latent space in a subsequent step. While the idea of moving the search for the best expression from a discrete space to a continuous one is interesting and has been exploited by other approaches (e.g. (Alaa \&amp; van der Schaar, 2019)), the method does not prove to be effective in recovering relatively simple symbolic formulas. More recently, Petersen (2021) developed a new technique where a recurrent neural network (RNN) is used to model a probability distribution over the space of mathematical expressions. Output expressions contain symbolic placeholders to indicate the presence of numerical constants. Such constants are then fit in a second stage by an out-of-the-box nonlinear optimizer. The RNN is trained by minimizing a risk-seeking RL objective that assigns a larger reward to the top-epsilon samples from the output distribution. The method represents a significant step forward in the application of deep learning to symbolic regression. While showing promising results, the network has to be retrained from scratch for each new equation and the RNN is never directly conditioned on the data it is trained to model.</p>
+<p>Finally, neural networks can also be used in combination with existing techniques or hand-designed rules to perform symbolic regression. Notable examples are (Udrescu \&amp; Tegmark, 2020; Udrescu et al., 2020), where neural networks are employed to identify simplifying properties in the data such as additive separability and compositionality. These properties are exploited to recursively simplify the original dataset into less challenging sub-problems that can be tackled by a symbolic regression technique of choice. A similar rationale is followed in (Cranmer et al., 2020), where different components of a trained Graph Neural Network (GNN) are independently fit by a symbolic regression algorithm. By joining the so-found expressions, a final algebraic formula describing the network can be obtained. The aforementioned approaches might provide very good performances when it is known a priori whether the data are characterized by specific structural properties, such as symmetries or invariances. However, when such information is not accessible, more domain-agnostic methods are required.</p>
+<p>Large Scale Pre-training Our approach builds upon a large body of work emphasizing the benefits of pre-training large models on large datasets (Kaplan et al., 2020; Devlin et al., 2018; Brown et al., 2020; Chen et al., 2020a;b; Belkin et al., 2019). Examples of such models can be found in Computer Vision (Radford et al., 2021; Chen et al., 2020a;b; Kolesnikov et al., 2020; Oord et al., 2018) and Natural Language Processing (Devlin et al., 2018; Brown et al., 2020). There have also been recent applications of Transformers</p>
+<p>(Vaswani et al., 2017) to tasks involving symbolic mathematics manipulations (Lample \&amp; Charton, 2019; Saxton et al., 2019) and automated theorem proving (Polu \&amp; Sutskever, 2020). Our work builds on the results from Lample \&amp; Charton (2019), where Transformers are trained to successfully perform challenging mathematical tasks such as symbolic integration and solving differential equations. However, our setting presents the additional challenge of mapping numerical values to the corresponding symbolic formula, instead of working exclusively within the symbolic domain.</p>
+<h2>3. Neural Symbolic Regression that Scales</h2>
+<p>A symbolic regressor $S$ is an algorithm which takes a set of $n$ input-output pairs $\left{\left(x_{i}, y_{i}\right)\right}<em e="e">{i=1}^{n} \sim \mathcal{X} \times \mathcal{Y}$ as input and returns a symbolic equation $e$ representing a function $f</em>$ from a large number of training data.}$ such that: $y \approx f_{e}(x), \forall(x, y) \in \mathcal{X} \times \mathcal{Y}$. In this section, we describe our framework to learn a parametrized symbolic regressor $S_{\theta</p>
+<h3>3.1. Pre-training</h3>
+<p>We pre-train a Transformer on hundreds of millions of equations which are procedurally generated for every minibatch. As equations and datapoints can be generated quickly and in any amount using a computer and standard math libraries, we can train the network end-to-end to predict the equations on a dataset that is potentially unbounded. We describe the exact process we use to generate the dataset in Section 4. An illustration of the main steps involved in the pre-training phase is shown in Fig. 1.</p>
+<p>Data During the pre-training phase, each training example consists of a symbolic equation $e$ which represents a function $f_{e}: \mathbb{R}^{d_{x}} \rightarrow \mathbb{R}^{d_{y}}$, a set of $n$ input points $X=\left{x_{i}\right}<em e="e">{i=1}^{n}$ and corresponding outputs $Y=\left{f</em>\right)\right}}\left(x_{i<em X="X" e_="e,">{i=1}^{n}$. The distribution, $\mathcal{P}</em>$ could be polynomials of degree up to 6 , and input sets of up to 100 points sampled uniformly from the range [0, 1]. In our experiments, an equation $e$ is represented by a sequence of symbols in prefix notation. An equation $e$ can contain numerical constants that are re-sampled at each batch to increase the diversity of the data seen by the model. In Section 4, we describe the details of the data generation process we used in our experiments.}$, from which $e$ and the inputs $X$ are sampled will determine the inductive bias of the trained symbolic regressor and should be chosen to resemble the application domain. In particular, $X$ can vary in size (i.e. $n$ is not fixed), and the individual inputs $x_{i}$ do not have to to be i.i.d - neither within $X$ nor across examples or batches. For example, $\mathcal{P}_{e, X</p>
+<p>Pre-training We train a parametric set-to-sequence model $S_{\theta}$ to predict the equation $e$ from the set of input-output points $X, Y$. In our implementation, $S_{\theta}$ consists of an encoder and a decoder. The encoder maps the $(x, y)$ sequence
+pairs for each equation into a latent space, resulting in a fixed-size latent representation $z$. A decoder generates a sequence $\bar{e}$ given $z$ : it produces a probability distribution $P\left(\bar{e}<em 1:="1:" k="k">{k+1} \mid \bar{e}</em>$ and skeleton $(e)$, i.e. the skeleton of the original equation. Training is performed with mini-batches of $B$ equations each. The overall pre-training algorithm is reported in Algorithm 1.}, z\right)$ over each symbol, given the previous symbols and $z$. The alphabet of $\bar{e}$ is identical to the one used for the original equations $e$, with one exception: unlike $e, \bar{e}$ does not contain any numerical constants. Instead, it contains a special placeholder symbol ' $o$ ' which denotes the presence of a constant which will be fit at a later stage. For example, if $e=4.2 \sin \left(0.3 x_{1}\right)+x_{2}$, then $\bar{e}=\diamond \sin \left(\diamond x_{1}\right)+x_{2}$. We refer to the equation where numerical constants are replaced by placeholders as the "skeleton" of the equation, and use the notation $\bar{e}$ to refer to the symbolic equation that replaces numerical constants with ' $o$ '. The model is trained to reduce the average loss between the predicted $\hat{e</p>
+<div class="codehilite"><pre><span></span><code>Algorithm 1 Neural Symbolic Regression pre-training
+Require: \(S_{\theta}\), batch size \(B\), training distribution \(\mathcal{P}_{e, X}\)
+    while not timeout do
+    \(L \leftarrow 0\)
+    for \(i\) in \(\{1 . . B\}\) do
+        \(e, X \leftarrow\) sample an equation and input set from \(\mathcal{P}_{e, X}\)
+        \(Y \leftarrow\left\{f_{e}(x) \mid x \in X\right\}\)
+        \(\bar{e} \leftarrow \operatorname{skeleton}(e)\)
+        \(L \leftarrow L-\sum_{k} \log P_{S_{\theta}}\left(\bar{e}_{k+1} \mid \bar{e}_{1: k}, X, Y\right)\)
+    end for
+    Compute the gradient \(\nabla_{\theta} L\) and use it to update \(\theta\).
+    end while
+</code></pre></div>
+
+<h3>3.2. Test time</h3>
+<p>At test time, given a set of input-output pairs $\left{\left(x_{i}, y_{i}\right)\right}_{i}$ we encode them using the encoder into a latent vector $z$. From $z$ we iteratively sample candidates skeletons of symbolic equations $\hat{\bar{e}}$ from the decoder. Finally, for each candidate, we fit the numerical constants $\diamond$ by treating each occurrence as an independent parameter. This can be achieved using a non-linear optimizer, either gradient-based or black-box, by minimizing a loss between the resulting equation applied to the inputs and the targets $Y$. In our experiments, we used beam-search to sample high-likelihood equation candidates from the decoder, and, like Petersen (2021), BFGS (Fletcher, 1987) on the mean squared error to fit the constants.</p>
+<h2>4. Experimental Set-up</h2>
+<p>Here, we present the instantiation of the framework described in Section 3 that we evaluate empirically, and detail the baselines and datasets used to test it. For the rest of the paper, we will refer to our implementation as NeSymReS ${ }^{2}$.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1. (Left) The data generator produces the input for the Transformer and its target expression. It does so by randomly sampling (i) an equation skeleton (including placeholders for the constants), (ii) numerical constants used to replace the placeholders and (iii) a set of support points $\left{x_{i}\right}<em i="i">{i}$ to evaluate the previously generated equation and get the corresponding $\left{y</em>\right}<em i="i">{i}$. The $\left{\left(x</em>$ pairs are fed into the Transformer, which is trained to minimize the cross-entropy loss with the ground-truth skeleton without numerical constants. Both the model output and the targets are expressed in prefix notation. (Right) At test time, given new input data, we sample candidate symbolic skeletons from the model using beam-search. The final candidate equations are obtained by fitting the constants with BFGS.}, y_{i}\right)\right}_{i</p>
+<h3>4.1. The Model $S_{\theta}$</h3>
+<p>For the encoder we opted for the Set Transformer architecture from Lee et al. (2019), using the original publicly available implementation. ${ }^{3}$ We preferred this to the standard Transformer encoder, as the number $n$ of input-output pairs can grow to large values, and the computation in Set Transformers scales as $\mathcal{O}(n m)$ instead of $\mathcal{O}\left(n^{2}\right)$, where $m \ll n$ is a set of learnable inducing points (Snelson \&amp; Ghahramani; Titsias, 2009) we keep constant at $m=50$. For the decoder we opted for a regular Transformer decoder (Vaswani et al., 2017), using the default PyTorch implementation. Encoder and decoder have 11 and 13 million parameters respectively. The hyperparameters chosen for both networks - detailed in Section A - were not fine-tuned for maximum performance.</p>
+<h3>4.2. Pre-training Data Generator</h3>
+<p>We sample expressions following the framework introduced in (Lample \&amp; Charton, 2019). A mathematical expression is regarded as a unary-binary tree where nodes are operators and leaves are independent variables or constants. Once an expression is sampled, it is simplified using the rules built in the symbolic manipulation library SymPy (Meurer et al., 2017). This sampling method allows us to precisely constrain the search space by controlling the depth of the trees and the set of admissible operators, along with their prior probability of occurring in the generated expression. We opted for scalar functions of up to three independent input variables (i.e. $d_{x}=3$ and $d_{y}=1$ ). For convenience, we pre-sampled 10 million skeletons of equations with up to</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup>three numerical constants each. At training time, we sample mini-batches of size $B=150$ of the following elements:</p>
+<p>Equation skeletons with constant placeholders placed randomly inside the expressions.
+Constants values $C_{1}, C_{2}, C_{3}$, each independently sampled from a uniform distribution $\mathcal{U}(1,5)$.
+Support extrema $S_{1, j}, S_{2, j}$, with $S_{1, j}&lt;S_{2, j}$ uniformly sampled from $\mathcal{U}(-10,10)$ independently for each dimension $j=1, \ldots, d_{x}$.
+Input points for each input dimension $j=1, \ldots, d_{x}$. A set of $n$ input points, $X_{j}=\left{x_{i, j}\right}<em 1_="1," j="j">{i=1}^{n}$, is uniformly sampled from $\mathcal{U}\left(S</em>, n\right)$.
+We then evaluate the equations on the input points $X=$ $\left{x_{i}\right}}, S_{2, j<em i="i">{i=1}^{n}$ to obtain the corresponding outputs $Y$.
+As $Y$ can take very large or very small values, this can result in numerical instabilities and exploding or vanishing gradients during training. Therefore, we convert every $x</em>$ from float to a multi-hot bit representation according to the half-precision IEEE-754 standard. Furthermore, in order to avoid invalid operations (i.e dividing by zero, or taking the logarithm of negative values), we drop out inputoutput pairs containing NaNs.}$ and $y_{i</p>
+<p>We train the encoder and decoder jointly to minimize the cross-entropy loss between the ground truth skeleton and the skeleton predicted by the decoder as a regular language model. We use Adam with a learning rate of $10^{-4}$, no schedules, and train for $1.5 M$ steps. Overall, this results in about $225 M$ distinct equations seen during pre-training. See Appendix B for more details about training and resulting training curves.</p>
+<h3>4.3. Symbolic Regression at Test Time</h3>
+<p>Given a set of input-output pairs from an unknown equation $e$, we feed the points into the encoder and use beam-search to sample candidate skeletons from the decoder. We then use BFGS to recover the values of the constants, by minimizing the squared loss between the original outputs and the output from the predicted equations. Our default parameters at test time are beam-size 32, with 4 restarts of BFGS per equation. We select the best equation from the set of resulting candidates based on the in-sample loss with a small penalty of $1 \mathrm{e}-14$ per token of the skeleton. ${ }^{4}$</p>
+<h3>4.4. Evaluation</h3>
+<p>We evaluate our trained model on five datasets. Unless otherwise specified, for all equations we sample 128 points at test time.</p>
+<p>AI-Feynman (AIF) First, we consider all the equations with up to 3 independent variables from the AI-Feynman (AIF) database (Udrescu \&amp; Tegmark, 2020) ${ }^{5}$. The resulting dataset consists of 52 equations extracted from the popular Feynman Lectures on Physics series. We checked our pre-training dataset, and amongst the 10 million equation skeletons, all equations from AIF appear. However, as mentioned in the previous subsection, the support on which they are evaluated, along with the constants and number of points per equation, is continuously sampled at every training iteration, making it impossible to exactly see any of the test data at training time.</p>
+<p>Unseen Skeletons (SOOSE) This dataset of 200 equations is specifically constructed to have zero overlap with the pre-training set, meaning that its equations are all symbolically and numerically different from those included in the pre-training set. We call it SOOSE, for strictly out-ofsample equations. Compared to AIF, these equations are on average significantly longer and more complex (see Table 9). The sampling distribution for the skeletons is the same as the pre-training distribution, but we instantiate three different versions: with up to three constants (same as pretraining distribution, SOOSE-WC); no constants (SOOSENC ); constants everywhere (SOOSE-FC, for full constants), i.e. one constant term for each term in the equation. The latter is extremely challenging, and since NeSymReS was only pre-trained with up to three constants, it is far from its pre-training distribution.</p>
+<p>Nguyen Dataset This dataset consists of 12 simple equations without constants beyond the scalars 1 and 2, each</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup>with up to 2 independent variables. Nguyen was the main benchmark used in (Petersen, 2021). There are terms that appear in three ground truth equations that are not included in the set of equations that our model can fit, specifically $x^{6}$, and $x^{y}$, which therefore caps the maximum accuracy that can be reached by our model on this dataset.</p>
+<h3>4.5. Baselines</h3>
+<p>We compare the performance of our method with the following baselines:</p>
+<p>Deep Symbolic Regression (DSR) (Petersen, 2021) Recently proposed RNN-based reinforcement learning search strategy for symbolic regression. We use the open-source implementation provided by the authors ${ }^{6}$, with the setting that includes the estimation of numerical constants in the final predicted equation.</p>
+<p>Genetic Programming (Koza, 1994) Standard GP-based symbolic regression based on the open-source Python library gplearn ${ }^{7}$.</p>
+<p>Gaussian Processes (Rasmussen, 2003) Standard Gaussian Process regression with RBF and constant kernel. We use the open source sklearn implementation ${ }^{8}$.</p>
+<p>All details about baselines are reported in Appendix A.
+Two notable exclusions are AIF (Udrescu \&amp; Tegmark, 2020) and EQL (Martius \&amp; Lampert, 2016). As also noted by Petersen (2021), in cases where real numerical constants are present or the equations are not separable, the former still requires a complementary symbolic regression method to cope with the discrete search. The latter lacks too many basis functions that appear in the datasets we consider, preventing it from recovering most of the equations. Moreover, its average runtime and number of points required to solve the equations indicated in (Martius \&amp; Lampert, 2016; Sahoo et al., 2018) are three orders of magnitudes higher than the standards reported by the aforementioned baselines.</p>
+<h3>4.6. Metrics</h3>
+<p>Evaluating whether two equations are equivalent is a challenging task in the presence of real valued constants.</p>
+<p>We distinguish between accuracy within the training support ( $A^{\text {iid }}$ ), and outside of the training support ( $A^{\text {ood }}$ ). $A^{\text {iid }}$ is computed with 10 k points sampled uniformly in the training support. $A^{\text {ood }}$ is computed with 10 k points in an extended support as detailed in Appendix B, and it will be the main metric of interest.</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2. Accuracy as a function of the size of the pre-training dataset, for a fixed computational budget ( $\sim 100 \mathrm{~s}$ ) at test time. We report reference values for the baselines to emphasize that these approaches do not improve with experience over time.</p>
+<p>We further distinguish between two metrics, accuracy $A_{1}$ and accuracy $A_{2}$, each of which can be either computed iid or ood. Accuracy $A_{1}$ is computed as follows: for every point $(x, y)$ and prediction $f_{\hat{e}}(x)=\hat{y}$, the point is correctly classified if numpy.isclose $(y, \hat{y})$ returns True. ${ }^{9}$ Then, an equation is correctly predicted if $&gt;95 \%$ of points are correctly classified. For this metric we can keep all outputs, including NaNs and $\pm \infty$, which are still representative of whether the symbolic equation was identified correctly. Accuracy $A_{2}$ is computed by measuring the coefficient of determination $R^{2}$ between $y$ and $\hat{y}$, excluding NaNs and $\pm \infty$. An equation is correctly identified according to $A_{2}$ if the $R^{2}&gt;0.95$. We found the two metrics to correlate significantly, and in the interest of clarity we will use only $A_{1}$ in the main text, and show results with $A_{2}$ in the Appendix C.</p>
+<h2>5. Results</h2>
+<p>We test three different aspects of the proposed approach: (i) To what extent does performance improve as we increase the size of the pre-training data? (ii) How does our approach compare to state-of-the-art methods in symbolic regression? (iii) What is the impact of the number of input-output pairs available at test time?</p>
+<h2>(i) Accuracy as a Function of Pre-training Data</h2>
+<p>In order to test the effect of pre-training data on test performance, we trained our NeSymReS model on increasingly larger datasets. More specifically, we consider datasets consisting of $10 \mathrm{~K}, 100 \mathrm{~K}, 1 \mathrm{M}$ and 10 M equation skeletons. Every aspect of training is the same as described in Section 4. We train all models for the same number of iterations, but use early stopping on a held-out validation set to prevent overfitting.</p>
+<p>In Figure 7 we report the accuracy on the 5 test sets using a beam size of 32 for NeSymReS, and for all baselines whatever hyperparameter configuration that used compara-</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup>ble (but strictly no less) amount of computing time. In all datasets, increasing the size of the pre-training data results in higher accuracy for NeSymReS. Note that the baselines do not make use of the available pre-training data, and as such it does not have any effect on the performance at test time. From here onwards, we will always use the model pre-trained on 10M equation skeletons.
+Conclusion: The performance of NeSymReS steadily improves as the size of the pre-training dataset increases, exploiting the feature that symbolic equations can be generated and evaluated extremely quickly and reliably with computers. The trend observed appears to continue for even larger datasets, in accordance to (Kaplan et al., 2020), which leaves open interesting avenues for extremely large scale experiments.</p>
+<h2>(ii) Accuracy as a Function of Test-time Compute.</h2>
+<p>For every method (including baselines), we vary the corresponding hyper-parameter that increases how much time and compute is invested at test time to recover an equation from observing a fixed set of input-output pairs. We report the hyper-parameters and ranges in Table 1.</p>
+<p>Making a fair comparison of run-times between different methods is another challenging task. To make the comparison as fair as possible, we decided to run every method on a single CPU at the time. Note that this is clearly a sub-optimal hardware setting for our 26-million parameters Transformer, which would be highly parallelizable on GPU.</p>
+<p>The results on all five datasets are shown in Figure 3 and Figure 4. On all datasets, our method outperforms all baselines both in time and accuracy by a large margin on most budgets of compute. On AIF our NeSymRes is more than three orders of magnitudes faster at reaching the same maximum accuracy as the second-best method, i.e. Genetic Programming, despite running on CPU only. We attribute the low accuracy achieved by (Petersen, 2021) to the presence of constants, to the fact that their model does not directly ob-</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3. Accuracy in distribution as a function of time for all methods ran on a single CPU per equation.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4. Accuracy out of distribution as a function of time for all methods ran on a single CPU per equation.</p>
+<p>serve the input-output pairs, and the use of REINFORCE (Williams, 2004). The Gaussian Process baseline performs extremely well in distribution, reaching high accuracy in a very short amount of time, but poorly out of distribution. This is expected as it does not try to regress the symbolic equation. On Nguyen, NeSymReS achieves relatively high scores more rapidly than the other baselines. For large computation times (≈ 10<sup>3</sup> seconds) NeSymReS performs comparably with DSR despite the latter being fine-tuned on two equations of the benchmark (Nguyen-7 and Nguyen-10). The relatively lower performance of NeSymReS on SOOSE-NC can be explained by the fact that both datasets do not have any constants in the equations, while NeSymReS is trained with a large prior on the presence of constants.</p>
+<p><strong>Conclusion:</strong> By amortizing the computation performed at pre-training time, NeSymReS is extremely accurate and efficient at test time, even running on CPU.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Hyper-param</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G. Proc. (Rasmussen, 2003)</td>
+<td>Opt. restarts</td>
+<td>{8, 16, 32}</td>
+</tr>
+<tr>
+<td>Genetic Prog. (Koza, 1994)</td>
+<td>Pop. size</td>
+<td>{2<sup>10</sup>, ..., 2<sup>17</sup>}</td>
+</tr>
+<tr>
+<td>DSR (Petersen, 2021)</td>
+<td>Epochs</td>
+<td>{2<sup>2</sup>, ..., 2<sup>7</sup>}</td>
+</tr>
+<tr>
+<td>NeSymReS (ours)</td>
+<td>Beam size</td>
+<td>{2<sup>0</sup>, ..., 2<sup>8</sup>}</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1. Hyper-parameters that vary to increase the amount of compute invested by every method.</p>
+<h3>(iii) Performance Improves with more Points <em>p</em></h3>
+<p>In practice, depending on the context, a variable number of input-output pairs might be available at test time. In Figure 5, we report the accuracy achieved for a number of input-output points that varies in the range from 1 to 1024. Even though NeSymReS was pre-trained with no more than 500 points, it still performs reliably with fewer points.</p>
+<p><strong>Conclusion:</strong> NeSymReS is a flexible method and its performance is robust to different numbers of test data, even when such numbers differ significantly from those usually seen during pre-training. Furthermore, its accuracy levels grow with the number of points observed at test time.</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5. Accuracy as a function of number of input-output pairs observed at test time.</p>
+<h2>6. Discussion</h2>
+<p>Building on the recent successes of large scale pre-training, we have proposed the first method that learns the task of symbolic regression. This approach deviates from the majority of existing techniques in the literature which need to be retrained from scratch on each new equation and does not improve over time with access to data and compute (Sutton, 2019). We showed empirically that by pre-training on a large distribution of millions of equations, this simple approach outperforms several strong baselines, and that its performance can be improved by merely increasing the size of the dataset. The key feature that enables this approach is that - unlike for computer vision and natural language -high-quality training data can be generated efficiently and indefinitely using any standard math library and a computer.</p>
+<p>In pre-training, the data generation plays a crucial role within our framework. By changing this distribution over equations (including support, constants, number of terms and their interactions), it is possible for the user to finely tune the inductive bias of the model, adapting it to specific applications. In light of its favourable scaling properties and its powerful prior over symbolic expression, we believe that our model could find applications in several domains in the Natural Sciences and engineering, control, and model-based Reinforcement Learning. The scale of our experiments is still relatively small compared to the largest large-scale experiments run to date (Brown et al., 2020; Devlin et al., 2018; Chen et al., 2020b), both in terms of dataset and model sizes. Nonetheless, the results we showed already seem to indicate that NeSymReS could improve significantly with access to extremely large scale compute.</p>
+<p>Time and Space Complexities The approach we presented scales favorably over several dimensions: computation scales linearly in the number of input-output points due to the Set Transformer (Lee et al., 2019), and linearly in the number of input dimensions. For future work, it would be interesting to train even larger models on larger datasets with more than three independent variables.</p>
+<p>Limitations Even though our approach can scale to an arbitrary number of input and output dimensions, there are limitations that should be considered. Fitting the constants using a non-linear optimizers like BFGS can prove to be hard if the function to be optimized has several local minima. In this case, other optimization strategies that can deal with non-convex loss surfaces might be beneficial, such as CMAES (Hansen, 2016). One more limitation of our approach is that the pre-trained model as presented cannot be used at test time if the number of input variables is larger than the maximum number of variables seen during pre-training. Finally, one more limitation of the neural network we adopt is that it does not directly interact with the function evaluator
+available in the math libraries of most computers. If, for example, the first candidate sampled from the network is completely wrong, our current approach cannot adjust its posterior over equations based on this new evidence, but simply sample again.</p>
+<p>Conclusions What are the desirable properties of a strong symbolic regressor? It should:</p>
+<ul>
+<li>scale favourably with the number of datapoints observed at test time and with the number of input variables;</li>
+<li>improve over time with experience;</li>
+<li>be targetable to specific distributions of symbolic equations;</li>
+<li>be flexible to accommodate very large or very small values.</li>
+</ul>
+<p>In this paper, we showed that all of these properties can be obtained, and provided a simple algorithm to achieve them in the context of symbolic regression. Our largest pre-trained model can be accessed on our repository.</p>
+<h2>Acknowledgements</h2>
+<p>We thank Guillame Lample for the helpful discussion, and Riccardo Barbano for proofreading the manuscript. LB acknowledges the CSEM Data Program Fund for funding. GP acknowledges the Max Planck ETH Center for Learning Systems for funding. AN acknowledges the International Max Planck Research School for Intelligent Systems for funding. This work was also supported by the German Federal Ministry of Education and Research (BMBF) through the Tübingen AI Center (FKZ: 01IS18039B), and the ML cluster funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy - EXC number 2064/1 - Project number 390727645.</p>
+<h2>References</h2>
+<p>Alaa, A. and van der Schaar, M. Demystifying black-box models with symbolic metamodels. 2019.</p>
+<p>Belkin, M., Hsu, D., Ma, S., and Mandal, S. Reconciling modern machine-learning practice and the classical biasvariance trade-off. Proceedings of the National Academy of Sciences, 116(32):15849-15854, 2019.</p>
+<p>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., et al. Language models are few-shot learners. arXiv preprint arXiv:2005.14165, 2020.</p>
+<p>Chen, T., Kornblith, S., Norouzi, M., and Hinton, G. A simple framework for contrastive learning of visual representations. In International conference on machine learning, pp. 1597-1607. PMLR, 2020a.</p>
+<p>Chen, T., Kornblith, S., Swersky, K., Norouzi, M., and Hinton, G. Big self-supervised models are strong semisupervised learners, 2020b.</p>
+<p>Cranmer, M., Sanchez-Gonzalez, A., Battaglia, P., Xu, R., Cranmer, K., Spergel, D., and Ho, S. Discovering symbolic models from deep learning with inductive biases. arXiv preprint arXiv:2006.11287, 2020.</p>
+<p>Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805, 2018.</p>
+<p>Dubčáková, R. Eureqa: software review, 2011.
+Fletcher, R. Practical Methods of Optimization. John Wiley \&amp; Sons, New York, NY, USA, second edition, 1987.</p>
+<p>Forrest, S. Genetic algorithms: principles of natural selection applied to computation. Science, 261(5123):872-878, 1993.</p>
+<p>Hansen, N. The cma evolution strategy: A tutorial. arXiv preprint arXiv:1604.00772, 2016.</p>
+<p>Kaplan, J., McCandlish, S., Henighan, T., Brown, T. B., Chess, B., Child, R., Gray, S., Radford, A., Wu, J., and Amodei, D. Scaling laws for neural language models. arXiv preprint arXiv:2001.08361, 2020.</p>
+<p>Kingma, D. P. and Welling, M. Auto-encoding variational bayes. arXiv preprint arXiv:1312.6114, 2013.</p>
+<p>Kolesnikov, A., Beyer, L., Zhai, X., Puigcerver, J., Yung, J., Gelly, S., and Houlsby, N. Big transfer (bit): General visual representation learning, 2020.</p>
+<p>Koza, J. R. Genetic programming as a means for programming computers by natural selection. Statistics and computing, 4(2):87-112, 1994.</p>
+<p>Kusner, M. J., Paige, B., and Hernández-Lobato, J. M. Grammar variational autoencoder. In International Conference on Machine Learning, pp. 1945-1954. PMLR, 2017.</p>
+<p>Lample, G. and Charton, F. Deep learning for symbolic mathematics. arXiv preprint arXiv:1912.01412, 2019.</p>
+<p>Lee, J., Lee, Y., Kim, J., Kosiorek, A., Choi, S., and Teh, Y. W. Set transformer: A framework for attentionbased permutation-invariant neural networks. In Chaudhuri, K. and Salakhutdinov, R. (eds.), Proceedings of the</p>
+<p>36th International Conference on Machine Learning, volume 97 of Proceedings of Machine Learning Research, pp. 3744-3753. PMLR, 09-15 Jun 2019. URL http : / / proceedings.mlr.press/v97/lee19d.html.</p>
+<p>Martius, G. and Lampert, C. H. Extrapolation and learning equations. arXiv preprint arXiv:1610.02995, 2016.</p>
+<p>Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake, T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H., Vats, S., Johansson, F., Pedregosa, F., Curry, M. J., Terrel, A. R., Roučka, v., Saboo, A., Fernando, I., Kulal, S., Cimrman, R., and Scopatz, A. Sympy: symbolic computing in python. PeerJ Computer Science, 3:e103, January 2017. ISSN 2376-5992. doi: 10.7717/peerj-cs.103. URL https : //doi.org/10.7717/peerj-cs. 103.</p>
+<p>Oord, A. v. d., Li, Y., and Vinyals, O. Representation learning with contrastive predictive coding. arXiv preprint arXiv:1807.03748, 2018.</p>
+<p>Petersen, B. K. Deep symbolic regression: Recovering mathematical expressions from data via risk-seeking policy gradients. International Conference on Learning Representations, 2021.</p>
+<p>Polu, S. and Sutskever, I. Generative language modeling for automated theorem proving, 2020.</p>
+<p>Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., Krueger, G., and Sutskever, I. Learning transferable visual models from natural language supervision, 2021.</p>
+<p>Rasmussen, C. E. Gaussian processes in machine learning. In Summer school on machine learning, pp. 63-71. Springer, 2003.</p>
+<p>Sahoo, S. S., Lampert, C. H., and Martius, G. Learning equations for extrapolation and control. In Proc. 35th International Conference on Machine Learning, ICML 2018, Stockholm, Sweden, 2018, volume 80, pp. 44424450. PMLR, 2018. URL http://proceedings. mlr.press/v80/sahoo18a.html.</p>
+<p>Saxton, D., Grefenstette, E., Hill, F., and Kohli, P. Analysing mathematical reasoning abilities of neural models. arXiv preprint arXiv:1904.01557, 2019.</p>
+<p>Schmidt, M. and Lipson, H. Distilling free-form natural laws from experimental data. science, 324(5923):81-85, 2009.</p>
+<p>Snelson, E. and Ghahramani, Z. Sparse gaussian processes using pseudo-inputs.</p>
+<p>Sutton, R. The bitter lesson. 2019. URL http://www.incompleteideas.net/ IncIdeas/BitterLesson.html.</p>
+<p>Titsias, M. Variational learning of inducing variables in sparse gaussian processes. In Artificial intelligence and statistics, pp. 567-574. PMLR, 2009.</p>
+<p>Udrescu, S.-M. and Tegmark, M. Ai feynman: A physicsinspired method for symbolic regression. Science Advances, 6(16):eaay2631, 2020.</p>
+<p>Udrescu, S.-M., Tan, A., Feng, J., Neto, O., Wu, T., and Tegmark, M. Ai feynman 2.0: Pareto-optimal symbolic regression exploiting graph modularity. arXiv preprint arXiv:2006.10782, 2020.</p>
+<p>Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, L. u., and Polosukhin, I. Attention is all you need. In Guyon, I., Luxburg, U. V., Bengio, S., Wallach, H., Fergus, R., Vishwanathan, S., and Garnett, R. (eds.), Advances in Neural Information Processing Systems, volume 30, pp. 5998-6008. Curran Associates, Inc., 2017. URL https://proceedings. neurips.cc/paper/2017/file/ 3f5ee243547dee91fbd053c1c4a845aa-Paper. pdf.</p>
+<p>Williams, R. J. Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine Learning, 8:229-256, 2004.</p>
+<h1>A. Model details</h1>
+<h2>A.1. NeSymReS Transformer Details</h2>
+<p>The model consists of an encoder and a decoder. The encoder takes as input numerical data, $X \in \mathbb{R}^{\left(d_{x}+d_{y}\right) \times n}$, where $d_{x}$ is the number of independent variables, $d_{y}$ the number of dependent variables and $n$ the number of support points. In order to prevent exploding gradient and numerical instabilities, we convert each entry of $X$ into a multi-hot bit representation according to the half precision IEEE-754 standard. This operation yields a new input tensor, $\hat{X} \in \mathbb{R}^{\left(d_{x}+d_{y}\right) \times b \times n}$ where $b=16$ is the dimension of the bit representation. The output of the encoder is a latent vector $z \in \mathbb{R}^{d_{z}}$, providing a compressed representation of the equation to be modelled. Such latent vector is then used to condition the decoder via a standard Transformer multi-head attention mechanism. During the pre-training phase, the input of the decoder is given by the sequence of tokens representing the ground truth-equation expressed in prefix notation. Such sequence is opportunely masked in order to prevent information leakage in the decoder forward step. The output is then given by a string of symbols, representing the predicted equation, again in prefix notation. During inference, the decoder is only provided with the information from the latent vector $z$ and generates a prediction autoregressively. We use beam search to obtain candidate solutions. After removing potentially invalid equations, the remaining equations are modified to include constant placeholders with the procedure described in Appendix B. Using BFGS, we fit these constants. We select the best equation among the so-found candidates, based on the validation loss, with an added regularization penalty of $10^{-14}$ for each token in the skeleton. Note that BFGS is currently the most time-consuming step of our pipeline. While in all our experiments we run the optimization procedure serially (i.e., one candidate equation at the time), the procedure can be easily parallelized across equations.</p>
+<p>Encoder and decoder use the same hidden dimension $H$ and number of heads, $h$ for their multi-head attention modules. In the following, we provide further details about the architectural design choices, hyper-parameters and library of functions used by our model. We trained our model on a single GeForce RTX 2080 GPU for 3 days.</p>
+<p>Encoder For the encoder, we opted for the Set Transformer architecture from Lee et al. (2019). Our choice is motivated in light of the better scaling properties of this method when it comes to input lenght $n$, i.e. $\mathcal{O}(n m)$ compared to the standard transformer encoder, $\mathcal{O}\left(n^{2}\right)$, where $m$ is a set of trainable inducing points. Referring to the notation of the original paper, our encoder is formed by $n_{e}$ Induced Set Attention Blocks (ISABs) and one final component performing Pooling by Multihead Attention (PMA). ISABs differ from the multi-head self attention blocks present in the original Transformer architecture, since they introduce $m&lt;n$ learnable inducing points that reduce the computation burden associated with the self-attention operation. PMA allows us to aggregate the output of the encoder into $d_{z}$ trainable abstract features representing a compressed representation of the input equation. Overall, the encoder consists of $11 M$ trainable parameters. All the hyper-parameters of the encoder are listed in Table 2.</p>
+<p>Decoder The decoder is a standard Transformer decoder. It has $n_{d}$ layers, hidden dimension $H, h$ attention heads. Input symbols are encoded into the corresponding token embeddings and information about relative and absolute positions of the tokens in the sequence is injected by adding learnable positional encodings to the input embeddings. Two different masks are used to avoid information leakage during the forward step and to make the padding token hidden to the attention modules. In total, our dictionary is formed by $s$ different tokens, including binary and unary operators and independent variables. A list of all the elements of our dictionary is provided in Table 4. Overall, the decoder consists of $15 M$ trainable parameters. All the hyper-parameters of the decoder are listed in Table 3.</p>
+<p>Table 2. Encoder hyper-parameters.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of ISABs</td>
+<td style="text-align: center;">$n_{e}$</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hidden dimension</td>
+<td style="text-align: center;">$H$</td>
+<td style="text-align: center;">512</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of heads</td>
+<td style="text-align: center;">$h$</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of PMA features</td>
+<td style="text-align: center;">$d_{z}$</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of inducing points</td>
+<td style="text-align: center;">$m$</td>
+<td style="text-align: center;">50</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3. Decoder hyper-parameters.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of layers</td>
+<td style="text-align: center;">$n_{d}$</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hidden dimension</td>
+<td style="text-align: center;">$H$</td>
+<td style="text-align: center;">512</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of heads</td>
+<td style="text-align: center;">$h$</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Embedding dimension</td>
+<td style="text-align: center;">$s$</td>
+<td style="text-align: center;">32</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Integer Id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">sos</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">eos</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x$</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;">$y$</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td style="text-align: center;">$z$</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;">$c$</td>
+<td style="text-align: center;">6</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\arccos$</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;">$+$</td>
+<td style="text-align: center;">8</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Integer Id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\arcsin$</td>
+<td style="text-align: center;">9</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\arctan$</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos$</td>
+<td style="text-align: center;">11</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cosh$</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\operatorname{coth}$</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\div$</td>
+<td style="text-align: center;">14</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\exp$</td>
+<td style="text-align: center;">15</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\ln$</td>
+<td style="text-align: center;">16</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Integer Id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\times$</td>
+<td style="text-align: center;">17</td>
+</tr>
+<tr>
+<td style="text-align: center;">Pow</td>
+<td style="text-align: center;">18</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin$</td>
+<td style="text-align: center;">19</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sinh$</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sqrt{ }$</td>
+<td style="text-align: center;">21</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\tan$</td>
+<td style="text-align: center;">22</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\tanh$</td>
+<td style="text-align: center;">23</td>
+</tr>
+<tr>
+<td style="text-align: center;">-3</td>
+<td style="text-align: center;">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Integer Id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">-2</td>
+<td style="text-align: center;">25</td>
+</tr>
+<tr>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">26</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">27</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">28</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">29</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">31</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">32</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4. Symbols available for expression generation and their corresponding integer tokens. The symbols "sos" and "eos" stand for "start of sequence" and "end of sequence" respectively. The padding symbol is not reported in the table and is associated with the token 0 . Note that not all of these symbols appear in our pre-training dataset, as detailed in Table 6 we only used a small subset for our experiments.</p>
+<h1>A.2. Baselines</h1>
+<p>Deep Symbolic Regression (DSR) For DSR, we use the standard hyper-parameters provided in the open-source implementation of the method, with the setting that includes the estimation of numerical constants in the final predicted equation. DSR depends on two main hyper-parameters, namely the entropy coefficient $\lambda_{H}$ and the risk factor $\epsilon$. The first is used to weight a bonus proportional to the entropy of the sampled expression which is added to the main objective. The second intervenes in the definition of the final objective with depends on the $(1-\epsilon)$ quantile of the distribution of rewards under the current policy. According with the open-source implementation and the results reported in (Petersen, 2021), we choose $\epsilon=0.05$ and $\lambda_{H}=0.005$. The set of symbols available to the algorithm to form mathematical expressions is given by $\mathcal{L}={+,-, \times, \div, \sin , \cos , \exp , \ln , c}$, where $c$ stands for the constant placeholder.</p>
+<p>Genetic Programming For Genetic Programming, we opt for the open-source Python library gplearn. Our choices for the hyper-parameters are listed in Table 5 and mostly reflect the default values indicated in the library documentation. The set of symbols available to the algorithm to form mathematical expressions is the default one and is given by $\mathcal{L}=$ ${+,-, \times, \div, \sqrt{ }, \ln , \exp , n e g, i n v, \sin , \cos }$, where neg and inv stand for "negation" $(x \mapsto-x)$, and inversion $\left(x \mapsto x^{-1}\right)$, respectively.</p>
+<p>Table 5. Genetic Programming hyper-parameters. The parameter Population size is varied within the range indicated during the experiments reported in Section 5.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter name</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Population size</td>
+<td style="text-align: left;">$\left{2^{10}, \ldots, 2^{15}\right}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Selection type</td>
+<td style="text-align: left;">Tournament</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tournament size $(\mathrm{k})$</td>
+<td style="text-align: left;">20</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mutation probability</td>
+<td style="text-align: left;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Crossover probability</td>
+<td style="text-align: left;">0.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Constants range</td>
+<td style="text-align: left;">$(-4 \pi, 4 \pi)$</td>
+</tr>
+</tbody>
+</table>
+<p>Gaussian Processes This is the only baseline that is not a symbolic regression method per se, as it learns a mapping from $x$ to $y$ directly. The appealing property of Gaussian Processes is that they are very accurate in distribution, and are very fast to fit in the regime we considered. We opted for the open-source sklearn implementation of Gaussian Process regression with default hyper-parameters. The covariance is given by the product of a constant kernel and an RBF kernel. Diagonal Gaussian noise of variance $10^{-10}$ is added to ensure positive-definitness of the covariance matrix. L-BGFS-B is used for the optimization of the marginal likelihood with the number of restarts varied as indicated in Table 1.</p>
+<p>A note about function sets Unfortunately, not all methods support all primitive functions that appear in a given dataset. For example, NeSymReS could support $x^{6}$, and $x^{y}$ - that appear in the Nguyen dataset described in Appendix C — but as we did not include these primitives in the pre-training phase, the version we use in our experiments will not be able to correctly recover these equations. DSR and the implementation of Genetic Programming that we adopted are both lacking $\arcsin$ in their function set.</p>
+<p>While missing primitives lowers the upper bound in performance that a method can reach for a given dataset, it also makes it easier to fit the other equations that do not contain those primitives, as the function set to search is effectively smaller.</p>
+<h1>B. Experimental details</h1>
+<h2>B.1. Training</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Operator</th>
+<th style="text-align: center;">+</th>
+<th style="text-align: center;">$\times$</th>
+<th style="text-align: center;">-</th>
+<th style="text-align: center;">$\div$</th>
+<th style="text-align: center;">$\sqrt{ }$</th>
+<th style="text-align: center;">Pow</th>
+<th style="text-align: center;">$\ln$</th>
+<th style="text-align: center;">$\exp$</th>
+<th style="text-align: center;">$\sin$</th>
+<th style="text-align: center;">$\cos$</th>
+<th style="text-align: center;">$\tan$</th>
+<th style="text-align: center;">$\arcsin$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Unormalized Prob</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6. Operators and their corresponding un-normalized probabilities of being sampled as parent node.</p>
+<p>Training Dataset Generation For generating skeletons, we built on top of the method and code proposed in (Lample \&amp; Charton, 2019), which samples expression trees. For our experiments, each randomly-generated expression tree has 5 or fewer non-leaf nodes. We sample each non-leaf node following the unnormalized weighted distribution shown in Table 6. Each leaf node has a probability of 0.8 of being an independent variable and 0.2 of being an integer. Trees that contain the independent variable $x_{2}$ must also have the independent variable $x_{1}$. Those containing the independent variable $x_{3}$ must also include the independent variables $x_{1}$ and $x_{2}$. We then traverse the tree in pre-order and obtain a semantically equivalent string of the expression tree in a prefix notation. We convert the string from prefix to infix notation and simplify the mathematical expression using the Sympy library. The resulting expression is then modified to include constant placeholders as explained in the following paragraph. This expression is what we refer to as a skeleton, as the value of constants has not been determined yet.</p>
+<p>For our experiments, we repeat the procedure described above to obtain a pre-compiled dataset of 10M equations. To compile the symbolic equation into a function that can be evaluated by the computer on a given set of input points, we relied on the function lambidfy from the library Sympy. We store the equations as functions, in order to allow for the support points and values of the constants to be resampled at mini-batch time during pre-training. We opted for a partially pre-generated dataset instead of sampling new equations for every batch in order to speed up the generation of training data for the mini-batches.</p>
+<p>Training Details As described in Section, 4.2, during training we sampled mini-batches of size $B=150$ from the generated dataset. For each equation, we first choose the number of constants, $n_{c}$, that differ from one. $n_{c}$ is randomly sampled within the interval ranging from 0 to $\min \left(3, N_{c}\right)$ where $N_{c}$ is the maximum number of constants than can be placed in the expression. Then, we sample the constants' values from the uniform distribution $\mathcal{U}(1,5)$. We randomly select $n_{c}$ among the available placeholders and replace them with the previously obtained numerical values. The remaining constants are set to one. We then generate up to 500 support points by sampling- independently for each dimension - from uniform distributions with varying extrema as described in Section 4. If the equation does not contain a given independent variable, such variable is set to 0 for all the support points. For convenience, we drop input-output pairs containing NaNs and entries with an absolute value of $y$ above 1000 . Finally we take the equation in the mini-batch with the minimum number of points, and drop valid points from the other equations so that the batch tensor has a consistent length across equations. Figure 6 shows the training and validation curves of the main model used for all our experiments.</p>
+<p>Training Dataset Distribution The dataset does not consist of unique mathematical expressions. Indeed, some skeletons are repeated, and some skeletons are mathematically equivalent. Overall, within the 10M dataset, we have $\sim 1.2 \mathrm{M}$ unique skeletons. Since longer expressions tend to be simplified into shorter expressions during the dataset generation, shorter expressions are the most frequent ones. We report in Table 7 the ten most recurrent expressions. Of these 1.2 M unique skeletons, at least $96.3 \%$ represents unique (numerically distinct) mathematical expressions. The counting procedure is described in the next paragraph. The average length of an expression in infix notation is 8.2 tokens. The minimum and the maximum are 1 and 23 respectively, which corresponds in infix notation to the expressions $x$ and $\frac{x^{2} \min ^{2}(x)}{-x_{1}^{2} \min ^{2}(x)+1}$.</p>
+<p>Addition of Numerical Constants During dataset generation and inference, we introduce constant placeholders by attaching them to the generated or predicted skeletons. This step is carried out by multiplying all unary operators in the expressions by constant placeholders (except for the "pow" operator). The same procedure is repeated with independent</p>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6. Loss as a function of pre-training for NeSymReS</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Expression</th>
+<th style="text-align: left;">$x_{1}$</th>
+<th style="text-align: left;">$x_{1}+x_{2}$</th>
+<th style="text-align: left;">$x_{2}^{2}$</th>
+<th style="text-align: left;">$x_{1} x_{2}$</th>
+<th style="text-align: left;">$x_{1}+x_{2}+x_{3}$</th>
+<th style="text-align: left;">$x_{1}+1$</th>
+<th style="text-align: left;">$-x_{1}$</th>
+<th style="text-align: left;">$x_{1}-1$</th>
+<th style="text-align: left;">$e^{x_{1}}$</th>
+<th style="text-align: left;">$\cos \left(x_{1}\right)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Frequency</td>
+<td style="text-align: left;">18649</td>
+<td style="text-align: left;">6716</td>
+<td style="text-align: left;">4789</td>
+<td style="text-align: left;">4707</td>
+<td style="text-align: left;">3781</td>
+<td style="text-align: left;">3727</td>
+<td style="text-align: left;">3698</td>
+<td style="text-align: left;">2917</td>
+<td style="text-align: left;">2594</td>
+<td style="text-align: left;">2157</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7. 10 most frequent expressions in the dataset
+variables for which also additive constants are introduced. Longer expressions tend to have more placeholders in comparison to shorter ones.</p>
+<h1>B.2. Evaluation details</h1>
+<p>All results reported, i.e. for all methods and datasets, are accuracies over all equations in the dataset. Error bars in all plots denote the standard error of the mean estimate.</p>
+<p>Metrics Details As detailed in 4.6 we evaluate performances both within the training support ( $A^{\text {tid }}$ ) and outside of the training support ( $A^{\text {ood }}$ ). More specifically, for the latter the support is created as follows: given an equation with in-sample support of $(l o, h i)$, we extend the support of each side by $(h i-l o)$ for every variable present in the equation.</p>
+<p>Creating the SOOBE Dataset The SOOBE (stricly out-of-sample equations) dataset contains entirely different skeletons from the pre-training dataset, which do not overlap numerically nor symbolically. To create it, we list all the different expressions in the training dataset and then randomly sample from this set, excluding the sampled expressions from the training set. We first sample a random support of 500 points from the uniform distribution $\mathcal{U}(-10,10)$, for each independent variable. Two expressions are different if their images, given the support points, are different. Note that this is a conservative criterion, as two expressions may have the same image in the sampled support (relatively to a fixed tolerance), yet being distinct.</p>
+<p>Benchmarks As explained in 4.4 we evalutate our trained model on five datasets: AI-Feynman, SOOBE-WC, SOOBE-NC, SOOBE-FC, Nguyen. All the equations of AI-Feynman used in our evaluation are listed in table 8.50 randomly sampled equations out of 200 from the SOOBE dataset, are listed in table 9.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Expression</th>
+<th style="text-align: center;">Support $x_{1}$</th>
+<th style="text-align: center;">Support $x_{2}$</th>
+<th style="text-align: center;">Support $x_{3}$</th>
+<th style="text-align: center;">Expression</th>
+<th style="text-align: center;">Support $x_{1}$</th>
+<th style="text-align: center;">Support $x_{2}$</th>
+<th style="text-align: center;">Support $x_{3}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\frac{\sqrt{2} e^{-\frac{x_{1}^{2}}{2}}}{\frac{2}{\sqrt{\pi}}}$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2}^{2}}{\sqrt{-\frac{x_{2}^{2}}{x_{3}^{2}}+1}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(3,10)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{\sqrt{2} e^{-\frac{x_{1}^{2}}{2}}}{\frac{2}{\sqrt{\pi}} \frac{1}{\sqrt{2}}}$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1}}{4 \pi x_{2}^{2}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{\sqrt{2} e^{-\frac{\left(x_{2}-x_{3}\right)^{2}}{2}}{\frac{2}{\sqrt{\pi} \pi}}$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">$(1,3)$</td>
+<td style="text-align: center;">$\frac{x_{1}}{4 \pi x_{2} x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1}}{\sqrt{-\frac{x_{2}^{2}}{x_{3}^{2}}+1}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(3,10)$</td>
+<td style="text-align: center;">$\frac{3 x_{1}^{2}}{20 \pi x_{2} x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} x_{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2}^{2}}{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1}}{4 \pi x_{2} x_{3}^{2}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1}}{x_{3}\left(x_{3}+1\right)}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} x_{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2}}{-\frac{x_{1}}{2}+1}+1$</td>
+<td style="text-align: center;">$(0,1)$</td>
+<td style="text-align: center;">$(0,1)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} x_{2} x_{3}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1}}{\sqrt{-\frac{x_{2}^{2}}{x_{3}^{2}}+1}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(3,10)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1}^{2} x_{2}}{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2}}{\sqrt{-\frac{x_{2}^{2}}{x_{3}^{2}}+1}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(3,10)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1} x_{3}}{\sqrt{-\frac{x_{2}^{2}}{x_{3}^{2}}+1}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(3,10)$</td>
+<td style="text-align: center;">$-x_{1} x_{2} \cos \left(x_{3}\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{2}+x_{3}}{1+\frac{x_{2} x_{3}}{x_{1}^{2}}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$-x_{1} x_{2} \cos \left(x_{3}\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} x_{2} \sin \left(x_{3}\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(0,5)$</td>
+<td style="text-align: center;">$\sqrt{\frac{x_{1}^{2}}{x_{2}^{2}}-\frac{\pi^{2}}{x_{3}^{2}}}$</td>
+<td style="text-align: center;">$(4,6)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(2,4)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1}}{x_{2}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$x_{1} x_{2} x_{3}^{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\operatorname{asin}\left(x_{1} \sin \left(x_{2}\right)\right)$</td>
+<td style="text-align: center;">$(0,1)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$x_{1} x_{2}^{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{1}{\frac{x_{2}}{x_{2}}+\frac{1}{x_{1}}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1} x_{1}}{2 \pi x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1}}{x_{2}}$</td>
+<td style="text-align: center;">$(1,10)$</td>
+<td style="text-align: center;">$(1,10)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2} x_{3}}{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1} \sin ^{2}\left(\frac{x_{2} x_{3}}{2}\right)}{\sin ^{2}\left(\frac{x_{2}}{2}\right)}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1} x_{1}}{4 \pi x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\operatorname{asin}\left(\frac{x_{1}}{x_{2} x_{3}}\right)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(2,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$x_{1} x_{2}\left(x_{3}+1\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{2}}{1-\frac{x_{2}}{x_{3}^{2}}}$</td>
+<td style="text-align: center;">$(3,10)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1}}{2 x_{2}+2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{3}\left(1+\frac{x_{2}}{x_{3}}\right)}{\sqrt{1-\frac{x_{2}^{2}}{x_{1}^{2}}}}$</td>
+<td style="text-align: center;">$(3,10)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{4 \pi x_{1} x_{2}}{x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{1} x_{2}}{2 \pi}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$\sin ^{2}\left(\frac{2 \pi x_{1} x_{2}}{x_{3}}\right)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(1,2)$</td>
+<td style="text-align: center;">$(1,4)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1}+x_{2}+2 \sqrt{x_{1} x_{2}} \cos \left(x_{3}\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1} x_{2}}{2 \pi}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{3 x_{1} x_{2}}{2}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$2 x_{1}\left(1-\cos \left(x_{2} x_{3}\right)\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{2} x_{3}}{x_{1}-1}$</td>
+<td style="text-align: center;">$(2,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{x_{1}^{2}}{8 \pi^{2} x_{2} x_{3}^{2}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} x_{2} x_{3}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$\frac{2 \pi x_{1}}{x_{2} x_{3}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sqrt{\frac{x_{1} x_{2}}{x_{3}}}$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$x_{1}\left(x_{2} \cos \left(x_{3}\right)+1\right)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+<td style="text-align: center;">$(1,5)$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8. AI-Feynman equation with less than 4 independent variables and the supports as indicated in (Udrescu \&amp; Tegmark, 2020)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Expression</th>
+<th style="text-align: center;">Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$4.931 x_{1}-x_{2}+4.023 \tan \left(x_{1}^{2}-4.027 x_{3}\right)$</td>
+<td style="text-align: center;">$x_{1} \sqrt{-x_{3}+\sin \left(x_{2}\right)}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(\cos \left(3.488 x_{1} \tan \left(2.798 x_{1}\right)+2.938 x_{1}\right)\right)$</td>
+<td style="text-align: center;">$2.29 x_{2} \cos \left(x_{2}\right)+\cos \left(\frac{1.044 x_{1}}{x_{2}}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sqrt{-x_{1}+\frac{x_{2} x_{3}}{x_{1}}}$</td>
+<td style="text-align: center;">$\frac{x_{3}+\frac{2.797 \sin \left(x_{1}\right)}{x_{2}}}{x_{3}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(4.84 x_{3}\left(2.3 x_{1}-3.494 x_{2}+1\right)\right)$</td>
+<td style="text-align: center;">$x_{1}-4.843 x_{2} x_{3}+x_{2}+\cos \left(x_{3}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(x_{3}\right)+\sin \left(\frac{x_{3}}{x_{1}-x_{2}}\right)$</td>
+<td style="text-align: center;">$\cos \left(x_{1}+1.504 x_{2}+\left(x_{2}+x_{3}\right)^{2}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1}\left(2.683 x_{1}+x_{2} \cos \left(x_{3}\right)\right)+1$</td>
+<td style="text-align: center;">$x_{1}\left(-4.641 x_{1}+\cos ^{2}\left(4.959 \sqrt{x_{2}}\right)\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$4.631 \sin \left(4.419 \sin \left(\frac{x_{2} x_{3}}{x_{1}^{2}}\right)\right)$</td>
+<td style="text-align: center;">$x_{2}\left(x_{2}-\frac{-x_{1}-1}{x_{2}}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$3.874 x_{3}+4.12-\frac{1}{x_{1}+4.322 x_{2} x_{3}}$</td>
+<td style="text-align: center;">$4.47 x_{1}+1.193 \cos \left(1+\frac{1}{x_{2}}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{1.858 x_{1} x_{3}}{-x_{1}+x_{2}}-3.661 x_{3}$</td>
+<td style="text-align: center;">$3.63 x_{1} \cos \left(1.427 x_{2}^{3}+x_{2}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$2.846 x_{2}+\sin \left(x_{1}^{5}+2.258 x_{3}\right)$</td>
+<td style="text-align: center;">$-x_{1}\left(1.196 x_{1}+\sin \left(x_{1}+x_{2}\right)\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{2}+x_{3}+\frac{x_{2}-4.615}{x_{2}}}{x_{1}}$</td>
+<td style="text-align: center;">$x_{3}+\frac{x_{2}}{x_{1}+2.318 x_{2}+x_{2}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$-x_{3}+\frac{0.221\left(-x_{1}+x_{2}\right)}{\log \left(x_{2}\right)}-1$</td>
+<td style="text-align: center;">$x_{1}-\frac{7.74 \sqrt{0.383 x_{1}+x_{2}}}{x_{2}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(1.261 x_{1}+3.29 \cos (1)\right) \log \left(4.169 x_{2}\right)$</td>
+<td style="text-align: center;">$1+\frac{0.221 \tan \left(3.972 x_{2}\right)}{x_{2}\left(-3.549 x_{1}+x_{2}\right)}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\frac{x_{2}}{x_{2}+\cos \left(x_{1} x_{3}\right)}$</td>
+<td style="text-align: center;">$1-\sin \left(x_{1}\left(x_{1}+\sin \left(x_{1}\right)\right)\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$2.161 x_{3} \cos ^{3}\left(x_{1}^{2}+x_{2}\right)$</td>
+<td style="text-align: center;">$\cos \left(x_{1}\right)-\sqrt{\cos \left(x_{2}\right)}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$3.196 \tan \left(\cos \left(4.459 x_{1}\right)-\tan (1)\right)-1$</td>
+<td style="text-align: center;">$-2.586 x_{2}+\frac{0.693 \cos \left(x_{2}-1\right)}{x_{1}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sqrt{x_{2}^{2}-x_{2}-e^{2.103 x_{1}}}$</td>
+<td style="text-align: center;">$-8.802 x_{1}+3.379 \log \left(x_{1}+x_{2}^{4}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$-x_{2}+\log \left(x_{1}\left(-x_{2}+\frac{1.513}{e}\right)\right)$</td>
+<td style="text-align: center;">$\sin \left(\frac{2.696 x_{2}}{-x_{1}+2.364 x_{2}}\right)+1.097$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$3.919 \log \left(1.731 \sqrt{x_{1} \sin \left(2.176 x_{2}\right)}\right)$</td>
+<td style="text-align: center;">$x_{1}-x_{2} \cos \left(x_{1}^{3}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1}+\frac{0.422 x_{1}}{x_{2}\left(4.26 x_{1}+\cos \left(x_{2}\right)\right)}$</td>
+<td style="text-align: center;">$x_{1}-2.636\left(3.271 x_{2}+x_{3}\right) \sin \left(x_{1}\right)+2.387$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(\frac{3.553\left(-0.531 x_{2}+x_{3}\right)^{2}}{x_{1}+1.244 x_{2}}\right)$</td>
+<td style="text-align: center;">$x_{1}\left(x_{1}+x_{3}+1\right)+\sqrt{x_{2}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sqrt{x_{1}\left(\frac{x_{2}}{x_{3}}+x_{3}\right)}$</td>
+<td style="text-align: center;">$x_{2}+\log \left(3.949 x_{1}\left(x_{1}+\sin \left(x_{2}\right)\right)\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$-x_{1} \sin \left(\tan \left(x_{1} x_{2}\right)\right)+x_{1}$</td>
+<td style="text-align: center;">$x_{1}+3.183 \sin \left(3.696 \log \left(x_{2}\left(x_{2}-1\right)\right)\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{2} \sin \left(x_{1}-1.47 x_{3}^{2}\right)$</td>
+<td style="text-align: center;">$x_{2}^{2}+1.209 \sin \left(x_{1} x_{2}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$x_{1} \log \left(\sin \left(\tan \left(x_{1}\right)\right)\right)$</td>
+<td style="text-align: center;">$\frac{x_{2}\left(x_{1}+1.756 \log \left(2.756 \cos \left(x_{3}\right)\right)\right)}{x_{1}}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9. 50 random equations extracted from the SOOBE dataset (version with constants).</p>
+<h1>C. Additional Results</h1>
+<h2>C.1. Additional Metrics on all Benchmarks</h2>
+<p>In this section, we show that the conclusions drawn in Section 5 with the $A_{2}$ metric are consistent when the $A_{1}$ metric is considered instead.
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 7. Accuracy as a function of the size of the pre-training dataset, for a fixed computational budget ( $\sim 100 \mathrm{~s}$ ) at test time.
+<img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 8. Accuracy in distribution as a function of time for all methods ran on a single CPU per equation.
+<img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 9. Accuracy out of distribution as a function of time for all methods ran on a single CPU per equation.
+<img alt="img-9.jpeg" src="img-9.jpeg" /></p>
+<p>Figure 10. Accuracy as a function of number of input-output pairs observed at test time.</p>
+<h1>C.2. OOD Extrapolation Examples</h1>
+<p>Examples of 2D Functions Fig. 11 provides 4 examples of functions learned by our model. All the considered functions depend only on two independent variables, $x_{1}$ and $x_{2}$. The visualizations show that our method, given a relatively small set of support points (black dots in the figure) is able to extrapolate out of distribution by retrieving the underlying symbolic expression. The last row of Fig. 11 shows that NeSymReS at times finds valid alternative expressions based on trigonometric identities, i.e. $\sin (x)=\cos (x-\pi / 2)=-\cos (x+\pi / 2)$.
+<img alt="img-10.jpeg" src="img-10.jpeg" /></p>
+<p>Figure 11. Four examples of functions learned by our model. The first column shows the ground truth equation, whereas the remaining three represent the top predictions of our model sorted by likelihood (from left to right).</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{9}$ With parameters atol 1e-3 and rtol 0.05 .&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{6}$ https://github.com/brendenpetersen/deep-symbolicregression
+${ }^{7}$ https://gplearn.readthedocs.io/en/stable/
+${ }^{8} \mathrm{https}: / /$ scikit-learn.org/stable/modules/gaussian_process.html&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

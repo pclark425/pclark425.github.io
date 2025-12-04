@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-1160 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-1160</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-1160</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-28.html">extraction-schema-28</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of navigation in text-based games or text worlds, including graph-topology features of the environments (such as diameter, clustering coefficient, dead-ends, door constraints, connectivity), exploration efficiency metrics, and how these relate to agent performance and policy structure.</div>
+                <p><strong>Paper ID:</strong> paper-273229410</p>
+                <p><strong>Paper Title:</strong> <a href="https://export.arxiv.org/pdf/2410.06263v1.pdf" target="_blank">BoxMap: Efficient Structural Mapping and Navigation</a></p>
+                <p><strong>Paper Abstract:</strong> While humans can successfully navigate using abstractions, ignoring details that are irrelevant to the task at hand, most of the existing approaches in robotics require detailed environment representations which consume a significant amount of sensing, computing, and storage; these issues become particularly important in resource-constrained settings with limited power budgets. Deep learning methods can learn from prior experience to abstract knowledge from novel environments, and use it to more efficiently execute tasks such as frontier exploration, object search, or scene understanding. We propose BoxMap, a Detection-Transformer-based architecture that takes advantage of the structure of the sensed partial environment to update a topological graph of the environment as a set of semantic entities (rooms and doors) and their relations (connectivity). The predictions from low-level measurements can be leveraged to achieve high-level goals with lower computational costs than methods based on detailed representations. As an example application, we consider a robot equipped with a 2-D laser scanner tasked with exploring a residential building. Our BoxMap representation scales quadratically with the number of rooms (with a small constant), resulting in significant savings over a full geometric map. Moreover, our high-level topological representation results in 30.9 % shorter trajectories in the exploration task with respect to a standard method. Code is available at: bit.ly/3F6w2Yl.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-1160",
+    "paper_id": "paper-273229410",
+    "extraction_schema_id": "extraction-schema-28",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0045865,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><p>BoxMap: Efficient Structural Mapping and Navigation
+8 Oct 2024</p>
+<p>Zili Wang 
+Christopher Allum ctallum@bu.edu 
+Sean B Andersson sanderss@bu.edu 
+Roberto Tron tron@bu.edu </p>
+<p>Division of Systems Engineering
+Department of Mechanical Engineering
+Boston University
+02215BostonMAUSA</p>
+<p>Center for Information and Systems Engineering
+Boston University</p>
+<p>BoxMap: Efficient Structural Mapping and Navigation
+8 Oct 2024BEA871E7DF011F6557F829BF62B3B418arXiv:2410.06263v1[cs.RO]
+While humans can successfully navigate using abstractions, ignoring details that are irrelevant to the task at hand, most existing robotic applications require the maintenance of a detailed environment representation which consumes a significant amount of sensing, computing, and storage.These issues are particularly important in a resource-constrained setting with limited power budget.Deep learning methods can learn from prior experience to abstract knowledge of unknown environments, and use it to execute tasks (e.g., frontier exploration, object search, or scene understanding) more efficiently.We propose BoxMap, a Detection-Transformerbased architecture that takes advantage of the structure of the sensed partial environment to update a topological graph of the environment as a set of semantic entities (e.g.rooms and doors) and their relations (e.g.connectivity).These predictions from low-level measurements can then be leveraged to achieve high-level goals with lower computational costs than methods based on detailed representations.As an example application, we consider a robot equipped with a 2-D laser scanner tasked with exploring a residential building.Our BoxMap representation scales quadratically with the number of rooms (with a small constant), resulting in significant savings over a full geometric map.Moreover, our high-level topological representation results in 30.9% shorter trajectories in the exploration task with respect to a standard method.</p>
+<p>I. INTRODUCTION</p>
+<p>Navigating complex and unknown environments to achieve various tasks is a remarkable ability shared by both humans and animals.This capability is derived in part from the ability to use past experiences to predict salient environmental features and identify the most effective strategies for success [1]- [3].Developing a similar ability for robots would be a valuable skill in real-world settings.While current approaches such as hierarchical abstractions utilizing semantic entities and physical relations have demonstrated success in long-term mapping, localization [4]- [6], and planning [7], [8], they typically require extensive data collection via highperformance, resource-intensive sensors, alongside computationally demanding online algorithms.These requirements make such methods impractical for scenarios with limited resources, such as when using small-scale robots like the Harvard Ambulatory MicroRobot (HAMR) [9] or during long-duration missions [10].</p>
+<p>Motivated by these issues, in this paper we explore an endto-end method we call BoxMap that transfers low-level raw measurements to topological maps (i.e., high-level semantic representations) of a structured environment by leveraging the predictability of its layout, such as indoor spaces comprised of polygonal rooms and with connecting doors.</p>
+<p>Traditional approaches to generate a topological map of the environment are typically based either on pixel-wise semantic segmentation [11]- [13] with the identification of physical relations between semantic entities [14], or rely on the identification and clustering of wall entities [5], [15].These methods do not take advantage of prior information about the environmental structure and the accuracy of the map relies on the post-processing procedures.Our previous work [16] proposed a multi-task learning architecture for multi-level abstractions; however, the topology generation was still based on ad-hoc post-processing of a low-level representation (occupancy maps).</p>
+<p>With the development of deep learning, the prediction of polygonal instances typically involves two sequential steps 1) predicting bounding boxes containing each polygon based on anchors or proposals, and 2) detecting polygon corners inside a representative bounding box, by using either a Convolutional Neural Network (CNN)-Recurrent Neural Network (RNN) [17] or CNN-Graph Convolutional Network (GCN) paradigm [18], [19].The final results rely on many hand-designed components like a Non-Maximum Suppression (NMS) procedure or anchor generation.</p>
+<p>To alleviate the effect of reliance on a hand-crafted process, an end-to-end method is desirable.A DEtection TRansformer (DETR) can directly predict the set of bounding boxes, with a CNN backbone (to extract image features), a transformer encoder-decoder architecture (to eliminate anchor generation) and a set-based global loss that forces unique predictions via bipartite matching (to eliminate NMS) [20].Later work built upon a DETR to extract non-rectangular polygons by adding a polygon regression head and a corner classification head [21].This approach, however, required multi-resolution representations and extra post-processing.Unlike these prior works that use bounding boxes to detect objects, the highlevel representation we develop here uses boxes as primitives (i.e.building blocks) to represent an environment.</p>
+<p>As a concrete example for the approach we develop, we focus on an exploration task in an unknown environment.There are multiple approaches in the literature to achieve this particular task.Traditional methods typically build a geometric map from low-level representations (points, lines) using Simultaneous Localization and Mapping (SLAM), combined with a heuristic exploration method like frontierbased exploration [22].In more recent work, environmental priors are used to predict unknown regions based on assumed structure such as lines [23] or through the use of deep learning models [24].These predictions are then used to enhance exploration efficiency.Alternative methods to improving exploration efficiency include predicting a directional hint to select a frontier point [25]- [27].</p>
+<p>Paper contributions.BoxMap models environments (rooms and doors) as boxes and their relations, and uses a DETR-like framework (Fig. 1) to achieve end-to-end topological graph prediction from low-level measurements.Specifically:</p>
+<p>• We create interpretable embeddings (box representations)</p>
+<p>for the prediction of rooms and their physical relations, via a CNN feature extractor followed by an encoder-decoder transformer that models room arrangements.• We use losses based on the Truncated Signed Distance Function (TSDF) of predicted boxes to learn against the ground truth TSDF.Compared to losses based on vertices, our method is easier to train and avoids the necessity of manual labelling.• We introduce a hierarchical loss that improves the detection of small but topologically important details (such as doors); the loss subtracts large objects (rooms) from a TSDF to highlight and focus on small ones.The exploration example shows that our high-level graph representation enables</p>
+<p>• semantic-level mapping by updating the graph with lowlevel measurements, yielding a significantly more compact memory footprint than a detailed map representation, • higher-level reasoning of the environment that leads to structured inferences even beyond observed regions.The resulting graph-based decision making leads to shorter paths than standard frontier exploration methods.</p>
+<p>II. SYSTEM OVERVIEW</p>
+<p>We consider the problem of using a robot to explore an unknown environment from a random initial position with minimal map storage and total path traveled.We assume that: 1) the robot is equipped with a laser range scanner; 2) the robot can detect the map alignment (i.e., the predominant direction of walls using, e.g., the methods in [28], [29]); 3) the robot has relatively accurate odometry.</p>
+<p>The core idea of BoxMap is to leverage prior experience (a training set), and represent environments as graphs of boxes.</p>
+<p>The rest of this paper presents how our BoxMap representation is generated, and how it can be used for exploration.</p>
+<p>Graph Prediction and Mapping.BoxMap represents rectangular rooms as boxes with four corners, non-rectangular rooms as overlapping boxes (which we refer to as multiboxes), and doorways as square boxes connecting rooms.These are organized in a graph that is incrementally built from individual laser measurements via a learned model.</p>
+<p>At the robot position p t , a laser measurement is acquired and converted to a local occupancy map, M laser t .This map is then concatenated with an occupancy grid map, M topo t−1 , instantiated from last step's topological graph, Ĝtopo t−1 , to predict a new graph Ĝtopo t .This step requires us to combine topological and occupancy map information; we use TSDF as a tool to bridge the gap between these two representations.Overall, the mapping update process is represented as Ĝtopo
+t = (V, E) = f map (p t−1 , p t , Ĝtopo t−1 , M laser t ), (1)
+where V is the set of nodes, E is the set of edges showing the spatial connections between nodes, and p t is the position of the robot at time step t.</p>
+<p>Graph-based exploration.We use the graph Ĝtopo t to construct a planning graph Ĝnav t and then determine a frontier point g t to steer to.Here, we define a candidate frontier on Ĝtopo t as a room that is not visited.We then use the A * algorithm to find a feasible trajectory from p t to g t on an occupancy grid map M occ t , which is accumulated on measurements up to the current time.Note that in our work, we keep our focus on the graph prediction, mapping and frontier selection, therefore maintaining M occ t only in the A * planning for simplicity.However, it is not necessary and in practice a local approach that uses only recent information should be sufficient.The graph is updated with a new measurement once the selected frontier has been reached, and the steps are iterated until a termination criteria is met.</p>
+<p>III. GRAPH PREDICTION AND MAPPING A. BoxMap Network Architecture</p>
+<p>We use a DETR-based architecture as illustrated in Fig. 1 to implicitly represent prior structured information in the environment.It contains a CNN backbone, an encoder-decoder transformer, and task-specific prediction heads.and learns a common latent space representation.Each layer includes a downsampling convolution, followed by a standard convolution, both with Batch Normalization and Leaky ReLU.We use four layers with channel sizes 32, 64, 128, and 256.</p>
+<p>2) Transformer: We use a standard transformer architecture to transform the feature maps into a set of embeddings.The transformer encoder processes the flattened image features and learned positional encodings as input and consists of 4 encoder layers.The transformer decoder is similarly composed of 4 decoder layers.Each encoder and decoder layer includes a multi-head attention mechanism and a feedforward layer.The first decoder layer applies cross-attention, while the remaining layers use self-attention.The decoder produces M embeddings for M boxes in parallel, with box queries randomly initialized at the decoder's input.</p>
+<p>3) Prediction heads: We define a box by its top left and bottom right coordinates b i = ((x 0 , y 0 ), (x 1 , y 1 )), together with the class q i .Embeddings from the transformer output are adopted to generate the prediction heads for rooms and doors.Each room head predicts: 1) A class specifying the box existence.</p>
+<p>2) The room box coordinates.From the predicted room box coordinates, we create an adjacency between boxes (see Fig. 2).Two additional door prediction heads generate door predictions from all possible outer sums of pairs of embeddings.Each door head predicts: 1) A class specifying the door existence.This prediction is masked by the aforementioned adjacency matrix.2) The door box coordinates relative to the corresponding edge.</p>
+<p>B. Parametric TSDFs for Structured Shapes</p>
+<p>Although there are multiple ways to represent a nonrectangular room as a multi-box, the TSDF of the shape is unique.Therefore, we propose to define an analytic map (based on Rectified Linear Units, ReLU (x) = max(0, x)) from box coordinates b i to a TSDF, and then base the training loss on TSDFs (Section III-C).In the following, p = (x, y) represents a point in the environment, and γ defines the truncation value for a TSDF.</p>
+<p>Box Representation.The TSDF representation of a 2D rectangle in the L ∞ norm is represented as the distance to the nearest wall along either the x or y axis,
+f 2D (p) = min(f 1D,x , f 1D,y );(2)
+the distance along one axis can be represented by multiple ReLU functions:
+f 1D,x (x 0 , x 1 ) = min(ReLU (x−x 0 +γ)−ReLU (x−x 0 −γ) − γ, −ReLU (x − x 1 + γ) + ReLU (x − x 1 − γ) + γ);(3)
+f 1D,y is obtained by substituting y for x in (3).Room (Multi-Box) Representation.We represent a nonrectangular room as the merging of multiple overlapping boxes, and a doorway as the merging of a square-shaped box on the overlapping edges of two room boxes (Fig. 3).We can merge multiple SDFs using the max operation:
+f composite (p) = max i q i • (f i 2D (p) + γ) − γ ,(4)
+where i is the index of a box.</p>
+<p>C. Loss Functions</p>
+<p>We use two types of loss function to facilitate training: one based on TSDFs, the other on the box representation.</p>
+<p>Map-Based Loss.We define a series of losses that compare TSDF representations.Thanks to our parametric TSDF representation (Section III-B), our approach can use raw occupancy maps for the training dataset (without the need for manual labeling of individual rooms), while still optimizing directly on the high-level box parameters.</p>
+<p>We start with a basic L 2 loss over pixels p:
+l p tsdf (y tsdf , ŷtsdf ) = ∥y tsdf − ŷtsdf ∥ 2 ,(5)
+where y tsdf is the ground truth TSDF, and ŷtsdf is the predicted TSDF represented as (4).We also introduce an auxiliary boundary loss
+l p tsdf,W (y, ŷ) = ∥y tsdf − ŷtsdf ∥ W 2 ,(6)
+to emphasize accurate wall predictions, where the superscript W indicates that pixels are masked by the ground truth wall region.Empirically, the losses above do not capture doors well (due to their small size), in the sense that errors in the prediction of doors produce changes that are much smaller than errors in the prediction of rooms.We observe that the difference between the ground truth TSDF and the roomboxes-only TSDF, noted as ỹdoors tsdf , highlights the locations of the doors (Fig. 4).We therefore define a hierachical loss that, assuming an accurate prediction of the rooms, focuses on doors:
+l p ♢doors (p) = ∥ỹ doors tsdf − max i ŷdoors ⋄ (p, c i , s i )∥ W 2 , ŷdoors ⋄ (p, c i , s i ) = ReLU (s i /2 − ||p − c i || 1 ),(7)
+where ŷdoors ⋄ is a TSDF with c i and s i being the centroid and dimension of a door box.The loss has increased penalties applied to door predictions on the region (denoted W ) where the predicted TSDF ŷtsdf is near zero (indicating walls) and the walls of the input.The total map-based loss is
+L T SDF = 1 P p l p tsdf (y, ŷ) + l p tsdf,W (y, ŷ) + l p ♢doors (p) ,(8)
+where P is the total number of pixels.</p>
+<p>Box-Based Loss.We include a self-supervised IOU loss to measure overlap between room boxes (denoted as V):
+L IoU (V) = 1 M (M − 1) A∈V B∈V/A IoU (A, B). (9)
+The gate loss on the set of existence probability of boxes Q is proposed as
+L Gate (Q) = 1 |Q| ( Q q i (1 − q i ) + Q q i ),(10)
+where the first term is a bi-modal regularizer to force q i to be either 0 or 1, and the second term emphasizes sparsity.Final Loss.The final loss is
+L total (ŷ, y, V, Q) = L T SDF (ŷ, y) + L IoU (V) + L Gate (Q).(11)</p>
+<p>D. Topological Graph Generation</p>
+<p>A topological graph Ĝtopo t is generated from the model outputs as follows: 1) The rooms V in the environment are identified from the predicted room boxes, where a rectangular room is represented as a single node, and a non-rectangular room is represented as multiple overlapping box nodes with edges added between each pair without door information.Each node contains the location and dimension of the box.A pair of room boxes are connected with an edge if there exists a door connecting them.2) The doors are identified from the predicted door boxes.Each door contains the location, dimension and the connected room pair of the box.An edge is added to the graph if the points on opposite sides of the candidate door box are traversable within the door region, based on the accumulation of M topo t−1 and M laser t .</p>
+<p>E. Dataset</p>
+<p>We used environments from the RPLAN dataset [30], which contains 80k residential building floorplans.The TSDF for each environment was generated using the chamfer distance transform [31].We selected 400 environments (each with five rooms) for training, and 41 for testing.Note that the choice of five rooms was made to keep the setting manageable, allowing for easy interpretation of results.Preliminary results (not shown for space reasons) indicate our architecture can handle more complex environments with more rooms.</p>
+<p>The robot was driven from random positions to implement standard frontier exploration in unknown environments to create the dataset.Each input and ground truth TSDF was obtained by cropping a 128 × 128 local accumulated occupancy map.The model was initially trained on the occupancy maps, followed by fine-tuning with a dataset consisting predicted environments concatenated to the measurements.</p>
+<p>IV. GRAPH-BASED EXPLORATION</p>
+<p>In this section, we describe our algorithms for semantic exploration (Fig. 5) on graphs.</p>
+<p>A. Planning Graph Generation</p>
+<p>While the topological graph G topo t (Fig. 6a) is a compact representation of the environment, we post-process it as Ĝnav t (Fig. 6b) to aid path planning.Specifically, we use the following steps: 1) Add a node for each door, connecting it with edges to the corresponding room pair.2) Separate doors in the same room are connected with an edge.3) Each rectangular room node has a position attribute at a point interpolated between the room centroid and its associated door centroid.We implement the interpolation by assuming that by entering a close-to-door region in a small room, the robot can capture the key features of the room (including itself and the interconnecting area) and make a reliable prediction.The planning graph is further extended to dynamically connect the robot node with the room-box node it resides in, as well as with the neighboring box nodes (Fig. 6c).</p>
+<p>B. Semantic Exploration</p>
+<p>We propose two different exploration strategies, one greedy and one that considers long-term performance using the global environment structure hallucinated from our model.We first identify previously visited nodes where measurements were taken.Both algorithms iteratively update Ĝnav t with new measurements once a selected frontier has been reached, and terminate when there are no more unvisited rooms.(C1) Greedy strategy: The robot uses the closest unvisited room on Ĝnav t as the interim goal g t .(C2) Receding Horizon (RH) strategy: At each iteration, the robot first plans the shortest path on Ĝnav t which visits all unvisited rooms at least once using Dynamic Programming.Then the robot selects the first room node on the generated path as the interim goal g t .</p>
+<p>V. SIMULATIONS A. Simulation Setup</p>
+<p>The simulations for the training dataset and algorithm evaluations use PseudoSLAM [32].The laser scanner has a 360 • field of view and 9 m range.All environments were represented as 2D occupancy maps with a resolution of 0.14 m per pixel.</p>
+<p>B. Baselines</p>
+<p>We compare against two geometric-map based frontier exploration methods, where a frontier pixel is defined as the centroid of the segment that separates known regions from unknown regions.To give a fair comparison with our proposed method, the geometric map only accumulates laser measurement when a selected frontier has been reached.(C3) Traditional Frontier Exploration: Candidate frontier pixels are selected using the method from [33].Specifically, we define a reward R(p f ) that combines path cost and information gain for each frontier candidate pixel p f :
+R(p f ) = λI(p f ) − ∥p f − p t ∥ 2 , (12)
+where ∥ • ∥ 2 indicates the standard Euclidean metric, I(p f ) is the information of the frontier pixel defined as the number of unknown pixels within the range of the sensor around the pixel, and λ is a tuning weight.The frontier candidate with the highest reward is selected as the next goal point.The process is repeated until there are no more frontier pixels.(C4) Frontier Exploration with Map Completion: We also consider a data-driven baseline [34] where the candidate frontier pixels are selected based on the completed geometric map.We complete the partial map using the model trained in [16].We find all the connected pixels that are unknown in the current map M occ t but are free according to the completed map M occ t ; the number of such pixels is used as I(p f ).(C5) Hybrid Strategy: For completeness, we add a strategy using the topological graph for exploration, while using the</p>
+<p>C. Evaluation of Semantic Exploration Performance</p>
+<p>We ran the algorithms on 41 test environments, from three random initial positions each.To evaluate performance we define the following metrics averaged over all runs.(R1) Total steps: number of pixel traversed to complete.(R2) Number of measurement updates.We consider three additional metrics that are not directly related to the exploration but are useful to assess the differences between our algorithms and the baselines.(M1) Map memory (M2) Structural Similarity Index Measurement (SSIM) between the final TSDF and the ground truth map.(M3) Hamming loss: pixel-wise classification accuracy of the final map.</p>
+<p>Our results, summarized in Table I and Fig. 7, show that our method is superior to the baseline, yielding a more compact map representation as well as shorter trajectories.This indicates that our method can leverage semantic prior knowledge learned from data to create a higher-level representation from low-level partial measurements, which result in improved performance; such information can not be directly obtained from any geometric-based frontier methods.Moreover, despite the reduction in storage, the maps that can be reconstructed by our methods show only a minor reduction in accuracy with respect to geometric maps (as indicated by metrics (M2) and (M3)).It should be noted that our method discards low-level geometric information other than the current measurement.This is achieved by converting Ĝtopo t−1 to Mtopo t−1 , and using Mtopo t−1 as the new model input.While there are potential prediction and conversion errors, the model may miss some visited semantic entities in the long horizon.We have observed, however, that the model is  able to correct the error if the affected area is revisited (at the cost of longer trajectories).</p>
+<p>D. Simulation in Gazebo</p>
+<p>We further test our exploration algorithm through Robot Operating System (ROS) using the Gazebo simulator with a Jackal robot (Clearpath Robotics) equipped with a LiDAR sensor, leveraging the gmapping package to accumulate the laser measurements.Accounting for the robot's footprint, to avoid collisions with obstacles, we add waypoints near doors to traverse smoothly these narrow regions.Fig. 8a demonstrates an initial random placement of the robot in an apartment layout, the initially constructed graph and the selected frontier.The algorithm is repeated until all the rooms have been visited.Fig. 8b shows the graph Ĝtopo when the algorithm terminates.The result shows that BoxMap is robust to imperfect box predictions due to noisy sensor and odometry measurements.Simulations in multiple environment layouts (not shown due to space constraints) confirmed these findings.</p>
+<p>VI. CONCLUSIONS</p>
+<p>We proposed a CNN-transformer-based architecture to learn and update topological information of the environment from low-level measurements, which significantly reduces the map storage in navigational execution.To facilitate the training process, we proposed to learn from a TSDF-map instead of box vertices and demonstrated its strength on learning semantic entities and relations.Through simulations we demonstrated that our graph-based semantic exploration algorithm achieved better performance compared to geometric-map-based frontier exploration algorithms.While our algorithms assumed both perfect odometry and sensing, our simulations in Gazebo indicated that it can be adapted to realistic settings.</p>
+<p>Future work includes testing on real hardware and improving the robustness of the architecture by either training with clustered environments or combining with obstacle removal algorithms, and exploring the use of DETR extensions (e.g.Deformable DETR) that are potentially more robust to small box detection.A direct output feedback controller in polygonal environment will also be considered.</p>
+<p>Fig. 1 :
+1
+Fig.1: Architecture diagram: the TSDF from previous prediction is converted to an occupancy grid map, which is concatenated with the new laser measurement to be fed into a DETR-based model (a combination of CNN and transformer) to give multiple embeddings.Each embedding is used to predict a room box and each pair of embeddings is used to predict a door box.These boxes are transformed into a single TSDF, which is then compared with the ground truth to update the model.</p>
+<p>Fig. 2 :
+2
+Fig.2:The connectivity between two room boxes is validated by comparing the edges N, S, W, E of one room (in green) to the edges S, N, E, W of the other room (in blue).An entry will appear in the room box adjacency matrix if corresponding edges overlap, in this case green S and blue N.</p>
+<p>Fig. 3 :
+3
+Fig. 3: Shape Merging Operation.</p>
+<p>Fig. 4 :
+4
+Fig. 4: (a) Ground truth TSDF with boundary overlaid in black, (b) Predicted room TSDF, (c) Difference between (a) and (b) highlights the door locations.</p>
+<p>Fig. 5 :
+5
+Fig.5: The progression of the agent exploration over time.It starts by instantiating the last estimated graph (row 1), then collects the laser measurement (row 2), and centers them to the network.The estimated room and door boxes (row 3) are used to construct a pose graph and plan the next move (row 4, shading indicates the room has been visited, overlaid with the predicted map).On row 4 and 5, the purple dot is the robot pose, red star is the point-to-go and red diamond is the nearest door.On the ground truth floorplan (row 5), green dots are the pose history of laser measurements.</p>
+<p>Fig. 6 :
+6
+Fig. 6: Planning graph generation.</p>
+<p>Fig. 7 :
+7
+Fig. 7: Violin plot over all runs of (a) total steps and (b) total measurement updates.Violin plots illustrate data distributions by superimposing kernel density plots onto box plots.</p>
+<p>(a) Init.Pred.(b) Final Pred.</p>
+<p>Fig. 8 :
+8
+Fig. 8: ROS Simulation: (a) The initial LiDAR scan of the Jackal with room (red and green rectangles, green indicated the selected frontier) and door (blue rectangle) predictions, shaded-in red indicates the room that robot starts in.(b) Final predictions after having explored the entire map.</p>
+<p>TABLE I :
+I
+Evaluation results.↓ indicates that smaller values imply better performance.N = 256 and M = 6 here.R1) ↓ (R2) ↓ (M1) ↓ (M2) ↑ (M3) ↓
+BoxMap Greedy (C1) 114.95O(M 2 ) 0.962.5%BoxMap RH (C2)115.25O(M 2 ) 0.962.4%Occ. Standard (C3)166.44.6O(N 2 ) 10Occ. NN (C4)143.64.8O(N 2 ) 10Occ. RH (C5)1114.9O(N 2 ) 0.981.3%300Total Steps100 150 200 25050C1 C2 C3 C4 C5
+(</p>
+<p>This work was supported in part by NSF FRR-2212051 and the
+On evaluation of embodied navigation agents. P Anderson, A Chang, D S Chaplot, A Dosovitskiy, S Gupta, V Koltun, J Kosecka, J Malik, R Mottaghi, M Savva, A R Zamir, 2018</p>
+<p>Visual semantic navigation using scene priors. W Yang, X Wang, A Farhadi, A Gupta, R Mottaghi, 2018</p>
+<p>Object goal navigation using goal-oriented semantic exploration. D S Chaplot, D P Gandhi, A Gupta, R R Salakhutdinov, Advances in Neural Information Processing Systems. 2020</p>
+<p>Kimera: From slam to spatial perception with 3d dynamic scene graphs. A Rosinol, A Violette, M Abate, N Hughes, Y Chang, J Shi, A Gupta, L Carlone, The International Journal of Robotics Research. 4012-142021</p>
+<p>S-graphs+: Real-time localization and mapping leveraging hierarchical representations. H Bavle, J L Sanchez-Lopez, M Shaheer, J Civera, H Voos, IEEE Robotics and Automation Letters. 882023</p>
+<p>Foundations of spatial perception for robotics: Hierarchical representations and real-time systems. N Hughes, Y Chang, S Hu, R Talak, R Abdulhai, J Strader, L Carlone, The International Journal of Robotics Research. 027836492412297252024</p>
+<p>Hierarchical representations and explicit memory: Learning effective navigation policies on 3d scene graphs using graph neural networks. Z Ravichandran, L Peng, N Hughes, J D Griffith, L Carlone, 2022</p>
+<p>S-nav: Semantic-geometric planning for mobile robots. P Kremer, H Bavle, J L Sanchez-Lopez, H Voos, arXiv:2307.016132023arXiv preprint</p>
+<p>Design and Fabrication of the Harvard Ambulatory Micro-Robot. A Baisch, R J Wood, International Symposium on Robotics Research. C Pradalier, R Siegwart, G Hirzinger, 2011</p>
+<p>Robot ecology: Constraint-based control design for long duration autonomy. M Egerstedt, J N Pauli, G Notomista, S Hutchinson, Annual Reviews in Control. 462018</p>
+<p>Room segmentation: Survey, implementation, and analysis. R Bormann, F Jordan, W Li, J Hampp, M Hägele, IEEE International Conference on Robotics and Automation. 2016</p>
+<p>Automatic room segmentation of 3d laser data using morphological processing. J Jung, C Stachniss, C Kim, ISPRS International Journal of Geo-Information. 672017</p>
+<p>A solution to room-by-room coverage for autonomous cleaning robots. A Kleiner, R Baravalle, A Kolling, P Pilotti, M Munich, IEEE International Conference on Intelligent Robots and Systems. 2017</p>
+<p>Learning topometric semantic maps from occupancy grids. M Hiller, C Qiu, F Particke, C Hofmann, J Thielecke, IEEE International Conference on Intelligent Robots and Systems. 2019</p>
+<p>Robust structure identification and room segmentation of cluttered indoor environments from occupancy grid maps. M Luperto, T P Kucner, A Tassi, M Magnusson, F Amigoni, IEEE Robotics and Automation Letters. 732022</p>
+<p>Do more with less: Single-model, multi-goal architectures for resource-constrained robots. Z Wang, D Threatt, S B Andersson, R Tron, IEEE International Conference on Intelligent Robots and Systems. 2023</p>
+<p>Topological map extraction from overhead images. Z Li, J D Wegner, A Lucchi, Proceedings of the IEEE/CVF International Conference on Computer Vision. the IEEE/CVF International Conference on Computer Vision2019</p>
+<p>Fast interactive object annotation with curve-gcn. H Ling, J Gao, A Kar, W Chen, S Fidler, Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. the IEEE/CVF conference on computer vision and pattern recognition2019</p>
+<p>Graph convolutional networks for the automated production of building vector maps from aerial images. S Wei, S Ji, IEEE Transactions on Geoscience and Remote Sensing. 602021</p>
+<p>End-to-end object detection with transformers. N Carion, F Massa, G Synnaeve, N Usunier, A Kirillov, S Zagoruyko, European conference on computer vision. Springer2020</p>
+<p>Polybuilding: Polygon transformer for end-to-end building extraction. Y Hu, Z Wang, Z Huang, Y Liu, arXiv:2211.015892022arXiv preprint</p>
+<p>A frontier-based approach for autonomous exploration. B Yamauchi, Proceedings 1997 IEEE International Symposium on Computational Intelligence in Robotics and Automation CIRA'97.'Towards New Computational Principles for Robotics and Automation. 1997 IEEE International Symposium on Computational Intelligence in Robotics and Automation CIRA'97.'Towards New Computational Principles for Robotics and Automation1997</p>
+<p>Exploration of indoor environments through predicting the layout of partially observed rooms. M Luperto, L Fochetta, F Amigoni, International Conference on Autonomous Agents and MultiAgent Systems. 2021</p>
+<p>Learned map prediction for enhanced mobile robot exploration. R Shrestha, F.-P Tian, W Feng, P Tan, R Vaughan, IEEE International Conference on Robotics and Automation. 2019</p>
+<p>Learning over subgoals for efficient navigation of structured, unknown environments. G J Stein, C Bradley, N Roy, Conference on robot learning. PMLR2018</p>
+<p>Deep reinforcement learning-based automatic exploration for navigation in unknown environment. H Li, Q Zhang, D Zhao, IEEE Transactions on Neural Networks and Learning Systems. 3162020</p>
+<p>Improving reliable navigation under uncertainty via predictions informed by non-local information. R I Arnob, G J Stein, IEEE International Conference on Intelligent Robots and Systems. 2023</p>
+<p>Robust frequency-based structure extraction. T P Kucner, M Luperto, S Lowry, M Magnusson, A J , 2021</p>
+<p>Computer vision, graphics, and image processing. J Illingworth, J Kittler, 198844A survey of the hough transform</p>
+<p>Data-driven interior plan generation for residential buildings. W Wu, X.-M Fu, R Tang, Y Wang, Y.-H Qi, L Liu, ACM Transactions on Graphics. 386nov 2019</p>
+<p>Computer vision, graphics, and image processing. G Borgefors, 198634Distance transformations in digital images</p>
+<p>Houseexpo: A large-scale 2d indoor layout dataset for learning-based algorithms on mobile robots. T Li, D Ho, C Li, D Zhu, C Wang, M Q , -H Meng, IEEE International Conference on Intelligent Robots and Systems. 2020</p>
+<p>Autonomous robotic exploration based on multiple rapidly-exploring randomized trees. H Umari, S Mukhopadhyay, IEEE International Conference on Intelligent Robots and Systems. 2017</p>
+<p>Learned map prediction for enhanced mobile robot exploration. R Shrestha, F.-P Tian, W Feng, P Tan, R Vaughan, IEEE International Conference on Robotics and Automation. 2019</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrieval Quality Amplification Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-29</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-29</p>
+                <p><strong>Name:</strong> Retrieval Quality Amplification Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> </p>
+                <p><strong>Description:</strong> The effect of adding retrieved evidence to language model prompts is not determined solely by whether the evidence contains the correct answer, but is strongly amplified or attenuated by the quality of the retrieval system. High-quality retrieval (high precision, high recall, good ranking) creates a virtuous cycle where relevant evidence is surfaced, the model attends to it, and performance improves. Low-quality retrieval creates a vicious cycle where irrelevant or contradictory evidence is surfaced, the model learns to ignore retrieval, and performance degrades or shows high variance. This amplification effect is particularly strong during training: models trained with high-quality retrieval learn to trust and effectively use retrieved evidence, while models trained with low-quality retrieval learn to rely on parametric memory and ignore context. The quality amplification is non-linear: small improvements in retrieval quality can lead to large improvements in end-to-end performance, and there exist quality thresholds below which retrieval actively hurts performance.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>End-to-end performance with retrieval is a non-linear function of retrieval quality: P(correct|retrieval) = f(quality(retrieval)), where f is convex for quality > threshold and concave for quality < threshold.</li>
+                <li>There exists a retrieval quality threshold q_min below which adding retrieval decreases performance compared to no retrieval: P(correct|retrieval with quality < q_min) < P(correct|no retrieval).</li>
+                <li>The gradient of performance with respect to retrieval quality is steeper near the threshold: |∂P(correct)/∂quality| is maximized near q_min.</li>
+                <li>Models trained with high-quality retrieval learn to trust context more: P(use_context|high_quality_training) > P(use_context|low_quality_training).</li>
+                <li>The amplification effect is stronger during training than at inference: improving retrieval quality during training has larger effects than improving it only at inference.</li>
+                <li>Retrieval quality amplification is mediated by the model's learned attention patterns: high-quality retrieval during training shapes attention to focus on retrieved evidence.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Using a stronger, context-aware re-ranker (DPR-Poly) increases retrieval recall and leads to higher Knowledge F1 and downstream factuality. <a href="../results/extraction-result-209.html#e209.5" class="evidence-link">[e209.5]</a> </li>
+    <li>DPR-Poly R@1 improved from 25.9% to 29.3%, and downstream KF1 improved from ~26.0 to ~27.4. <a href="../results/extraction-result-209.html#e209.5" class="evidence-link">[e209.5]</a> </li>
+    <li>Improved retriever/re-ranker increases chance that generator conditions on relevant, accurate passages, reducing reliance on spurious parametric memory. <a href="../results/extraction-result-209.html#e209.5" class="evidence-link">[e209.5]</a> </li>
+    <li>Generative T5 readers' memorization increases with larger model size and poor retrieval quality during training. <a href="../results/extraction-result-202.html#e202.0" class="evidence-link">[e202.0]</a> </li>
+    <li>When paired with high-recall retriever, FiD copies answer spans from retrieved passages in ~96.6% of instances, showing very low novel-span generation. <a href="../results/extraction-result-195.html#e195.0" class="evidence-link">[e195.0]</a> </li>
+    <li>Retrieval-augmented prompting using Contriever retrieved passages improves GPT-3's QA accuracy, with effect size scaling with retriever recall. <a href="../results/extraction-result-193.html#e193.1" class="evidence-link">[e193.1]</a> </li>
+    <li>With Contriever top-5: NQ 43.3% (recall 61.8%); with top-10: NQ 44.2% (recall 70.5%), showing accuracy scales with recall. <a href="../results/extraction-result-193.html#e193.1" class="evidence-link">[e193.1]</a> </li>
+    <li>Retrieval collapse failure mode occurs when task gradients provide weak signals for retrieval, causing retriever to return identical documents and generator to ignore context. <a href="../results/extraction-result-210.html#e210.4" class="evidence-link">[e210.4]</a> </li>
+    <li>RAG with learned retrieval (fine-tuned query encoder) improves results versus fixed retrievers. <a href="../results/extraction-result-210.html#e210.0" class="evidence-link">[e210.0]</a> </li>
+    <li>Training with imperfect retrieval causes models to learn to ignore contextual evidence and rely on parametric memory. <a href="../results/extraction-result-202.html#e202.0" class="evidence-link">[e202.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For any retrieval-augmented system, there exists a measurable quality threshold q_min that can be determined by plotting performance vs retrieval quality metrics (precision, recall, MRR).</li>
+                <li>Training models with gradually improving retrieval quality (curriculum learning for retrieval) will produce better final performance than training with fixed high-quality retrieval.</li>
+                <li>Explicitly providing retrieval quality scores in prompts will allow models to better calibrate their trust in retrieved evidence.</li>
+                <li>Models trained with diverse retrieval quality (mixture of high and low quality) will be more robust to retrieval failures at inference time.</li>
+                <li>Fine-tuning retrieval systems end-to-end with the language model will produce larger improvements than fine-tuning them separately.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether the quality threshold q_min is the same across different tasks or whether it varies systematically with task characteristics.</li>
+                <li>Whether there exist retrieval quality metrics that better predict end-to-end performance than standard IR metrics (precision, recall, MRR).</li>
+                <li>Whether the amplification effect can be directly observed in model activations, with distinct patterns for high vs low quality retrieval.</li>
+                <li>Whether models can be trained to explicitly detect low-quality retrieval and fall back to parametric knowledge in those cases.</li>
+                <li>Whether the non-linear relationship between retrieval quality and performance is fundamental or an artifact of current training procedures.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that end-to-end performance scales linearly with retrieval quality across all quality ranges would challenge the non-linear amplification claim.</li>
+                <li>Demonstrating that models trained with low-quality retrieval perform just as well as those trained with high-quality retrieval would challenge the training amplification effect.</li>
+                <li>Showing that improving retrieval quality at inference has the same effect as improving it during training would challenge the training-inference asymmetry.</li>
+                <li>Finding that there is no quality threshold below which retrieval hurts performance would challenge the threshold aspect of the theory.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Why some model architectures (like FiD) seem more sensitive to retrieval quality than others. <a href="../results/extraction-result-195.html#e195.0" class="evidence-link">[e195.0]</a> </li>
+    <li>The exact mechanism by which low-quality retrieval during training causes models to learn to ignore context. <a href="../results/extraction-result-202.html#e202.0" class="evidence-link">[e202.0]</a> </li>
+    <li>Whether the quality threshold is determined by precision, recall, or some combination of metrics. <a href="../results/extraction-result-209.html#e209.5" class="evidence-link">[e209.5]</a> <a href="../results/extraction-result-193.html#e193.1" class="evidence-link">[e193.1]</a> </li>
+    <li>Why retrieval collapse occurs for some tasks but not others. <a href="../results/extraction-result-210.html#e210.4" class="evidence-link">[e210.4]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Shuster et al. (2021) Retrieval Augmentation Reduces Hallucination in Conversation [Shows retrieval quality effects on hallucination, but doesn't formalize amplification theory]</li>
+    <li>Izacard & Grave (2021) Leveraging Passage Retrieval with Generative Models for Open Domain Question Answering [Introduces FiD and shows high-recall effects, but doesn't theorize about quality amplification]</li>
+    <li>Lewis et al. (2020) Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks [Shows benefits of learned retrieval, but doesn't formalize quality-performance relationship]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Retrieval Quality Amplification Theory",
+    "theory_description": "The effect of adding retrieved evidence to language model prompts is not determined solely by whether the evidence contains the correct answer, but is strongly amplified or attenuated by the quality of the retrieval system. High-quality retrieval (high precision, high recall, good ranking) creates a virtuous cycle where relevant evidence is surfaced, the model attends to it, and performance improves. Low-quality retrieval creates a vicious cycle where irrelevant or contradictory evidence is surfaced, the model learns to ignore retrieval, and performance degrades or shows high variance. This amplification effect is particularly strong during training: models trained with high-quality retrieval learn to trust and effectively use retrieved evidence, while models trained with low-quality retrieval learn to rely on parametric memory and ignore context. The quality amplification is non-linear: small improvements in retrieval quality can lead to large improvements in end-to-end performance, and there exist quality thresholds below which retrieval actively hurts performance.",
+    "supporting_evidence": [
+        {
+            "text": "Using a stronger, context-aware re-ranker (DPR-Poly) increases retrieval recall and leads to higher Knowledge F1 and downstream factuality.",
+            "uuids": [
+                "e209.5"
+            ]
+        },
+        {
+            "text": "DPR-Poly R@1 improved from 25.9% to 29.3%, and downstream KF1 improved from ~26.0 to ~27.4.",
+            "uuids": [
+                "e209.5"
+            ]
+        },
+        {
+            "text": "Improved retriever/re-ranker increases chance that generator conditions on relevant, accurate passages, reducing reliance on spurious parametric memory.",
+            "uuids": [
+                "e209.5"
+            ]
+        },
+        {
+            "text": "Generative T5 readers' memorization increases with larger model size and poor retrieval quality during training.",
+            "uuids": [
+                "e202.0"
+            ]
+        },
+        {
+            "text": "When paired with high-recall retriever, FiD copies answer spans from retrieved passages in ~96.6% of instances, showing very low novel-span generation.",
+            "uuids": [
+                "e195.0"
+            ]
+        },
+        {
+            "text": "Retrieval-augmented prompting using Contriever retrieved passages improves GPT-3's QA accuracy, with effect size scaling with retriever recall.",
+            "uuids": [
+                "e193.1"
+            ]
+        },
+        {
+            "text": "With Contriever top-5: NQ 43.3% (recall 61.8%); with top-10: NQ 44.2% (recall 70.5%), showing accuracy scales with recall.",
+            "uuids": [
+                "e193.1"
+            ]
+        },
+        {
+            "text": "Retrieval collapse failure mode occurs when task gradients provide weak signals for retrieval, causing retriever to return identical documents and generator to ignore context.",
+            "uuids": [
+                "e210.4"
+            ]
+        },
+        {
+            "text": "RAG with learned retrieval (fine-tuned query encoder) improves results versus fixed retrievers.",
+            "uuids": [
+                "e210.0"
+            ]
+        },
+        {
+            "text": "Training with imperfect retrieval causes models to learn to ignore contextual evidence and rely on parametric memory.",
+            "uuids": [
+                "e202.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "End-to-end performance with retrieval is a non-linear function of retrieval quality: P(correct|retrieval) = f(quality(retrieval)), where f is convex for quality &gt; threshold and concave for quality &lt; threshold.",
+        "There exists a retrieval quality threshold q_min below which adding retrieval decreases performance compared to no retrieval: P(correct|retrieval with quality &lt; q_min) &lt; P(correct|no retrieval).",
+        "The gradient of performance with respect to retrieval quality is steeper near the threshold: |∂P(correct)/∂quality| is maximized near q_min.",
+        "Models trained with high-quality retrieval learn to trust context more: P(use_context|high_quality_training) &gt; P(use_context|low_quality_training).",
+        "The amplification effect is stronger during training than at inference: improving retrieval quality during training has larger effects than improving it only at inference.",
+        "Retrieval quality amplification is mediated by the model's learned attention patterns: high-quality retrieval during training shapes attention to focus on retrieved evidence."
+    ],
+    "new_predictions_likely": [
+        "For any retrieval-augmented system, there exists a measurable quality threshold q_min that can be determined by plotting performance vs retrieval quality metrics (precision, recall, MRR).",
+        "Training models with gradually improving retrieval quality (curriculum learning for retrieval) will produce better final performance than training with fixed high-quality retrieval.",
+        "Explicitly providing retrieval quality scores in prompts will allow models to better calibrate their trust in retrieved evidence.",
+        "Models trained with diverse retrieval quality (mixture of high and low quality) will be more robust to retrieval failures at inference time.",
+        "Fine-tuning retrieval systems end-to-end with the language model will produce larger improvements than fine-tuning them separately."
+    ],
+    "new_predictions_unknown": [
+        "Whether the quality threshold q_min is the same across different tasks or whether it varies systematically with task characteristics.",
+        "Whether there exist retrieval quality metrics that better predict end-to-end performance than standard IR metrics (precision, recall, MRR).",
+        "Whether the amplification effect can be directly observed in model activations, with distinct patterns for high vs low quality retrieval.",
+        "Whether models can be trained to explicitly detect low-quality retrieval and fall back to parametric knowledge in those cases.",
+        "Whether the non-linear relationship between retrieval quality and performance is fundamental or an artifact of current training procedures."
+    ],
+    "negative_experiments": [
+        "Finding that end-to-end performance scales linearly with retrieval quality across all quality ranges would challenge the non-linear amplification claim.",
+        "Demonstrating that models trained with low-quality retrieval perform just as well as those trained with high-quality retrieval would challenge the training amplification effect.",
+        "Showing that improving retrieval quality at inference has the same effect as improving it during training would challenge the training-inference asymmetry.",
+        "Finding that there is no quality threshold below which retrieval hurts performance would challenge the threshold aspect of the theory."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Why some model architectures (like FiD) seem more sensitive to retrieval quality than others.",
+            "uuids": [
+                "e195.0"
+            ]
+        },
+        {
+            "text": "The exact mechanism by which low-quality retrieval during training causes models to learn to ignore context.",
+            "uuids": [
+                "e202.0"
+            ]
+        },
+        {
+            "text": "Whether the quality threshold is determined by precision, recall, or some combination of metrics.",
+            "uuids": [
+                "e209.5",
+                "e193.1"
+            ]
+        },
+        {
+            "text": "Why retrieval collapse occurs for some tasks but not others.",
+            "uuids": [
+                "e210.4"
+            ]
+        }
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Shuster et al. (2021) Retrieval Augmentation Reduces Hallucination in Conversation [Shows retrieval quality effects on hallucination, but doesn't formalize amplification theory]",
+            "Izacard & Grave (2021) Leveraging Passage Retrieval with Generative Models for Open Domain Question Answering [Introduces FiD and shows high-recall effects, but doesn't theorize about quality amplification]",
+            "Lewis et al. (2020) Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks [Shows benefits of learned retrieval, but doesn't formalize quality-performance relationship]"
+        ]
+    },
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

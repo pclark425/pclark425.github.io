@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-5782 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-5782</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-5782</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-116.html">extraction-schema-116</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how the format or presentation of problems (e.g., prompt wording, structure, context, formatting) affects the performance of large language models (LLMs), including details of the formats used, tasks evaluated, models tested, performance results, and any explanations or comparisons.</div>
+                <p><strong>Paper ID:</strong> paper-1bb6cef23ff70892bb805f1303357716efd7b14e</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/1bb6cef23ff70892bb805f1303357716efd7b14e" target="_blank">Learning Dependency Structures for Weak Supervision Models</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Machine Learning</p>
+                <p><strong>Paper TL;DR:</strong> It is shown that the amount of unlabeled data needed can scale sublinearly or even logarithmically with the number of sources, improving over previous efforts that ignore the sparsity pattern in the dependency structure and scale linearly in $m$.</p>
+                <p><strong>Paper Abstract:</strong> Labeling training data is a key bottleneck in the modern machine learning pipeline. Recent weak supervision approaches combine labels from multiple noisy sources by estimating their accuracies without access to ground truth labels; however, estimating the dependencies among these sources is a critical challenge. We focus on a robust PCA-based algorithm for learning these dependency structures, establish improved theoretical recovery rates, and outperform existing methods on various real-world tasks. Under certain conditions, we show that the amount of unlabeled data needed can scale sublinearly or even logarithmically with the number of sources $m$, improving over previous efforts that ignore the sparsity pattern in the dependency structure and scale linearly in $m$. We provide an information-theoretic lower bound on the minimum sample complexity of the weak supervision setting. Our method outperforms weak supervision approaches that assume conditionally-independent sources by up to 4.64 F1 points and previous structure learning approaches by up to 4.41 F1 points on real-world relation extraction and image classification tasks.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-5782",
+    "paper_id": "paper-1bb6cef23ff70892bb805f1303357716efd7b14e",
+    "extraction_schema_id": "extraction-schema-116",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00698225,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Learning Dependency Structures for Weak Supervision Models</h1>
+<p>Paroma Varma ${ }^{<em> \ddagger}$ Frederic Sala ${ }^{</em> \dagger}$ Ann He ${ }^{\dagger}$ Alexander Ratner ${ }^{\dagger}$ Christopher Ré ${ }^{\dagger}$<br>${ }^{\dagger}$ Department of Computer Science, Stanford University<br>${ }^{\ddagger}$ Department of Electrical Engineering, Stanford University<br>{paroma, fredsala, annhe, ajratner}@stanford.edu, chrismre@cs.stanford.edu</p>
+<p>March 15, 2019</p>
+<h4>Abstract</h4>
+<p>Labeling training data is a key bottleneck in the modern machine learning pipeline. Recent weak supervision approaches combine labels from multiple noisy sources by estimating their accuracies without access to ground truth labels; however, estimating the dependencies among these sources is a critical challenge. We focus on a robust PCA-based algorithm for learning these dependency structures, establish improved theoretical recovery rates, and outperform existing methods on various real-world tasks. Under certain conditions, we show that the amount of unlabeled data needed can scale sublinearly or even logarithmically with the number of sources $m$, improving over previous efforts that ignore the sparsity pattern in the dependency structure and scale linearly in $m$. We provide an information-theoretic lower bound on the minimum sample complexity of the weak supervision setting. Our method outperforms weak supervision approaches that assume conditionally-independent sources by up to 4.64 F 1 points and previous structure learning approaches by up to 4.41 F 1 points on real-world relation extraction and image classification tasks.</p>
+<h2>1 Introduction</h2>
+<p>Supervised machine learning models have increasingly become dependent on a large amount of labeled training data. For most real-world applications, however, hand labeling such a large magnitude of data is a major bottleneck, especially when domain expertise is required. Recently, generative models have been used to combine noisy labels from weak supervision sources, such as user-defined heuristics or knowledge bases, to efficiently assign training labels by treating the true label as a latent variable [1, 26, 27, 31, 36]. Once the labels from the multiple noisy sources are used to learn the parameters of a generative model, the distribution over the true labels is inferred and used to produce probabilistic training labels for the unlabeled data, which can then be used to train a downstream discriminative model.</p>
+<p>Specifying how these weak supervision sources are correlated is essential to correctly estimating their accuracies. In practice, weak supervision sources often have strongly correlated outputs due to shared data sources or labeling strategies; for example, developers might contribute near-duplicate weak supervision sources. Manually enumerating these dependencies is a prohibitive development bottleneck, while learning them statistically usually requires ground truth labels [18, 21, 28, 48]. Recently, Bach et al. [2] proposed a structure learning method in the weak supervision setting that requires $\Omega(m \log m)$ samples given $m$ sources and does not exploit the sparsity of the associated model. This high sample complexity may prevent it from identifying dependencies, thus affecting the downstream quality of training labels assigned by the generative model.</p>
+<p>We propose using a structure learning technique for the weak supervision setting that exploits the sparsity of the model to achieve improved theoretical recovery rates. We decompose the inverse covariance matrix of the observable sources via robust principal component analysis [6, 7]. The decomposition produces a sparse component encoding the underlying structure and a low-rank component due to marginalizing over the latent true label variable. We build on previous approaches using this technique [7, 45], but improve over their requirement of $\Omega(m)$ samples under common weak supervision conditions.</p>
+<p>The key to obtaining tighter complexity estimates is characterizing the effective rank [42] of the covariance matrix in terms of the structural information associated with the weak supervision setting. The effective rank can be unboundedly smaller than the true rank. We show that under certain reasonable conditions on the effective rank of the covariance matrix, intuitively similar to the presence of a stronger dependency in each cluster of correlated</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Example graphical structures that can occur in the weak supervision setting and that our method aims to learn. Here, the $\lambda_{i}$ 's represent weak supervision sources and $Y$ represents the latent true variable. Edges indicate dependencies; note that there is always an edge between $\lambda_{i}$ and $Y$. The number of sources is $m$ while $d_{\max }$ is the maximum degree of a source.
+sources, the sample complexity can be sublinear $\Omega\left(d^{2} m^{\tau}\right)$ for $0&lt;\tau&lt;1$ and maximum dependency degree $d$. Under a stronger condition equivalent to the presence of a dominant cluster of correlated supervision sources, we obtain the rate $\Omega\left(d^{2} \log m\right)$ that matches the optimal supervised rate [32]. We further study the unsupervised setting through an information-theoretic lower bound on the sample complexity, yielding a characterization of the additional cost of the weak supervision setting compared to the supervised setting. We find that, although latent-variable structure learning may result in much higher sample complexity in general, in the weak supervision setting, the additional number of samples required is small.
+For a variety of real-world tasks from relation extraction to image classification, correlations often naturally arise among weak supervision sources like distant supervision via dictionaries and user-defined heuristics. We show that modeling dependencies recovered by our approach improves over assuming conditional independence among the weak supervision sources by up to 4.64 F 1 points, and over existing structure learning approaches by up to 4.41 F 1 points.</p>
+<h1>2 Background</h1>
+<p>Related Work Manually labeling training data can be expensive and time-consuming, especially in cases requiring domain expertise. A common alternative to labeling data by hand is using weak supervision sources. Estimating the accuracies of these sources without ground truth labels is a classic problem [12]. Methods like crowdsourcing [10, 17, 47], and boosting [33] are common approaches; however, we focus on the case in which no labeled data is required. Recently, generative models have been used to combine various sources of weak supervision in such settings $[1,26,27,31,36]$.
+Dependencies occur naturally among weak supervision sources for a variety of reasons: sources may operate over the same input [40], distant supervision sources may refer to similar information from a single knowledge base [23], and heuristics over ontologies may operate over the exact same subtree [20]. While some of these dependencies can be explicit, dependencies are difficult to specify manually in cases with hundreds of sources, potentially developed by many users. Therefore, there is a need to learn dependencies directly from the labels assigned by the weak supervision sources without using ground truth labels.
+Structure learning has a rich history outside of the weak supervision setting. The supervised, fully observed setting includes node-wise and matrix-wise methods. Node-wise methods, like Ravikumar et al. [28], use regression on a particular node to recover that node's neighborhood. Matrix-wise methods use the inverse covariance matrix to determine the structure [13, 18, 29]. In the latent variable setting, works like Chandrasekaran et al. [8], Meng et al. [22], Wu et al. [45] perform structure learning via robust-PCA like approaches. In contrast to these works, we focus on the weak supervision setting, providing a tighter characterization that leads to improved rates. We include further details on related work in the Appendix.
+The major work for structure learning in the weak supervision regime is Bach et al. [2] which uses a $\ell_{1}$-regularized node-wise pseudo-likelihood method to obtain a sample complexity of $\Omega(m \log m)$. Note that this expression does not depend on the maximum dependency degree $d$. Our approach fundamentally differs-we use a matrix-wise method that scales better with key parameters (like the sparsity of the graph $d$ ) and offers improved performance for several real-world tasks.</p>
+<p>Problem Setup We formally describe our setup and the generative model we use to assign probabilistic training labels given a set of noisy labels from weak supervision sources. $X \in \mathcal{X}$ is a data point, $Y \in \mathcal{Y}$ is a label with $(X, Y)$ drawn i.i.d. from some distribution $\mathcal{D}$. In the weak supervision setting, we never have access to the true label $Y$; instead we rely on $m$ weak supervision sources that produce noisy labels $\lambda_{i}$ for $1 \leq i \leq m$.
+Example 1. In a text relation extraction setting, $X$ could be be a tuple of two words, such as names of people, and $Y \in{0,1}$ then represents whether the relation of interest exists between the two words, for example whether these two people are being described as married. Potential weak supervision sources can use information from the sentence, such as whether the word "married" appears between the two words, to heuristically-and thus noisily-assign a label for a data point $X$. An example of an erring label is produced by applying the heuristic to the sentence "Bob and Alice were meant to get married in 2018, but postponed the wedding by 3 years."
+We model the joint distribution of $\lambda_{1}, \lambda_{2}, \ldots, \lambda_{m}, Y$ via a Markov random field with associated graph $G=(V, E)$ with $V=\left{\lambda_{1}, \ldots, \lambda_{m}\right} \cup{Y}$. If $\lambda_{i}$ is not independent of $\lambda_{j}$ conditioned on $Y$ and the other sources, then $\left(\lambda_{i}, \lambda_{j}\right)$ is an edge in $G$. Examples of such graphs are shown in Figure 1.
+For simplicity, we assume $\mathcal{X}, \mathcal{Y}={0,1}$, although our results easily extend. The density $f_{G}$ is then given by</p>
+<p>$$
+f_{G}\left(\lambda_{1}, \ldots, \lambda_{m}, y\right)=\frac{1}{Z} \exp \left(\sum_{\lambda_{i} \in V} \theta_{i} \lambda_{i}+\sum_{\left(\lambda_{i}, \lambda_{j}\right) \in E} \theta_{i, j} \lambda_{i} \lambda_{j}+\theta_{Y} y+\sum_{\lambda_{i} \in V} \theta_{Y, i} y \lambda_{i}\right)
+$$</p>
+<p>where $Z$ is a partition function to ensure $f_{G}$ is a normalized distribution, and $\theta_{i}$ and $\theta_{i, j}$ represent the canonical parameters associated with the sources. We can think of $\theta_{i, j}$ as the strength of the correlation between sources $\lambda_{i}$ and $\lambda_{j}$, and $\theta_{Y, i}$ as a measure of accuracy of the source $\lambda_{i}$. Once these parameters are learned, the generative model assigns probabilistic training labels by computing $f_{G}\left(Y \mid \lambda_{1}, \ldots, \lambda_{m}\right)$ for each object $X$ in the unlabeled training set. These probabilistic training labels can then be used to train any downstream discriminative model.
+In the conditionally independent model, $\theta_{i, j}=0 \forall i, j$. In cases with dependencies between sources, the structure of $G$ is user-defined or inferred from metadata related to the weak supervision source. Once our approach learns the dependency structure, we apply previous work that samples from the posterior of a graphical model directly [2, 25] or uses a matrix completion approach to solve for the accuracy and dependency parameters [26].
+We also rely on a common assumption in weak supervision, the singleton separator set assumption [26]. This assumption means that our sources form a total of $s$ connected clusters, and is motivated by the intuition that groups of weak supervision sources may share common data resources, core heuristics, or primitives.</p>
+<h1>3 Learning Structures in the Weak Supervision Regime</h1>
+<p>Our goal is to learn the dependency structure among weak supervision sources, i.e. graph $G$, directly from data, without observing the latent true label $Y$. We introduce this latent structure learning problem, which we focus on for the remainder of the paper, in Section 3.1. We then provide background on robust PCA in Section 3.2, and describe our algorithm which adapts it to the weak supervision setting in Section 3.3.</p>
+<h3>3.1 Structure Learning Objective</h3>
+<p>We want to learn the structure of graph $G$ given access to noisy labels from $m$ weak supervision sources and no ground truth labels. We leverage a common weak supervision assumption that the graph is sparse. This implies that the inverse covariance matrix $\Sigma^{-1}$ of $\lambda_{1}, \ldots, \lambda_{m}, Y$ is graph-structured: there is no edge between $\lambda_{i}$ and $\lambda_{j}$ in $G$ when the corresponding term in $\Sigma^{-1}$ is 0 , or, equivalently, $\lambda_{i}$ and $\lambda_{j}$ are independent conditioned on all of the other terms [18]. However, a key difficulty is that we never know $Y$, so we cannot observe the full covariance matrix $\Sigma$. Let $O=\left{\lambda_{1}, \ldots, \lambda_{m}\right}$ be the observed labels from the weak supervision sources, and $S={Y}$ be the unobserved latent variable. Then,</p>
+<p>$$
+\operatorname{Cov}[O \cup \mathcal{S}]:=\Sigma=\left[\begin{array}{cc}
+\Sigma_{O} &amp; \Sigma_{O \mathcal{S}} \
+\Sigma_{O \mathcal{S}}^{T} &amp; \Sigma_{\mathcal{S}}
+\end{array}\right]
+$$</p>
+<p>While we cannot observe $\Sigma$ since it contains the true label $Y$, we can observe $\Sigma_{O}$. Concretely, we form the empirical covariance matrix of observed labels $\Sigma_{O}^{(n)} \in \mathbb{R}^{m \times m}$ in the following manner:</p>
+<p>$$
+\Sigma_{O}^{(n)}=\frac{1}{n} \Lambda \Lambda^{T}-v v^{T}
+$$</p>
+<p>where $\Lambda$ represents the $m \times n$ matrix of labels from the weak supervision sources assigned to the unlabeled data, $n$ represents the total number of datapoints, and $v \in \mathbb{R}^{m \times 1}$ is the average label assigned by each of the weak supervision sources.
+We rely on the fact that the inverse covariance matrix</p>
+<p>$$
+K:=\Sigma^{-1}=\left[\begin{array}{cc}
+K_{O} &amp; K_{O \mathcal{S}} \
+K_{O \mathcal{S}}^{T} &amp; K_{\mathcal{S}}
+\end{array}\right]
+$$</p>
+<p>is graph structured [18], and therefore so is the sub-block $K_{O}$. In turn, this implies that $K_{O}^{-1}$ is a permutation of a block-diagonal matrix with $s$ blocks corresponding to the $s$ source clusters, where each block is no larger than $(d+1) \times(d+1)$, where $d$ is the maximum dependency degree. We will use this fact later on. From the block matrix inversion formula,</p>
+<p>$$
+K_{O}=\Sigma_{O}^{-1}+c \Sigma_{O}^{-1} \Sigma_{O \mathcal{S}} \Sigma_{O \mathcal{S}}^{T} \Sigma_{O}^{-1}
+$$</p>
+<p>where $c=\left(\Sigma_{\mathcal{S}}-\Sigma_{O \mathcal{S}}^{T} \Sigma_{O}^{-1} \Sigma_{O \mathcal{S}}\right)^{-1} \in \mathbb{R}^{+}$. Let $z=\sqrt{c} \Sigma_{O}^{-1} \Sigma_{O \mathcal{S}}$; we can write (1) as</p>
+<p>$$
+\Sigma_{O}^{-1}=K_{O}-z z^{T}
+$$</p>
+<p>The empirically observable term $\Sigma_{O}^{-1}$ is the sum of a graph-structured term $\left(K_{O}\right)$ and a rank-one matrix $\left(z z^{T}\right)$ that represents marginalizing over the latent label $Y$. Note that while $K_{O}$ is sparse, adding the dense low-rank matrix $z z^{T}$ to it will result in $\Sigma_{O}^{-1}$ being dense as well.
+In the latent structure learning setting, our goal is to calculate $K_{O}$, which is graph-structured and allows us to read off the structure of $G$ from its entries. We therefore have to decompose the observable $\Sigma_{O}^{-1}$ into $K_{O}$ and $z z^{T}$, unknown sparse and low-rank components. This inspires the use of robust principal component analysis [6, 7].</p>
+<h1>3.2 Robust PCA</h1>
+<p>The robust PCA setup consists of a matrix $M \in \mathbb{R}^{m \times m}$ that is equal to the sum of a low-rank matrix and a sparse matrix, $M=L+S$, where $\operatorname{rank}(L)=r$ and $|\operatorname{supp}(S)|=k$. The name of the problem was inspired by the observation that although standard PCA recovers a low-dimensional subspace in the presence of bounded noise, it is not robust to gross corruptions (modeled by the entries of the sparse matrix). Note that the decomposition $M=L+S$ is not identifiable without additional conditions. For example, if $M=e_{i} e_{j}^{T}, M$ is itself both sparse and low-rank, and thus the pairs $(L, S)=(M, 0)$ and $(L, S)=(0, M)$ are equally valid solutions. Therefore, the fundamental question of robust PCA is to determine conditions under which the decomposition can be recovered.
+The two seminal works on robust PCA [6, 7] studied transversality conditions for identifiability. In particular, the solution spaces $L, S$ can only intersect at 0 .
+For the sparse component, let</p>
+<p>$$
+\Omega(S)=\left{X \in \mathbb{R}^{m \times m} \mid \operatorname{supp}(N) \subseteq \operatorname{supp}(S)\right}
+$$</p>
+<p>For the low-rank component, let $L=U D V^{T}$ be the SVD of $L$ with rank $r$. Then, let</p>
+<p>$$
+T(L)=\left{U X^{T}+Y V^{T} \mid X, Y \in \mathbb{R}^{m \times r}\right}
+$$</p>
+<p>The key notion for identifiability in robust PCA problems is to ensure these subspaces are transverse-so that neither the low-rank components are too sparse, nor the sparse component too low-rank. We measure these notions via the the functions $\mu, \xi[7]$ :</p>
+<p>$$
+\mu(\Omega(S))=\max <em _infty="\infty">{N \in \Omega(S),|N|</em>|N|
+$$}=1</p>
+<p>and</p>
+<p>$$
+\xi(T(L))=\max <em _infty="\infty">{N \in T(L),|N| \leq 1}|N|</em>
+$$</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">Weak</span><span class="w"> </span><span class="n">Supervision</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">Learning</span>
+<span class="w">    </span><span class="n">Input</span><span class="p">:</span><span class="w"> </span><span class="n">Estimate</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">covariance</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">tilde</span><span class="p">{</span>\<span class="n">Sigma</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">O</span><span class="p">}</span>\<span class="p">),</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">lambda_</span><span class="p">{</span><span class="n">n</span><span class="p">},</span><span class="w"> </span>\<span class="n">gamma</span>\<span class="p">),</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span>\<span class="p">(</span><span class="n">T</span>\<span class="p">),</span><span class="w"> </span><span class="n">loss</span><span class="w"> </span><span class="n">function</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}(</span>\<span class="n">cdot</span><span class="p">,</span><span class="w"> </span>\<span class="n">cdot</span><span class="p">)</span>\<span class="p">)</span>
+<span class="w">    </span><span class="n">Solve</span><span class="p">:</span>
+<span class="w">        </span>\<span class="p">((</span>\<span class="n">hat</span><span class="p">{</span><span class="n">S</span><span class="p">},</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">L</span><span class="p">})</span><span class="o">=</span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">argmin</span><span class="p">}</span><span class="n">_</span><span class="p">{(</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">)}</span><span class="w"> </span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span>\<span class="n">left</span><span class="p">(</span><span class="n">S</span><span class="o">-</span><span class="n">L</span><span class="p">,</span><span class="w"> </span>\<span class="n">Sigma_</span><span class="p">{</span><span class="n">O</span><span class="p">}</span><span class="o">^</span><span class="p">{(</span><span class="n">n</span><span class="p">)}</span>\<span class="n">right</span><span class="p">)</span><span class="o">+</span>\<span class="n">lambda_</span><span class="p">{</span><span class="n">n</span><span class="p">}</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">gamma</span>\<span class="o">|</span><span class="n">S</span>\<span class="o">|</span><span class="n">_</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="o">+</span>\<span class="o">|</span><span class="n">L</span>\<span class="o">|</span><span class="n">_</span><span class="p">{</span><span class="o">*</span><span class="p">}</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">)</span>
+<span class="w">    </span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="w"> </span>\<span class="p">(</span><span class="n">S</span><span class="o">-</span><span class="n">L</span><span class="w"> </span>\<span class="n">succ</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span>\<span class="n">succeq</span><span class="w"> </span><span class="mi">0</span>\<span class="p">)</span>
+<span class="w">    </span>\<span class="p">(</span>\<span class="n">hat</span><span class="p">{</span><span class="n">E</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span>\<span class="n">left</span>\<span class="p">{(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">):</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">,</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">S</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">i</span><span class="w"> </span><span class="n">j</span><span class="p">}</span><span class="o">&gt;</span><span class="n">T</span>\<span class="n">right</span>\<span class="p">}</span>\<span class="p">)</span>
+<span class="w">    </span><span class="n">Return</span><span class="p">:</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">hat</span><span class="p">{</span><span class="n">G</span><span class="p">}</span><span class="o">=</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">E</span><span class="p">})</span>\<span class="p">)</span>
+</code></pre></div>
+
+<p>These two quantities govern how well-aligned the sparse matrix $S$ is with the coordinate axes and how spread out the low-rank matrix $L$ is. For the decomposition of $M=L+S$ to be identifiable, the required condition is</p>
+<p>$$
+\mu(\Omega(S)) \xi(T(L))&lt;1
+$$</p>
+<h1>3.3 Adapting Robust PCA for Weak Supervision</h1>
+<p>We now adapt the robust PCA setting to our setup: $S=K_{O}$ and $L=z z^{T}$, a rank one matrix. First, we determine identifiability in the noiseless case: if we do not have identifiability even with the true $\Sigma_{O}$ matrix, we have no hope of recovering structure in the sampled case $\tilde{\Sigma}<em _min="\min">{O}$.
+Let $a</em>$, respectively, representing the smallest and largest correlations among the sources. We can now write the identifiability condition in terms of the extreme values of the source accuracies and correlations.
+Lemma 1. Let $K_{O}$ be the block of the inverse covariance matrix $\Sigma^{-1}$ corresponding to the observed variables, and let $a_{\min }, a_{\max }, c_{\min }, c_{\max }$ be defined as above. Then,}, a_{\max }$ be the smallest and largest terms in $\Sigma_{O S}$, respectively. These represent the smallest and largest covariances between the true label $Y$ and the weak supervision sources $\lambda_{i}$, which are the smallest and largest accuracies of the sources. Similarly, we let $c_{\min }, c_{\max }$ be the smallest and largest terms in $\Sigma_{O</p>
+<p>$$
+\mu\left(\Omega\left(K_{O}\right)\right) \xi\left(T\left(z z^{T}\right)\right) \leq \frac{6.4 d}{\sqrt{m}}\left(\frac{c_{\max }}{c_{\min }}\right)\left(\frac{a_{\max }}{a_{\min }}\right)
+$$</p>
+<p>Thus, for a fixed degree $d$, if we have access to</p>
+<p>$$
+m \geq 40.96 d^{2}\left[c_{\max } a_{\max } /\left(c_{\min } a_{\min }\right)\right]^{2}
+$$</p>
+<p>weak supervision sources, then $\mu\left(\Omega\left(K_{O}\right)\right) \xi\left(T\left(z z^{T}\right)\right)&lt;1$ and there is a unique solution to the decomposition of $\Sigma_{O}^{-1}$.</p>
+<p>Implementation Algorithm 1 describes our latent structure learning method. We use the loss function from Wu et al. [45]:</p>
+<p>$$
+\mathcal{L}\left(S-L, \Sigma_{O}^{(n)}\right)=\frac{1}{2} \operatorname{tr}\left((S-L) \Sigma_{O}^{(n)}(S-L)\right)-\operatorname{tr}(S-L)
+$$</p>
+<p>We implement Algorithm 1 using standard convex solvers. The recovered sparse matrix $\hat{S}$ does not have entries that are perfectly 0 . Therefore, a key choice is to set a threshold $T$ to find the zeros in $\hat{S}$ such that</p>
+<p>$$
+\tilde{S}<em i="i" j="j">{i j}= \begin{cases}\hat{S}</em>} &amp; \text { if } \hat{S<em i="i" j="j">{i j}&gt;T \ 0 &amp; \text { if } \hat{S}</em>
+$$} \leq T\end{cases</p>
+<p>We can then pass the nonzero entries of $\tilde{S}$ as dependencies to the generative model described in Section 2.</p>
+<h1>4 Analysis</h1>
+<p>Our goal is to provide guarantees on the probability that Algorithm 1 successfully recovers the exact dependency structure. The critical quantity in establishing these guarantees is $\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right|$, the spectral norm of the estimation error of the covariance matrix. We control this key quantity by characterizing the effective rank of the covariance matrix $\Sigma_{O}$ in Section 4.1. We then introduce two different conditions on the effective rank; these enable us to derive our main result, consisting of improved sample complexities, in Section 4.2.
+We end our analysis by deriving an information-theoretic lower bound for the weak supervision structure learning problem in Section 5, characterizing the additional sample complexity cost versus the supervised setting. We show that although this cost can be unboundedly larger for the general latent setting, for the weak supervision case, it is reasonably small.</p>
+<h3>4.1 Controlling the Covariance Estimation Error</h3>
+<p>Structure learning algorithms for the supervised case [18, 29] recover the structure with high probability given $\Omega\left(d^{k} \log m\right)$ samples, where $k \geq 2$ depends on the approach taken. The unsupervised (latent variable) algorithms in Chandrasekaran et al. [8], Wu et al. [45] require $\Omega(m)$ samples.
+The critical difference between these two classes of algorithms is found in their objectives. Note that the objective function for the algorithms of Loh and Wainwright [18], Ravikumar et al. [29] contains the regularizer $|\cdot|<em 1="1">{1}$, while the algorithms in Chandrasekaran et al. [8], Wu et al. [45] instead have $|\cdot|</em>+|\cdot|<em _="*">{<em>}$. The presence of the $|\cdot|_{</em>}$ norm in the objective for the latent settings is the key difference. Both classes of algorithms rely on the primal-dual witness approach for their proofs of consistency. The dual norm of $|\cdot|</em>\right|$ that require $\Omega(m)$ samples.}$ is the spectral norm $|\cdot|$. As a result, a bound on $\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right|$ (the estimated sample covariance matrix) is necessary-while a simpler entry-wise bound is sufficient for the supervised case. To ensure high-probability recovery, the unsupervised approaches rely on matrix concentration inequalities bounding $\left|\Sigma_{O}^{(n)}-\Sigma_{O</p>
+<p>Characterizing the Effective Rank To reduce this sampling rate, we leverage a refined measure of rank, the effective rank [42], defined as</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right)=\operatorname{tr}\left(\Sigma_{O}\right) /\left|\Sigma_{O}\right|
+$$</p>
+<p>The effective rank may be much smaller than the true rank; the notion that data matrices are approximately low-rank is well-known [38]. Characterizing the effective rank in the weak supervision setting enables us to apply sharper concentration inequalities. We use these tools to build on the analyses in Chandrasekaran et al. [8], Wu et al. [45] while providing improved rates. We note that Meng et al. [22] also considered the effective rank in a slightly different context. In the weak supervision setting, our characterization is tighter and we cover a wider range of cases.
+Recall that the structure of $K_{O}^{-1}$ contains our key problem parameters-but $\Sigma_{O}$ does not. However, we show that</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right) \leq r_{e}\left(K_{O}^{-1}\right)+\frac{|v|^{2}}{\left|K_{O}^{-1}\right|}
+$$</p>
+<p>Therefore, controlling the effective rank of $\Sigma_{O}$ can be done via the effective rank of $K_{O}^{-1}$. We can then characterize $r_{e}\left(\Sigma_{O}\right)$ in terms of structural information about the weak supervision sources. More details on this process are in the Appendix.</p>
+<h3>4.2 Conditions on the Effective Rank \&amp; Main Results</h3>
+<p>We provide two separate conditions on the effective rank, which lead to two different improved regimes for recovery in Algorithm 1. Let $0&lt;\tau \leq 1$ be a constant.
+First, we define the source block decay (SBD) condition. In this case, the number of correlated clusters is $s=O\left(m^{\tau / 2} / \log m\right)$ and $r_{e}\left(\Sigma_{O}\right)=O\left(m^{\tau} / \log m\right)$. Then we can recover the exact structure with probability at least $1-m^{-\tau}$ if the number of samples is $n=\Omega\left(d^{2} m^{\tau}\right)$, where $d$ is the maximum dependency degree.
+Next, we define the strong source block (SSB) condition, where $r_{e}\left(\Sigma_{O}\right)=O(d)$, with no requirement on $s$. Then, with probability at least $1-m^{-\tau}$, we recover the exact dependency structure $G$ if $n=\Omega\left(d^{2}(1+\tau) \log m\right)$.</p>
+<table>
+<thead>
+<tr>
+<th>Cond.</th>
+<th>$r_{e}\left(\Sigma_{O}\right)$</th>
+<th>$s$</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bach</td>
+<td>none</td>
+<td>none</td>
+<td>$\Omega(m \log m)$</td>
+</tr>
+<tr>
+<td>Wu</td>
+<td>none</td>
+<td>none</td>
+<td>$\Omega\left(d^{2} m\right)$</td>
+</tr>
+<tr>
+<td>SBD</td>
+<td>$O\left(\frac{m^{\tau}}{\log m}\right)$</td>
+<td>$O\left(\left(\frac{m}{\log ^{2} m}\right)^{\tau /(2-\tau)}\right)$</td>
+<td>$\Omega\left(d^{2} m^{\tau}\right)$</td>
+</tr>
+<tr>
+<td>SSB</td>
+<td>$O(d)$</td>
+<td>none</td>
+<td>$\Omega\left(d^{2} \log m\right)$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Conditions and rates for latent variable structure learning in Bach et al. [2], Wu et al. [45], and Algorithm 1 using the two conditions (SBD, SSB) we define. Shown are the conditions on the effective rank and the number of source clusters and the resulting sample complexities. Here $0&lt;\tau&lt;1$.</p>
+<p>Note that the second sample complexity matches the supervised optimal rate of $d^{2} \log m$ samples. These conditions and the resulting sample complexities, along with those for the algorithms in Bach et al. [2] and Wu et al. [45] are summarized in Table 1. Next, we explain them in more detail and provide the formal result.
+Definition 1 (SBD Condition). The matrix $\Sigma_{O}$ satisfies the source block decay (SBD) condition if its effective rank $r_{e}\left(\Sigma_{O}\right)$ satisfies</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right) \leq \frac{m^{\tau}}{(1+\tau) \log m}
+$$</p>
+<p>and the number of clusters $s$ satisfies</p>
+<p>$$
+s \leq \frac{m^{\frac{\tau}{2-\tau}}}{((1+\tau) \log m)^{2 /(2-\tau)}}
+$$</p>
+<p>This condition represents a mild assumption on the structure of $\Sigma_{O}$ (and, equivalently $K_{O}^{-1}$ ). It corresponds to mild eigenvalue decay in the source blocks, and a condition limiting the total number of blocks. In the weak supervision setting, this translates to the strength of some of the correlations in a cluster differing. By exploiting this decay and controlling the total number of blocks $s$, we can obtain a sublinear sample complexity of $\Omega\left(d^{2} m^{\tau}\right)$ for Algorithm 1.
+Definition 2 (SSB Condition). The matrix $\Sigma_{O}$ satisfies the strong source block (SSB) condition if its effective rank $r_{e}\left(\Sigma_{O}\right)$ satisfies $r_{e}\left(\Sigma_{O}\right) \leq c d$, where $c$ is a constant.
+The second, alternate condition is equivalent to the presence of a cluster of sources that forms a strong voting block, dominating the other sources. With this condition, we can retrieve the optimal rate of $\Omega\left(d^{2}(1+\tau) \log m\right)$ from the supervised case. We provide a more precise characterization for the effective rank bounds in the proof of the theorem in the Appendix. In particular, we show how to relate the effective rank of $\Sigma_{O}$ in terms of that of $K_{O}^{-1}$, enabling us to connect structural information like the quantities $d$ and $s$ to the conditions.</p>
+<p>Additional Standard Conditions Next, we highlight the general conditions used by Chandrasekaran et al. [8] and Wu et al. [45] whose work we build on; we require these to hold in addition to the SBD or SSB conditions we define above. Specifically, we use a series of standard quantities that control transversality, introduced by Chandrasekaran et al. [8] and Wu et al. [45]. Let</p>
+<p>$$
+h_{X}(Y)=\frac{1}{2}(X Y+Y X)
+$$</p>
+<p>Let $\mathcal{P}<em X="X">{S}$ denote orthogonal projection onto subspace $S$. The following terms are used to control the behavior of $h</em>(\cdot)$ on the spaces $\Omega(S)$ and $T(L)$. For convenience, we simply use $\Omega$ and $T$ to denote these spaces. Let</p>
+<p>$$
+\begin{aligned}
+\alpha_{\Omega} &amp; =\min <em _infty="\infty">{M \in \Omega,|M|</em>}=1}\left|\mathcal{P<em _Sigma__O="\Sigma_{O">{\Omega} h</em>(M)\right|}<em _Omega="\Omega">{\infty} \
+\delta</em> &amp; =\min <em _infty="\infty">{M \in \Omega,|M|</em>}=1}\left|\mathcal{P<em _Sigma__O="\Sigma_{O">{\Omega \perp} h</em>(M)\right|}<em T="T">{\infty} \
+\alpha</em> &amp; =\min <em T="T">{M \in T,|M|=1}\left|\mathcal{P}</em>(M)\right| \
+\delta_{T} &amp; =\min } h_{\Sigma_{O}<em T="T" _perp="\perp">{M \in T,|M|=1}\left|\mathcal{P}</em>(M)\right| \
+\beta_{T} &amp; =\max } h_{\Sigma_{O}<em _infty="\infty">{M \in T,|M|</em>(M)\right|}=1}\left|h_{\Sigma_{O}<em _Omega="\Omega">{\infty} \
+\beta</em> &amp; =\max <em _Sigma__O="\Sigma_{O">{M \in \Omega,|M|=1}\left|h</em>(M)\right|
+\end{aligned}
+$$}</p>
+<p>We set</p>
+<p>$$
+\alpha=\min \left{\alpha_{\Omega}, \alpha_{T}\right}, \beta=\max \left{\beta_{T}, \beta_{\Omega}\right}, \delta=\max \left{\delta_{\Omega}, \delta_{T}\right}
+$$</p>
+<p>The following irrepresentability conditions are inherited from Wu et al. [45] and are generalizations of standard conditions from the graphical model literature [29, 46]: there exists $\nu \in(0,1 / 2)$ with</p>
+<p>$$
+\begin{gathered}
+\delta / \alpha&lt;1-2 \nu, \quad \text { and } \
+\mu(\Omega) \xi(T) \leq \frac{1}{2}\left(\frac{\nu \alpha}{(2-\nu) \beta}\right)^{2}
+\end{gathered}
+$$</p>
+<p>Finally, let $\psi_{1}$ be the largest eigenvalue of $\Sigma_{O}, \psi_{m}$ be the smallest, let $K_{O, \min }$ be the smallest non-zero entry in $K_{O}$, and $\sigma$ be the nonzero eigenvalue of $z z^{T}$. We set</p>
+<p>$$
+\gamma=\frac{\nu \alpha}{2 d \beta(2-\nu)}
+$$</p>
+<p>Main Results We now present the formal result for the consistency of Algorithm 1. First, the source block decay case:
+Theorem 1 (Source Block Decay Case). Let $0&lt;\tau \leq 1$ be a constant. Suppose that the standard conditions above and the SBD condition are met. Set</p>
+<p>$$
+\lambda_{n}=\max \left{1, \gamma^{-1}\right} \frac{(3-2 \nu) c_{1} \psi_{1} \sqrt{m^{\tau}}}{\psi_{m} \sqrt{n}}
+$$</p>
+<p>Let</p>
+<p>$$
+\rho_{1}=\left[\frac{6 c_{2} \beta(3-2 \nu)(2-\nu) \psi_{1}}{\nu \alpha^{2} \psi_{m}} \max \left{\frac{\gamma}{K_{O, \min }}, \sigma^{-1}, \frac{1}{\psi_{m}}\right}\right]^{2}
+$$</p>
+<p>If the number of samples $n$ satisfies</p>
+<p>$$
+n&gt;\rho_{1} d^{2} m^{\tau}
+$$</p>
+<p>and we run Algorithm 1, then, with probability at least $1-m^{-\tau}$, we recover the exact structure $G$.
+Next, the strong source block case:
+Theorem 1 (Strong Source Block Case). Suppose instead that in addition to the standard conditions, the SSB condition holds. Set</p>
+<p>$$
+\lambda_{n}=\max \left{1, \gamma^{-1}\right} \frac{(3-2 \nu) c_{4} c_{2} \psi_{1} d(1+\tau) \log (m)}{\psi_{m} n}
+$$</p>
+<p>Let</p>
+<p>$$
+\rho_{2}=\frac{6 \beta c_{2} c_{4}(3-2 \nu)(2-\nu) \psi_{1}}{\nu \alpha^{2} \psi_{m}} \max \left{\frac{\gamma}{K_{O, \min }}, \sigma^{-1}, \frac{1}{\psi_{m}}\right}
+$$</p>
+<p>If the number of samples $n$ satisfies</p>
+<p>$$
+n&gt;\rho_{2}(1+\tau) d^{2} \log (m)
+$$</p>
+<p>then, with probability at least $1-m^{-\tau}$, we recover the exact structure $G$.
+We provide a formal proof of Theorem 1 in the Appendix. The proof modifies the proof technique in Wu et al. [45] by applying stronger concentration inequalities and adapting the resulting analysis.</p>
+<h1>5 Information-Theoretic Lower Bound</h1>
+<p>So far, we have worked with a particular algorithm, showing that under the stronger of our two conditions, the sample complexity matches the optimal one of $\Omega\left(d^{2} \log m\right)$ for supervised structure learning. Now we explore the general question of the fundamental limits of structure learning with latent variables. This is accomplished by deriving information-theoretic lower bounds on sample complexity: bounds that show that for any algorithm, at least a certain number of samples is required to avoid incurring a particular probability of error.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Simple example for latent variable structure learning. In these two graphs, $Y$ is not connected to every source. Observing $\lambda_{1}$ and $\lambda_{2}$ does not allow us to establish which of $\left{G_{1}, G_{2}\right}$ is the true model, regardless of the number of samples.</p>
+<p>First, we may ask what happens in the general latent-variable case. In this setting, we do not need to have $Y$ connected to each of the $\lambda_{i}$ source variables; $Y$ may be connected to just some of these sources. Even if we ensure that the class of graphs we are working over is connected overall, there are graphs that cannot be distinguished, with any number of samples. One such example is shown in Figure 2. Here, we have two graphs, $G_{1}$ and $G_{2}$, where the only difference is that in one case, there is an edge between $Y$ and $\lambda_{1}$, while in the other, there is an edge between $Y$ and $\lambda_{2}$. By observing only $\lambda_{1}$ and $\lambda_{2}$, but not $Y$, we cannot distinguish between these two graphs.
+For this reason, working in the fully-general latent structure learning setting leads to uninteresting results. Instead, we again work in the weak supervision setting where $Y$ is connected to all of the $\lambda_{i}$ 's. We already know, from our algorithmic analysis, that in certain cases we can recover the structure with $\Omega\left(d^{2} \log m\right)$ samples, and this quantity is optimal even in the supervised case. Certainly we expect that the presence of the latent variable $Y$ will require more samples (in terms of lower bounds). In Theorem 2 we quantify this difference.
+The strategy used to derive information-theoretic lower bounds is to construct a collection of graphs along with a set of parameters and to use Fano's inequality (or related methods) that rely on a notion of distance between pairs of graphs in the collection. The smaller this distance, the larger the number of samples required to distinguish between a pair of graphs. Our approach is to consider a collection of graphs used to derive the $\Omega\left(d^{2} \log m\right)$ lower bound, and to construct the equivalent collection in the latent-variable weak supervision case. We then compute how much larger the number of samples required for reliably selecting the correct graph is for the unsupervised versus supervised case.
+Let $\mathcal{G}<em _text="\text" _ws="{ws">{\text {ws }}$ be the class of graphs on $m+1$ nodes ( $m$ sources and 1 latent node connected to all of the other nodes) with maximum degree $d$, structured according to our exponential family model, restricted to the setting where only edge parameters are non-zero, and all such edge parameters are $\theta$. Let $M=\left|\mathcal{G}</em>\right|$. Our main result is
+Theorem 2. Any decoding procedure to determine $G$ from samples of $\lambda_{1}, \ldots, \lambda_{m}$ will have maximum probability of error at least $\delta-\frac{1}{\log M}$ if the number of samples $n$ is upper-bounded as}</p>
+<p>$$
+n&lt;(1-\delta) \frac{\log (m(m-1) / 2)}{2 \theta\left(1-4\left(\exp (4 \theta)+3\right)^{-1}-\tanh ^{2}(\theta)\right)}
+$$</p>
+<p>As expected, that the number of samples here is larger than supervised version, where the expression simply has a $2 \theta \tanh \theta$ in the denominator [32]. In particular, the number of additional samples $n_{\Delta}$ we need is given by</p>
+<p>$$
+\begin{aligned}
+n_{\Delta}= &amp; \frac{(1-\delta) \log (m(m-1) / 2)}{2 \theta} \times \
+&amp; {\left[\frac{1}{1-4\left(\exp (4 \theta)+3\right)^{-1}-\tanh ^{2}(\theta)}-\frac{1}{\tanh \theta}\right] }
+\end{aligned}
+$$</p>
+<p>This quantity characterizes the cost in sample complexity due to the weak supervision setting. We observe, however, that in the limit of $\theta \rightarrow 0$, this relative cost is not too high. This is the regime of interest for $d, m \rightarrow \infty$, where we end up requiring that $\theta \rightarrow 0$ in order to avoid an exponential sample complexity [32]. Then, the relative version of the cost above can be seen, after some algebra, to be upper bounded by 2 . That is, we need no more than twice as many samples as in the unsupervised case to avoid an unreliable encoder.
+We can interpret this result in the following way. As we intuitively expect, latent variable structure learning requires more samples than the fully-supervised version; potentially, infinitely many samples are required. However, the</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th>Improvement Over</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Application</td>
+<td>$m$</td>
+<td>$(s, d)$</td>
+<td>MV</td>
+<td>Indep.</td>
+<td>Bach et al.</td>
+<td>Ours</td>
+<td>Indep.</td>
+<td>Bach et al.</td>
+</tr>
+<tr>
+<td>Bone Tumor</td>
+<td>17</td>
+<td>$(2,3)$</td>
+<td>65.72</td>
+<td>67.32</td>
+<td>67.83</td>
+<td>71.96</td>
+<td>$+4.64$</td>
+<td>$+4.13$</td>
+</tr>
+<tr>
+<td>CDR</td>
+<td>33</td>
+<td>$(22,14)$</td>
+<td>47.74</td>
+<td>54.60</td>
+<td>55.90</td>
+<td>56.81</td>
+<td>$+2.21$</td>
+<td>$+0.91$</td>
+</tr>
+<tr>
+<td>IMDb</td>
+<td>5</td>
+<td>$(1,4)$</td>
+<td>55.21</td>
+<td>58.80</td>
+<td>60.23</td>
+<td>62.71</td>
+<td>$+3.91$</td>
+<td>$+2.48$</td>
+</tr>
+<tr>
+<td>MS-COCO</td>
+<td>3</td>
+<td>$(1,2)$</td>
+<td>57.95</td>
+<td>59.47</td>
+<td>59.47</td>
+<td>63.88</td>
+<td>$+4.41$</td>
+<td>$+4.41$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Statistics for weak supervision tasks ( $m$ : number sources, $s$ : number of cliques, $d$ : max. degree of source). F1 scores of discriminative models trained on labels generated by majority vote (MV), a generative model with no dependencies (Indep.), a generative model with dependencies learned by a prior structure learning approach for weak supervision (Bach et al), and by our approach (Ours).
+weak-supervision setting provides us with a tractable scenario, where the lower bounds are not much larger than the supervised equivalents.
+We briefly comment on the approach to Theorem 2. The collection considered here is made by taking the graphs where all of the $\lambda_{i}$ 's have no edge between them and adding a single edge between $\lambda_{s}$ and $\lambda_{t}$. Thus there are $\binom{m}{2}$ such graphs in the collection. In the supervised setting, there is just one such edge per graph; in our latent-variable setting, there are $m$ additional edges, those between each $\lambda_{i}$ and $Y$. Intuitively, the challenge when distinguishing between graphs is to ascertain whether a pair of nodes are connected by an edge. In the latent version, this task is harder since all pairs of nodes are additionally connected through $Y$.</p>
+<h1>6 Experimental Results</h1>
+<p>We evaluate our structure learning method on real-world applications ranging from medical image classification to relation extraction over text. We compare our performance to several common weak supervision baselines: an unweighted majority vote of the weak supervision source labels, a generative modeling approach that assumes independence among weak supervision sources [25], and a generative model using dependency structure learned with an existing structure learning approach for weak supervision [2]. We compare these baselines to the same generative modeling technique using dependencies learned by our approach and report performance of the discriminative model trained on labels from the generative model.
+The weak supervision sources for these tasks include a variety of signals exploited in prior work, such as user-defined heuristics, distant supervision from dictionaries, and regular expression patterns. Recovering the dependencies among these sources using our approach leads to an improvement of up to 4.64 F 1 points over assuming independence, and up to 4.41 F 1 points over using the dependencies learned by an existing structure learning method. Finally, we run simulations over synthetic data to explore our performance compared to existing methods under the two conditions of strong source block (SSB) and source block decay (SBD).</p>
+<h3>6.1 Real-World Tasks</h3>
+<p>We use a generative model over the labels from the weak supervision sources to generate probabilistic training labels and then train a generic discriminative model associated with the task [2, 25, 40]. We report the test set performance of the same discriminative model, trained on labels from the different baselines and our approach in Table 2.</p>
+<p>Task Descriptions We describe the different weak supervision tasks, the associated weak supervision sources, and the discriminative model used to perform classification. The Bone Tumor task is to classify tumors in X-rays as aggressive or non-aggressive [40]. The discriminative model is a logistic regression model over hundreds of shape, texture, and intensity-based image features. The weak supervision sources are a combination of user-defined heuristics and decision trees over a different set of features extracted from the X-rays.
+The CDR task is to detect relations among chemicals and disease mentions in PubMed abstracts [2, 44]. The discriminative model is an LSTM [14] that takes as input sentences containing the mentions. The weak supervision</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Shaded region shows where $n&lt;m$. With the strong source block condition, our method significantly outperforms existing method. Without this condition, neither methods work well when $n&lt;m$, as expected.
+sources are a combination of distant supervision from the Comparative Toxicogenomics Database [11] and userdefined heuristics.
+The IMDb task is to classify plot summaries as describing action or romantic movies [41]. The discriminative model is an LSTM that takes as input the entire plot summary. The weak supervision sources are user-defined heuristics that look for mentions of specific words in the plot summary. The MS-COCO task is to classify images as containing a person or not [39]. The discriminative model is GoogLeNet. The weak supervision sources are user-defined heuristics written over the captions associated with the images.</p>
+<p>Performance Our method learns dependencies among the supervision sources for each of the tasks described above, which leads to an average improvement of 3.80 F 1 points over the model that assumes independence. We also compare to a prior structure learning approach for weak supervision Bach et al. [2]. For the MS-COCO task, Bach et al. [2] is unable to learn any dependencies while our method learns a single pairwise dependency, which improves performance by 4.41 F 1 points. For the Bone Tumor task, our method identifies 2 cliques with 3 supervision sources. The first clique consists of heuristics that all rely on features related to edge sharpness along the lesion contour of the tumor, while the sources in the second clique rely on features describing the morphology of the tumor. Incorporating these dependencies in the generative model improves over Bach et al. [2] by 4.13 F1 points. Finally, for the IMDb task, our method learns a clique involving 4 sources while Bach et al. [2] only learns 3 pairwise dependencies among the same sources. Learning a clique improves performance by 2.48 F 1 points.</p>
+<h1>6.2 Simulations</h1>
+<p>We also perform simulations over synthetic data using 200 weak supervision sources to explore how our performance compares to Bach et al. [2] under the two conditions on effective rank described in Section 4, the strong source block (SSB) condition and the source block decay (SBD) condition. We define success as how often these methods are able to learn the true dependencies and plot our results in Figure 3. We first generate labels from supervision sources to match the strong source block condition by ensuring there exists a single cluster of strongly correlated sources along with other more weakly correlated sources. We observe that our method performs significantly better than Bach et al. [2], and is capable of recovery in the regime where $n$ starts at roughly $\log m$ and goes up to roughly $m$. Second, we simulate the source block decay condition by generating multiple cliques of sources where a single dependency in each clique is stronger than the rest. We continue to perform better compared to Bach et al. [2] under this condition and across all values of $n$.</p>
+<h2>7 Conclusion</h2>
+<p>The dependency structure of generative models significantly affects the quality of the generated labels. However, learning this structure without any ground truth labels is challenging. We present a structure learning method that relies on robust principal component analysis to estimate the dependencies among the different weak supervision sources. We prove that the amount of unlabeled data required to estimate the true structure can scale sublinearly or even logarithmically with the number of weak supervision sources, improving over the standard sample complexity, which is linear. Under certain conditions, we match the information-theoretic optimal lower bound in the supervised</p>
+<p>case. Empirically, this translates to our method outperforming traditional structure learning approaches by up to 4.41 F1 points and methods that assume independence by up to 4.64 F1 points.</p>
+<h1>References</h1>
+<p>[1] Enrique Alfonseca, Katja Filippova, Jean-Yves Delort, and Guillermo Garrido. Pattern learning for relation extraction with a hierarchical topic model. In Proceedings of the 50th Annual Meeting of the Association for Computational Linguistics: Short Papers-Volume 2, pages 54-59. Association for Computational Linguistics, 2012.
+[2] Stephen H Bach, Bryan He, Alexander Ratner, and Christopher Ré. Learning the structure of generative models without labeled data. In ICML, 2017.
+[3] F. Bunea and L. Xiao. On the sample covariance matrix estimator of reduced effective rank population matrices, with applications to fpca. Bernoulli, 21(5):1200-1230, 2015.
+[4] Razvan Bunescu and Raymond Mooney. Learning to extract relations from the web using minimal supervision. In ACL, 2007.
+[5] Emmanuel Candes, Terence Tao, et al. The dantzig selector: Statistical estimation when p is much larger than n. The Annals of Statistics, 35(6):2313-2351, 2007.
+[6] Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. Robust principal component analysis? Journal of the ACM, 58(11), 2011.
+[7] Venkat Chandrasekaran, Sujay Sanghavi, Pablo A. Parrilo, and Alan S. Willsky. Rank-sparsity incoherence for matrix decomposition. SIAM Journal on Optimization, 21(2):572-596, 2011.
+[8] Venkat Chandrasekaran, Pablo A. Parrilo, and Alan S. Willsky. Latent variable graphical model selection via convex optimization. Annals of Statistics, 40(4):1935-1967, 2012.
+[9] Mark Craven, Johan Kumlien, et al. Constructing biological knowledge bases by extracting information from text sources. In ISMB, pages 77-86, 1999.
+[10] Nilesh Dalvi, Anirban Dasgupta, Ravi Kumar, and Vibhor Rastogi. Aggregating crowdsourced binary ratings. In Proceedings of the 22nd international conference on World Wide Web, pages 285-294. ACM, 2013.
+[11] Allan Peter Davis, Cynthia J Grondin, Robin J Johnson, Daniela Sciaky, Benjamin L King, Roy McMorran, Jolene Wiegers, Thomas C Wiegers, and Carolyn J Mattingly. The comparative toxicogenomics database: update 2017. Nucleic acids research, 45(D1):D972-D978, 2016.
+[12] Alexander Philip Dawid and Allan M Skene. Maximum likelihood estimation of observer error-rates using the EM algorithm. Applied statistics, pages 20-28, 1979.
+[13] J. Friedman, T. Hastie, and R. Tibshirani. Sparse inverse covariance estimation with the graphical lasso. Biostatistics, 9(3):432-441, 2008.
+[14] Alex Graves and Jürgen Schmidhuber. Framewise phoneme classification with bidirectional lstm and other neural network architectures. Neural Networks, 18(5-6):602-610, 2005.
+[15] Christopher J. Hillar, Shaowei Lin, and Andre Wibisono. Tight bounds on the infinity norm of inverses of symmetric diagonally dominant positive matrices. 2014.
+[16] Raphael Hoffmann, Congle Zhang, Xiao Ling, Luke Zettlemoyer, and Daniel S Weld. Knowledge-based weak supervision for information extraction of overlapping relations. In Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies-Volume 1, pages 541-550. Association for Computational Linguistics, 2011.
+[17] Manas Joglekar, Hector Garcia-Molina, and Aditya Parameswaran. Comprehensive and reliable crowd assessment algorithms. In Data Engineering (ICDE), 2015 IEEE 31st International Conference on, pages 195-206. IEEE, 2015.
+[18] Po-Ling Loh and Martin J. Wainwright. Structure estimation for discrete graphical models: Generalized covariance matrices and their inverses. Annals of Statistics, 41(6):3022-3049, 2013.</p>
+<p>[19] K. Lounici. High-dimensional covariance matrix estimation with missing observations. Bernoulli, 20(3): 1029-1058, 2014.
+[20] Emily K Mallory, Ce Zhang, Christopher Ré, and Russ B Altman. Large-scale extraction of gene interactions from full text literature using DeepDive. Bioinformatics, page btv476, 2015.
+[21] Nicolai Meinshausen and Peter Bühlmann. High-dimensional graphs and variable selection with the lasso. The annals of statistics, pages 1436-1462, 2006.
+[22] Zhaoshi Meng, Brian Eriksson, and Alfred O. Hero III. Larning latent variable gaussian graphical models. In Proceedings of the 31st International Conference on Machine Learning (ICML 2014), Beijing, China, 2014.
+[23] Mike Mintz, Steven Bills, Rion Snow, and Dan Jurafsky. Distant supervision for relation extraction without labeled data. In Proceedings of the Joint Conference of the 47th Annual Meeting of the ACL and the 4th International Joint Conference on Natural Language Processing of the AFNLP: Volume 2-Volume 2, pages 1003-1011. Association for Computational Linguistics, 2009.
+[24] Liqun Qi. Some simple estimates for singular values of a matrix. Linear Algebra and Its Applications, 56: $105-119,1984$.
+[25] A. J. Ratner, Christopher M. De Sa, Sen Wu, Daniel Selsam, and C. Ré. Data programming: Creating large training sets, quickly. In Proceedings of the 29th Conference on Neural Information Processing Systems (NIPS 2016), Barcelona, Spain, 2016.
+[26] A. J. Ratner, B. Hancock, J. Dunnmon, F. Sala, S. Pandey, and C. Ré. Training complex models with multi-task weak supervision. In Proceedings of the AAAI Conference on Artificial Intelligence, Honolulu, Hawaii, 2019.
+[27] Alexander J Ratner, Christopher M De Sa, Sen Wu, Daniel Selsam, and Christopher Ré. Data programming: Creating large training sets, quickly. In Advances in Neural Information Processing Systems, pages 3567-3575, 2016.
+[28] Pradeep Ravikumar, Martin J Wainwright, John D Lafferty, et al. High-dimensional ising model selection using 11-regularized logistic regression. The Annals of Statistics, 38(3):1287-1319, 2010.
+[29] Pradeep Ravikumar, Martin J. Wainwright, Garvesh Raskutti, and Bin Yu. High-dimensional covariance estimation by minimizing $\ell_{1}$-penalized log-determinant divergence. Electronic Journal of Statistics, 5: $935-980,2011$.
+[30] Sebastian Riedel, Limin Yao, and Andrew McCallum. Modeling relations and their mentions without labeled text. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases, pages 148-163. Springer, 2010.
+[31] Benjamin Roth and Dietrich Klakow. Combining generative and discriminative model scores for distant supervision. In EMNLP, pages 24-29, 2013.
+[32] Narayana P. Santhanam and Martin J. Wainwright. Information-theoretic limits of selecting binary graphical models in high dimensions. IEEE Transactions on Information Theory, 58(7):4117-4134, 2012.
+[33] Robert E Schapire and Yoav Freund. Boosting: Foundations and algorithms. MIT press, 2012.
+[34] Karthikeyan Shanmugam, Rashish Tandon, Alexandros G. Dimakis, and Pradeep Ravikumar. On the information theoretic limits of learning Ising models. In Proceedings of the 27th Conference on Neural Information Processing Systems (NIPS 2016), Montreal, Canada, 2014.
+[35] Jaeho Shin, Sen Wu, Feiran Wang, Christopher De Sa, Ce Zhang, and Christopher Ré. Incremental knowledge base construction using DeepDive. Proceedings of the VLDB Endowment, 8(11):1310-1321, 2015.
+[36] Shingo Takamatsu, Issei Sato, and Hiroshi Nakagawa. Reducing wrong labels in distant supervision for relation extraction. In Proceedings of the 50th Annual Meeting of the Association for Computational Linguistics: Long Papers-Volume 1, pages 721-729. Association for Computational Linguistics, 2012.
+[37] Robert Tibshirani. Regression shrinkage and selection via the lasso. Journal of the Royal Statistical Society. Series B (Methodological), pages 267-288, 1996.
+[38] M. Udell and A. Townsend. Why are big data matrices approximately low rank? SIAM Mathematics of Data Science (SIMODS), 2018.</p>
+<p>[39] Paroma Varma, Bryan He, Dan Iter, Peng Xu, Rose Yu, C De Sa, and C Ré. Socratic learning: Augmenting generative models to incorporate latent subsets in training data. arXiv preprint arXiv:1610.08123, 2017.
+[40] Paroma Varma, Bryan D He, Payal Bajaj, Nishith Khandwala, Imon Banerjee, Daniel Rubin, and Christopher Ré. Inferring generative model structure with static analysis. In Advances in neural information processing systems, pages 240-250, 2017.
+[41] Paroma Varma, Dan Iter, Christopher De Sa, and Christopher Ré. Flipper: A systematic approach to debugging training sets. In Proceedings of the 2nd Workshop on Human-In-the-Loop Data Analytics, page 5. ACM, 2017.
+[42] R. Vershynin. Introduction to the non-asymptotic analysis of random matrices. In $n$ Compressed Sensing, pages 210-268. Cambridge Univ. Press, 2012.
+[43] Martin J Wainwright and Michael I Jordan. Graphical models, exponential families, and variational inference. Foundations and Trends® in Machine Learning, 1(1-2):1-305, 2008.
+[44] Chih-Hsuan Wei, Yifan Peng, Robert Leaman, Allan Peter Davis, Carolyn J Mattingly, Jiao Li, Thomas C Wiegers, and Zhiyong Lu. Overview of the BioCreative V chemical disease relation (CDR) task. In Proceedings of the fifth BioCreative challenge evaluation workshop, pages 154-166, 2015.
+[45] Changjing Wu, Hongyu Zhao, Huaying Fang, and Minghua Deng. Graphical model selection with latent variables. Electronic Journal of Statistics, 11:3485-3521, 2017.
+[46] Teng Zhang and Hui Zou. Sparse precision matrix estimation via lasso penalized d-trace loss. Biometrika, 101(1):103-120, 2014.
+[47] Yuchen Zhang, Xi Chen, Dengyong Zhou, and Michael I Jordan. Spectral methods meet em: A provably optimal algorithm for crowdsourcing. Journal of Machine Learning Research, 17(102):1-44, 2016.
+[48] Peng Zhao and Bin Yu. On model selection consistency of lasso. Journal of Machine learning research, 7 (Nov):2541-2563, 2006.</p>
+<h1>A Glossary \&amp; Extended Related Work</h1>
+<p>First, we provide a glossary of terms and notation that we use throughout this paper for easy summary. Afterwards, we provide an extended discussion of related work. We give the proofs of our main results (the lemma and the two theorems). Next, we include a discussion on other aspects of generating information-theoretic lower bounds for the weak supervision setting. We also consider extending robust PCA-based techniques for structure learning without the singleton separator set assumption. Finally, we give additional experimental details.
+The glossary can be found in Table 3 below.</p>
+<p>Extended Related Work A common alternative to hand labeling data is using weak supervision sources, such as distant supervision [9, 23], multi-instance learning [16, 30] and heuristics [4, 35]. Estimating the accuracies of weak supervision sources without ground truth labels is a classic problem [12]. Methods like crowdsourcing [10, 17, 47], and boosting [33] are common approaches; however, we focus on the case in which no labeled data is required.
+Recently, generative models have been used to combine various sources of weak supervision [1, 26, 27, 31, 36]. Most previous work assumes that the structure of these models is user-specified. Bach et al. [2] recently showed that it is possible to learn dependencies with a sample complexity that scales quasilinearly with the number of sources. Varma et al. [40] inferred dependencies using the code used to define the weak supervision sources. Our method improves over Bach et al. [2] by reducing the dependence on the number of sources to sublinear, and, under stronger conditions, logarithmic, and is able to learn dependencies that are not explicit in the code, thus improving over Varma et al. [40] as shown in Section 6.
+Structure learning outside the context of weak supervision can be roughly divided into the supervised and unsupervised case, which require access to ground truth labels and not, respectively. Within these, we can further split the methods into node-wise and matrix-wise methods. Node-wise methods, like Bach et al. [2], use regression on a particular node to recover that node's neighborhood [5, 28, 37, 43] and matrix-wise methods like ours use the inverse covariance matrix to determine the structure [8, 18]. The canonical matrix-wise method in the supervised case is the graphical Lasso algorithm (GLASSO) [13].</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$X$</td>
+<td style="text-align: left;">Data point, $X \in \mathcal{X}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$n$</td>
+<td style="text-align: left;">Number of data points</td>
+</tr>
+<tr>
+<td style="text-align: left;">$Y$</td>
+<td style="text-align: left;">Latent label</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\lambda_{i}$</td>
+<td style="text-align: left;">Weak supervision sources output by the $i$ th source for $X$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$m$</td>
+<td style="text-align: left;">Number of sources</td>
+</tr>
+<tr>
+<td style="text-align: left;">$G$</td>
+<td style="text-align: left;">Source dependency graph, $G=(V, E), V=\left{\lambda_{1}, \ldots, \lambda_{m}\right} \cup{Y}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$f_{G}$</td>
+<td style="text-align: left;">Density of weak supervision sources $\lambda_{1} \ldots \lambda_{m}$ and latent variable $Y$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$d$</td>
+<td style="text-align: left;">Maximum degree of weak supervision sources in $G$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$s$</td>
+<td style="text-align: left;">Number of cliques of dependent weak supervision sourcess in $G$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$O$</td>
+<td style="text-align: left;">The set of observable variables, i.e., weak supervision sources (but not the label $Y$ )</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathcal{S}$</td>
+<td style="text-align: left;">The set of unobserved variables, i.e., the latent label $Y$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\Sigma$</td>
+<td style="text-align: left;">Covariance matrix of $O \cup \mathcal{S}, \Sigma=\operatorname{Cov}[O \cup \mathcal{S}]$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$K$</td>
+<td style="text-align: left;">The inverse covariance matrix $K=\Sigma^{-1}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\Sigma_{O}$</td>
+<td style="text-align: left;">Covariance matrix of $O$, the observed variables. Neither $\Sigma_{O}$ nor $\Sigma_{O}^{-1}$ are graph structured</td>
+</tr>
+<tr>
+<td style="text-align: left;">$K_{O}$</td>
+<td style="text-align: left;">Sub-block of inverse covariance matrix $K$ corresponding to observed variables</td>
+</tr>
+<tr>
+<td style="text-align: left;">$z z^{T}$</td>
+<td style="text-align: left;">Low rank matrix that encodes the parameters of the graph $f_{G}$ such that $K_{O}=\Sigma_{O}^{-1}+z z^{T}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$T(L)$</td>
+<td style="text-align: left;">Tangent space for the low-rank component in robust PCA, $T(L)=\left{U X^{T}+Y V^{T} \mid Y_{1}, Y_{2} \in \mathbb{R}^{m \times r}\right}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\Omega(S)$</td>
+<td style="text-align: left;">Tangent space for the sparse component, $\Omega(S)=\left{X \in \mathbb{R}^{m \times m} \mid \operatorname{supp}(N) \subseteq \operatorname{supp}(S)\right}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\xi(T(L))$</td>
+<td style="text-align: left;">Measurement of diffuseness of the low-rank term, $\xi(T(L))=\max <em _infty="\infty">{N \in T(L),|N| \leq 1}|N|</em>$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mu(\Omega(S))$</td>
+<td style="text-align: left;">Measurement of sparsity, $\mu(\Omega(S))=\max <em _infty="\infty">{N \in \Omega(S),|N|</em>|N|$}=1</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\tau$</td>
+<td style="text-align: left;">Constant between 0 and 1 that controls the sampling rate and the error probability</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\psi_{1}$</td>
+<td style="text-align: left;">Smallest eigenvalue of $\Sigma_{O}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\psi_{m}$</td>
+<td style="text-align: left;">Largest eigenvalue of $\Sigma_{O}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\gamma$</td>
+<td style="text-align: left;">Hyperparameter in Algorithm 1</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\lambda_{n}$</td>
+<td style="text-align: left;">Positive eigenvalue of $L=z z^{T}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\sigma$</td>
+<td style="text-align: left;">Constant related to $\lambda_{n}$ that controls sample complexity of Algorithm</td>
+</tr>
+<tr>
+<td style="text-align: left;">$K_{O, \text { min }}$</td>
+<td style="text-align: left;">Smallest non-zero entry of $\left</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\alpha_{\Omega}$</td>
+<td style="text-align: left;">$\min <em _infty="\infty">{M \in \Omega,|M|</em>}=1}\left|\mathcal{P<em _Sigma__O="\Sigma_{O">{\Omega} h</em>$}}(M)\right|_{\infty</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta_{\Omega}$</td>
+<td style="text-align: left;">$\min <em _infty="\infty">{M \in \Omega,|M|</em>}=1}\left|\mathcal{P<em _Sigma__O="\Sigma_{O">{\Omega^{\perp}} h</em>$}}(M)\right|_{\infty</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\alpha_{T}$</td>
+<td style="text-align: left;">$\min <em T="T">{M \in T,|M|=1}\left|\mathcal{P}</em>(M)\right|$} h_{\Sigma_{O}</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta_{T}$</td>
+<td style="text-align: left;">$\min <em T_perp="T^{\perp">{M \in T,|M|=1}\left|\mathcal{P}</em>(M)\right|$}} h_{\Sigma_{O}</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\beta_{T}$</td>
+<td style="text-align: left;">$\max <em _infty="\infty">{M \in T,|M|</em>$}=1}\left|h_{\Sigma_{O}}(M)\right|_{\infty</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\beta_{\Omega}$</td>
+<td style="text-align: left;">$\max <em _Sigma__O="\Sigma_{O">{M \in \Omega,|M|=1}\left|h</em>(M)\right|$}</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\alpha$</td>
+<td style="text-align: left;">$\min \left{\alpha_{\Omega}, \alpha_{T}\right}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\beta$</td>
+<td style="text-align: left;">$\max \left{\beta_{T}, \beta_{\Omega}\right}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta$</td>
+<td style="text-align: left;">$\max \left{\delta_{\Omega}, \delta_{T}\right}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Glossary of variables and symbols used in this paper.</p>
+<p>Analysis of the graphical lasso applied to sparse inverse covariance matrices was studied in Ravikumar et al. [29], which achieves a sample complexity of $d^{2} \log m$. The key question is then when the inverse covariance (precision) matrix of a random vector is sparse. In the classical, Gaussian case, the sparsity is governed by the graphical model associated with the vector: if a pair of variables are independent conditioned on all the other variables (i.e., there is no edge between the associated nodes in their graph), the precision matrix is 0 at the corresponding entry. This is not necessarily the case for non-Gaussian models. For discrete models, 18] characterizes the situations when the precision matrix is indeed graph-structured. In many cases, it is necessary to form a larger, generalized covariance matrix. However, for graphs with singleton separator sets, the normal precision matrix is graph-structured.</p>
+<p>The idea of using robust PCA for separating the sparse part of the precision matrix (encoding the graph structure) from the low-rank matrix that captures the marginalizing effects dates back to the original papers on robust PCA [8]. For Gaussian graphical models with latent variables, Chandrasekaran et al. [7] produced the seminal work Chandrasekaran et al. [8]. More recent work follows the same approach, but modifies the loss function 45] and relaxes the Gaussian assumptions. On the other hand, Wu et al. [45] still requires a partially Gaussian model in order to induce sparsity, while our work operates in the discrete case entirely by leveraging the singleton separator set criteria. Both of these works lead to a $\Omega(m)$ rate. The work Meng et al. [22] is closer to the spirit of our approach; one of their results also considers using the effective rank by applying a theorem from Lounici [19]. However, our</p>
+<p>work and theirs has key differences: they consider the Gaussian rather than discrete setting, they are interested in model estimation rather than selection. Finally, they work in a general setting; our work in the weak supervision setting enables us to more tightly characterize the effective rank in terms of key sparsity parameters, while they leave the effective rank as a parameter that can only be measured.</p>
+<p>The major work for structure learning in the weak supervision regime is Bach et al. [2]. This is a fundamentally different approach, building on the node-wise methods and using a pseudo-likelihood to estimating the structure. The key requirement of Bach et al. [2] is the maximum number of dependencies $d$. However, this maximum is taken over all variables, both observed and latent. In the weak supervision scenario, there is a dependency between each weak supervision sources and the latent true label, and therefore this degree $d$ always takes the value $m$ (Corollary 2 in Bach et al. [2]), leading to a rate of $\Omega(m \log m)$. The key advantage of our work is that for us, $d$ is taken over the observed variables only-and therefore can be much smaller than $m$. This enables us to obtain sublinear (and even logarithmic) rates in $m$, and to better scale with the sparsity of the model.</p>
+<h1>B Proofs</h1>
+<p>Next, we give proofs of our results, starting with Lemma 1.
+Proof. Our goal is to bound the product $\mu\left(K_{O}\right) \xi\left(z z^{T}\right)$. Bounding $\mu\left(K_{O}\right)$ is easy: we apply the simple bound $\mu\left(K_{O}\right) \leq d$ (Proposition 3 in Chandrasekaran et al. [7]).
+We must bound the $\xi\left(z z^{T}\right)$ term, which we do as follows. First, since $z z^{T}$ is symmetric, it has the same row-space and column-space. Let this row-space be denoted $\mathrm{rs}\left(z z^{T}\right)$. Define $\beta(S):=\max <em S="S">{i}\left|P</em>\right|} e_{i<em S="S">{2}$, where $P</em>$ is the $i$ th standard basis vector. Then, from Proposition 4 in Chandrasekaran et al. [7]),}$ is projection onto the subspace $S$ and $e_{i</p>
+<p>$$
+\xi\left(z z^{T}\right) \leq 2 \beta\left(\operatorname{rs}\left(z z^{T}\right)\right)
+$$</p>
+<p>Since $z z^{T}$ is rank-one, its row-space is simply spanned by $z$ and $\beta\left(\operatorname{rs}\left(z z^{T}\right)\right)=|\bar{z}|_{\infty}$, where $\bar{z}$ is $z /|z|$. Now, applying the definition of $z$,</p>
+<p>$$
+\beta\left(\operatorname{rs}\left(z z^{T}\right)\right)=|\bar{z}|<em _infty="\infty">{\infty}=\frac{|z|</em>\right|}}{|z|}=\frac{\left|\Sigma_{O}^{-1} \Sigma_{O S<em O="O">{\infty}}{\left|\Sigma</em>
+$$}^{-1} \Sigma_{O S}\right|</p>
+<p>Now, we can upper bound the numerator</p>
+<p>$$
+\left|\Sigma_{O}^{-1} \Sigma_{O S}\right|<em O="O">{\infty} \leq\left|\Sigma</em>\right|}^{-1<em O="O" S="S">{\infty}\left|\Sigma</em>
+$$}\right|_{\infty</p>
+<p>We lower bound the denominator as</p>
+<p>$$
+\left|\Sigma_{O}^{-1} \Sigma_{O S}\right| \geq \sigma_{\min }\left(\Sigma_{O}^{-1}\right)\left|\Sigma_{O S}\right|=\frac{\left|\Sigma_{O S}\right|}{\sigma_{\max }\left(\Sigma_{O}\right)}
+$$</p>
+<p>Using these bounds in (3), we have that</p>
+<p>$$
+\beta\left(\operatorname{rs}\left(z z^{T}\right)\right) \leq\left(\frac{\sigma_{\max }\left(\Sigma_{O}\right)\left|\Sigma_{O}^{-1}\right|<em O="O" S="S">{\infty}\left|\Sigma</em>\right|<em O="O" S="S">{\infty}}{\left|\Sigma</em>\right)
+$$}\right|</p>
+<p>Recall that $a_{\min }, a_{\max }$ are the smallest and largest terms in $\Sigma_{O S}$, respectively. Similarly, recall that $c_{\min }, c_{\max }$ are the smallest and largest terms in $\Sigma_{O}$. We have that $\left|\Sigma_{O S}\right|<em _max="\max">{\infty}=a</em>$, so that}$. Also, $\left|\Sigma_{O S}\right| \geq \sqrt{m} a_{\min </p>
+<p>$$
+\frac{\left|\Sigma_{O S}\right|<em O="O" S="S">{\infty}}{\left|\Sigma</em>
+$$}\right|} \leq \frac{a_{\max }}{\sqrt{m} a_{\min }</p>
+<p>Bounding $\left|\Sigma_{O}^{-1}\right|<em i="i">{\infty}$ is slightly more challenging. Recall the definition of a symmetric diagonally dominant (SDD) matrix. A matrix $J \in \mathbb{R}^{m \times m}$ is SDD if it is symmetric and if $\Delta</em>$. This operation is equivalent to adding independent noise with variance $\nu$ to}(J):=\left|J_{i i}\right|-\sum_{j \neq i}\left|J_{i j}\right| \geq 0$ for all $i=1, \ldots, m$. It is often the case that covariance matrices are SDD (for example, this is the case for the covariances of Gaussian free field models). Even if $\Sigma_{O}$ is not SDD, we can make it SDD by performing the operation $\Sigma_{O} \leftarrow \Sigma_{O}+\nu I$, for some $\nu$ satisfying $\nu \leq(m-1) c_{\max </p>
+<p>each of the labeling functions. Critically, this does not affect the off-diagonal entries of $\Sigma$, which are what we wish to recover.
+Thus we take $\Sigma_{O} \leftarrow \Sigma_{O}+\nu I$ so that $\Sigma_{O}$ is SDD. Then we apply the following tight bound on the $\infty$ norm of the inverse of a SDD matrix [15]:</p>
+<p>$$
+\left|\Sigma_{O}^{-1}\right|<em _min="\min">{\infty} \leq \frac{3 m-4}{2 c</em>
+$$}(m-2)(m-1)} \leq \frac{8}{5 c_{\min } m</p>
+<p>Finally, we must bound the largest singular value of $\Sigma_{O}$. Here, we use a Gerschgorin-style bound [24]: $\sigma_{\max }\left(\Sigma_{O}\right)$ is at most the largest row or column sum (excluding diagonal elements) plus the largest diagonal element. For us, $\sigma_{\max }\left(\Sigma_{O}\right) \leq \nu+m c_{\max } \leq(2 m-1) c_{\max }$
+Putting these results into (4), we obtain</p>
+<p>$$
+\begin{aligned}
+\beta\left(\operatorname{rs}\left(z z^{T}\right)\right) \leq &amp; \frac{8(2 m-1) c_{\max } a_{\max }}{5 m^{3 / 2} c_{\min } a_{\min }} \
+&amp; \leq \frac{3.2}{\sqrt{m}} \frac{c_{\max } a_{\max }}{c_{\min } a_{\min }}
+\end{aligned}
+$$</p>
+<p>Thus,</p>
+<p>$$
+\xi\left(z z^{T}\right) \leq \frac{6.4}{\sqrt{m}}\left(\frac{c_{\max }}{c_{\min }}\right)\left(\frac{a_{\max }}{a_{\min }}\right)
+$$</p>
+<p>Multiplying by $\mu\left(K_{O}\right) \leq d$ gives the result.</p>
+<p>Proof of Theorem 1 Now we prove Theorem 1.
+Proof. Our approach proceeds in two steps. First, we bound the effective rank [42] of our estimate of $\Sigma_{O}$, the covariance matrix of the observed sources. Next, we apply a pair of concentration bounds for estimating $\Sigma_{O}$. Afterwards, we show how to adapt the proof of Theorem 4.1 in Wu et al. [45] to obtain the result in Theorem 1.</p>
+<p>Effective Rank The effective rank of a matrix $A$ is</p>
+<p>$$
+r_{e}(A)=\frac{\operatorname{tr}(A)}{|A|}
+$$</p>
+<p>This quantity can be far smaller than the actual rank. As we shall see, sharp concentration bounds for estimating $\Sigma_{O}$ can be derived by exploiting $r_{e}\left(\Sigma_{O}\right)$. We begin by bounding this quantity in our setting. Applying the matrix inversion lemma, we have that</p>
+<p>$$
+\begin{aligned}
+\Sigma_{O} &amp; =K_{O}^{-1}+\left(K_{S}-K_{O S}^{T} K_{O}^{-1} K_{O S}\right)^{-1} K_{O}^{-1} K_{O S}^{T}\left(K_{O}^{-1} K_{O S}^{T}\right)^{T} \
+&amp; =K_{O}^{-1}+v v^{T}
+\end{aligned}
+$$</p>
+<p>where $v=\left(K_{S}-K_{O S}^{T} K_{O}^{-1} K_{O S}\right)^{-\frac{1}{2}} K_{O}^{-1} K_{O S}^{T}$. Then,</p>
+<p>$$
+\begin{aligned}
+r_{e}\left(\Sigma_{O}\right) &amp; =\frac{\operatorname{tr}\left(\Sigma_{O}\right)}{\left|\Sigma_{O}\right|} \
+&amp; =\frac{\operatorname{tr}\left(K_{O}^{-1}+v v^{T}\right)}{\left|\Sigma_{O}\right|} \
+&amp; =\frac{\operatorname{tr}\left(K_{O}^{-1}\right)+\operatorname{tr}\left(v v^{T}\right)}{\left|\Sigma_{O}\right|} \
+&amp; =\left(\operatorname{tr}\left(K_{O}^{-1}+\operatorname{tr}\left(v v^{T}\right)\right)\left(\lambda_{\min }\left(\Sigma_{O}^{-1}\right)\right)\right. \
+&amp; =\left(\operatorname{tr}\left(K_{O}^{-1}\right)+\operatorname{tr}\left(v v^{T}\right)\right)\left(\lambda_{\min }\left(K_{O}-z z^{T}\right)\right) \
+&amp; \left.\leq\left(\operatorname{tr}\left(K_{O}^{-1}\right)+\operatorname{tr}\left(v v^{T}\right)\right)\left(\lambda_{\min }\left(K_{O}\right)+\lambda_{\max }\left(-z z^{T}\right)\right)\right) \
+&amp; =\frac{\operatorname{tr}\left(K_{O}^{-1}\right)+|v|^{2}}{\left|K_{O}^{-1}\right|}
+\end{aligned}
+$$</p>
+<p>$$
+=r_{e}\left(K_{O}^{-1}\right)+\frac{|v|^{2}}{\left|K_{O}^{-1}\right|}
+$$</p>
+<p>Here, we upper bounded the effective rank of $\Sigma_{O}$ in terms of the effective rank of $K_{O}^{-1}$. The motivation for doing so is that $K_{O}^{-1}$ is more tractable to analyze with respect to our key quantities, such as $d$ and $s$. Recall that $K_{O}$ is sparse matrix. Moreover, it is (a permutation) of a block diagonal matrix. Then, $K_{O}^{-1}$ is also block diagonal and sparse.
+Next, we motivate the two conditions from Theorem 1 Recall that $s$ is the number of cliques among our labeling functions. Let $C_{1}, C_{2}, \ldots, C_{s}$ be the cliques that correspond to the variables $\lambda_{1}, \ldots, \lambda_{m}$, with $\sum_{j=1}^{s}\left|C_{j}\right|=m$ and $\left|C_{j}\right| \leq d$ for all $1 \leq j \leq s$. With slightly abuse of notation, we also refer to $C_{j}$ as the corresponding submatrix in $K_{O}^{-1}$.
+For our first condition, note that in general $\operatorname{tr}\left(C_{i}\right) \leq\left|C_{i}\right| \lambda_{\max }\left(K_{O}^{-1}\right)$. We assume that $\operatorname{tr}\left(C_{i}\right) \leq \frac{1}{2}\left|C_{i}\right|^{\tau / 2} \lambda_{\max }\left(K_{O}^{-1}\right) \leq$ $\lambda_{\max }\left(K_{O}^{-1}\right)\left|C_{i}\right|^{\tau / 2}$. Effectively, we are assuming eigenvalue decay in each clique of sources with rate $\tau / 2$; this is reasonable, since these blocks behave like the adjacency graph of a complete graph. The largest eigenvalue of such an adjacency matrix is large, but all remaining eigenvalues are small. Now, under this assumption, we have, by Holder's inequality,</p>
+<p>$$
+r_{e}\left(K_{O}^{-1}\right)=\frac{\sum_{j=1}^{s} \operatorname{tr}\left(C_{j}\right)}{\lambda_{\max }\left(K_{O}^{-1}\right)} \leq \frac{1}{2} \sum_{j=1}^{s}\left|C_{i}\right|^{\tau / 2} \leq \frac{1}{2} s^{1-\tau / 2}\left(\sum_{j=1}^{s}\left|C_{i}\right|\right)^{\tau / 2} \leq \frac{1}{2} s^{1-\tau / 2} m^{\tau / 2}
+$$</p>
+<p>We have the following additional requirement:</p>
+<p>$$
+s \leq \frac{m^{\frac{\tau}{2-\tau}}}{((1+\tau) \log m)^{2 /(2-\tau)}}
+$$</p>
+<p>This condition controls the largest number of cliques; note that taking $\tau \rightarrow 1$ allows for nearly $m$ cliques (this is thus close to the case where all the sources are conditionally independent on the true label). Now, with a little bit of algebra, we have that</p>
+<p>$$
+\begin{aligned}
+r_{e}\left(K_{O}^{-1}\right) &amp; \leq \frac{1}{2} s^{1-\tau / 2} m^{\tau / 2} \leq \frac{m^{\tau / 2}}{(1+\tau) \log m} m^{\tau / 2} \
+&amp; =\frac{1}{2} \frac{m^{\tau}}{(1+\tau) \log m}
+\end{aligned}
+$$</p>
+<p>We will similarly require that $|v|$ is bounded by the expression above (that is, $O\left(\frac{1}{2} m^{\tau / 2} / \log (m)\right)$, so that</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right) \leq \frac{m^{\tau}}{(1+\tau) \log m}
+$$</p>
+<p>Next, we have the alternative strong source block condition. Now, we assume that one of the blocks corresponding to a clique is dominant. Concretely, if $C_{i}$ is dominant, we require that (i) $\operatorname{tr}\left(C_{i}\right) \geq \sum_{j \neq i} \operatorname{tr}\left(C_{j}\right)$, (ii) $\lambda_{\max }\left(C_{i}\right) \geq$ $\lambda_{\max }\left(C_{j}\right)$ for all $j \neq i$, and (iii) $\left|K_{O S}\right|^{2} \leq 2\left|\left(K_{O S}\right)<em i="i">{C</em>\right)}}\right|^{2}$. In the latter term, $\left(K_{O S<em i="i">{C</em>$.
+Under these assumptions, we show that the effective rank is bounded by a constant times $d$. First,}}$ is the subvector of $K_{O S}$ corresponding to the variables in $C_{i</p>
+<p>$$
+r_{e}\left(K_{O}^{-1}\right)=\frac{\operatorname{tr}\left(K_{O}^{-1}\right)}{\left|K_{O}^{-1}\right|}=\frac{\operatorname{tr}\left(K_{O}^{-1}\right)}{\lambda_{\max }\left(C_{i}\right)} \leq \frac{2 \operatorname{tr}\left(C_{i}\right)}{\lambda_{\max }\left(C_{i}\right)} \leq \frac{2 d \lambda_{\max }\left(C_{i}\right)}{\lambda_{\max }\left(C_{i}\right)}=2 d
+$$</p>
+<p>Next,</p>
+<p>$$
+\begin{aligned}
+|v|^{2} /\left|K_{O}^{-1}\right| &amp; =\left|c K_{O}^{-1} K_{O S}^{T}\right|^{2} /\left|K_{O}^{-1}\right| \leq c^{2}\left|K_{O}^{-1}\right|\left|K_{O S}\right|^{2} \leq c^{2}\left|K_{O}^{-1}\right| 2\left|\left(K_{O S}\right)<em i="i">{C</em> \
+&amp; \leq 2 c^{2}\left|K_{O}^{-1}\right|\left(d\left|\left(K_{O S}\right)}}\right|^{2<em i="i">{C</em> d
+\end{aligned}
+$$}}\right|_{\infty}^{2}\right) \leq c^{\prime</p>
+<p>for some constant $c^{\prime}$.
+Putting these together, we have that</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right) \leq r_{e}\left(K_{O}^{-1}\right)+|v|^{2} /\left|K_{O}^{-1}\right| \leq 2 d+c^{\prime} d=c_{4} d
+$$</p>
+<p>where $c_{4}=2+c^{\prime}$, as desired.</p>
+<p>Concentration Inequality We use Proposition A. 4 from Bunea and Xiao [3]. Written in our notation, it states that with probability at least $1-\exp (-t)$,</p>
+<p>$$
+\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| \leq c_{2}\left|\Sigma_{O}\right| \max \left{\sqrt{\frac{r_{e}\left(\Sigma_{O}\right)(t+\log m)}{n}}, \frac{r_{e}\left(\Sigma_{O}\right)(t+\log m)}{n}\right}
+$$</p>
+<p>Note that this result applies to our setting, since our variables are indeed sub-Gaussian and have higher-order moments bounded in terms of the second moments. We can assume, without loss of generality, that our variables are centered (otherwise, we can estimate the mean from samples and produce a concentration bound at least as tight as the above). This enables us to use Proposition A.4.
+Now, if $r_{e}\left(\Sigma_{O}\right)(t+\log m) / n \leq 1$, or, equivalently, $r_{e}\left(\Sigma_{O}\right) \leq \frac{n}{t+\log m}$, the max on the right hand side in (6) takes the first value. We can then rewrite the bound as</p>
+<p>$$
+\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| \leq c_{2}\left|\Sigma_{O}\right| \sqrt{\frac{r_{e}\left(\Sigma_{O}\right)(t+\log m)}{n}}
+$$</p>
+<p>On the other hand, if $r_{e}\left(\Sigma_{O}\right)&gt;\frac{n}{t+\log m}$, we have that the second term in the max is larger, so that we obtain</p>
+<p>$$
+\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| \leq c_{2}\left|\Sigma_{O}\right| \frac{r_{e}\left(\Sigma_{O}\right)(t+\log (m))}{n}
+$$</p>
+<p>Remainder of the Proof Now we tackle the proof of the main theorem, which adapts the proof of Theorem 4.1 in [45]. The key is to replace Lemma D.1, which states (in our notation) that, for some constant $C_{K}$,</p>
+<p>$$
+\operatorname{Pr}\left{\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| \leq C_{K} \sqrt{\frac{m}{n}}\right} \geq 1-2 \exp (-m)
+$$</p>
+<p>For the source block decay (SBD) assumption, we use (7) with $t=\tau \log m$. Then, as long as $n \geq m^{\tau}$, it is easy to verify that the condition</p>
+<p>$$
+r_{e}\left(\Sigma_{O}\right) \leq \frac{m^{\tau}}{\log m\left(m^{\tau}\right)} \leq \frac{n}{(1+\tau) \log m}
+$$</p>
+<p>is met by directly applying the bound on $r_{e}\left(\Sigma_{O}\right)$ from (5). Next,</p>
+<p>$$
+\begin{aligned}
+\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| &amp; \leq c_{2}\left|\Sigma_{O}\right| \sqrt{\frac{r_{e}\left(\Sigma_{O}\right)(1+\tau) \log m}{n}} \
+&amp; \leq c_{2}\left|\Sigma_{O}\right| \sqrt{\frac{m^{\tau}}{n}}
+\end{aligned}
+$$</p>
+<p>We write</p>
+<p>$$
+\mathcal{F}<em 2="2">{\mathrm{sbd}}(n, m, \tau)=c</em>
+$$}\left|\Sigma_{O}\right| \sqrt{\frac{m^{\tau}}{n}}=c_{2} \psi_{1} \sqrt{\frac{m^{\tau}}{n}</p>
+<p>Next, we work with the strong source block (SSB) condition. Again, we wish to obtain a final error probability of at least $1-m^{-\tau}$, so that we take $t=\tau \log m$. Applying our bound on $r_{e}\left(\Sigma_{O}\right)$, the tail bound (8) becomes</p>
+<p>$$
+\left|\Sigma_{O}^{(n)}-\Sigma_{O}\right| \leq \frac{1}{n} c_{2} c_{4}\left|\Sigma_{O}\right| d(1+\tau) \log (m)
+$$</p>
+<p>We set</p>
+<p>$$
+\mathcal{F}<em 2="2">{\mathrm{ssb}}(n, m, d):=\frac{c</em>
+$$} c_{4} \psi_{1} d(1+\tau) \log (m)}{n</p>
+<p>Now that we have our two tail functions $\mathcal{F}<em _ssb="{ssb" _text="\text">{\text {sbd }}(n, m, \tau)$ and $\mathcal{F}</em>$ in Wu et al. [45] with a $(\log m) / n$ term, which produces a sampling rate in terms of $(\log m)$ instead of $m$.
+Concretely, we replace the $C_{K} \sqrt{\frac{p}{n}}$ term in the proof of Theorem 4.1 in Wu et al. [45] with $\mathcal{F}}}(n, m, d)$, we will finish off the proof by adapting the proof of Wu et al. [45]. For the first condition, we replace the tail term $\sqrt{m / n}$ with a $\sqrt{m^{\tau} / n}$ term, so that our require number of samples is the sublinear $m^{\tau}$ (rather than $m$ ). For the second condition, we replace $\sqrt{m / n<em _sbb="{sbb" _text="\text">{\text {sbd }}(n, m, \tau)$ and $\mathcal{F}</em>$,}}(n, m, d)$. In particular, for the first case, we do this replacement in the following expression for the dual norm $g_{\gamma</p>
+<p>$$
+g_{\gamma}\left(\mathcal{A}^{\dagger} h_{\Sigma_{O}^{(n)}}\left(R^{<em>}\right)\right) \leq m\left|\Sigma_{O}^{(n)} R^{</em>}\right| \leq \frac{\gamma^{-1}}{\psi_{m}} \mathcal{F}_{\mathrm{sbd}}(n, m, \tau)
+$$</p>
+<p>in the step immediately preceding (D.4). Note that here, we replace $\max \left{1, \gamma^{-1}\right}$ with $\gamma^{-1}$, since in our regime of interest, $\gamma^{-1} \geq 1$. Indeed, this is equivalent to requiring that along with the condition on $\mu(\Omega) \xi\left(z z^{T}\right)$, we have $2 d \geq \xi\left(z z^{T}\right)$. Note also that our notation for the smallest eigenvalue is slightly different.
+The term then carries forward, with the final requirement being the selection of the regularization term $\lambda_{n}$ at the end of Step 1 of the proof. Hence, we now require that</p>
+<p>$$
+\lambda_{n}=\frac{(3-2 \nu) \gamma^{-1}}{\psi_{m}} \mathcal{F}(n, m, \tau)_{\mathrm{sbd}}
+$$</p>
+<p>For the second condition, we replace the $C_{K} \sqrt{\frac{\pi}{n}}$ term with $\mathcal{F}_{\text {sub }}(n, m, d)$. We now need that</p>
+<p>$$
+\lambda_{n}=\frac{(3-2 \nu) \gamma^{-1}}{\psi_{m}} \mathcal{F}(n, m, d)_{\mathrm{sab}}
+$$</p>
+<p>All that is left is to ensure the three conditions in the statement of Theorem 4.1 in Wu et al. [45] are met. These conditions are (in our notation)</p>
+<p>$$
+\begin{gathered}
+\sigma&gt;\frac{3}{\alpha} \lambda_{n} \
+\frac{1}{\psi_{m}}&gt;\frac{3 \lambda_{n}}{\alpha}
+\end{gathered}
+$$</p>
+<p>and,</p>
+<p>$$
+K_{O, \min }&gt;\frac{3 \gamma}{\alpha} \lambda_{n}
+$$</p>
+<p>Rewriting these, we have that</p>
+<p>$$
+\frac{1}{\lambda_{n}}&gt;\frac{3}{\alpha} \max \left{\frac{1}{\psi_{m}}, \frac{\gamma}{K_{O, \min }}, \sigma^{-1}\right}
+$$</p>
+<p>For our first condition, recalling that $\gamma=\frac{\nu \alpha}{2 d \beta(2-\nu)}$,</p>
+<p>$$
+\begin{aligned}
+\lambda_{n} &amp; =\frac{(3-2 \nu) \gamma^{-1}}{\psi_{m}} \mathcal{F}(n, m, \tau)<em m="m">{\mathrm{sbd}} \
+&amp; =\frac{2 d \beta(3-2 \nu)(2-\nu)}{\nu \alpha \psi</em>(n, m, \tau)}} \mathcal{F<em 2="2">{\mathrm{sbd}} \
+&amp; =\frac{2 d c</em>
+\end{aligned}
+$$} \beta\left(3-2 \nu \psi_{1}\right)(2-\nu)}{\nu \alpha \psi_{m}} \sqrt{\frac{m^{\tau}}{n}</p>
+<p>Then, plugging this into (10), we get</p>
+<p>$$
+n&gt;\left[\frac{6 c_{2} \beta(3-2 \nu)(2-\nu) \psi_{1}}{\nu \alpha^{2} \psi_{m}} \max \left{\frac{1}{\psi_{m}}, \frac{\gamma}{K_{O, \min }}, \sigma^{-1}\right}\right]^{2} d^{2} m^{\tau}
+$$</p>
+<p>This completes the first case of the theorem.
+Now, for the second case,</p>
+<p>$$
+\begin{aligned}
+\lambda_{n} &amp; =\frac{(3-2 \nu) \gamma^{-1}}{\psi_{m}} \mathcal{F}(n, m, \tau)<em m="m">{\mathrm{sab}} \
+&amp; =\frac{2 d \beta(3-2 \nu)(2-\nu)}{\nu \alpha \psi</em>(n, m, \tau)}} \mathcal{F<em 2="2">{\mathrm{sab}} \
+&amp; =\frac{2 c</em>
+\end{aligned}
+$$} c_{4} \beta(3-2 \nu)(2-\nu) \psi_{1}}{\nu \alpha \psi_{m}} \frac{d^{2}(1+\tau) \log (m)}{n</p>
+<p>Again, we plug the latter expression into (10), getting</p>
+<p>$$
+n&gt;\frac{2 c_{2} c_{4} \beta(3-2 \nu)(2-\nu) \psi_{1}}{\nu \alpha^{2} \psi_{m}} \max \left{\frac{1}{\psi_{m}}, \frac{\gamma}{K_{O, \min }}, \sigma^{-1}\right}(1+\tau) d^{2} \log (m)
+$$</p>
+<p>Now we are done.</p>
+<h1>Proof of Theorem 2</h1>
+<p>Proof. The typical approach taken for minimax-style lower bounds is to construct an ensemble of hypotheses (in our case, graphs encoding the distribution) and to control the distance between these hypotheses. Concretely, Fano's lemma is used, which requires controlling the KL divergence between pairs of distributions. As in prior work [32, 34], we use the symmetric KL divergence $S$, which is defined by</p>
+<p>$$
+S\left(f_{G} | f_{G^{\prime}}\right)=D\left(f_{G} | f_{G^{\prime}}\right)+D\left(f_{G^{\prime}} | f_{G}\right)
+$$</p>
+<p>with</p>
+<p>$$
+D\left(f_{G} | f_{G^{\prime}}\right)=\sum_{x \in{0,1}^{m}} f_{G}(x) \log \left(\frac{f_{G}(x)}{f_{G^{\prime}}(x)}\right)
+$$</p>
+<p>We use the following variant of Fano's lemma [32]</p>
+<p>$$
+n&lt;(1-\delta) \frac{\log M}{\frac{2}{M^{2}} \sum_{k=1}^{M} \sum_{\ell=k+1}^{M} S\left(f_{G_{k}} | f_{G_{\ell}}\right)}
+$$</p>
+<p>Here, we have a class of graphs $G_{1}, G_{2}, \ldots, G_{M}$. The result states that if $n$ is upper bounded as in (11), no structure learning procedure has a better maximum error probability (over the entire family) than $\delta-\frac{1}{\log M}$. Prior work on lower bounding the sample complexity for structure learning uses multiple choices of ensemble and takes the maximum over the resulting complexities. In particular, Santhanam and Wainwright [32] (called SW from now on), considers three ensembles. The first of these takes a graph on $m$ nodes with no edges, and then adds one edge to form $\binom{M}{2}$ graphs. We will use a similar construction, with the additional constraint that we are in the weak supervision setting, where we have the label node $Y$ connected to all other nodes.
+We start with full generality. Note that, from our model,</p>
+<p>$$
+\begin{aligned}
+f_{G}\left(\lambda_{1}, \ldots, \lambda_{m}\right) &amp; =\sum_{y} f_{G}\left(\lambda_{1}, \ldots, \lambda_{m}, y\right) \
+&amp; =\sum_{y} \frac{1}{Z} \exp \left(\sum_{\lambda_{i} \in V} \theta_{i} \lambda_{i}+\sum_{\left(\lambda_{i}, \lambda_{j}\right) \in E} \theta_{i j} \lambda_{i} \lambda_{j}+\theta_{Y} y+\sum_{\lambda_{i} \in V} \theta_{Y, i} y \lambda_{i}\right) \
+&amp; =\frac{1}{Z} \exp \left(\sum_{\lambda_{i} \in V} \theta_{i} \lambda_{i}+\sum_{\left(\lambda_{i}, \lambda_{j}\right) \in E} \theta_{i j} \lambda_{i} \lambda_{j}\right)\left[\sum_{y} \exp \left(\theta_{Y} y+\sum_{\lambda_{i} \in V} \theta_{Y, i} y \lambda_{i}\right)\right]
+\end{aligned}
+$$</p>
+<p>Now we can start computing the symmetric KL divergence between a pair of graphs $G, G^{\prime}$ in our class of graphs:</p>
+<p>$$
+\begin{aligned}
+S\left(G \mid \mid G^{\prime}\right)= &amp; \mathbb{E}<em G="G">{G}\left[\log f</em>}-\log f_{G^{\prime}}\right]+\mathbb{E<em G_prime="G^{\prime">{G^{\prime}}\left[\log f</em>\right] \
+= &amp; \mathbb{E}}}-\log f_{G<em _lambda__i="\lambda_{i">{G}\left[\sum</em>\right] \
+&amp; +\mathbb{E}} \in V}\left(\theta_{i}-\theta_{i}^{\prime}\right) \lambda_{i}+\sum_{\left(\lambda_{i}, \lambda_{j}\right) \in E}\left(\theta_{i j}-\theta_{i j}^{\prime}\right) \lambda_{i} \lambda_{j}+\log \frac{\sum_{y} \exp \left(\theta_{Y} y+\sum_{\lambda_{i} \in V} \theta_{Y, i} y \lambda_{i}\right)}{\sum_{y} \exp \left(\theta_{Y}^{\prime} y+\sum_{\lambda_{i} \in V} \theta_{Y, i}^{\prime} y \lambda_{i}\right)<em _lambda__i="\lambda_{i">{G^{\prime}}\left[\sum</em>\right]
+\end{aligned}
+$$} \in V}\left(\theta_{i}^{\prime}-\theta_{i}\right) \lambda_{i}+\sum_{\left(\lambda_{i}, \lambda_{j}\right) \in E^{\prime}}\left(\theta_{i j}^{\prime}-\theta_{i j}\right) \lambda_{i} \lambda_{j}+\log \frac{\sum_{y} \exp \left(\theta_{Y}^{\prime} y+\sum_{\lambda_{i} \in V} \theta_{Y, i}^{\prime} y \lambda_{i}\right)}{\sum_{y} \exp \left(\theta_{Y} y+\sum_{\lambda_{i} \in V} \theta_{Y, i} y \lambda_{i}\right)</p>
+<p>Here, the partition functions cancel out going from the first line to the second.
+Now we build our ensemble. Let $G^{s t}=(V, E)$, with $V=\left{\lambda_{1}, \ldots, \lambda_{m}, Y\right}$. We set</p>
+<p>$$
+E=\left{\left(\lambda_{s} \lambda_{t}\right),\left(\lambda_{1}, Y\right),\left(\lambda_{2}, Y\right), \ldots,\left(\lambda_{m}, Y\right)\right}
+$$</p>
+<p>Note that the edges consist of the latent label node connected to all other nodes, and the sole additional edge $\left(\lambda_{s}, \lambda_{t}\right)$.
+For this class of models, we consider only edge potentials, all with parameter $\theta$ (of course, the non-edges have a parameter of 0 ). With this setting, for two graphs $G^{s t}, G^{u v}$, where the edge sets are $E$ and $E^{\prime}$, respectively, (13)</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>*Equal Contribution&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

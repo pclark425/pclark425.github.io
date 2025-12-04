@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chain-of-Thought Evidence Paradox Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-28</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-28</p>
+                <p><strong>Name:</strong> Chain-of-Thought Evidence Paradox Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> </p>
+                <p><strong>Description:</strong> Chain-of-thought (CoT) prompting creates a paradoxical situation where adding intermediate reasoning steps as evidence can either substantially help or hurt model performance depending on specific conditions. The benefit of CoT evidence is not simply from providing more information or computation time, but from enabling the model to decompose problems and verify intermediate steps. However, this same mechanism creates vulnerabilities: (1) Small models cannot produce logically coherent chains and are misled by their own fluent but incorrect reasoning, (2) Incorrect or noisy CoT exemplars in prompts can propagate errors, (3) Models cannot reliably use their own generation probabilities to distinguish correct from incorrect chains, and (4) The format and placement of reasoning steps critically affects whether they help or hurt. This creates a 'Goldilocks zone' where CoT helps: models must be large enough to produce coherent reasoning, chains must be placed before answers to be causally useful, and exemplars must be sufficiently correct. Outside this zone, adding reasoning evidence decreases rather than increases performance.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>CoT evidence is beneficial if and only if: (1) model size > threshold_size (approximately 10B-100B parameters), (2) chains are placed before answers, (3) chains are sufficiently semantically correct, and (4) the task requires multi-step decomposition.</li>
+                <li>For models below the size threshold, adding CoT evidence decreases performance: P(correct|CoT, small_model) < P(correct|no_CoT, small_model).</li>
+                <li>The benefit of CoT scales with model size: ∂P(correct|CoT)/∂log(model_size) > 0 for size > threshold_size.</li>
+                <li>CoT evidence must be causally positioned (before the answer) to affect generation: P(correct|CoT_before) > P(correct|CoT_after) ≈ P(correct|no_CoT).</li>
+                <li>Models cannot reliably self-evaluate CoT quality using generation probabilities: Corr(P(chain), correctness(chain)) ≈ 0.</li>
+                <li>Aggregating multiple diverse CoT samples overcomes individual chain errors: P(correct|majority_vote(CoT_samples)) > P(correct|single_CoT).</li>
+                <li>The semantic content of intermediate steps, not their length or presence, drives CoT benefits.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Chain-of-thought prompting can harm performance for smaller models (<~10B parameters), which produce fluent but illogical chains. <a href="../results/extraction-result-191.html#e191.1" class="evidence-link">[e191.1]</a> </li>
+    <li>CoT prompting substantially improves accuracy for large models: PaLM 540B GSM8K improved from 17.9% to 56.9%, GPT-3 175B from 15.6% to 46.9%. <a href="../results/extraction-result-191.html#e191.0" class="evidence-link">[e191.0]</a> </li>
+    <li>Placing CoT after the answer does not confer CoT benefits, unlike CoT placed before the answer. <a href="../results/extraction-result-191.html#e191.4" class="evidence-link">[e191.4]</a> </li>
+    <li>Imperfect CoT exemplars (with incorrect intermediate steps) decreased performance under greedy decoding but self-consistency could recover and even improve beyond correct-prompt baseline. <a href="../results/extraction-result-200.html#e200.3" class="evidence-link">[e200.3]</a> </li>
+    <li>Normalized conditional probabilities across sampled CoT outputs are often similar, implying poor calibration and explaining why probability-based re-ranking offers limited improvement. <a href="../results/extraction-result-200.html#e200.2" class="evidence-link">[e200.2]</a> </li>
+    <li>Equation-only prompting can suffice for simple problems but fails to reproduce CoT gains on semantically richer datasets where natural-language decomposition is necessary. <a href="../results/extraction-result-191.html#e191.2" class="evidence-link">[e191.2]</a> </li>
+    <li>Variable-compute-only (dots) performs about the same as baseline, showing that token-length/computation alone is insufficient without semantic content. <a href="../results/extraction-result-191.html#e191.3" class="evidence-link">[e191.3]</a> </li>
+    <li>CoT is robust across annotators and exemplar sources for arithmetic reasoning on large models, but substantial variance exists and prompt engineering can be required. <a href="../results/extraction-result-191.html#e191.6" class="evidence-link">[e191.6]</a> </li>
+    <li>Self-consistency (sampling multiple CoT paths and majority voting) substantially improves accuracy: PaLM-540B GSM8K from 56.5% to 74.4%. <a href="../results/extraction-result-200.html#e200.1" class="evidence-link">[e200.1]</a> </li>
+    <li>Small models lack semantic understanding, arithmetic and symbol-mapping capacities to produce faithful intermediate steps, hallucinating or omitting steps. <a href="../results/extraction-result-191.html#e191.1" class="evidence-link">[e191.1]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>There exists a measurable model size threshold (likely between 10B-100B parameters) below which CoT consistently hurts performance and above which it consistently helps.</li>
+                <li>Training smaller models explicitly on CoT-style reasoning will lower the size threshold at which CoT becomes beneficial.</li>
+                <li>Providing models with explicit verification steps (checking intermediate computations) will improve CoT reliability more than simply adding more reasoning steps.</li>
+                <li>CoT benefits will be larger for tasks with clear decomposition structure (arithmetic, logic) than for tasks requiring holistic judgment (sentiment, style).</li>
+                <li>Using external tools (calculators, code execution) to verify intermediate steps will substantially improve CoT reliability across all model sizes.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exist prompting strategies that can make CoT beneficial for small models by constraining the reasoning format or providing stronger scaffolding.</li>
+                <li>Whether the size threshold for CoT benefits is the same across different model architectures or whether some architectures enable CoT at smaller scales.</li>
+                <li>Whether models can be trained to explicitly output confidence scores for each reasoning step, enabling better filtering of incorrect chains.</li>
+                <li>Whether the CoT paradox extends to other forms of intermediate evidence (e.g., retrieved documents, examples) or is specific to generated reasoning.</li>
+                <li>Whether there exist tasks where CoT evidence is harmful even for large models due to the nature of the task.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding small models (<10B) that consistently benefit from CoT without special training would challenge the size threshold aspect.</li>
+                <li>Demonstrating that CoT placed after answers provides the same benefits as CoT before answers would challenge the causal positioning requirement.</li>
+                <li>Showing that models can reliably rank CoT chains by correctness using generation probabilities would challenge the self-evaluation failure claim.</li>
+                <li>Finding that semantic content doesn't matter and that length/computation alone drives benefits would challenge the semantic content requirement.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Why some tasks show CoT benefits at smaller model sizes than others. <a href="../results/extraction-result-191.html#e191.0" class="evidence-link">[e191.0]</a> </li>
+    <li>The exact cognitive or computational mechanisms that enable large models to produce coherent chains while small models cannot. <a href="../results/extraction-result-191.html#e191.1" class="evidence-link">[e191.1]</a> </li>
+    <li>Why self-consistency works despite poor probability calibration of individual chains. <a href="../results/extraction-result-200.html#e200.1" class="evidence-link">[e200.1]</a> <a href="../results/extraction-result-200.html#e200.2" class="evidence-link">[e200.2]</a> </li>
+    <li>Whether the size threshold is determined by parameter count, training compute, or some other factor. <a href="../results/extraction-result-191.html#e191.1" class="evidence-link">[e191.1]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Wei et al. (2022) Chain of Thought Prompting Elicits Reasoning in Large Language Models [Introduces CoT and shows scale-dependent benefits, but doesn't formalize the paradox]</li>
+    <li>Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Shows aggregation overcomes individual chain errors, supporting the paradox theory]</li>
+    <li>Nye et al. (2021) Show Your Work: Scratchpads for Intermediate Computation with Language Models [Shows benefits of intermediate steps for algorithmic tasks, related but distinct from CoT paradox]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Chain-of-Thought Evidence Paradox Theory",
+    "theory_description": "Chain-of-thought (CoT) prompting creates a paradoxical situation where adding intermediate reasoning steps as evidence can either substantially help or hurt model performance depending on specific conditions. The benefit of CoT evidence is not simply from providing more information or computation time, but from enabling the model to decompose problems and verify intermediate steps. However, this same mechanism creates vulnerabilities: (1) Small models cannot produce logically coherent chains and are misled by their own fluent but incorrect reasoning, (2) Incorrect or noisy CoT exemplars in prompts can propagate errors, (3) Models cannot reliably use their own generation probabilities to distinguish correct from incorrect chains, and (4) The format and placement of reasoning steps critically affects whether they help or hurt. This creates a 'Goldilocks zone' where CoT helps: models must be large enough to produce coherent reasoning, chains must be placed before answers to be causally useful, and exemplars must be sufficiently correct. Outside this zone, adding reasoning evidence decreases rather than increases performance.",
+    "supporting_evidence": [
+        {
+            "text": "Chain-of-thought prompting can harm performance for smaller models (&lt;~10B parameters), which produce fluent but illogical chains.",
+            "uuids": [
+                "e191.1"
+            ]
+        },
+        {
+            "text": "CoT prompting substantially improves accuracy for large models: PaLM 540B GSM8K improved from 17.9% to 56.9%, GPT-3 175B from 15.6% to 46.9%.",
+            "uuids": [
+                "e191.0"
+            ]
+        },
+        {
+            "text": "Placing CoT after the answer does not confer CoT benefits, unlike CoT placed before the answer.",
+            "uuids": [
+                "e191.4"
+            ]
+        },
+        {
+            "text": "Imperfect CoT exemplars (with incorrect intermediate steps) decreased performance under greedy decoding but self-consistency could recover and even improve beyond correct-prompt baseline.",
+            "uuids": [
+                "e200.3"
+            ]
+        },
+        {
+            "text": "Normalized conditional probabilities across sampled CoT outputs are often similar, implying poor calibration and explaining why probability-based re-ranking offers limited improvement.",
+            "uuids": [
+                "e200.2"
+            ]
+        },
+        {
+            "text": "Equation-only prompting can suffice for simple problems but fails to reproduce CoT gains on semantically richer datasets where natural-language decomposition is necessary.",
+            "uuids": [
+                "e191.2"
+            ]
+        },
+        {
+            "text": "Variable-compute-only (dots) performs about the same as baseline, showing that token-length/computation alone is insufficient without semantic content.",
+            "uuids": [
+                "e191.3"
+            ]
+        },
+        {
+            "text": "CoT is robust across annotators and exemplar sources for arithmetic reasoning on large models, but substantial variance exists and prompt engineering can be required.",
+            "uuids": [
+                "e191.6"
+            ]
+        },
+        {
+            "text": "Self-consistency (sampling multiple CoT paths and majority voting) substantially improves accuracy: PaLM-540B GSM8K from 56.5% to 74.4%.",
+            "uuids": [
+                "e200.1"
+            ]
+        },
+        {
+            "text": "Small models lack semantic understanding, arithmetic and symbol-mapping capacities to produce faithful intermediate steps, hallucinating or omitting steps.",
+            "uuids": [
+                "e191.1"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "CoT evidence is beneficial if and only if: (1) model size &gt; threshold_size (approximately 10B-100B parameters), (2) chains are placed before answers, (3) chains are sufficiently semantically correct, and (4) the task requires multi-step decomposition.",
+        "For models below the size threshold, adding CoT evidence decreases performance: P(correct|CoT, small_model) &lt; P(correct|no_CoT, small_model).",
+        "The benefit of CoT scales with model size: ∂P(correct|CoT)/∂log(model_size) &gt; 0 for size &gt; threshold_size.",
+        "CoT evidence must be causally positioned (before the answer) to affect generation: P(correct|CoT_before) &gt; P(correct|CoT_after) ≈ P(correct|no_CoT).",
+        "Models cannot reliably self-evaluate CoT quality using generation probabilities: Corr(P(chain), correctness(chain)) ≈ 0.",
+        "Aggregating multiple diverse CoT samples overcomes individual chain errors: P(correct|majority_vote(CoT_samples)) &gt; P(correct|single_CoT).",
+        "The semantic content of intermediate steps, not their length or presence, drives CoT benefits."
+    ],
+    "new_predictions_likely": [
+        "There exists a measurable model size threshold (likely between 10B-100B parameters) below which CoT consistently hurts performance and above which it consistently helps.",
+        "Training smaller models explicitly on CoT-style reasoning will lower the size threshold at which CoT becomes beneficial.",
+        "Providing models with explicit verification steps (checking intermediate computations) will improve CoT reliability more than simply adding more reasoning steps.",
+        "CoT benefits will be larger for tasks with clear decomposition structure (arithmetic, logic) than for tasks requiring holistic judgment (sentiment, style).",
+        "Using external tools (calculators, code execution) to verify intermediate steps will substantially improve CoT reliability across all model sizes."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exist prompting strategies that can make CoT beneficial for small models by constraining the reasoning format or providing stronger scaffolding.",
+        "Whether the size threshold for CoT benefits is the same across different model architectures or whether some architectures enable CoT at smaller scales.",
+        "Whether models can be trained to explicitly output confidence scores for each reasoning step, enabling better filtering of incorrect chains.",
+        "Whether the CoT paradox extends to other forms of intermediate evidence (e.g., retrieved documents, examples) or is specific to generated reasoning.",
+        "Whether there exist tasks where CoT evidence is harmful even for large models due to the nature of the task."
+    ],
+    "negative_experiments": [
+        "Finding small models (&lt;10B) that consistently benefit from CoT without special training would challenge the size threshold aspect.",
+        "Demonstrating that CoT placed after answers provides the same benefits as CoT before answers would challenge the causal positioning requirement.",
+        "Showing that models can reliably rank CoT chains by correctness using generation probabilities would challenge the self-evaluation failure claim.",
+        "Finding that semantic content doesn't matter and that length/computation alone drives benefits would challenge the semantic content requirement."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Why some tasks show CoT benefits at smaller model sizes than others.",
+            "uuids": [
+                "e191.0"
+            ]
+        },
+        {
+            "text": "The exact cognitive or computational mechanisms that enable large models to produce coherent chains while small models cannot.",
+            "uuids": [
+                "e191.1"
+            ]
+        },
+        {
+            "text": "Why self-consistency works despite poor probability calibration of individual chains.",
+            "uuids": [
+                "e200.1",
+                "e200.2"
+            ]
+        },
+        {
+            "text": "Whether the size threshold is determined by parameter count, training compute, or some other factor.",
+            "uuids": [
+                "e191.1"
+            ]
+        }
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Wei et al. (2022) Chain of Thought Prompting Elicits Reasoning in Large Language Models [Introduces CoT and shows scale-dependent benefits, but doesn't formalize the paradox]",
+            "Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Shows aggregation overcomes individual chain errors, supporting the paradox theory]",
+            "Nye et al. (2021) Show Your Work: Scratchpads for Intermediate Computation with Language Models [Shows benefits of intermediate steps for algorithmic tasks, related but distinct from CoT paradox]"
+        ]
+    },
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

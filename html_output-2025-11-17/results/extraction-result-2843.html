@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-2843 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-2843</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-2843</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-71.html">extraction-schema-71</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of LLM-based agents that use memory systems to play text games, including details about the memory architecture, the text games played, and performance results.</div>
+                <p><strong>Paper ID:</strong> paper-2d1ad38d83a5b8a6bb47630972ada82b62ea4aac</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/2d1ad38d83a5b8a6bb47630972ada82b62ea4aac" target="_blank">Plan4MC: Skill Reinforcement Learning and Planning for Open-World Minecraft Tasks</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> This work proposes three types of basic skills in Minecraft, and uses RL with intrinsic rewards to accomplish basic skills with high success rates and outperforms baselines in most tasks by a large margin.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-2843",
+    "paper_id": "paper-2d1ad38d83a5b8a6bb47630972ada82b62ea4aac",
+    "extraction_schema_id": "extraction-schema-71",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.005290499999999999,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Skill Reinforcement Learning and Planning for Open-World Long-Horizon Tasks</h1>
+<p>Haoqi Yuan ${ }^{1}$, Chi Zhang ${ }^{2}$, Hongcheng Wang ${ }^{1,4}$, Feiyang Xie ${ }^{3}$,<br>Penglin Cai ${ }^{3}$, Hao Dong ${ }^{1}$, Zongqing Lu ${ }^{1,4}$<br>${ }^{1}$ School of Computer Science, Peking University<br>${ }^{2}$ School of EECS, Peking University<br>${ }^{3}$ Yuanpei College, Peking University<br>${ }^{4}$ Beijing Academy of Artificial Intelligence</p>
+<h4>Abstract</h4>
+<p>We study building multi-task agents in open-world environments. Without human demonstrations, learning to accomplish long-horizon tasks in a large open-world environment with reinforcement learning (RL) is extremely inefficient. To tackle this challenge, we convert the multi-task learning problem into learning basic skills and planning over the skills. Using the popular open-world game Minecraft as the testbed, we propose three types of fine-grained basic skills, and use RL with intrinsic rewards to acquire skills. A novel Finding-skill that performs exploration to find diverse items provides better initialization for other skills, improving the sample efficiency for skill learning. In skill planning, we leverage the prior knowledge in Large Language Models to find the relationships between skills and build a skill graph. When the agent is solving a task, our skill search algorithm walks on the skill graph and generates the proper skill plans for the agent. In experiments, our method accomplishes 40 diverse Minecraft tasks, where many tasks require sequentially executing for more than 10 skills. Our method outperforms baselines by a large margin and is the most sample-efficient demonstration-free RL method to solve Minecraft Tech Tree tasks. The project's website and code can be found at https://sites.google.com/view/plan4mc.</p>
+<h2>1 Introduction</h2>
+<p>Learning diverse tasks in open-ended worlds is a significant milestone toward building generally capable agents. Recent studies in multi-task reinforcement learning (RL) have achieved great success in many narrow domains like games [31] and robotics [39]. However, transferring prior methods to open-world domains [34, 9] remains unexplored. Minecraft, a popular open-world game with an infinitely large world size and a huge variety of tasks, has been regarded as a challenging benchmark $[10,9]$.
+Previous works usually build policies in Minecraft upon imitation learning, which requires expert demonstrations [10, 4, 37] or large-scale video datasets [2]. Without demonstrations, RL in Minecraft is extremely sample-inefficient. A state-of-the-art model-based method [12] takes over 10M environmental steps to harvest cobblestones $\mathbf{\square}$, even if the block breaking speed of the game simulator is set to very fast additionally. This difficulty comes from at least two aspects. First, the world size is too large and the requisite resources are distributed far away from the agent. With partially observed visual input, the agent cannot identify its state or do effective exploration easily. Second, a task in</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Overview of Plan4MC. We categorize the basic skills in Minecraft into three types: <strong>Finding-skills</strong>, <strong>Manipulation-skills</strong>, and <strong>Crafting-skills</strong>. We train policies to acquire skills with reinforcement learning. With the help of LLM, we extract relationships between skills and construct a skill graph in advance, as shown in the dashed box. During online planning, the skill search algorithm walks on the pre-generated graph, decomposes the task into an executable skill sequence, and interactively selects policies to solve complex tasks.</p>
+<p>Minecraft usually has a long horizon, with many sub-goals. For example, mining a cobblestone involves more than 10 sub-goals (from harvesting logs to crafting wooden pickaxes) and requires thousands of environmental steps.</p>
+<p>To mitigate the issue of learning long-horizon tasks, we propose to solve diverse tasks in a hierarchical fashion. In Minecraft, we define a set of basic skills. Then, solving a task can be decomposed into planning for a proper sequence of basic skills and executing the skills interactively. We train RL agents to acquire skills and build a high-level planner upon the skills.</p>
+<p>We find that training skills with RL remains challenging due to the difficulty in finding the required resources in the vast world. As an example, if we use RL to train the skill of harvesting logs, the agent can always receive 0 reward through random exploration since it cannot find a tree nearby. On the contrary, if a tree is always initialized close to the agent, the skill can be learned efficiently (Table 1). Thus, we propose to learn a Finding-skill that performs exploration to find items in the world and provides better initialization for all other skills, improving the sample efficiency of learning skills with RL. The Finding-skill is implemented with a hierarchical policy, maximizing the area traversed by the agent.</p>
+<p>We split the skills in the recent work [37] into more fine-grained basic skills and classify them into three types: <strong>Finding-skills</strong>, <strong>Manipulation-skills</strong>, and <strong>Crafting skills</strong>. Each basic skill solves an atomic task that may not be further divided. Such tasks have a shorter horizon and require exploration in smaller regions of the world. Thus, using RL to learn these basic skills is more feasible. To improve the sample efficiency of RL, we introduce intrinsic rewards to train policies for different types of skills.</p>
+<p>For high-level skill planning, recent works [3, 37, 36] demonstrate promising results via interacting with Large Language Models (LLMs). Though LLMs generalize to open-ended environments well and produce reasonable skill sequences, fixing their uncontrollable mistakes requires careful prompt engineering [14, 37]. To make more flawless skill plans, we propose a complementary skill search approach. In the preprocessing stage, we use an LLM to generate the relationships between skills and construct a skill dependency graph. Then, given any task and the agent's condition (e.g., available resources/tools), we propose a search algorithm to interactively plan for the skill sequence. Figure 1 illustrates our proposed framework, <strong>Plan4MC</strong>.</p>
+<p>In experiments, we build 40 diverse tasks in the MineDojo [9] simulator. These tasks involve executing diverse skills, including collecting basic materials, crafting useful items, and interacting with mobs. Each task requires planning and execution for 2–30 basic skills and takes thousands of environmental steps. Results show that Plan4MC accomplishes all the tasks and</p>
+<p>outperforms the baselines significantly. Also, Plan4MC can craft iron pickaxes in the Minecraft Tech Tree and is much more sample-efficient than existing demonstration-free RL methods.</p>
+<p>To summarize, our main contributions are:</p>
+<ul>
+<li>To enable RL methods to efficiently solve diverse open-world tasks, we propose to learn fine-grained basic skills including a Finding-skill and train RL policies with intrinsic rewards. Thus, solving long-horizon tasks is transformed into planning over basic skills.</li>
+<li>Unlike previous LLM-based planning methods, we propose the skill graph and the skill search algorithm for interactive planning. The LLM only assists in the generation of the skill graph before task execution, avoiding uncontrollable failures caused by the LLM.</li>
+<li>Our hierarchical agent achieves promising performance in diverse and long-horizon Minecraft tasks, demonstrating the great potential of using RL to build multi-task agents in open-ended worlds.</li>
+</ul>
+<h1>2 Preliminaries</h1>
+<h3>2.1 Problem Formulation</h3>
+<p>In Minecraft, a task $\tau=(g, I)$ is defined with the combination of a goal $g$ and the agent's initial condition $I$, where $g$ represents the target entity to acquire in the task and $I$ represents the initial tools and conditions provided for the agent. For example, a task can be 'harvest cooked_beef with sword in plains'. We model the task as a partially observable Markov decision process (POMDP) [16]. I determines the environment's initial state distribution. At each timestep $t$, the agent obtains the partial observation $o_{t}$, takes an action $a_{t}$ following its policy $\pi\left(a_{t} \mid o_{0: t}, \tau\right)$, and receives a sparse reward $r_{t}$ indicating task completion. The agent aims to maximize its expected return $R=\mathbb{E}<em t="t">{\pi} \sum</em>$.
+To solve complex tasks, humans acquire and reuse skills in the world, rather than learn each task independently from scratch. Similarly, to solve the aforementioned task, the agent can sequentially use the skills: harvest $\log$ , ..., craft furnace , harvest beef , place furnace and craft cooked_beef . Each skill solves a simple sub-task in a shorter time horizon, with the necessary tools and conditions provided. For example, the skill 'craft cooked_beef' solves the task 'harvest cooked_beef with beef , $\log$ and placed furnace '. Once the agent acquires an abundant set of skills $S$, it can solve any complex task by decomposing it into a sequence of sub-tasks and executing the skills in order. Meanwhile, by reusing a skill to solve different tasks, the agent is much better in memory and learning efficiency.
+To this end, we convert the goal of solving diverse and long-horizon tasks in Minecraft into building a hierarchical agent. At the low level, we train policies $\pi_{s}$ to learn all the skills $s \in S$, where $\pi_{s}$ takes as input the RGB image and some auxiliary information (compass, location, biome, etc.), then outputs an action. At the high level, we study planning methods to convert a task $\tau$ into a skill sequence $\left(s_{\tau, 1}, s_{\tau, 2}, \cdots\right)$.} \gamma^{t} r_{t</p>
+<h3>2.2 Skills in Minecraft</h3>
+<p>Recent works mainly rely on imitation learning to learn Minecraft skills efficiently. In MineRL competition [17], a human gameplay dataset is accessible along with the Minecraft environment. All of the top methods in competition use imitation learning to some degree, to learn useful behaviors in limited interactions. In VPT [2], a large policy model is pre-trained on a massive labeled dataset using behavior cloning. By fine-tuning on smaller datasets, policies are acquired for diverse skills.
+However, without demonstration datasets, learning Minecraft skills with reinforcement learning (RL) is difficult. MineAgent [9] shows that PPO [32] can only learn a small set of skills. PPO with sparse reward fails in 'milk a cow' and 'shear a sheep', though the distance between target mobs and the agent is set within 10 blocks. We argue that with the high dimensional state and action space, open-ended large world, and partial observation, exploration in Minecraft tasks is extremely difficult.</p>
+<p>Table 1: Minecraft skill performance of imitation learning (behavior cloning with MineCLIP backbone, reported in [4]) versus reinforcement learning. Better init. means target entities are closer to the agent at initialization. The RL method for each task is trained with proper intrinsic rewards. All RL results are averaged on the last 100 training epochs and 3 training seeds.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Skill</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Behavior Cloning</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">0.16</td>
+</tr>
+<tr>
+<td style="text-align: left;">RL</td>
+<td style="text-align: center;">$0.40 \pm 0.20$</td>
+<td style="text-align: center;">$0.26 \pm 0.22$</td>
+<td style="text-align: center;">$0.04 \pm 0.02$</td>
+<td style="text-align: center;">$0.04 \pm 0.01$</td>
+<td style="text-align: center;">$0.00 \pm 0.00$</td>
+</tr>
+<tr>
+<td style="text-align: left;">RL (better init.)</td>
+<td style="text-align: center;">$0.99 \pm 0.01$</td>
+<td style="text-align: center;">$0.81 \pm 0.02$</td>
+<td style="text-align: center;">$0.16 \pm 0.06$</td>
+<td style="text-align: center;">$0.14 \pm 0.07$</td>
+<td style="text-align: center;">$0.44 \pm 0.10$</td>
+</tr>
+</tbody>
+</table>
+<p>We conduct a study for RL to learn skills with different difficulties in Table 1. We observe that RL has comparable performance to imitation learning only when the task-relevant entities are initialized very close to the agent. Otherwise, RL performance decreases significantly. This motivates us to further divide skills into fine-grained skills. We propose a Finding-skill to provide a good initialization for other skills. For example, the skill of 'milk a cow' is decomposed into 'find a cow' and 'harvest milk_bucket'. After finding a cow nearby, 'harvest milk_bucket' can be accomplished by RL with acceptable sample efficiency. Thus, learning such fine-grained skills is easier for RL, and they together can still accomplish the original task.</p>
+<h1>3 Learning Basic Skills with Reinforcement Learning</h1>
+<p>Based on the discussion above, we propose three types of fine-grained basic skills, which can compose all Minecraft tasks.</p>
+<ul>
+<li>Finding-skills: starts from any location, the agent explores to find a target and approaches the target. The target can be any block or entity that exists in the world.</li>
+<li>Manipulation-skills: given proper tools and the target in sight, the agent interacts with the target to obtain materials. These skills include diverse behaviors, like mining ores, killing mobs, and placing blocks.</li>
+<li>Crafting-skills: with requisite materials in the inventory and crafting table or furnace placed nearby, the agent crafts advanced materials or tools.</li>
+</ul>
+<h3>3.1 Learning to Find with a Hierarchical Policy</h3>
+<p>Finding items is a long-horizon difficult task for RL. To find an unseen tree on the plains, the agent should take thousands of steps to explore the world map as much as possible. A random policy fails to do such exploration, as shown in Appendix A. Also, it is too costly to train different policies for various target items. To simplify this problem, considering to explore on the world's surface only, we propose to train a target-free hierarchical policy to solve all the Finding-skills.
+Figure 2 demonstrates the hierarchical policy for Finding-skills. The high-level policy $\pi^{R}\left((x, y)^{y} \mid(x, y)<em 0:="0:" t="t">{0: t}\right)$ observes historical locations $(x, y)</em>$. We reward the low-level policy with the distance change to the goal location.}$ of the agent, and outputs a goal location $(x, y)^{g}$. It drives the low-level policy $\pi^{L}\left(a_{t} \mid o_{t},(x, y)^{g}\right)$ to reach the goal location. We assume that target items are uniformly distributed on the world's surface. To maximize the chance to find diverse targets, the objective for the high-level policy is to maximize its reached area. We divide the world's surface into discrete grids, where each grid represents a $10 \times 10$ area. We use state count in the grids as the reward for the high-level policy. The low-level policy obtains the environmental observation $o_{t}$ and the goal location $(x, y)^{g}$ proposed by the high-level policy, and outputs an action $a_{t</p>
+<p>To train the hierarchical policy with acceptable sample complexity, we pre-train the low-level policy with randomly generated goal locations using DQN [26], then train the high-level policy using PPO [32] with the fixed low-level policy. During test, to find a specific item, the agent first explores the world with the hierarchical policy until a target item is detected in its lidar observations. Then, the agent executes the low-level policy conditioned on the detected target's location, to reach the target item. Though we use additional lidar information here, we believe that without this information, we can also implement the success detector for Finding-skills with computer vision models [7].</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: The proposed hierarchical policy for Finding-skills. The high-level recurrent policy $\pi^{H}$ observes historical positions $(x, y)_{0:t}$ from the environment and generates a goal position $(x, y)^{g}$. The low-level policy $\pi^{L}$ is a goal-based policy to reach the goal position. The right figure shows a top view of the agent's exploration trajectory, where the walking paths of the low-level policy are shown in blue dotted lines, and the goal is changed by the high-level policy at each black spot. The high-level policy is optimized to maximize the state count in the grid world, which is shown in the grey background.</p>
+<h3>3.2 Manipulation and Crafting</h3>
+<p>By executing the pre-trained Finding-skills, we can instantiate the manipulation tasks with requisite target items nearby, making the manipulation tasks much easier. To train the Manipulation-skills in Minecraft, we can either make a training environment with the target item initialized nearby or run the Finding-skills to reach a target item. For example, to train the skill 'harvest milk_bucket', we can either spawn a cow close to the agent using the Minecraft built-in commands, or execute the Finding-skills until a cow is reached. The latter is similar in the idea to Go-Explore [8], and is more suitable for other environments that do not have commands to initialize the target items nearby.</p>
+<p>We adopt MineCLIP [9] to guide the agent with intrinsic rewards. The pre-trained MineCLIP model computes the CLIP reward based on the similarity between environmental observations (frames) and the language descriptions of the skill. We train the agent using PPO with self-imitation learning, to maximize a weighted sum of intrinsic rewards and extrinsic success (sparse) reward. Details for training basic skills can be found in Appendix D.</p>
+<p>For the Crafting-skills, they can be executed with only a single action in MineDojo [9].</p>
+<h2>4 Solving Minecraft Tasks via Skill Planning</h2>
+<p>In this section, we present our skill planning method for solving diverse hard tasks. A skill graph is generated in advance with a Large Language Model (LLM), enabling searching for correct skill sequences on the fly.</p>
+<h3>4.1 Constructing Skill Graph with Large Language Models</h3>
+<p>A correct plan $(s_{\tau,1},s_{\tau,2}, \cdots)$ for a task $\tau=(g, I)$ should satisfy two conditions. (1) For each $i$, $s_{\tau,i}$ is executable after $(s_{\tau,1}, \cdots, s_{\tau,i-1})$ are accomplished sequentially with initial condition $I$. (2) The target item $g$ is obtained after all the skills are accomplished sequentially, given initial condition $I$. To enable searching for such plans, we should be able to verify whether a plan is correct. Thus, we should know what condition is required and what is obtained for each skill. We define such information of skills in a structured format. As an example, information for skill 'crafting stone_pickaxe' is:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">stone_pickaxe</span><span class="w"> </span><span class="p">{</span><span class="n">consume</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="n">cobblestone</span><span class="o">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">stick</span><span class="o">:</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span>
+<span class="nl">require</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">crafting_table_nearby</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w"> </span><span class="n">obtain</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="n">stone_pickaxe</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">}}</span>
+</code></pre></div>
+
+<p>Each item in this format is also a skill. Regarding them as graph nodes, this format shows a graph structure between skill 'stone_pickaxe' and skills 'cobblestone', 'stick', 'crafting_table_nearby'. The directed edge from 'cobblestone' to 'stone_pickaxe' is represented as (3, 1, consume), showing the quantity relationship between parent and child, and that the parent item will be consumed during skill execution. In fact, in this format, all the basic skills in Minecraft construct a large directed acyclic</p>
+<p>graph with hundreds of nodes. The dashed box in Figure 1 shows a small part of this graph, where grey arrows denote 'consume' and red arrows denote 'require'.</p>
+<p>To construct the skill graph, we generate structured information for all the skills by interacting with ChatGPT (GPT-3.5) [29], a high-performance LLM. Since LLMs are trained on large-scale internet datasets, they obtain rich knowledge in the popular game Minecraft. In prompt, we give a few demonstrations and explanations about the format, then ask ChatGPT to generate other skills information. Dialog with ChatGPT can be found in Appendix E.</p>
+<h1>4.2 Skill Search Algorithm</h1>
+<p>Our skill planning method is a depth-first search (DFS) algorithm on the skill graph. Given a task $\tau=(g, I)$, we start from the node $g$ and do DFS toward its parents, opposite to the edge directions. In this process, we maintain all the possessing items starting from $I$. Once conditions for the skill are satisfied or the skill node has no parent, we append this skill into the planned skill list and modify the maintained items according to the skill information. The resulting skill list is ensured to be executable and target-reaching.
+To solve a long-horizon task, since the learned low-level skills are possible to fail, we alternate skill planning and skill execution until the episode terminates. After each skill execution, we update the agent's condition $I^{\prime}$ based on its inventory and the last executed skill, and search for the next skill with $\tau^{\prime}=\left(g, I^{\prime}\right)$.
+We present the pseudocode for the skill search algorithm and the testing process in Appendix C.</p>
+<h2>5 Experiments</h2>
+<p>In this section, we evaluate and analyze our method with baselines and ablations in challenging Minecraft tasks. Section 5.1 introduces the implementation of basic skills. In Section 5.2, we introduce the setup for our evaluation task suite. In Section 5.3 and 5.4, we present the experimental results and analyze skill learning and planning respectively.</p>
+<h3>5.1 Training Basic Skills</h3>
+<p>To pre-train basic skills with RL, we use the environments of programmatic tasks in MineDojo [9]. To train Manipulation-skills, for simplicity, we specify the environment that initializes target mobs or resources close to the agent. For the Go-Explore-like training method without specified environments discussed in Section 3.2, we present the results in Appendix H, which does not underperform the former.</p>
+<p>For Manipulation-skills and the low-level policy of Finding-skills, we adopt the policy architecture of MineAgent [9], which uses a fixed pre-trained MineCLIP image encoder and processes features using MLPs. To explore in a compact action space, we compress the original large action space into $12 \times 3$ discrete actions. For the high-level policy of Finding-skills, which observes the agent's past locations, we use an LSTM policy and train it with truncated BPTT [30]. We pick the model with the highest success rate on the smoothed training curve for each skill, and fix these policies in all tasks. Implementation details can be found in Appendix D.</p>
+<p>Note that Plan4MC totally takes 7M environmental steps in training, and can unlock the iron pickaxe in the Minecraft Tech Tree in test. The sample efficiency greatly outperforms all other existing demonstration-free RL methods [12, 2].</p>
+<h3>5.2 Task Setup</h3>
+<p>Based on MineDojo [9] programmatic tasks, we set up an evaluation benchmark consisting of four groups of diverse tasks: cutting trees to craft primary items, mining cobblestones to craft intermediate items, mining iron ores to craft advanced items, and interacting with mobs to harvest food and materials. Each task set has 10 tasks, adding up to a total of 40 tasks. With our settings of basic skills, these tasks require 25 planning steps on average and maximally 121 planning steps. We estimate the number of the required steps for each task with the sum of the steps</p>
+<p>Table 2: Average success rates on four task sets of our method, all the baselines and ablation methods. Success rates on all the single tasks are listed in Appendix G.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Task Set</th>
+<th style="text-align: center;">Cut-Trees</th>
+<th style="text-align: center;">Mine-Stones</th>
+<th style="text-align: center;">Mine-Ores</th>
+<th style="text-align: center;">Interact-Mobs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">MineAgent</td>
+<td style="text-align: center;">0.003</td>
+<td style="text-align: center;">0.026</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.171</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plan4MC w/o Find-skill</td>
+<td style="text-align: center;">0.187</td>
+<td style="text-align: center;">0.097</td>
+<td style="text-align: center;">0.243</td>
+<td style="text-align: center;">0.170</td>
+</tr>
+<tr>
+<td style="text-align: left;">Interactive LLM</td>
+<td style="text-align: center;">0.260</td>
+<td style="text-align: center;">0.067</td>
+<td style="text-align: center;">0.030</td>
+<td style="text-align: center;">0.247</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plan4MC Zero-shot</td>
+<td style="text-align: center;">0.183</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.133</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plan4MC 1/2-steps</td>
+<td style="text-align: center;">0.337</td>
+<td style="text-align: center;">0.163</td>
+<td style="text-align: center;">0.143</td>
+<td style="text-align: center;">0.277</td>
+</tr>
+<tr>
+<td style="text-align: left;">Plan4MC</td>
+<td style="text-align: center;">$\mathbf{0 . 4 1 7}$</td>
+<td style="text-align: center;">$\mathbf{0 . 2 9 3}$</td>
+<td style="text-align: center;">$\mathbf{0 . 2 6 7}$</td>
+<td style="text-align: center;">$\mathbf{0 . 3 2 0}$</td>
+</tr>
+</tbody>
+</table>
+<p>of the initially planned skills and double this number to be the maximum episode length for the task, allowing skill executions to fail. The easiest tasks have 3000 maximum steps, while the hardest tasks have 12000. More details about task setup are listed in Appendix F. To evaluate the success rate on each task, we average the results over 30 test episodes.</p>
+<h1>5.3 Skill Learning</h1>
+<p>We first analyze learning basic skills. While we propose three types of fine-grained basic skills, others directly learn more complicated and long-horizon skills. We introduce two baselines to study learning skills with RL.</p>
+<p>MineAgent [9]. Without decomposing tasks into basic skills, MineAgent solves tasks using PPO and self-imitation learning with the CLIP reward. For fairness, we train MineAgent in the test environment for each task. The training takes 7 M environmental steps, which is equal to the sum of environmental steps we take for training all the basic skills. We average the success rate of trajectories in the last 100 training epochs (around 1M environment steps) to be its test success rate. Since MineAgent has no actions for crafting items, we hardcode the crafting actions into the training code. During trajectory collection, at each time step where the skill search algorithm returns a Crafting-skill, the corresponding crafting action will be executed. Note that, if we expand the action space for MineAgent rather than automatically execute crafting actions, the exploration will be much harder.</p>
+<p>Plan4MC w/o Find-skill. None of the previous work decomposes a skill into executing Findingskills and Manipulation-skills. Instead, finding items and manipulations are done with a single skill. Plan4MC w/o Find-skill implements such a method. It skips all the Finding-skills in the skill plans during test. Manipulation-skills take over the whole process of finding items and manipulating them.
+Table 2 shows the test results for these methods. Plan4MC outperforms two baselines on the four task sets. MineAgent fails on the task sets of Cut-Trees, Mine-Stones and Mine-Ores, since taking many attacking actions continually to mine blocks in Minecraft is an exploration difficulty for RL on long-horizon tasks. On the contrary, MineAgent achieves performance comparable to Plan4MC's on some easier tasks in Interact-Mobs, which requires fewer environmental steps and planning steps. Plan4MC w/o Find-skill consistently underperforms Plan4MC on all the tasks, showing that introducing Finding-skills is beneficial for solving hard tasks with basic skills trained by RL. Because there is no Finding-skill in harvesting iron ores, their performance gap on Mine-Ores tasks is small.</p>
+<p>To further study Finding-skills, we present the success rate at each planning step in Figure 3 for three tasks. The curves of Plan4MC and Plan4MC w/o Find-skill have large drops at Finding-skills. Especially, the success rates at finding cobblestones and logs decrease the most, because these items are harder to find in the environment compared to mobs. In these tasks, we compute the average success rate of Manipulation-Skills, conditioned on the skill before the last Finding-skills being accomplished. While Plan4MC has a conditional success rate of 0.40 , Plan4MC w/o Find-skill decreases to 0.25 , showing that solving sub-tasks with additional Finding-skills is more effective.
+As shown in Table 3, most Manipulation-skills have slightly lower success rates in test than in training, due to the domain gap between test and training environments. However, this decrease does not occur in skills that are trained with a large initial distance of mobs/items, as pre-executed</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Success rates of Plan4MC with/without Finding-skills at each skill planning step, on three long-horizon tasks. We arrange the initially planned skill sequence on the horizontal axis and remove the repeated skills. The success rate of each skill represents the probability of successfully executing this skill at least once in a test episode. Specifically, the success rate is always 1 at task initialization, and the success rate of the last skill is equal to the task's success rate.</p>
+<p>Table 3: Success rates of Manipulation-skills in training and test. Training init. distance is the maximum distance for mobs/items initialization in training skills. Note that in test, executing Finding-skills will reach the target items within a distance of 3. Training success rate is averaged over 100 training epochs around the selected model's epoch. Test success rate is computed from the test rollouts of all the tasks, while w/o Find refers to Plan4MC w/o Find-skill.</p>
+<table>
+<thead>
+<tr>
+<th>Manipulation-skills</th>
+<th>Place</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Training init. distance</td>
+<td>-</td>
+<td>10</td>
+<td>10</td>
+<td>2</td>
+<td>2</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Training success rate</td>
+<td>0.98</td>
+<td>0.50</td>
+<td>0.27</td>
+<td>0.21</td>
+<td>0.30</td>
+<td>0.56</td>
+<td>0.47</td>
+</tr>
+<tr>
+<td>Test success rate</td>
+<td>0.77</td>
+<td>0.71</td>
+<td>0.26</td>
+<td>0.27</td>
+<td>0.16</td>
+<td>0.33</td>
+<td>0.26</td>
+</tr>
+<tr>
+<td>Test success rate (w/o Find)</td>
+<td>0.79</td>
+<td>0.07</td>
+<td>0.03</td>
+<td>0.03</td>
+<td>0.02</td>
+<td>0.05</td>
+<td>0.06</td>
+</tr>
+</tbody>
+</table>
+<p>Finding-skills provide better initialization for Manipulation-skills during the test and thus the success rate may increase. In contrast, the success rates in the test without Finding-skills are significantly lower.</p>
+<h3>5.4 Skill Planning</h3>
+<p>For skill planning in open-ended worlds, recent works [13, 14, 3, 21, 37] generate plans or sub-tasks with LLMs. We study these methods on our task sets and implement a best-performing baseline to compare with Plan4MC.</p>
+<p>Interactive LLM. We implement an interactive planning baseline using LLMs. We take ChatGPT [29] as the planner, which proposes skill plans based on prompts including descriptions of tasks and observations. Similar to chain-of-thoughts prompting [38], we provide few-shot demonstrations with explanations to the planner at the initial planning step. In addition, we add several rules for planning into the prompt to fix common errors that the model encountered during test. At each subsequent planning step, the planner will encounter one of the following cases: the proposed skill name is invalid, the skill is already done, skill execution succeeds, and skill execution fails. We carefully design language feedback for each case and ask the planner to re-plan based on inventory changes. For low-level skills, we use the same pre-trained skills as Plan4MC.</p>
+<p>Also, we conduct ablations on our skill planning designs.</p>
+<p>Plan4MC Zero-shot. This is a zero-shot variant of our interactive planning method, proposing a skill sequence at the beginning of each task only. The agent executes the planned skills sequentially until a skill fails or the environment terminates. This planner has no fault tolerance for skills execution.</p>
+<p>Plan4MC 1/2-steps. In this ablation study, we half the test episode length and require the agent to solve tasks more efficiently.</p>
+<p>Success rates for each method are listed in Table 2. We find that Interactive LLM has comparable performance to Plan4MC on the task set of Interact-Mobs, where most tasks require less than 10 planning steps. In Mine-Stones and Mine-Ores tasks with long-horizon planning, the LLM planner is more likely to make mistakes, resulting in worse performance. The performance of Plan4MC Zeroshot is much worse than Plan4MC in all the tasks, since a success test episode requires accomplishing each skill in one trial. The decrease is related to the number of planning steps and skills success rates in Table 3. Plan4MC 1/2-steps has the least performance decrease to Plan4MC, showing that Plan4MC can solve tasks in a more limited episode length.</p>
+<h1>6 Related Work</h1>
+<p>Minecraft. In recent years, the open-ended world Minecraft has received wide attention in machine learning research. Malmo [15], MineRL [10] and MineDojo [9] build benchmark environments and datasets for Minecraft. Previous works in MineRL competition [25, 11, 17] study the ObtainDiamond task with hierarchical RL [25, 33, 24, 23] and imitation learning [1, 11]. Other works explore multitask learning [35, 18, 4, 28], unsupervised skill discovery [27], LLM-based planning [37, 36, 40], and pre-training from videos [2, 22, 9, 6]. Our work falls under reinforcement learning and planning in Minecraft.
+Learning Skills in Minecraft. Acquiring skills is crucial for solving long-horizon tasks in Minecraft. Hierarchical approaches [24, 23] in MineRL competition learn low-level skills with imitation learning. VPT [2] labels internet-scale datasets and pre-trains a behavior-cloning agent to initialize for diverse tasks. Recent works [4, 37, 28] learn skills based on VPT. Without expert demonstrations, MineAgent [9] and CLIP4MC [6] learn skills with RL and vision-language rewards. But they can only acquire a small set of skills. Unsupervised skill discovery [27] learns skills that only produce different navigation behaviors. In our work, to enable RL to acquire diverse skills, we learn fine-grained basic skills with intrinsic rewards.
+Planning with Large Language Models. With the rapid progress of LLMs [29, 5], many works study LLMs as planners in open-ended worlds. To ground language models, SayCan [3] combines LLMs with skill affordances to produce feasible plans, Translation LMs [13] selects demonstrations to prompt LLMs, and LID [20] finetunes language models with tokenized interaction data. Other works study interactive planning for error correction. Inner Monologue [14] proposes environment feedback to the planner. DEPS [37] introduces descriptor, explainer, and selector to generate plans by LLMs. In our work, we leverage the LLM to generate a skill graph and introduce a skill search algorithm to eliminate planning mistakes.</p>
+<h2>7 Conclusion and Discussion</h2>
+<p>In this paper, we propose a framework to solve diverse long-horizon open-world tasks with reinforcement learning and planning. To tackle the exploration and sample efficiency issues, we propose to learn fine-grained basic skills with RL and introduce a general Finding-skill to provide good environment initialization for skill learning. In Minecraft, we design a graph-based planner, taking advantage of the prior knowledge in LLMs and the planning accuracy of the skill search algorithm. Experiments on 40 challenging Minecraft tasks verify the advantages of Plan4MC over various baselines.</p>
+<p>Though we implement Plan4MC in Minecraft, our method is extendable to other similar open-world environments and draws insights on building multi-task learning systems. We leave the detailed discussion in Appendix 1.
+A limitation of this work is that the Finding-skill is not aware of its goal during exploration, making the goal-reaching policy sub-optimal. Future work needs to improve its efficiency by training a goal-based policy. Moreover, if the LLM lacks domain knowledge, how to correct the LLM's outputs is a problem worth studying in the future. Providing documents and environmental feedback to the LLM is a promising direction.</p>
+<h1>References</h1>
+<p>[1] Artemij Amiranashvili, Nicolai Dorka, Wolfram Burgard, Vladlen Koltun, and Thomas Brox. Scaling imitation learning in Minecraft. arXiv preprint arXiv:2007.02701, 2020.
+[2] Bowen Baker, Ilge Akkaya, Peter Zhokov, Joost Huizinga, Jie Tang, Adrien Ecoffet, Brandon Houghton, Raul Sampedro, and Jeff Clune. Video pretraining (vpt): Learning to act by watching unlabeled online videos. Advances in Neural Information Processing Systems (NeurIPS), 2022.
+[3] Anthony Brohan, Yevgen Chebotar, Chelsea Finn, Karol Hausman, Alexander Herzog, Daniel Ho, Julian Ibarz, Alex Irpan, Eric Jang, Ryan Julian, et al. Do as i can, not as i say: Grounding language in robotic affordances. In Conference on Robot Learning (CORL), 2023.
+[4] Shaofei Cai, Zihao Wang, Xiaojian Ma, Anji Liu, and Yitao Liang. Open-world multi-task control through goal-aware representation learning and adaptive horizon prediction. arXiv preprint arXiv:2301.10034, 2023.
+[5] Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra, Adam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian Gehrmann, et al. Palm: Scaling language modeling with pathways. arXiv preprint arXiv:2204.02311, 2022.
+[6] Ziluo Ding, Hao Luo, Ke Li, Junpeng Yue, Tiejun Huang, and Zongqing Lu. CLIP4MC: An rl-friendly vision-language model for Minecraft. arXiv preprint arXiv:2303.10571, 2023.
+[7] Yuqing Du, Ksenia Konyushkova, Misha Denil, Akhil Raju, Jessica Landon, Felix Hill, Nando de Freitas, and Serkan Cabi. Vision-language models as success detectors. arXiv preprint arXiv:2303.07280, 2023.
+[8] Adrien Ecoffet, Joost Huizinga, Joel Lehman, Kenneth O Stanley, and Jeff Clune. Go-explore: a new approach for hard-exploration problems. arXiv preprint arXiv:1901.10995, 2019.
+[9] Linxi Fan, Guanzhi Wang, Yunfan Jiang, Ajay Mandlekar, Yuncong Yang, Haoyi Zhu, Andrew Tang, De-An Huang, Yuke Zhu, and Anima Anandkumar. MineDojo: Building open-ended embodied agents with internet-scale knowledge. In Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track, 2022.
+[10] William H. Guss, Brandon Houghton, Nicholay Topin, Phillip Wang, Cayden Codel, Manuela Veloso, and Ruslan Salakhutdinov. MineRL: A large-scale dataset of Minecraft demonstrations. Twenty-Eighth International Joint Conference on Artificial Intelligence (IJCAI), 2019.
+[11] William Hebgen Guss, Stephanie Milani, Nicholay Topin, Brandon Houghton, Sharada Mohanty, Andrew Melnik, Augustin Harter, Benoit Buschmaas, Bjarne Jaster, Christoph Berganski, et al. Towards robust and domain agnostic reinforcement learning competitions: MineRL 2020. In NeurIPS 2020 Competition and Demonstration Track, 2021.
+[12] Danijar Hafner, Jurgis Pasukonis, Jimmy Ba, and Timothy Lillicrap. Mastering diverse domains through world models. arXiv preprint arXiv:2301.04104, 2023.
+[13] Wenlong Huang, Pieter Abbeel, Deepak Pathak, and Igor Mordatch. Language models as zero-shot planners: Extracting actionable knowledge for embodied agents. In International Conference on Machine Learning (ICML), 2022.
+[14] Wenlong Huang, Fei Xia, Ted Xiao, Harris Chan, Jacky Liang, Pete Florence, Andy Zeng, Jonathan Tompson, Igor Mordatch, Yevgen Chebotar, et al. Inner monologue: Embodied reasoning through planning with language models. arXiv preprint arXiv:2207.05608, 2022.
+[15] Matthew Johnson, Katja Hofmann, Tim Hutton, and David Bignell. The malmo platform for artificial intelligence experimentation. In International Joint Conference on Artificial Intelligence (IJCAI), 2016.
+[16] Leslie Pack Kaelbling, Michael L Littman, and Anthony R Cassandra. Planning and acting in partially observable stochastic domains. Artificial intelligence, 101(1-2):99-134, 1998.</p>
+<p>[17] Anssi Kanervisto, Stephanie Milani, Karolis Ramanauskas, Nicholay Topin, Zichuan Lin, Junyou Li, Jianing Shi, Deheng Ye, Qiang Fu, Wei Yang, et al. MineRL diamond 2021 competition: Overview, results, and lessons learned. NeurIPS 2021 Competitions and Demonstrations Track, 2022.
+[18] Ingmar Kanitscheider, Joost Huizinga, David Farhi, William Hebgen Guss, Brandon Houghton, Raul Sampedro, Peter Zhokhov, Bowen Baker, Adrien Ecoffet, Jie Tang, et al. Multi-task curriculum learning in a complex, visual, hard-exploration domain: Minecraft. arXiv preprint arXiv:2106.14876, 2021.
+[19] Chengshu Li, Ruohan Zhang, Josiah Wong, Cem Gokmen, Sanjana Srivastava, Roberto MartínMartín, Chen Wang, Gabrael Levine, Michael Lingelbach, Jiankai Sun, et al. Behavior-1k: A benchmark for embodied ai with 1,000 everyday activities and realistic simulation. In Conference on Robot Learning (CORL), 2023.
+[20] Shuang Li, Xavier Puig, Chris Paxton, Yilun Du, Clinton Wang, Linxi Fan, Tao Chen, De-An Huang, Ekin Akyürek, Anima Anandkumar, et al. Pre-trained language models for interactive decision-making. Advances in Neural Information Processing Systems (NeurIPS), 2022.
+[21] Jacky Liang, Wenlong Huang, Fei Xia, Peng Xu, Karol Hausman, Brian Ichter, Pete Florence, and Andy Zeng. Code as policies: Language model programs for embodied control. arXiv preprint arXiv:2209.07753, 2022.
+[22] Shalev Lifshitz, Keiran Paster, Harris Chan, Jimmy Ba, and Sheila McIlraith. Steve-1: A generative model for text-to-behavior in minecraft. arXiv preprint arXiv:2306.00937, 2023.
+[23] Zichuan Lin, Junyou Li, Jianing Shi, Deheng Ye, Qiang Fu, and Wei Yang. Juewu-mc: Playing Minecraft with sample-efficient hierarchical reinforcement learning. In Proceedings of the Thirty-First International Joint Conference on Artificial Intelligence (IJCAI), 2022.
+[24] Hangyu Mao, Chao Wang, Xiaotian Hao, Yihuan Mao, Yiming Lu, Chengjie Wu, Jianye Hao, Dong Li, and Pingzhong Tang. Seihai: A sample-efficient hierarchical ai for the MineRL competition. In Distributed Artificial Intelligence (DAI), 2022.
+[25] Stephanie Milani, Nicholay Topin, Brandon Houghton, William H Guss, Sharada P Mohanty, Keisuke Nakata, Oriol Vinyals, and Noboru Sean Kuno. Retrospective analysis of the 2019 MineRL competition on sample efficient reinforcement learning. In NeurIPS 2019 Competition and Demonstration Track, 2020.
+[26] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A Rusu, Joel Veness, Marc G Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg Ostrovski, et al. Human-level control through deep reinforcement learning. nature, 518(7540):529-533, 2015.
+[27] Juan José Nieto, Roger Creus, and Xavier Giro-i Nieto. Unsupervised skill-discovery and skill-learning in Minecraft. arXiv preprint arXiv:2107.08398, 2021.
+[28] Kolby Nottingham, Prithviraj Ammanabrolu, Alane Suhr, Yejin Choi, Hannaneh Hajishirzi, Sameer Singh, and Roy Fox. Do embodied agents dream of pixelated sheep?: Embodied decision making using language guided world modelling. arXiv preprint arXiv:2301.12050, 2023.
+[29] Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. Training language models to follow instructions with human feedback. Advances in Neural Information Processing Systems (NeurIPS), 2022.
+[30] Marco Pleines, Matthias Pallasch, Frank Zimmer, and Mike Preuss. Memory gym: Partially observable challenges to memory-based agents. In International Conference on Learning Representations (ICLR), 2023.
+[31] Julian Schrittwieser, Ioannis Antonoglou, Thomas Hubert, Karen Simonyan, Laurent Sifre, Simon Schmitt, Arthur Guez, Edward Lockhart, Demis Hassabis, Thore Graepel, et al. Mastering atari, go, chess and shogi by planning with a learned model. Nature, 588(7839):604-609, 2020.</p>
+<p>[32] John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347, 2017.
+[33] Alexey Skrynnik, Aleksey Staroverov, Ermek Aitygulov, Kirill Aksenov, Vasilii Davydov, and Aleksandr I Panov. Hierarchical deep q-network from imperfect demonstrations in Minecraft. Cognitive Systems Research, 65:74-78, 2021.
+[34] Open Ended Learning Team, Adam Stooke, Anuj Mahajan, Catarina Barros, Charlie Deck, Jakob Bauer, Jakub Sygnowski, Maja Trebacz, Max Jaderberg, Michael Mathieu, et al. Openended learning leads to generally capable agents. arXiv preprint arXiv:2107.12808, 2021.
+[35] Chen Tessler, Shahar Givony, Tom Zahavy, Daniel Mankowitz, and Shie Mannor. A deep hierarchical approach to lifelong learning in Minecraft. In Proceedings of the AAAI conference on artificial intelligence (AAAI), 2017.
+[36] Guanzhi Wang, Yuqi Xie, Yunfan Jiang, Ajay Mandlekar, Chaowei Xiao, Yuke Zhu, Linxi Fan, and Anima Anandkumar. Voyager: An open-ended embodied agent with large language models. arXiv preprint arXiv:2305.16291, 2023.
+[37] Zihao Wang, Shaofei Cai, Anji Liu, Xiaojian Ma, and Yitao Liang. Describe, explain, plan and select: Interactive planning with large language models enables open-world multi-task agents. arXiv preprint arXiv:2302.01560, 2023.
+[38] Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, brian ichter, Fei Xia, Ed H. Chi, Quoc V Le, and Denny Zhou. Chain of thought prompting elicits reasoning in large language models. In Advances in Neural Information Processing Systems (NeurIPS), 2022.
+[39] Tianhe Yu, Deirdre Quillen, Zhanpeng He, Ryan Julian, Karol Hausman, Chelsea Finn, and Sergey Levine. Meta-world: A benchmark and evaluation for multi-task and meta reinforcement learning. In Conference on Robot Learning (CORL), 2020.
+[40] Xizhou Zhu, Yuntao Chen, Hao Tian, Chenxin Tao, Weijie Su, Chenyu Yang, Gao Huang, Bin Li, Lewei Lu, Xiaogang Wang, et al. Ghost in the minecraft: Generally capable agents for open-world enviroments via large language models with text-based knowledge and memory. arXiv preprint arXiv:2305.17144, 2023.</p>
+<h1>A The Necessity of Learning the Finding-skill</h1>
+<p>We demonstrate the exploration difficulty of learning skills in Minecraft. Figure 4 shows that a random policy can only travel to a distance of 5 blocks on plains within 500 steps. Since trees are rare on the plains and usually have $&gt;20$ distances to the player, an RL agent starting from a random policy can fail to collect logs on plains.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Maximal travel distance to the spawning point a random policy could reach in Minecraft, under different episode lengths. We test for 100 episodes, with different randomly generated worlds and agent parameters. Note that all Manipulation-skills we trained have episode lengths less than 1000 to ensure sample efficiency.</p>
+<p>In Table 4, we compare the travel distances of a random policy, a hand-coded walking policy, and our Finding-skill pre-trained with RL. We find that the Finding-skill has a stronger exploration ability than the other two policies.</p>
+<p>Table 4: Maximal travel distance on plains of a random policy, a hand-coded policy which always takes forward+jump and randomly turns left or right, and our Finding-skill.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Episode length</th>
+<th style="text-align: center;">200</th>
+<th style="text-align: center;">500</th>
+<th style="text-align: center;">1000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Random Policy</td>
+<td style="text-align: center;">$3.0 \pm 2.1$</td>
+<td style="text-align: center;">$5.0 \pm 3.6$</td>
+<td style="text-align: center;">$7.1 \pm 4.9$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Hand-coded Policy</td>
+<td style="text-align: center;">$7.1 \pm 2.7$</td>
+<td style="text-align: center;">$11.7 \pm 4.4$</td>
+<td style="text-align: center;">$18.0 \pm 6.6$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Finding-skill</td>
+<td style="text-align: center;">$12.6 \pm 5.6$</td>
+<td style="text-align: center;">$18.5 \pm 9.3$</td>
+<td style="text-align: center;">$25.7 \pm 12.1$</td>
+</tr>
+</tbody>
+</table>
+<h1>B Pipeline Demonstration</h1>
+<p>Here we visually demonstrate the steps Plan4MC takes to solve a long-horizon task. Figure 5 shows the interactive planning and execution process for crafting a bed. Figure 6 shows the key frames of Plan4MC solving the challenging Tech Tree task of crafting an iron pickaxe with bare hands.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Demonstration of a planning and execution episode for the task "craft a bed". Following the direction of the arrows, the planner iteratively proposes the skill sequence based on the agent's state, and the policy executes the first skill. Though an execution for "harvest wool" fails in the middle, the planner replans to "find a sheep" again to fix this error, and finally completes the task. The lower right shows the skill graph for this task, where the red circle indicates the target, and the blue circles indicate the initial items.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: A playing episode of Plan4MC for crafting iron pickaxe with bare hands. This is a challenging task in Minecraft Tech Tree, which requires 16 different basic skills and 117 steps in the initial plan.</p>
+<h1>C Algorithms</h1>
+<p>We present our algorithm sketches for skill planning and solving hard tasks here.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="w"> </span><span class="n">DFS</span><span class="o">.</span>
+<span class="n">Input</span><span class="p">:</span><span class="w"> </span><span class="n">Pre</span><span class="o">-</span><span class="n">generated</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="n">graph</span><span class="p">:</span><span class="w"> </span>\<span class="p">(</span><span class="n">G</span>\<span class="p">);</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">item</span><span class="p">:</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span>\<span class="p">);</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="n">quantity</span><span class="p">:</span><span class="w"> </span>\<span class="p">(</span><span class="n">n</span>\<span class="p">);</span>
+<span class="n">Global</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"> </span><span class="n">possessing</span><span class="w"> </span><span class="n">items</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span>\<span class="p">(</span><span class="n">S</span>\<span class="p">)</span><span class="o">.</span>
+<span class="k">for</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">parents</span><span class="w"> </span>\<span class="p">((</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">)</span>\<span class="p">)</span><span class="w"> </span><span class="n">do</span>
+<span class="w">    </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}},</span><span class="w"> </span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="p">}</span>\<span class="p">),</span><span class="w"> </span><span class="n">consume</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">leftarrow</span><span class="o">&lt;</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">},</span><span class="w"> </span><span class="n">g</span><span class="o">&gt;</span>\<span class="p">);</span>
+<span class="w">    </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span>\<span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="n">of</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span><span class="o">$</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>\<span class="p">(</span><span class="o">&gt;</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span>\<span class="p">)</span><span class="w"> </span><span class="n">then</span>
+<span class="w">        </span><span class="n">Decrease</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">with</span><span class="w"> </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">),</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">consume</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="n">of</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span><span class="o">&gt;</span><span class="mi">0</span>\<span class="p">)</span><span class="w"> </span><span class="n">do</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">DFS</span><span class="p">}</span>\<span class="n">left</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">},</span><span class="w"> </span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">},</span><span class="w"> </span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">S</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">Crafting</span><span class="o">-</span><span class="n">skill</span><span class="w"> </span><span class="n">then</span>
+<span class="w">            </span><span class="n">Remove</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">nearby</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">);</span>
+<span class="w">            </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">o</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">n</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span>\<span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="n">of</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="n">after</span><span class="w"> </span><span class="n">executing</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">o</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">n</span><span class="p">}</span><span class="o">&gt;</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="n">then</span>
+<span class="w">                </span><span class="n">Increase</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">with</span><span class="w"> </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">o</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">n</span><span class="p">}</span><span class="o">-</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">);</span>
+<span class="w">            </span><span class="n">Increase</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="n">after</span><span class="w"> </span><span class="n">executing</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span>\<span class="p">(</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}</span>\<span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>\<span class="p">(</span><span class="n">I</span>\<span class="p">);</span>
+<span class="w">            </span>\<span class="p">(</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">o</span><span class="p">}</span><span class="o">-</span><span class="n">n_</span><span class="p">{</span><span class="n">g</span><span class="o">^</span><span class="p">{</span>\<span class="n">prime</span><span class="p">}}</span><span class="o">^</span><span class="p">{</span><span class="n">o</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">n</span><span class="p">}</span>\<span class="p">);</span>
+</code></pre></div>
+
+<p>Append skill $g$ to $S$.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">Algorithm</span><span class="w"> </span><span class="nt">2</span><span class="o">:</span><span class="w"> </span><span class="nt">Skill</span><span class="w"> </span><span class="nt">search</span><span class="w"> </span><span class="nt">algorithm</span><span class="o">.</span>
+<span class="nt">Input</span><span class="o">:</span><span class="w"> </span><span class="nt">Pre-generated</span><span class="w"> </span><span class="nt">skill</span><span class="w"> </span><span class="nt">graph</span><span class="o">:</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="nt">G</span><span class="err">\</span><span class="o">);</span><span class="w"> </span><span class="nt">Target</span><span class="w"> </span><span class="nt">item</span><span class="o">:</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="nt">g</span><span class="err">\</span><span class="o">);</span><span class="w"> </span><span class="nt">Initial</span><span class="w"> </span><span class="nt">items</span><span class="o">:</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="nt">I</span><span class="err">\</span><span class="o">).</span>
+<span class="nt">Output</span><span class="o">:</span><span class="w"> </span><span class="nt">Skill</span><span class="w"> </span><span class="nt">sequence</span><span class="o">:</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="err">\</span><span class="nt">left</span><span class="o">(</span><span class="nt">s_</span><span class="p">{</span><span class="err">1</span><span class="p">}</span><span class="o">,</span><span class="w"> </span><span class="nt">s_</span><span class="p">{</span><span class="err">2</span><span class="p">}</span><span class="o">,</span><span class="w"> </span><span class="err">\</span><span class="nt">ldots</span><span class="err">\</span><span class="nt">right</span><span class="o">)</span><span class="err">\</span><span class="o">).</span>
+<span class="err">\</span><span class="o">(</span><span class="nt">S</span><span class="o">^</span><span class="p">{</span><span class="err">\prime</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nt">leftarrow</span><span class="o">()</span><span class="err">\</span><span class="o">);</span>
+<span class="err">\</span><span class="o">(</span><span class="nt">I</span><span class="o">^</span><span class="p">{</span><span class="err">\prime</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nt">leftarrow</span><span class="w"> </span><span class="nt">I</span><span class="err">\</span><span class="o">);</span>
+<span class="err">\</span><span class="o">(</span><span class="err">\</span><span class="nt">operatorname</span><span class="p">{</span><span class="err">DFS</span><span class="p">}</span><span class="err">\</span><span class="nt">left</span><span class="o">(</span><span class="nt">G</span><span class="o">,</span><span class="w"> </span><span class="nt">g</span><span class="o">,</span><span class="w"> </span><span class="nt">1</span><span class="o">,</span><span class="w"> </span><span class="nt">I</span><span class="o">^</span><span class="p">{</span><span class="err">\prime</span><span class="p">}</span><span class="o">,</span><span class="w"> </span><span class="nt">S</span><span class="o">^</span><span class="p">{</span><span class="err">\prime</span><span class="p">}</span><span class="err">\</span><span class="nt">right</span><span class="o">)</span><span class="err">\</span><span class="o">);</span>
+<span class="nt">return</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="nt">S</span><span class="o">^</span><span class="p">{</span><span class="err">\prime</span><span class="p">}</span><span class="err">\</span><span class="o">).</span>
+</code></pre></div>
+
+<p>Algorithm 3: Process for solving a task.
+Input: Task: $T=(g, I)$; Pre-trained skills: $\left{\pi_{s}\right}<em 1="1">{s \in S}$; Pre-generated skill graph: $G$; Skill search algorithm: Search.
+Output: Task success.
+$I^{\prime} \leftarrow I$;
+while task not done do
+$\left(s</em>\right)$;
+Execute $\pi_{s_{1}}$ for several steps;
+if task success then
+return True;
+$I^{\prime} \leftarrow$ inventory items $\cup$ nearby items;
+return False.}, s_{2}, \ldots\right) \leftarrow \operatorname{Search}\left(G, g, I^{\prime</p>
+<h1>D Details in Training Basic Skills</h1>
+<p>Table 5 shows the environment and algorithm configurations for training basic skills. Except for the skill of mining whose breaking speed multiplier in the simulator is set to 10 , all the skills are trained using the unmodified MineDojo simulator.</p>
+<p>Though the MineCLIP reward improves the learning of many skills, it is still not enough to encourage some complicated behaviors. In combat we introduce distance reward and attack reward to further encourage the agent to chase and attack the mobs. In mining , we introduce distance reward to keep the agent close to the target blocks. To mine underground ores , we add depth reward to encourage the agent to mine deeper and then go back to the ground. These item-based intrinsic rewards are easy to implement for all the items and are also applicable in many other open-world environments like robotics. Intrinsic rewards are implemented as follows.
+State count. The high-level recurrent policy for Finding-skills optimizes the visited area in a $110 \times 110$ square, where the agent's spawn location is at the center. We divide the square into $11 \times 11$ grids and keep a visitation flag for each grid. Once the agent walks into an unvisited grid, it receives +1 state count reward.
+Goal navigation. The low-level policy for Finding-skills is encouraged to reach the goal position. The goal location is randomly sampled in 4 directions at a distance of 10 from the agent. To get closer to the goal, we compute the distance change between the goal and the agent: $r_{d}=-\left(d_{t}-d_{t-1}\right)$, where $d_{t}$ is the distance on the plane coordinates at time step $t$. Additionally, to encourage the agent to look in its walking direction, we add rewards to regularize the agent's yaw and pitch angles: $r_{y a w}=y a w \cdot g, r_{\text {pitch }}=\cos (\text { pitch })$, where $g$ is the goal direction. The total reward is:</p>
+<p>$$
+r=r_{y a w}+r_{p i t c h}+10 * r_{d}
+$$</p>
+<p>CLIP reward. This reward encourages the agent to produce behaviors that match the task prompt. We sample 31 task prompts among all the MineDojo programmatic tasks as negative samples. The pre-trained MineCLIP [9] model computes the similarities between features of the past 16 frames and prompts. We compute the probability that the frames are most similar to the task prompt: $p=\left[\operatorname{softmax}\left(S\left(f_{v}, f_{l}\right),\left{S\left(f_{v}, f_{l^{-}}\right)\right}<em 0="0">{l^{-}}\right)\right]</em>$are negative prompts. The CLIP reward is:}$, where $f_{v}, f_{l}$ are video features and prompt features, $l$ is the task prompt, and $l^{-</p>
+<p>$$
+r_{\mathrm{CLIP}}=\max \left{p-\frac{1}{32}, 0\right}
+$$</p>
+<p>Distance. The distance reward provides dense reward signals to reach the target items. For combat tasks, the agent gets a distance reward when the distance is closer than the minimal distance in history:</p>
+<p>$$
+r_{\text {distance }}=\max \left{\min <em t_prime="t^{\prime">{t^{\prime}&lt;t} d</em>, 0\right}
+$$}}-d_{t</p>
+<p>For mining tasks, since the agent should stay close to the block for many time steps, we modify the distance reward to encourage keeping a small distance:</p>
+<p>$$
+r_{\text {distance }}=\left{\begin{array}{l}
+d_{t-1}-d_{t}, \quad 1.5 \leq d_{t} \leq+\infty \
+2, \quad d_{t}&lt;1.5 \
+-2, \quad d_{t}=+\infty
+\end{array}\right.
+$$</p>
+<p>where $d_{t}$ is the distance between the agent and the target item at time step $t$, which is detected by lidar rays in the simulator.</p>
+<p>Attack. For combat tasks, we reward the agent for attacking the target mobs. We use the tool's durability information to detect valid attacks and use lidar rays to detect the target mob. The attack reward is:</p>
+<p>$$
+r_{\text {attack }}=\left{\begin{array}{ll}
+90, &amp; \text { if valid attack and the target at center } \
+1, &amp; \text { if valid attack but the target not at center } \
+0, &amp; \text { otherwise. }
+\end{array}\right.
+$$</p>
+<p>Table 5: Training configurations for all the basic skills. Max Steps is the maximal episode length. Training Steps shows the environment steps cost for training each skill. Init. shows the maximal distance to spawn mobs at environment reset. The high-level policy and low-level policy for Findingskills are listed in two lines.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Skill</th>
+<th style="text-align: center;">Max Steps</th>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Intrinsic Reward</th>
+<th style="text-align: center;">Training Steps</th>
+<th style="text-align: center;">Biome</th>
+<th style="text-align: center;">Init.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Find</td>
+<td style="text-align: center;">high: 40</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">state count</td>
+<td style="text-align: center;">1 M</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">low: 50</td>
+<td style="text-align: center;">DQN</td>
+<td style="text-align: center;">goal navigation</td>
+<td style="text-align: center;">0.5 M</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Place</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">CLIP reward</td>
+<td style="text-align: center;">0.3 M</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">CLIP reward</td>
+<td style="text-align: center;">1 M</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">CLIP reward</td>
+<td style="text-align: center;">1 M</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">Combat</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">CLIP, distance, attack</td>
+<td style="text-align: center;">1 M</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">Combat</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">CLIP, distance, attack</td>
+<td style="text-align: center;">1 M</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">distance</td>
+<td style="text-align: center;">0.5 M</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">distance</td>
+<td style="text-align: center;">0.3 M</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;">Mine</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">PPO</td>
+<td style="text-align: center;">depth</td>
+<td style="text-align: center;">0.4 M</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;">Craft</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">--</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Information for all the selected basic skill policies. Success Rate is the success rate of the selected policy on the smoothed training curve.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Skill</th>
+<th style="text-align: center;">Parameters</th>
+<th style="text-align: center;">Execute Steps</th>
+<th style="text-align: center;">Success Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Find</td>
+<td style="text-align: center;">0.9 M</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">--</td>
+</tr>
+<tr>
+<td style="text-align: center;">Place</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">0.98</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">0.50</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">0.27</td>
+</tr>
+<tr>
+<td style="text-align: center;">Combat</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">0.21</td>
+</tr>
+<tr>
+<td style="text-align: center;">Combat</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">0.30</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">0.56</td>
+</tr>
+<tr>
+<td style="text-align: center;">Harvest</td>
+<td style="text-align: center;">2.0 M</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">0.47</td>
+</tr>
+<tr>
+<td style="text-align: center;">Mine</td>
+<td style="text-align: center;">4.0 M</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">Craft</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>Depth. For mining tasks, the agent should dig down first, then go back to the ground. We use the y -axis to calculate the change of the agent's depth, and use the depth reward to encourage such behaviors. To train the dig-down policy, the depth reward is:</p>
+<p>$$
+r_{\text {down }}=\max \left{\min <em t_prime="t^{\prime">{t^{\prime}&lt;t} y</em>, 0\right}
+$$}}-y_{t</p>
+<p>To train the go-back policy, the depth reward is:</p>
+<p>$$
+r_{u p}=\max \left{y_{t}-\max <em t_prime="t^{\prime">{t^{\prime}&lt;t} y</em>, 0\right}
+$$}</p>
+<p>For each Manipulation-skill, we use a linear combination of intrinsic reward and extrinsic success reward to train the policy.
+It takes one day on a single TITAN Xp GPU to train each skill for 1M environmental steps. Table 6 shows our selected basic skill policies for downstream tasks. Since the Finding-skill and the Mining skill has no success rate during training, we pick the models with the highest returns on the smoothed training curves. For other skills, we pick the models with the highest success rates on the smoothed training curves.</p>
+<h1>E LLM Prompt Design</h1>
+<p>To construct the skill graph, we use ChatGPT to generate skill information showing relationships between skills. For both Manipulation-skills and Crafting-skills, we demonstrate several skills, explain the format, and then ask ChatGPT to generate all the skills in the same format.</p>
+<p>Listing 1: Prompt for generating some Manipulation-skills and ChatGPT's response. We only modify the last querying sentence in the prompt to generate all the skills.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Prompt</span><span class="o">:</span>
+<span class="n">I</span><span class="w"> </span><span class="n">am</span><span class="w"> </span><span class="n">playing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">game</span><span class="w"> </span><span class="n">Minecraft</span><span class="o">.</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">define</span><span class="w"> </span><span class="n">some</span><span class="w"> </span><span class="n">basic</span><span class="w"> </span><span class="n">skills</span><span class="o">,</span><span class="w"> </span><span class="n">like</span>
+<span class="w">    </span><span class="n">attack</span><span class="w"> </span><span class="n">something</span><span class="o">,</span><span class="w"> </span><span class="n">collect</span><span class="w"> </span><span class="n">something</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">place</span><span class="w"> </span><span class="n">something</span><span class="w"> </span><span class="n">nearby</span><span class="o">.</span><span class="w"> </span><span class="n">I</span>
+<span class="w">    </span><span class="n">list</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">skills</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">format</span><span class="o">.</span>
+<span class="n">As</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">example</span><span class="o">:</span>
+<span class="n">furnace_nearby</span><span class="o">:</span>
+<span class="w">    </span><span class="n">consume</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;furnace&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">require</span><span class="o">:</span>
+<span class="w">    </span><span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;furnace&#39;</span><span class="o">]</span>
+<span class="w">    </span><span class="n">obtain</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;furnace_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">To</span><span class="w"> </span><span class="n">understand</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">line</span><span class="o">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">a</span>
+<span class="w">        </span><span class="n">furnace_nearby</span><span class="o">.</span><span class="w"> </span><span class="s1">&#39;consume&#39;</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">things</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">consumed</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">killed</span><span class="o">.</span>
+<span class="w">            </span><span class="n">In</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">skill</span><span class="o">,</span><span class="w"> </span><span class="n">furnace</span><span class="o">*</span><span class="mi">1</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">consumed</span><span class="o">.</span><span class="w"> </span><span class="s1">&#39;require&#39;</span><span class="w"> </span><span class="n">means</span>
+<span class="w">            </span><span class="n">things</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">needed</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">consumed</span><span class="o">.</span><span class="w"> </span><span class="n">In</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">skill</span><span class="o">,</span><span class="w"> </span><span class="n">nothing</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">required</span><span class="o">.</span><span class="w"> </span><span class="n">We</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">equip</span><span class="w"> </span><span class="n">furnace</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">slot</span><span class="o">.</span><span class="w"> </span><span class="n">If</span>
+<span class="w">            </span><span class="n">you</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">equip</span><span class="w"> </span><span class="n">anything</span><span class="o">,</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="s1">&#39;equip: []&#39;</span><span class="o">.</span><span class="w"> </span><span class="n">Finally</span><span class="o">,</span><span class="w"> </span><span class="n">we</span>
+<span class="w">            </span><span class="n">will</span><span class="w"> </span><span class="n">obtain</span><span class="w"> </span><span class="n">furnace_nearby</span><span class="o">*</span><span class="mi">1</span><span class="o">.</span>
+<span class="n">Another</span><span class="w"> </span><span class="n">example</span><span class="o">:</span>
+<span class="n">cobblestone</span><span class="o">:</span>
+<span class="w">    </span><span class="n">consume</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;cobblestone_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">require</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;wooden_pickaxe&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;wooden_pickaxe&#39;</span><span class="o">]</span>
+<span class="w">    </span><span class="n">obtain</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;cobblestone&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">To</span><span class="w"> </span><span class="n">understand</span><span class="o">:</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">mine</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">cobblestone</span><span class="o">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">consume</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">nearby</span>
+<span class="w">            </span><span class="n">cobblestone</span><span class="o">.</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">wooden_pickaxe</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">required</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">equipped</span><span class="o">,</span>
+<span class="w">            </span><span class="n">but</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">consumed</span><span class="o">.</span>
+<span class="n">Now</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">understand</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rule</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">format</span><span class="o">.</span><span class="w"> </span><span class="n">Please</span><span class="w"> </span><span class="n">help</span><span class="w"> </span><span class="n">me</span><span class="w"> </span><span class="n">generate</span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">skills</span><span class="o">:</span>
+<span class="n">crafting_table_nearby</span><span class="o">,</span><span class="w"> </span><span class="n">wool</span><span class="o">,</span><span class="w"> </span><span class="n">beef</span><span class="o">,</span><span class="w"> </span><span class="n">diamond</span>
+<span class="n">ChatGPT</span><span class="o">:</span>
+<span class="n">Here</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="n">skills</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="n">format</span><span class="o">:</span>
+<span class="n">crafting_table_nearby</span><span class="o">:</span>
+<span class="n">consume</span><span class="o">:</span>
+<span class="s1">&#39;crafting_table&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">require</span><span class="o">:</span>
+<span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;crafting_table&#39;</span><span class="o">]</span>
+<span class="n">obtain</span><span class="o">:</span>
+<span class="s1">&#39;crafting_table_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">wool</span><span class="o">:</span>
+<span class="n">consume</span><span class="o">:</span>
+<span class="s1">&#39;sheep_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">require</span><span class="o">:</span>
+<span class="s1">&#39;shears&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;shears&#39;</span><span class="o">]</span>
+<span class="n">obtain</span><span class="o">:</span>
+<span class="s1">&#39;wool&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">beef</span><span class="o">:</span>
+</code></pre></div>
+
+<p>consume:
+'cow_nearby': 1
+require:
+equip: []
+obtain:
+'beef': 1
+diamond:
+consume:
+'diamond_ore_nearby': 1
+require:
+'iron_pickaxe': 1
+equip: ['iron_pickaxe']
+obtain:
+'diamond': 1
+Listing 2: Prompt for generating some Crafting-skills and ChatGPT's response. We only modify the last querying sentence in the prompt to generate all the skills.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Prompt</span><span class="o">:</span>
+<span class="n">I</span><span class="w"> </span><span class="n">am</span><span class="w"> </span><span class="n">playing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">game</span><span class="w"> </span><span class="n">Minecraft</span><span class="o">.</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">crafting</span><span class="w"> </span><span class="n">skills</span><span class="w"> </span><span class="k">in</span>
+<span class="w">    </span><span class="k">this</span><span class="w"> </span><span class="n">game</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">format</span><span class="o">.</span>
+<span class="n">As</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">example</span><span class="o">:</span>
+<span class="n">bed</span><span class="o">:</span>
+<span class="w">    </span><span class="n">consume</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;planks&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">        </span><span class="s1">&#39;wool&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">    </span><span class="n">require</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;crafting_table_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">    </span><span class="n">obtain</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;bed&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">To</span><span class="w"> </span><span class="n">understand</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">line</span><span class="o">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">craft</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bed</span><span class="o">.</span><span class="w"> </span><span class="n">We</span>
+<span class="w">        </span><span class="n">will</span><span class="w"> </span><span class="n">consume</span><span class="w"> </span><span class="n">planks</span><span class="o">*</span><span class="mi">3</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">wool</span><span class="o">*</span><span class="mi">3</span><span class="o">.</span><span class="w"> </span><span class="n">To</span><span class="w"> </span><span class="n">craft</span><span class="w"> </span><span class="n">bed</span><span class="o">,</span><span class="w"> </span><span class="n">a</span>
+<span class="w">        </span><span class="n">crafting_table_nearby</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">necessary</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;require:&#39;</span>
+<span class="w">        </span><span class="n">line</span><span class="o">.</span>
+<span class="n">For</span><span class="w"> </span><span class="n">crafting</span><span class="w"> </span><span class="n">skills</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">equipment</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">always</span><span class="w"> </span><span class="o">[].</span><span class="w"> </span><span class="n">Finally</span><span class="o">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">will</span>
+<span class="w">        </span><span class="n">obtain</span><span class="w"> </span><span class="n">bed</span><span class="o">*</span><span class="mi">1</span><span class="o">.</span>
+<span class="n">Another</span><span class="w"> </span><span class="n">example</span><span class="o">:</span>
+<span class="n">cooked_beef</span><span class="o">:</span>
+<span class="w">    </span><span class="n">consume</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;planks&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="s1">&#39;beef&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">require</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;furnace_nearby&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">    </span><span class="n">obtain</span><span class="o">:</span>
+<span class="w">        </span><span class="s1">&#39;cooked_beef&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">Because</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">require</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">furnace_nearby</span><span class="o">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">fuel</span><span class="o">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">always</span><span class="w"> </span><span class="s1">&#39;planks</span>
+<span class="s1">        &#39;</span><span class="o">*</span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;consume&#39;</span><span class="w"> </span><span class="n">items</span><span class="o">.</span>
+<span class="n">For</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;require:&#39;</span><span class="w"> </span><span class="n">line</span><span class="o">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">know</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">skill</span><span class="w"> </span><span class="n">needs</span>
+<span class="w">        </span><span class="n">crafting_table_nearby</span><span class="o">,</span><span class="w"> </span><span class="n">furnace_nearby</span><span class="o">,</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">nothing</span><span class="o">.</span><span class="w"> </span><span class="n">If</span><span class="w"> </span><span class="n">require</span>
+<span class="w">        </span><span class="n">nothing</span><span class="o">,</span><span class="w"> </span><span class="n">just</span><span class="w"> </span><span class="n">don</span><span class="s1">&#39;t write anything in this line.</span>
+<span class="s1">Now you understand the rule of this format. Please help me generate</span>
+<span class="s1">        the following skills:</span>
+<span class="s1">stick, chest, furnace,item_frame</span>
+<span class="s1">ChatGPT:</span>
+<span class="s1">Sure, here are the crafting skills for the items you requested:</span>
+<span class="s1">stick:</span>
+<span class="s1">consume:</span>
+<span class="s1">&#39;</span><span class="n">planks</span><span class="err">&#39;</span><span class="o">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">require</span><span class="o">:</span>
+<span class="n">equip</span><span class="o">:</span><span class="w"> </span><span class="o">[]</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>obtain:
+&#39;stick&#39;: 4
+chest:
+consume:
+&#39;planks&#39;: 8
+require:
+&#39;crafting_table_nearby&#39;: 1
+equip: []
+obtain:
+&#39;chest&#39;: 1
+furnace:
+consume:
+&#39;cobblestone&#39;: 8
+require:
+&#39;crafting_table_nearby&#39;: 1
+equip: []
+obtain:
+&#39;furnace&#39;: 1
+item_frame:
+consume:
+&#39;stick&#39;: 8
+&#39;leather&#39;: 1
+require:
+&#39;crafting_table_nearby&#39;: 1
+equip: []
+obtain:
+&#39;item_frame&#39;: 1
+</code></pre></div>
+
+<p>All the Finding-skills have the same format:</p>
+<div class="codehilite"><pre><span></span><code>(item)_nearby:
+    consume:
+    require:
+    equip: []
+    obtain:
+        (item)_nearby: 1
+</code></pre></div>
+
+<p>In our experiments, after generating all the skills, we check and correct them according to the Minecraft database. Among 55 skills, we find 6 mistakes in total.</p>
+<h1>F Task Setup</h1>
+<p>Table 7, 8 lists settings for 40 evaluation tasks. To make sure the agent is spawned in an unseen environment in each test episode, we randomly transport the agent with a maximum distance of 500 at environment reset. For tasks involving interacting with mobs, we spawn cows and sheep with a maximum distance of 30 , which is much larger than the spawning distance in training basic skills. For the Mine-Ores task set, we set the breaking speed multiplier to 10 . For the other three task sets, we use the default simulator.</p>
+<h2>G Experiment Results for All the Tasks</h2>
+<p>Table 9 shows the success rates of all the methods in all the tasks, grouped in 4 task sets.</p>
+<h2>H Training Manipulation-skills without Nearby Items</h2>
+<p>For all the Manipulation-skills that are trained with specified environments in the paper, we use the Go-Explore-like approach to re-train them in the environments without target items initialized nearby. In a training episode, the pre-trained Finding-skill explores the environment and finds the target item,</p>
+<p>Table 7: Settings for Cut-Trees and Mine-Stones tasks. Initial Tools are provided in the inventory at each episode beginning. Involved Skills is the least number of basic skills the agent should master to accomplish the task. Planning Steps is the number of basic skills to be executed sequentially in the initial plans.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Task Icon</th>
+<th style="text-align: center;">Target Name</th>
+<th style="text-align: center;">Initial Tools</th>
+<th style="text-align: center;">Biome</th>
+<th style="text-align: center;">Max Steps</th>
+<th style="text-align: center;">Involved Skills</th>
+<th style="text-align: center;">Planning Steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stick</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">crafting_table_ nearby</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">plains</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">bowl</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">9</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">chest</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">trap_door</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">sign</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">wooden_shovel</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">wooden_sword</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">wooden_axe</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">wooden_pickaxe</td>
+<td style="text-align: center;">--</td>
+<td style="text-align: center;">forest</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">furnace_nearby</td>
+<td style="text-align: center;">*10</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">28</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_stairs</td>
+<td style="text-align: center;">*10</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">23</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_slab</td>
+<td style="text-align: center;">*10</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">3000</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">17</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">cobblestone_wall</td>
+<td style="text-align: center;">*10</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">23</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">lever</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">forest_hills</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">torch</td>
+<td style="text-align: center;">*10</td>
+<td style="text-align: center;">hills</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_shovel</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">forest_hills</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_sword</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">forest_hills</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">14</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_axe</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">forest_hills</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">16</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">stone_pickaxe</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">forest_hills</td>
+<td style="text-align: center;">10000</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">16</td>
+</tr>
+</tbody>
+</table>
+<p>then the policy collects data for RL training. In the following, we denote the previous method as Plan4MC and the new method as Plan4MC-go-explore.
+Table 10 shows the maximal success rates of these skills over 100 training epochs. We find that all the skills trained with Go-Explore do not fail and the success rates are comparable to the previous skills. This is because the Finding-skill provides good environmental initialization for the training policies. In Milk and Wool, Plan4MC-go-explore even outperforms Plan4MC, because the agent can be closer to the target mobs in Plan4MC-go-explore.
+Table 11 shows the test performance of Plan4MC on the four task sets. We find that Plan4MC-goexplore even outperforms Plan4MC on three task sets. This demonstrates that the skills trained with Go-Explore can generalize well to unseen environments.
+We further study the generalization capabilities of learned skills. Table 12 shows the test success rates of these skills in the 40 tasks and the generalization gap. We observe that Plan4MC-go-explore has a small generalization gap in the first four mob-related skills. This is because Plan4MC-go-explore uses the same policy for approaching the target mob in training and test, yielding closer initial distributions for Manipulation-skills. We find that in Harvest Log, Plan4MC-go-explore often finds trees that have been cut before. Thus, it is more difficult to harvest logs in training, and the test success rate exceeds the training success rate.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{1}$ Correspondence to Zongqing Lu <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#122;&#111;&#110;&#103;&#113;&#105;&#110;&#103;&#46;&#108;&#117;&#64;&#112;&#107;&#117;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#122;&#111;&#110;&#103;&#113;&#105;&#110;&#103;&#46;&#108;&#117;&#64;&#112;&#107;&#117;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a>, Haoqi Yuan <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#104;&#113;&#64;&#112;&#107;&#117;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#121;&#104;&#113;&#64;&#112;&#107;&#117;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a>&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

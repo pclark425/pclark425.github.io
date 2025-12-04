@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Distribution Mismatch Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-106</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-106</p>
+                <p><strong>Name:</strong> Training Distribution Mismatch Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory explaining the dissociation between strong QA performance and weak interactive procedural performance in LLM-based agents, and the architectural/training interventions required to close the gap, based on the following results.</p>
+                <p><strong>Description:</strong> The QA-interactive performance gap arises fundamentally from a mismatch between training and deployment distributions. LLMs are trained predominantly on static text corpora that contain abundant QA-style patterns (questions followed by answers, explanations, reasoning traces) but lack interactive trajectories with action-observation sequences, execution feedback, and multi-step decision-making under uncertainty. This creates three specific mismatches: (1) Format mismatch - training lacks action-observation-reward tuples and tool-use patterns, (2) Objective mismatch - next-token prediction optimizes for local token likelihood rather than sequential decision quality or task success, (3) Feedback mismatch - training lacks environmental consequences, execution results, and error signals that guide interactive behavior. The theory predicts that interventions reducing these mismatches (interactive training data, RL with environmental rewards, execution-based supervision, tool-use demonstrations) will proportionally improve interactive performance, though the relationship is modulated by data quality, reward design, and the specific nature of the interactive task.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>LLM training data contains abundant QA patterns (question-answer pairs, explanations, reasoning traces) but lacks interactive action-observation-feedback sequences</li>
+                <li>Next-token prediction objectives optimize for local token likelihood, not sequential decision quality, task success, or long-term outcomes</li>
+                <li>Training distribution mismatch manifests as three distinct gaps: format mismatch (no action-observation tuples), objective mismatch (wrong optimization target), and feedback mismatch (no environmental consequences)</li>
+                <li>Adding interactive trajectories to training data improves interactive performance proportionally to the amount, quality, and diversity of interactive data</li>
+                <li>RL with environmental rewards provides feedback signals (credit assignment, consequence learning) that supervised learning on static data cannot provide</li>
+                <li>Step-level process supervision is more effective than outcome-only supervision for multi-step tasks because it provides denser learning signals</li>
+                <li>Hybrid training approaches (supervised + RL, or mixed interactive + general data) typically outperform single-method approaches by balancing different objectives</li>
+                <li>Training on diverse interactive tasks improves generalization to unseen interactive tasks through transfer of action-selection and planning patterns</li>
+                <li>The effectiveness of training interventions depends critically on: data quality (trajectory correctness), reward signal design (dense vs sparse, shaped vs raw), alignment with deployment distribution, and scale of training data</li>
+                <li>Certain training interventions can have negative effects: instruction tuning can degrade planning abilities, training only on agent data can hurt general capabilities, and RL without proper initialization can fail completely</li>
+                <li>The optimal training mixture balances interactive and general data (e.g., 20% agent, 80% general in AgentTuning) to preserve broad capabilities while improving interactive performance</li>
+                <li>Pretraining on code substantially improves program synthesis and tool-use capabilities, suggesting domain-specific pretraining reduces distribution mismatch for procedural tasks</li>
+                <li>Training with execution feedback (running code, checking outputs) provides stronger learning signals than training on static code-text pairs alone</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>AgentTuning demonstrates that adding even small amounts (1,866 trajectories) of high-quality interaction trajectories to training dramatically improves agent performance on both held-in and held-out tasks, with 70B model achieving ~170% improvement on held-out tasks <a href="../results/extraction-result-820.html#e820.0" class="evidence-link">[e820.0]</a> <a href="../results/extraction-result-820.html#e820.1" class="evidence-link">[e820.1]</a> </li>
+    <li>Hybrid mixture training (20% agent data, 80% general data) in AgentTuning preserves general QA capabilities while improving interactive performance, showing optimal balance <a href="../results/extraction-result-820.html#e820.0" class="evidence-link">[e820.0]</a> <a href="../results/extraction-result-820.html#e820.1" class="evidence-link">[e820.1]</a> </li>
+    <li>ToolLLaMA fine-tuning on 126k tool-use trajectories enables generalization to 16,000+ unseen APIs, demonstrating transfer from training distribution <a href="../results/extraction-result-850.html#e850.6" class="evidence-link">[e850.6]</a> <a href="../results/extraction-result-850.html#e850.9" class="evidence-link">[e850.9]</a> </li>
+    <li>DFSDT reasoning strategy used in ToolLLaMA annotation improves multi-step tool-use by exploring multiple reasoning traces rather than single-path generation <a href="../results/extraction-result-850.html#e850.6" class="evidence-link">[e850.6]</a> </li>
+    <li>ToolAlpaca shows that 3.9k simulated multi-agent interaction trajectories improve tool-use from 17.0% to 60.0% on simulated tools and 7.9% to 55.3% on real APIs <a href="../results/extraction-result-918.html#e918.2" class="evidence-link">[e918.2]</a> <a href="../results/extraction-result-918.html#e918.3" class="evidence-link">[e918.3]</a> </li>
+    <li>WebGPT training on human browsing demonstrations via behavior cloning, reward modeling, and PPO improves answer quality, with rejection sampling providing largest gains <a href="../results/extraction-result-921.html#e921.0" class="evidence-link">[e921.0]</a> <a href="../results/extraction-result-925.html#e925.0" class="evidence-link">[e925.0]</a> <a href="../results/extraction-result-925.html#e925.1" class="evidence-link">[e925.1]</a> <a href="../results/extraction-result-925.html#e925.3" class="evidence-link">[e925.3]</a> </li>
+    <li>WebGPT reward model trained on human comparisons enables both RL optimization and best-of-n selection, with best-of-64 outperforming RL <a href="../results/extraction-result-925.html#e925.0" class="evidence-link">[e925.0]</a> <a href="../results/extraction-result-925.html#e925.3" class="evidence-link">[e925.3]</a> </li>
+    <li>Retroformer demonstrates that RL-based fine-tuning of a retrospective LM with environmental rewards (PPO on ΔG returns) substantially outperforms verbal-only reflection methods <a href="../results/extraction-result-941.html#e941.0" class="evidence-link">[e941.0]</a> <a href="../results/extraction-result-941.html#e941.2" class="evidence-link">[e941.2]</a> </li>
+    <li>IPR (Iterative Process Refinement) shows that step-level process rewards improve interactive performance over outcome-only rewards, with mixture training combining SFT, outcome, and process supervision <a href="../results/extraction-result-831.html#e831.2" class="evidence-link">[e831.2]</a> <a href="../results/extraction-result-831.html#e831.6" class="evidence-link">[e831.6]</a> </li>
+    <li>AGILE demonstrates that two-stage training (IL then PPO) with session-level proxy rewards improves tool use, memory updates, and advice-seeking behavior <a href="../results/extraction-result-816.html#e816.0" class="evidence-link">[e816.0]</a> <a href="../results/extraction-result-816.html#e816.3" class="evidence-link">[e816.3]</a> </li>
+    <li>Codex evaluation shows that code-specialized pretraining (on code corpora) dramatically improves program synthesis compared to text-only GPT-3, demonstrating domain-specific training benefits <a href="../results/extraction-result-924.html#e924.3" class="evidence-link">[e924.3]</a> </li>
+    <li>VirtualHome experiments show RL with simulator feedback (executability reward) improves executable program generation, though with trade-offs between LCS fidelity and executability <a href="../results/extraction-result-908.html#e908.0" class="evidence-link">[e908.0]</a> </li>
+    <li>Pre-trained LM experiments show that removing sequential structure (No-Seq ablation) degrades generalization to novel tasks, indicating importance of sequence processing in training <a href="../results/extraction-result-922.html#e922.2" class="evidence-link">[e922.2]</a> </li>
+    <li>WebShop shows that RL from scratch (without IL warm-start) performs worse than rule baseline, indicating critical importance of trajectory distribution initialization <a href="../results/extraction-result-822.html#e822.4" class="evidence-link">[e822.4]</a> </li>
+    <li>WebShop shows that BERT-initialized choice model substantially outperforms training from scratch, demonstrating value of language pretraining for interactive tasks <a href="../results/extraction-result-822.html#e822.1" class="evidence-link">[e822.1]</a> </li>
+    <li>Training verifiers to discriminate correct solutions is more sample-efficient than training generators, suggesting objective mismatch between generation and evaluation <a href="../results/extraction-result-911.html#e911.1" class="evidence-link">[e911.1]</a> <a href="../results/extraction-result-911.html#e911.5" class="evidence-link">[e911.5]</a> </li>
+    <li>Fine-tuning to output only final answers (no intermediate steps) drastically reduces multi-step reasoning performance from 20.6% to 5.2%, showing importance of reasoning traces in training <a href="../results/extraction-result-911.html#e911.5" class="evidence-link">[e911.5]</a> </li>
+    <li>SPAN distillation of GPT-4 trajectories into separate student models for grounding/execution/review improves open-source model performance on tool-use tasks <a href="../results/extraction-result-832.html#e832.1" class="evidence-link">[e832.1]</a> </li>
+    <li>Instruction tuning (Vicuna) sometimes degrades planning and reasoning capabilities compared to base LLaMA, suggesting training objective conflicts <a href="../results/extraction-result-919.html#e919.11" class="evidence-link">[e919.11]</a> </li>
+    <li>GPT-3 fine-tuning on 1,000 Blocksworld instances shows limited improvement (1% to ~20%), suggesting domain-specific training alone is insufficient without proper objectives and scale <a href="../results/extraction-result-929.html#e929.4" class="evidence-link">[e929.4]</a> </li>
+    <li>Toolformer self-supervised learning enables tool-use by generating and filtering synthetic tool-call examples based on perplexity reduction <a href="../results/extraction-result-905.html#e905.2" class="evidence-link">[e905.2]</a> <a href="../results/extraction-result-939.html#e939.1" class="evidence-link">[e939.1]</a> <a href="../results/extraction-result-950.html#e950.9" class="evidence-link">[e950.9]</a> </li>
+    <li>Sabiá models show that continual pretraining on Brazilian Portuguese data and instruction tuning improves domain-specific performance <a href="../results/extraction-result-838.html#e838.1" class="evidence-link">[e838.1]</a> <a href="../results/extraction-result-917.html#e917.1" class="evidence-link">[e917.1]</a> </li>
+    <li>AgentBench evaluation shows systematic gaps between API models (with RLHF/alignment training) and open-source models, suggesting training methodology differences <a href="../results/extraction-result-849.html#e849.0" class="evidence-link">[e849.0]</a> <a href="../results/extraction-result-849.html#e849.3" class="evidence-link">[e849.3]</a> </li>
+    <li>MetaTool evaluation reveals that tool-use awareness and selection require specific training, with few-shot prompting providing substantial improvements <a href="../results/extraction-result-902.html#e902.0" class="evidence-link">[e902.0]</a> </li>
+    <li>ReHAC offline RL framework trains collaboration policy to decide when to request human intervention, showing RL can learn when to act vs delegate <a href="../results/extraction-result-847.html#e847.0" class="evidence-link">[e847.0]</a> </li>
+    <li>ConAgents with SPAN distillation shows that training separate specialized agents (grounding/execution/review) improves tool-use over single-agent approaches <a href="../results/extraction-result-832.html#e832.0" class="evidence-link">[e832.0]</a> <a href="../results/extraction-result-832.html#e832.1" class="evidence-link">[e832.1]</a> </li>
+    <li>InterCode experiments show that interactive multi-turn prompting with execution feedback improves performance over single-turn generation <a href="../results/extraction-result-947.html#e947.2" class="evidence-link">[e947.2]</a> <a href="../results/extraction-result-947.html#e947.6" class="evidence-link">[e947.6]</a> <a href="../results/extraction-result-947.html#e947.10" class="evidence-link">[e947.10]</a> </li>
+    <li>PAL experiments show that code-generation ability depends on base model's code training, with text-davinci-001 (weak code) performing worse with PAL than CoT <a href="../results/extraction-result-938.html#e938.5" class="evidence-link">[e938.5]</a> </li>
+    <li>CODET shows that using generated tests for consensus-based selection improves code generation, leveraging execution feedback without additional training <a href="../results/extraction-result-942.html#e942.0" class="evidence-link">[e942.0]</a> </li>
+    <li>EHRAgent shows that interactive coding with execution feedback and rubber-duck debugging substantially improves multi-tabular reasoning <a href="../results/extraction-result-844.html#e844.0" class="evidence-link">[e844.0]</a> </li>
+    <li>StreamBench experiments show that memory-based continuous learning (storing correct examples) improves performance over time <a href="../results/extraction-result-903.html#e903.2" class="evidence-link">[e903.2]</a> <a href="../results/extraction-result-903.html#e903.3" class="evidence-link">[e903.3]</a> </li>
+    <li>ALFRED SEQ2SEQ+PM shows that auxiliary progress-monitoring objectives provide marginal improvements, suggesting limited benefit of some training augmentations <a href="../results/extraction-result-909.html#e909.1" class="evidence-link">[e909.1]</a> </li>
+    <li>Mind2Web shows that fine-tuning Flan-T5 on multi-choice action prediction substantially improves web navigation over zero-shot <a href="../results/extraction-result-837.html#e837.2" class="evidence-link">[e837.2]</a> </li>
+    <li>Reflexion shows that verbal self-reflection improves iterative performance but is limited without gradient-based learning from environmental rewards <a href="../results/extraction-result-941.html#e941.2" class="evidence-link">[e941.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Pretraining LLMs on large-scale interactive trajectory data (agent logs, execution traces, tool-use demonstrations) will reduce the QA-interactive gap compared to text-only pretraining, with gains proportional to data scale and diversity</li>
+                <li>Models trained with multi-task RL across diverse interactive environments will show better zero-shot transfer to new interactive tasks than single-task trained models, especially for tasks sharing similar action spaces</li>
+                <li>Increasing the proportion of interactive data in training will monotonically improve interactive performance up to some saturation point (likely 20-40% based on AgentTuning results), after which general capabilities may degrade</li>
+                <li>Training with execution-based rewards (code execution, tool output verification) will improve code generation and tool use more than training on static code-text pairs alone, with larger gains for complex multi-step tasks</li>
+                <li>Models trained with explicit action-observation-reward tuples will show better credit assignment in multi-step tasks than models trained on outcome-only supervision, especially in long-horizon tasks with sparse rewards</li>
+                <li>Hybrid training combining behavior cloning (IL) and RL will outperform either approach alone, with IL providing good initialization and RL enabling fine-tuning for task-specific objectives</li>
+                <li>Training with step-level process rewards will show larger improvements over outcome-only rewards as task horizon increases, due to better credit assignment</li>
+                <li>Models trained on diverse tool-use trajectories will generalize better to unseen tools than models trained on single-domain tool use, following power-law scaling with number of training tools</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>The optimal ratio of interactive to static training data for achieving balanced QA and interactive performance across different model scales and architectures</li>
+                <li>Whether interactive training data from simulated environments transfers as effectively as real-world interaction data, and how simulation fidelity affects transfer</li>
+                <li>The extent to which interactive training in one domain (e.g., code execution) transfers to other domains (e.g., robotics, web navigation), and what factors determine transfer effectiveness</li>
+                <li>Whether curriculum learning strategies (easy to hard interactive tasks, or progressive task complexity) provide significant benefits over random sampling of interactive training data</li>
+                <li>The minimum scale of interactive training data needed to achieve human-level performance across diverse procedural tasks, and how this scales with model size</li>
+                <li>Whether training on failed trajectories with error annotations is more valuable than training only on successful trajectories, and under what conditions</li>
+                <li>The extent to which different RL algorithms (PPO, DPO, REINFORCE) differ in their effectiveness for interactive task learning, and whether algorithm choice matters more at certain scales</li>
+                <li>Whether training with human-in-the-loop feedback (as in ReHAC) provides qualitatively different benefits than training with automated environmental rewards</li>
+                <li>The degree to which training distribution mismatch can be overcome by architectural innovations (memory, planning modules) versus requiring training data changes</li>
+                <li>Whether there are fundamental limits to how much interactive performance can be improved through training alone, versus requiring architectural changes or external tools</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Demonstrating that adding interactive training data provides no benefit over static QA data (controlling for data quality and quantity) would challenge the distribution mismatch hypothesis</li>
+                <li>Showing that RL with environmental rewards performs no better than supervised learning on expert trajectories (when both have equal data) would question the importance of feedback mismatch</li>
+                <li>Finding that models trained only on QA data can match interactively-trained models through prompting alone (without any training changes) would challenge the necessity of training interventions</li>
+                <li>Demonstrating that step-level supervision provides no benefit over outcome-only supervision (controlling for total supervision signal) would question the importance of granular feedback</li>
+                <li>Showing that training on synthetic/simulated interactions provides no benefit over static data would challenge the value of interaction-format training</li>
+                <li>Finding that the optimal training mixture is 100% interactive data (no general data needed) would challenge the hybrid training hypothesis</li>
+                <li>Demonstrating that training on diverse interactive tasks provides no better generalization than training on a single task would question the transfer learning hypothesis</li>
+                <li>Showing that training with execution feedback provides no benefit over training on static code would challenge the importance of environmental feedback</li>
+                <li>Finding that instruction tuning always improves or never degrades interactive performance would challenge the observed negative effects</li>
+                <li>Demonstrating that RL from scratch (without IL initialization) can match or exceed IL+RL performance would question the importance of trajectory distribution initialization</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Some prompting strategies (Tree of Thoughts, ReAct, LATS) achieve strong interactive performance without any training changes, suggesting inference-time interventions can partially compensate for training distribution mismatch <a href="../results/extraction-result-840.html#e840.0" class="evidence-link">[e840.0]</a> <a href="../results/extraction-result-840.html#e840.1" class="evidence-link">[e840.1]</a> <a href="../results/extraction-result-848.html#e848.1" class="evidence-link">[e848.1]</a> <a href="../results/extraction-result-848.html#e848.2" class="evidence-link">[e848.2]</a> <a href="../results/extraction-result-944.html#e944.0" class="evidence-link">[e944.0]</a> <a href="../results/extraction-result-944.html#e944.1" class="evidence-link">[e944.1]</a> <a href="../results/extraction-result-944.html#e944.2" class="evidence-link">[e944.2]</a> </li>
+    <li>The relative importance of data quantity vs quality in interactive training is not fully characterized - small amounts of high-quality data (1,866 trajectories in AgentTuning) can be very effective <a href="../results/extraction-result-820.html#e820.0" class="evidence-link">[e820.0]</a> <a href="../results/extraction-result-820.html#e820.1" class="evidence-link">[e820.1]</a> </li>
+    <li>Some models show unexpected degradation after certain types of fine-tuning (Vicuna vs base LLaMA), suggesting complex interactions between training objectives <a href="../results/extraction-result-919.html#e919.11" class="evidence-link">[e919.11]</a> </li>
+    <li>The interaction between model architecture (transformer vs RNN, encoder-decoder vs decoder-only) and training distribution effectiveness is not fully explained <a href="../results/extraction-result-922.html#e922.2" class="evidence-link">[e922.2]</a> <a href="../results/extraction-result-822.html#e822.5" class="evidence-link">[e822.5]</a> </li>
+    <li>Rejection sampling sometimes outperforms RL despite using similar training data, suggesting inference-time compute can substitute for some training interventions <a href="../results/extraction-result-921.html#e921.0" class="evidence-link">[e921.0]</a> <a href="../results/extraction-result-925.html#e925.0" class="evidence-link">[e925.0]</a> </li>
+    <li>The role of model scale in determining how much training distribution mismatch matters is not fully characterized - larger models may be more robust to distribution mismatch <a href="../results/extraction-result-944.html#e944.1" class="evidence-link">[e944.1]</a> <a href="../results/extraction-result-944.html#e944.2" class="evidence-link">[e944.2]</a> </li>
+    <li>Some auxiliary training objectives (progress monitoring in ALFRED) provide only marginal improvements, suggesting not all training augmentations are equally valuable <a href="../results/extraction-result-909.html#e909.1" class="evidence-link">[e909.1]</a> </li>
+    <li>The theory doesn't fully explain why some domains (code) benefit more from specialized training than others (general reasoning) <a href="../results/extraction-result-924.html#e924.3" class="evidence-link">[e924.3]</a> <a href="../results/extraction-result-938.html#e938.5" class="evidence-link">[e938.5]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Zeng et al. (2023) AgentTuning: Enabling Generalized Agent Abilities for LLMs [Demonstrates interactive training benefits and hybrid mixture training]</li>
+    <li>Qin et al. (2023) ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs [Tool-use training and DFSDT reasoning]</li>
+    <li>Nakano et al. (2021) WebGPT: Browser-assisted question-answering with human feedback [Interactive training with human feedback, BC+RM+RL pipeline]</li>
+    <li>Ouyang et al. (2022) Training language models to follow instructions with human feedback [RLHF methodology and reward modeling]</li>
+    <li>Stiennon et al. (2020) Learning to summarize with human feedback [Reward modeling and RL for text generation]</li>
+    <li>Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Process supervision and verification training]</li>
+    <li>Lightman et al. (2023) Let's Verify Step by Step [Process reward models for math reasoning]</li>
+    <li>Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Verbal RL and episodic memory]</li>
+    <li>Liu et al. (2023) AgentBench: Evaluating LLMs as Agents [Systematic evaluation of agent capabilities]</li>
+    <li>Schick et al. (2023) Toolformer: Language Models Can Teach Themselves to Use Tools [Self-supervised tool learning]</li>
+    <li>Chen et al. (2021) Evaluating Large Language Models Trained on Code [Code-specialized training benefits]</li>
+    <li>Yao et al. (2022) ReAct: Synergizing Reasoning and Acting in Language Models [Reasoning and acting paradigm]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Training Distribution Mismatch Theory",
+    "theory_description": "The QA-interactive performance gap arises fundamentally from a mismatch between training and deployment distributions. LLMs are trained predominantly on static text corpora that contain abundant QA-style patterns (questions followed by answers, explanations, reasoning traces) but lack interactive trajectories with action-observation sequences, execution feedback, and multi-step decision-making under uncertainty. This creates three specific mismatches: (1) Format mismatch - training lacks action-observation-reward tuples and tool-use patterns, (2) Objective mismatch - next-token prediction optimizes for local token likelihood rather than sequential decision quality or task success, (3) Feedback mismatch - training lacks environmental consequences, execution results, and error signals that guide interactive behavior. The theory predicts that interventions reducing these mismatches (interactive training data, RL with environmental rewards, execution-based supervision, tool-use demonstrations) will proportionally improve interactive performance, though the relationship is modulated by data quality, reward design, and the specific nature of the interactive task.",
+    "supporting_evidence": [
+        {
+            "text": "AgentTuning demonstrates that adding even small amounts (1,866 trajectories) of high-quality interaction trajectories to training dramatically improves agent performance on both held-in and held-out tasks, with 70B model achieving ~170% improvement on held-out tasks",
+            "uuids": [
+                "e820.0",
+                "e820.1"
+            ]
+        },
+        {
+            "text": "Hybrid mixture training (20% agent data, 80% general data) in AgentTuning preserves general QA capabilities while improving interactive performance, showing optimal balance",
+            "uuids": [
+                "e820.0",
+                "e820.1"
+            ]
+        },
+        {
+            "text": "ToolLLaMA fine-tuning on 126k tool-use trajectories enables generalization to 16,000+ unseen APIs, demonstrating transfer from training distribution",
+            "uuids": [
+                "e850.6",
+                "e850.9"
+            ]
+        },
+        {
+            "text": "DFSDT reasoning strategy used in ToolLLaMA annotation improves multi-step tool-use by exploring multiple reasoning traces rather than single-path generation",
+            "uuids": [
+                "e850.6"
+            ]
+        },
+        {
+            "text": "ToolAlpaca shows that 3.9k simulated multi-agent interaction trajectories improve tool-use from 17.0% to 60.0% on simulated tools and 7.9% to 55.3% on real APIs",
+            "uuids": [
+                "e918.2",
+                "e918.3"
+            ]
+        },
+        {
+            "text": "WebGPT training on human browsing demonstrations via behavior cloning, reward modeling, and PPO improves answer quality, with rejection sampling providing largest gains",
+            "uuids": [
+                "e921.0",
+                "e925.0",
+                "e925.1",
+                "e925.3"
+            ]
+        },
+        {
+            "text": "WebGPT reward model trained on human comparisons enables both RL optimization and best-of-n selection, with best-of-64 outperforming RL",
+            "uuids": [
+                "e925.0",
+                "e925.3"
+            ]
+        },
+        {
+            "text": "Retroformer demonstrates that RL-based fine-tuning of a retrospective LM with environmental rewards (PPO on ΔG returns) substantially outperforms verbal-only reflection methods",
+            "uuids": [
+                "e941.0",
+                "e941.2"
+            ]
+        },
+        {
+            "text": "IPR (Iterative Process Refinement) shows that step-level process rewards improve interactive performance over outcome-only rewards, with mixture training combining SFT, outcome, and process supervision",
+            "uuids": [
+                "e831.2",
+                "e831.6"
+            ]
+        },
+        {
+            "text": "AGILE demonstrates that two-stage training (IL then PPO) with session-level proxy rewards improves tool use, memory updates, and advice-seeking behavior",
+            "uuids": [
+                "e816.0",
+                "e816.3"
+            ]
+        },
+        {
+            "text": "Codex evaluation shows that code-specialized pretraining (on code corpora) dramatically improves program synthesis compared to text-only GPT-3, demonstrating domain-specific training benefits",
+            "uuids": [
+                "e924.3"
+            ]
+        },
+        {
+            "text": "VirtualHome experiments show RL with simulator feedback (executability reward) improves executable program generation, though with trade-offs between LCS fidelity and executability",
+            "uuids": [
+                "e908.0"
+            ]
+        },
+        {
+            "text": "Pre-trained LM experiments show that removing sequential structure (No-Seq ablation) degrades generalization to novel tasks, indicating importance of sequence processing in training",
+            "uuids": [
+                "e922.2"
+            ]
+        },
+        {
+            "text": "WebShop shows that RL from scratch (without IL warm-start) performs worse than rule baseline, indicating critical importance of trajectory distribution initialization",
+            "uuids": [
+                "e822.4"
+            ]
+        },
+        {
+            "text": "WebShop shows that BERT-initialized choice model substantially outperforms training from scratch, demonstrating value of language pretraining for interactive tasks",
+            "uuids": [
+                "e822.1"
+            ]
+        },
+        {
+            "text": "Training verifiers to discriminate correct solutions is more sample-efficient than training generators, suggesting objective mismatch between generation and evaluation",
+            "uuids": [
+                "e911.1",
+                "e911.5"
+            ]
+        },
+        {
+            "text": "Fine-tuning to output only final answers (no intermediate steps) drastically reduces multi-step reasoning performance from 20.6% to 5.2%, showing importance of reasoning traces in training",
+            "uuids": [
+                "e911.5"
+            ]
+        },
+        {
+            "text": "SPAN distillation of GPT-4 trajectories into separate student models for grounding/execution/review improves open-source model performance on tool-use tasks",
+            "uuids": [
+                "e832.1"
+            ]
+        },
+        {
+            "text": "Instruction tuning (Vicuna) sometimes degrades planning and reasoning capabilities compared to base LLaMA, suggesting training objective conflicts",
+            "uuids": [
+                "e919.11"
+            ]
+        },
+        {
+            "text": "GPT-3 fine-tuning on 1,000 Blocksworld instances shows limited improvement (1% to ~20%), suggesting domain-specific training alone is insufficient without proper objectives and scale",
+            "uuids": [
+                "e929.4"
+            ]
+        },
+        {
+            "text": "Toolformer self-supervised learning enables tool-use by generating and filtering synthetic tool-call examples based on perplexity reduction",
+            "uuids": [
+                "e905.2",
+                "e939.1",
+                "e950.9"
+            ]
+        },
+        {
+            "text": "Sabiá models show that continual pretraining on Brazilian Portuguese data and instruction tuning improves domain-specific performance",
+            "uuids": [
+                "e838.1",
+                "e917.1"
+            ]
+        },
+        {
+            "text": "AgentBench evaluation shows systematic gaps between API models (with RLHF/alignment training) and open-source models, suggesting training methodology differences",
+            "uuids": [
+                "e849.0",
+                "e849.3"
+            ]
+        },
+        {
+            "text": "MetaTool evaluation reveals that tool-use awareness and selection require specific training, with few-shot prompting providing substantial improvements",
+            "uuids": [
+                "e902.0"
+            ]
+        },
+        {
+            "text": "ReHAC offline RL framework trains collaboration policy to decide when to request human intervention, showing RL can learn when to act vs delegate",
+            "uuids": [
+                "e847.0"
+            ]
+        },
+        {
+            "text": "ConAgents with SPAN distillation shows that training separate specialized agents (grounding/execution/review) improves tool-use over single-agent approaches",
+            "uuids": [
+                "e832.0",
+                "e832.1"
+            ]
+        },
+        {
+            "text": "InterCode experiments show that interactive multi-turn prompting with execution feedback improves performance over single-turn generation",
+            "uuids": [
+                "e947.2",
+                "e947.6",
+                "e947.10"
+            ]
+        },
+        {
+            "text": "PAL experiments show that code-generation ability depends on base model's code training, with text-davinci-001 (weak code) performing worse with PAL than CoT",
+            "uuids": [
+                "e938.5"
+            ]
+        },
+        {
+            "text": "CODET shows that using generated tests for consensus-based selection improves code generation, leveraging execution feedback without additional training",
+            "uuids": [
+                "e942.0"
+            ]
+        },
+        {
+            "text": "EHRAgent shows that interactive coding with execution feedback and rubber-duck debugging substantially improves multi-tabular reasoning",
+            "uuids": [
+                "e844.0"
+            ]
+        },
+        {
+            "text": "StreamBench experiments show that memory-based continuous learning (storing correct examples) improves performance over time",
+            "uuids": [
+                "e903.2",
+                "e903.3"
+            ]
+        },
+        {
+            "text": "ALFRED SEQ2SEQ+PM shows that auxiliary progress-monitoring objectives provide marginal improvements, suggesting limited benefit of some training augmentations",
+            "uuids": [
+                "e909.1"
+            ]
+        },
+        {
+            "text": "Mind2Web shows that fine-tuning Flan-T5 on multi-choice action prediction substantially improves web navigation over zero-shot",
+            "uuids": [
+                "e837.2"
+            ]
+        },
+        {
+            "text": "Reflexion shows that verbal self-reflection improves iterative performance but is limited without gradient-based learning from environmental rewards",
+            "uuids": [
+                "e941.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "LLM training data contains abundant QA patterns (question-answer pairs, explanations, reasoning traces) but lacks interactive action-observation-feedback sequences",
+        "Next-token prediction objectives optimize for local token likelihood, not sequential decision quality, task success, or long-term outcomes",
+        "Training distribution mismatch manifests as three distinct gaps: format mismatch (no action-observation tuples), objective mismatch (wrong optimization target), and feedback mismatch (no environmental consequences)",
+        "Adding interactive trajectories to training data improves interactive performance proportionally to the amount, quality, and diversity of interactive data",
+        "RL with environmental rewards provides feedback signals (credit assignment, consequence learning) that supervised learning on static data cannot provide",
+        "Step-level process supervision is more effective than outcome-only supervision for multi-step tasks because it provides denser learning signals",
+        "Hybrid training approaches (supervised + RL, or mixed interactive + general data) typically outperform single-method approaches by balancing different objectives",
+        "Training on diverse interactive tasks improves generalization to unseen interactive tasks through transfer of action-selection and planning patterns",
+        "The effectiveness of training interventions depends critically on: data quality (trajectory correctness), reward signal design (dense vs sparse, shaped vs raw), alignment with deployment distribution, and scale of training data",
+        "Certain training interventions can have negative effects: instruction tuning can degrade planning abilities, training only on agent data can hurt general capabilities, and RL without proper initialization can fail completely",
+        "The optimal training mixture balances interactive and general data (e.g., 20% agent, 80% general in AgentTuning) to preserve broad capabilities while improving interactive performance",
+        "Pretraining on code substantially improves program synthesis and tool-use capabilities, suggesting domain-specific pretraining reduces distribution mismatch for procedural tasks",
+        "Training with execution feedback (running code, checking outputs) provides stronger learning signals than training on static code-text pairs alone"
+    ],
+    "new_predictions_likely": [
+        "Pretraining LLMs on large-scale interactive trajectory data (agent logs, execution traces, tool-use demonstrations) will reduce the QA-interactive gap compared to text-only pretraining, with gains proportional to data scale and diversity",
+        "Models trained with multi-task RL across diverse interactive environments will show better zero-shot transfer to new interactive tasks than single-task trained models, especially for tasks sharing similar action spaces",
+        "Increasing the proportion of interactive data in training will monotonically improve interactive performance up to some saturation point (likely 20-40% based on AgentTuning results), after which general capabilities may degrade",
+        "Training with execution-based rewards (code execution, tool output verification) will improve code generation and tool use more than training on static code-text pairs alone, with larger gains for complex multi-step tasks",
+        "Models trained with explicit action-observation-reward tuples will show better credit assignment in multi-step tasks than models trained on outcome-only supervision, especially in long-horizon tasks with sparse rewards",
+        "Hybrid training combining behavior cloning (IL) and RL will outperform either approach alone, with IL providing good initialization and RL enabling fine-tuning for task-specific objectives",
+        "Training with step-level process rewards will show larger improvements over outcome-only rewards as task horizon increases, due to better credit assignment",
+        "Models trained on diverse tool-use trajectories will generalize better to unseen tools than models trained on single-domain tool use, following power-law scaling with number of training tools"
+    ],
+    "new_predictions_unknown": [
+        "The optimal ratio of interactive to static training data for achieving balanced QA and interactive performance across different model scales and architectures",
+        "Whether interactive training data from simulated environments transfers as effectively as real-world interaction data, and how simulation fidelity affects transfer",
+        "The extent to which interactive training in one domain (e.g., code execution) transfers to other domains (e.g., robotics, web navigation), and what factors determine transfer effectiveness",
+        "Whether curriculum learning strategies (easy to hard interactive tasks, or progressive task complexity) provide significant benefits over random sampling of interactive training data",
+        "The minimum scale of interactive training data needed to achieve human-level performance across diverse procedural tasks, and how this scales with model size",
+        "Whether training on failed trajectories with error annotations is more valuable than training only on successful trajectories, and under what conditions",
+        "The extent to which different RL algorithms (PPO, DPO, REINFORCE) differ in their effectiveness for interactive task learning, and whether algorithm choice matters more at certain scales",
+        "Whether training with human-in-the-loop feedback (as in ReHAC) provides qualitatively different benefits than training with automated environmental rewards",
+        "The degree to which training distribution mismatch can be overcome by architectural innovations (memory, planning modules) versus requiring training data changes",
+        "Whether there are fundamental limits to how much interactive performance can be improved through training alone, versus requiring architectural changes or external tools"
+    ],
+    "negative_experiments": [
+        "Demonstrating that adding interactive training data provides no benefit over static QA data (controlling for data quality and quantity) would challenge the distribution mismatch hypothesis",
+        "Showing that RL with environmental rewards performs no better than supervised learning on expert trajectories (when both have equal data) would question the importance of feedback mismatch",
+        "Finding that models trained only on QA data can match interactively-trained models through prompting alone (without any training changes) would challenge the necessity of training interventions",
+        "Demonstrating that step-level supervision provides no benefit over outcome-only supervision (controlling for total supervision signal) would question the importance of granular feedback",
+        "Showing that training on synthetic/simulated interactions provides no benefit over static data would challenge the value of interaction-format training",
+        "Finding that the optimal training mixture is 100% interactive data (no general data needed) would challenge the hybrid training hypothesis",
+        "Demonstrating that training on diverse interactive tasks provides no better generalization than training on a single task would question the transfer learning hypothesis",
+        "Showing that training with execution feedback provides no benefit over training on static code would challenge the importance of environmental feedback",
+        "Finding that instruction tuning always improves or never degrades interactive performance would challenge the observed negative effects",
+        "Demonstrating that RL from scratch (without IL initialization) can match or exceed IL+RL performance would question the importance of trajectory distribution initialization"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Some prompting strategies (Tree of Thoughts, ReAct, LATS) achieve strong interactive performance without any training changes, suggesting inference-time interventions can partially compensate for training distribution mismatch",
+            "uuids": [
+                "e840.0",
+                "e840.1",
+                "e848.1",
+                "e848.2",
+                "e944.0",
+                "e944.1",
+                "e944.2"
+            ]
+        },
+        {
+            "text": "The relative importance of data quantity vs quality in interactive training is not fully characterized - small amounts of high-quality data (1,866 trajectories in AgentTuning) can be very effective",
+            "uuids": [
+                "e820.0",
+                "e820.1"
+            ]
+        },
+        {
+            "text": "Some models show unexpected degradation after certain types of fine-tuning (Vicuna vs base LLaMA), suggesting complex interactions between training objectives",
+            "uuids": [
+                "e919.11"
+            ]
+        },
+        {
+            "text": "The interaction between model architecture (transformer vs RNN, encoder-decoder vs decoder-only) and training distribution effectiveness is not fully explained",
+            "uuids": [
+                "e922.2",
+                "e822.5"
+            ]
+        },
+        {
+            "text": "Rejection sampling sometimes outperforms RL despite using similar training data, suggesting inference-time compute can substitute for some training interventions",
+            "uuids": [
+                "e921.0",
+                "e925.0"
+            ]
+        },
+        {
+            "text": "The role of model scale in determining how much training distribution mismatch matters is not fully characterized - larger models may be more robust to distribution mismatch",
+            "uuids": [
+                "e944.1",
+                "e944.2"
+            ]
+        },
+        {
+            "text": "Some auxiliary training objectives (progress monitoring in ALFRED) provide only marginal improvements, suggesting not all training augmentations are equally valuable",
+            "uuids": [
+                "e909.1"
+            ]
+        },
+        {
+            "text": "The theory doesn't fully explain why some domains (code) benefit more from specialized training than others (general reasoning)",
+            "uuids": [
+                "e924.3",
+                "e938.5"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some large models (GPT-4) show reasonable interactive performance with minimal interactive training, suggesting scale may partially compensate for distribution mismatch",
+            "uuids": [
+                "e944.1",
+                "e944.2",
+                "e906.0"
+            ]
+        },
+        {
+            "text": "Rejection sampling (best-of-n) sometimes outperforms RL despite using the same training distribution, challenging the primacy of training-time interventions",
+            "uuids": [
+                "e921.0",
+                "e925.0"
+            ]
+        },
+        {
+            "text": "Some instruction-tuned models (Vicuna) underperform base models on certain interactive tasks, suggesting training interventions can have negative effects",
+            "uuids": [
+                "e919.11"
+            ]
+        },
+        {
+            "text": "GPT-3 fine-tuning on Blocksworld shows limited improvement despite domain-specific training, suggesting training alone may be insufficient without proper scale or objectives",
+            "uuids": [
+                "e929.4"
+            ]
+        },
+        {
+            "text": "WebGPT RL provides smaller benefits than rejection sampling, suggesting inference-time selection can be more effective than training-time optimization in some cases",
+            "uuids": [
+                "e925.0"
+            ]
+        },
+        {
+            "text": "Some prompting strategies achieve performance comparable to or exceeding fine-tuned models, challenging the necessity of training interventions in all cases",
+            "uuids": [
+                "e840.0",
+                "e944.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Tasks where the model has strong prior knowledge (common programming patterns, well-known procedures) may require less interactive training data than novel tasks",
+        "Deterministic environments with clear success criteria may benefit more from supervised learning than stochastic environments that require RL for exploration",
+        "Short-horizon tasks (1-3 steps) may not require as much interactive training as long-horizon tasks (10+ steps) due to simpler credit assignment",
+        "Tasks with sparse rewards may require more sophisticated RL algorithms (reward shaping, hindsight experience replay) than tasks with dense feedback",
+        "The optimal training mixture ratio (interactive vs general data) likely varies by model scale, with larger models potentially tolerating higher proportions of interactive data",
+        "Code-related tasks may benefit disproportionately from execution-based training due to deterministic feedback and clear correctness criteria",
+        "Tasks requiring human judgment (creative writing, subjective preferences) may benefit more from human feedback training than automated environmental rewards",
+        "Web navigation and tool-use tasks may require more diverse training data than single-domain tasks due to the variety of possible interfaces and APIs",
+        "Training on failed trajectories may be more valuable for tasks where failure modes are diverse and informative than for tasks with simple binary success/failure"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Zeng et al. (2023) AgentTuning: Enabling Generalized Agent Abilities for LLMs [Demonstrates interactive training benefits and hybrid mixture training]",
+            "Qin et al. (2023) ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs [Tool-use training and DFSDT reasoning]",
+            "Nakano et al. (2021) WebGPT: Browser-assisted question-answering with human feedback [Interactive training with human feedback, BC+RM+RL pipeline]",
+            "Ouyang et al. (2022) Training language models to follow instructions with human feedback [RLHF methodology and reward modeling]",
+            "Stiennon et al. (2020) Learning to summarize with human feedback [Reward modeling and RL for text generation]",
+            "Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Process supervision and verification training]",
+            "Lightman et al. (2023) Let's Verify Step by Step [Process reward models for math reasoning]",
+            "Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Verbal RL and episodic memory]",
+            "Liu et al. (2023) AgentBench: Evaluating LLMs as Agents [Systematic evaluation of agent capabilities]",
+            "Schick et al. (2023) Toolformer: Language Models Can Teach Themselves to Use Tools [Self-supervised tool learning]",
+            "Chen et al. (2021) Evaluating Large Language Models Trained on Code [Code-specialized training benefits]",
+            "Yao et al. (2022) ReAct: Synergizing Reasoning and Acting in Language Models [Reasoning and acting paradigm]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

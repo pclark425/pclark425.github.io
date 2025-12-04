@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action-Space Alignment Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-195</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-195</p>
+                <p><strong>Name:</strong> Action-Space Alignment Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about when and how pretraining on text worlds transfers to 3D embodied tasks, including mappings between high-level action semantics and low-level perception and predicted sample complexity gains, based on the following results.</p>
+                <p><strong>Description:</strong> Successful transfer from text-world pretraining to 3D embodied tasks requires explicit alignment between the action representations in pretraining and the action space of the embodied environment. This alignment can occur through multiple mechanisms: (1) direct token mapping where language tokens represent discretized actions (e.g., RT-2's action tokenization), (2) hierarchical decomposition where high-level language actions are mapped to low-level motor primitives through learned or programmatic interfaces (e.g., IGOR's subtask decomposition, OPEx's skill library), (3) reward/goal specification where language defines objectives rather than actions (e.g., MineCLIP's reward function), or (4) code-as-policy where language models generate executable programs that invoke action primitives (e.g., Voyager). The degree of action-space mismatch—measured by semantic distance, temporal granularity, and structural compatibility—is a primary determinant of transfer difficulty. Larger mismatches require either more embodied data, sophisticated bridging mechanisms (e.g., inverse dynamics models, skill libraries), or indirect specification through goals. The effectiveness of different alignment strategies depends on task characteristics: discrete semantic tasks favor direct mapping, continuous control tasks require hierarchical decomposition or goal-based approaches, and long-horizon tasks benefit from compositional action representations.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Transfer difficulty increases with the semantic and structural distance between pretrained action representations and embodied action spaces, measured by vocabulary overlap, temporal granularity, and abstraction level</li>
+                <li>Direct token-level action mapping (e.g., discretized motor commands as text tokens) enables end-to-end transfer but requires action vocabularies compatible with language model tokenization and sufficient action-labeled data</li>
+                <li>Hierarchical decomposition (language→skills→primitives) reduces action-space mismatch by introducing intermediate representations that bridge semantic and motor levels, with effectiveness proportional to the quality of the decomposition</li>
+                <li>Indirect action specification through goals/rewards enables transfer without explicit action mapping but requires separate mechanisms (e.g., RL, planning) to achieve specified objectives and may have higher sample complexity</li>
+                <li>Co-training or co-finetuning on both language and embodied action data is more effective than sequential pretraining→finetuning for learning action mappings, as shown by RT-2's ~2x improvement over finetuning-only approaches</li>
+                <li>Action-space alignment quality is a stronger predictor of transfer success than the scale of language pretraining when misalignment is severe (e.g., continuous control with language-only pretraining)</li>
+                <li>The optimal action representation depends on task characteristics: discrete semantic tasks favor direct token mapping, continuous control requires hierarchical decomposition or inverse dynamics, and long-horizon tasks benefit from compositional representations</li>
+                <li>Action preconditions and effects learned during pretraining facilitate transfer when they align with embodied environment dynamics</li>
+                <li>Temporal action sequences (not just individual actions) must be aligned for effective transfer to sequential decision-making tasks</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>RT-2 models achieved ~2x better generalization by representing robot actions as text tokens (256 bins per dimension encoded as integer tokens) and co-finetuning VLMs with robot trajectories, demonstrating direct token-level action mapping <a href="../results/extraction-result-1843.html#e1843.0" class="evidence-link">[e1843.0]</a> <a href="../results/extraction-result-1843.html#e1843.1" class="evidence-link">[e1843.1]</a> <a href="../results/extraction-result-1843.html#e1843.2" class="evidence-link">[e1843.2]</a> <a href="../results/extraction-result-1843.html#e1843.4" class="evidence-link">[e1843.4]</a> </li>
+    <li>EMMA using cross-modality imitation from LLM expert in parallel text world achieved 82-94% success on ALFWorld tasks by mapping high-level textual actions to simulator primitives through DAgger-DPO <a href="../results/extraction-result-1709.html#e1709.0" class="evidence-link">[e1709.0]</a> </li>
+    <li>IGOR using Flan-T5 to generate subtask sequences achieved 60% success on modified Crafter vs 36.4% for end-to-end approaches (Dynalang), demonstrating hierarchical action decomposition benefits with ~16% less compute <a href="../results/extraction-result-1728.html#e1728.0" class="evidence-link">[e1728.0]</a> <a href="../results/extraction-result-1728.html#e1728.1" class="evidence-link">[e1728.1]</a> </li>
+    <li>OPEx using GPT-4 to select skills from predefined library achieved +17.74% SR improvement on ALFRED test-seen and +16.78% on test-unseen, showing explicit skill-library mapping enables transfer with <10% of training data <a href="../results/extraction-result-1696.html#e1696.0" class="evidence-link">[e1696.0]</a> </li>
+    <li>LM-Nav using GPT-3 to extract landmark sequences (not direct actions) achieved 0.8 net success by mapping language to waypoints executed by separate visual navigation model, demonstrating indirect action specification <a href="../results/extraction-result-1852.html#e1852.0" class="evidence-link">[e1852.0]</a> </li>
+    <li>PREVALENT with action prediction objective during pretraining improved transfer compared to language-only BERT pretraining (SR 59% vs 51%), demonstrating importance of action-aware representations <a href="../results/extraction-result-1857.html#e1857.0" class="evidence-link">[e1857.0]</a> <a href="../results/extraction-result-1857.html#e1857.2" class="evidence-link">[e1857.2]</a> </li>
+    <li>UniPi using text-conditioned video generation + inverse dynamics achieved 77.1% success on Bridge tasks (vs 72.6% without pretraining) by separating high-level planning from low-level control <a href="../results/extraction-result-1855.html#e1855.0" class="evidence-link">[e1855.0]</a> </li>
+    <li>TWOSOME addressing token-length bias in LLM action selection improved performance by balancing action prompt lengths, showing action representation details matter for effective transfer <a href="../results/extraction-result-1831.html#e1831.0" class="evidence-link">[e1831.0]</a> </li>
+    <li>LangNav achieved competitive R2R navigation performance by converting visual observations to language (captions) and using LLaMA to select actions, demonstrating language-mediated action mapping with 10-100 seed trajectories <a href="../results/extraction-result-1729.html#e1729.0" class="evidence-link">[e1729.0]</a> </li>
+    <li>VLN⟲BERT using recurrent state token and action-aware attention achieved 63% SR on R2R (vs 51% random init), showing action-conditioned representations improve navigation <a href="../results/extraction-result-1854.html#e1854.0" class="evidence-link">[e1854.0]</a> </li>
+    <li>VIMA using object-centric action tokens and cross-attention achieved ~10x sample efficiency on multimodal manipulation tasks compared to pixel-based baselines <a href="../results/extraction-result-1818.html#e1818.0" class="evidence-link">[e1818.0]</a> </li>
+    <li>Voyager using GPT-4 to generate executable code (skills) achieved open-ended Minecraft exploration, demonstrating code-as-action mapping enables compositional behavior <a href="../results/extraction-result-1853.html#e1853.0" class="evidence-link">[e1853.0]</a> </li>
+    <li>EmbodiedGPT using chain-of-thought planning with LLaMA-7B achieved 58.5% success on Franka Kitchen with 25 demos, showing explicit action decomposition via language improves few-shot learning <a href="../results/extraction-result-1856.html#e1856.0" class="evidence-link">[e1856.0]</a> <a href="../results/extraction-result-1856.html#e1856.1" class="evidence-link">[e1856.1]</a> </li>
+    <li>LID using GPT-2 initialized policy achieved 46.7% success on VirtualHome without expert demos through active data gathering, demonstrating pretrained action sequence modeling transfers to embodied tasks <a href="../results/extraction-result-1827.html#e1827.0" class="evidence-link">[e1827.0]</a> <a href="../results/extraction-result-1827.html#e1827.1" class="evidence-link">[e1827.1]</a> </li>
+    <li>STEVE-1 using video-to-action learning achieved instruction following in Minecraft, showing visual action representations can bridge language and motor control <a href="../results/extraction-result-1844.html#e1844.0" class="evidence-link">[e1844.0]</a> </li>
+    <li>MineDojo using MineCLIP for reward specification (not direct action mapping) achieved competitive performance on programmatic tasks, demonstrating indirect action specification through learned rewards <a href="../results/extraction-result-1851.html#e1851.0" class="evidence-link">[e1851.0]</a> <a href="../results/extraction-result-1830.html#e1830.0" class="evidence-link">[e1830.0]</a> </li>
+    <li>ELLM using Codex to generate goal suggestions and semantic similarity for reward achieved ~6 achievements/episode in Crafter (vs <3 for baselines), showing language-based goal specification improves exploration <a href="../results/extraction-result-1808.html#e1808.0" class="evidence-link">[e1808.0]</a> </li>
+    <li>Code-as-Policies using LLMs to generate executable programs achieved manipulation tasks by mapping language to API calls, demonstrating programmatic action specification <a href="../results/extraction-result-1847.html#e1847.0" class="evidence-link">[e1847.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Language models pretrained on action-rich text (e.g., game walkthroughs, instruction manuals with explicit action verbs) should show 20-50% better transfer to embodied tasks than models pretrained on descriptive text, measured by sample efficiency to reach equivalent performance</li>
+                <li>Introducing intermediate action representations (e.g., skill libraries, macro-actions) during pretraining should improve transfer by 30-60% compared to direct low-level action prediction, particularly for long-horizon tasks</li>
+                <li>Action tokenization schemes that preserve semantic similarity (e.g., similar actions have similar token representations through learned embeddings) should transfer 15-30% better than arbitrary tokenization schemes</li>
+                <li>Multi-level action hierarchies learned during pretraining should enable better compositional generalization to novel action sequences, with 40-70% higher success on unseen combinations compared to flat action representations</li>
+                <li>Pretraining with action prediction objectives (like PREVALENT's AP) should improve downstream task performance by 10-20% compared to language-only pretraining, even when actions differ between pretraining and target tasks</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether learning action mappings through self-supervised objectives (e.g., predicting action effects from state transitions) during pretraining would be more effective than supervised action prediction, and by what margin</li>
+                <li>Whether action-space alignment can be learned purely from observation (e.g., watching videos without action labels) without explicit action labels, and how this compares to supervised approaches in terms of sample efficiency and final performance</li>
+                <li>Whether there exists an optimal level of action abstraction for transfer that balances semantic interpretability and motor precision, and whether this optimum varies systematically with task type</li>
+                <li>Whether action representations learned from text can ever fully capture the continuous, high-dimensional nature of real-world motor control, or if there is a fundamental ceiling on performance</li>
+                <li>Whether code-as-action representations (like Voyager) can scale to continuous control domains with appropriate API design, or if they are fundamentally limited to discrete action spaces</li>
+                <li>Whether multi-modal action representations (combining language, code, and continuous vectors) would outperform single-modality approaches, and under what conditions</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Demonstrating successful transfer to embodied tasks using language models with completely misaligned action spaces (e.g., text describing visual scenes used to control a robot) without any bridging mechanism would challenge the necessity of action-space alignment</li>
+                <li>Showing that random action mappings perform as well as semantically-meaningful mappings (within 5-10% performance) would challenge the importance of semantic alignment in action spaces</li>
+                <li>Finding that increasing action-space alignment does not improve transfer performance (or improves it by less than 5%) across multiple task types would challenge the centrality of this factor</li>
+                <li>Demonstrating that end-to-end learning from pixels to actions consistently outperforms hierarchical language-mediated approaches across all task types (including long-horizon tasks) would challenge the utility of language-based action decomposition</li>
+                <li>Showing that language models without any action-related pretraining transfer as well as action-aware models would challenge the importance of action representations in pretraining</li>
+                <li>Finding that direct action prediction during pretraining hurts rather than helps downstream transfer would challenge the value of action-aware pretraining</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>SIMA achieved substantial success across multiple 3D game environments using keyboard-mouse actions without explicit language-action alignment during pretraining, suggesting perception and general multimodal understanding may sometimes be sufficient <a href="../results/extraction-result-1721.html#e1721.0" class="evidence-link">[e1721.0]</a> </li>
+    <li>BC-Z achieved zero-shot task generalization using only task embeddings (Universal Sentence Encoder) without explicit action mapping, suggesting semantic task representations may sometimes be more important than action representations <a href="../results/extraction-result-1772.html#e1772.0" class="evidence-link">[e1772.0]</a> </li>
+    <li>Some vision-only approaches (like certain RT-1 variants) achieved reasonable performance without language-mediated action representations, suggesting alternative pathways to action learning </li>
+    <li>How to optimally balance action abstraction level (high-level skills vs low-level primitives) for different task types and transfer scenarios, and whether this can be learned automatically </li>
+    <li>The role of action affordances and physical constraints in determining effective action representations for transfer, and how these interact with language-based representations </li>
+    <li>How action-space alignment interacts with other factors like perception quality, sample complexity, and environment stochasticity in determining overall transfer success </li>
+    <li>Why some hierarchical approaches (IGOR) required substantial task-specific data despite explicit action decomposition, suggesting alignment alone may be insufficient without other factors <a href="../results/extraction-result-1728.html#e1728.0" class="evidence-link">[e1728.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Sutton et al. (1999) Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning [Options framework for hierarchical RL, foundational work on action abstraction and temporal hierarchies]</li>
+    <li>Konidaris & Barto (2009) Skill discovery in continuous reinforcement learning domains using skill chaining [Automatic discovery of action hierarchies, related to learning action decompositions]</li>
+    <li>Andreas et al. (2017) Modular multitask reinforcement learning with policy sketches [Using language to specify high-level action sequences, early work on language-action alignment]</li>
+    <li>Jiang et al. (2019) Language as an abstraction for hierarchical deep reinforcement learning [Using language to define action abstractions in RL, directly related to hierarchical action decomposition]</li>
+    <li>Shridhar et al. (2020) ALFRED: A Benchmark for Interpreting Grounded Instructions for Everyday Tasks [Established benchmark for language-to-action mapping in embodied AI]</li>
+    <li>Lynch & Sermanet (2020) Grounding language in play [Early work on learning action mappings through interactive play]</li>
+    <li>Brohan et al. (2022) RT-1: Robotics Transformer for Real-World Control at Scale [Demonstrated direct action tokenization for robot control, precursor to RT-2]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Action-Space Alignment Theory",
+    "theory_description": "Successful transfer from text-world pretraining to 3D embodied tasks requires explicit alignment between the action representations in pretraining and the action space of the embodied environment. This alignment can occur through multiple mechanisms: (1) direct token mapping where language tokens represent discretized actions (e.g., RT-2's action tokenization), (2) hierarchical decomposition where high-level language actions are mapped to low-level motor primitives through learned or programmatic interfaces (e.g., IGOR's subtask decomposition, OPEx's skill library), (3) reward/goal specification where language defines objectives rather than actions (e.g., MineCLIP's reward function), or (4) code-as-policy where language models generate executable programs that invoke action primitives (e.g., Voyager). The degree of action-space mismatch—measured by semantic distance, temporal granularity, and structural compatibility—is a primary determinant of transfer difficulty. Larger mismatches require either more embodied data, sophisticated bridging mechanisms (e.g., inverse dynamics models, skill libraries), or indirect specification through goals. The effectiveness of different alignment strategies depends on task characteristics: discrete semantic tasks favor direct mapping, continuous control tasks require hierarchical decomposition or goal-based approaches, and long-horizon tasks benefit from compositional action representations.",
+    "supporting_evidence": [
+        {
+            "text": "RT-2 models achieved ~2x better generalization by representing robot actions as text tokens (256 bins per dimension encoded as integer tokens) and co-finetuning VLMs with robot trajectories, demonstrating direct token-level action mapping",
+            "uuids": [
+                "e1843.0",
+                "e1843.1",
+                "e1843.2",
+                "e1843.4"
+            ]
+        },
+        {
+            "text": "EMMA using cross-modality imitation from LLM expert in parallel text world achieved 82-94% success on ALFWorld tasks by mapping high-level textual actions to simulator primitives through DAgger-DPO",
+            "uuids": [
+                "e1709.0"
+            ]
+        },
+        {
+            "text": "IGOR using Flan-T5 to generate subtask sequences achieved 60% success on modified Crafter vs 36.4% for end-to-end approaches (Dynalang), demonstrating hierarchical action decomposition benefits with ~16% less compute",
+            "uuids": [
+                "e1728.0",
+                "e1728.1"
+            ]
+        },
+        {
+            "text": "OPEx using GPT-4 to select skills from predefined library achieved +17.74% SR improvement on ALFRED test-seen and +16.78% on test-unseen, showing explicit skill-library mapping enables transfer with &lt;10% of training data",
+            "uuids": [
+                "e1696.0"
+            ]
+        },
+        {
+            "text": "LM-Nav using GPT-3 to extract landmark sequences (not direct actions) achieved 0.8 net success by mapping language to waypoints executed by separate visual navigation model, demonstrating indirect action specification",
+            "uuids": [
+                "e1852.0"
+            ]
+        },
+        {
+            "text": "PREVALENT with action prediction objective during pretraining improved transfer compared to language-only BERT pretraining (SR 59% vs 51%), demonstrating importance of action-aware representations",
+            "uuids": [
+                "e1857.0",
+                "e1857.2"
+            ]
+        },
+        {
+            "text": "UniPi using text-conditioned video generation + inverse dynamics achieved 77.1% success on Bridge tasks (vs 72.6% without pretraining) by separating high-level planning from low-level control",
+            "uuids": [
+                "e1855.0"
+            ]
+        },
+        {
+            "text": "TWOSOME addressing token-length bias in LLM action selection improved performance by balancing action prompt lengths, showing action representation details matter for effective transfer",
+            "uuids": [
+                "e1831.0"
+            ]
+        },
+        {
+            "text": "LangNav achieved competitive R2R navigation performance by converting visual observations to language (captions) and using LLaMA to select actions, demonstrating language-mediated action mapping with 10-100 seed trajectories",
+            "uuids": [
+                "e1729.0"
+            ]
+        },
+        {
+            "text": "VLN⟲BERT using recurrent state token and action-aware attention achieved 63% SR on R2R (vs 51% random init), showing action-conditioned representations improve navigation",
+            "uuids": [
+                "e1854.0"
+            ]
+        },
+        {
+            "text": "VIMA using object-centric action tokens and cross-attention achieved ~10x sample efficiency on multimodal manipulation tasks compared to pixel-based baselines",
+            "uuids": [
+                "e1818.0"
+            ]
+        },
+        {
+            "text": "Voyager using GPT-4 to generate executable code (skills) achieved open-ended Minecraft exploration, demonstrating code-as-action mapping enables compositional behavior",
+            "uuids": [
+                "e1853.0"
+            ]
+        },
+        {
+            "text": "EmbodiedGPT using chain-of-thought planning with LLaMA-7B achieved 58.5% success on Franka Kitchen with 25 demos, showing explicit action decomposition via language improves few-shot learning",
+            "uuids": [
+                "e1856.0",
+                "e1856.1"
+            ]
+        },
+        {
+            "text": "LID using GPT-2 initialized policy achieved 46.7% success on VirtualHome without expert demos through active data gathering, demonstrating pretrained action sequence modeling transfers to embodied tasks",
+            "uuids": [
+                "e1827.0",
+                "e1827.1"
+            ]
+        },
+        {
+            "text": "STEVE-1 using video-to-action learning achieved instruction following in Minecraft, showing visual action representations can bridge language and motor control",
+            "uuids": [
+                "e1844.0"
+            ]
+        },
+        {
+            "text": "MineDojo using MineCLIP for reward specification (not direct action mapping) achieved competitive performance on programmatic tasks, demonstrating indirect action specification through learned rewards",
+            "uuids": [
+                "e1851.0",
+                "e1830.0"
+            ]
+        },
+        {
+            "text": "ELLM using Codex to generate goal suggestions and semantic similarity for reward achieved ~6 achievements/episode in Crafter (vs &lt;3 for baselines), showing language-based goal specification improves exploration",
+            "uuids": [
+                "e1808.0"
+            ]
+        },
+        {
+            "text": "Code-as-Policies using LLMs to generate executable programs achieved manipulation tasks by mapping language to API calls, demonstrating programmatic action specification",
+            "uuids": [
+                "e1847.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Transfer difficulty increases with the semantic and structural distance between pretrained action representations and embodied action spaces, measured by vocabulary overlap, temporal granularity, and abstraction level",
+        "Direct token-level action mapping (e.g., discretized motor commands as text tokens) enables end-to-end transfer but requires action vocabularies compatible with language model tokenization and sufficient action-labeled data",
+        "Hierarchical decomposition (language→skills→primitives) reduces action-space mismatch by introducing intermediate representations that bridge semantic and motor levels, with effectiveness proportional to the quality of the decomposition",
+        "Indirect action specification through goals/rewards enables transfer without explicit action mapping but requires separate mechanisms (e.g., RL, planning) to achieve specified objectives and may have higher sample complexity",
+        "Co-training or co-finetuning on both language and embodied action data is more effective than sequential pretraining→finetuning for learning action mappings, as shown by RT-2's ~2x improvement over finetuning-only approaches",
+        "Action-space alignment quality is a stronger predictor of transfer success than the scale of language pretraining when misalignment is severe (e.g., continuous control with language-only pretraining)",
+        "The optimal action representation depends on task characteristics: discrete semantic tasks favor direct token mapping, continuous control requires hierarchical decomposition or inverse dynamics, and long-horizon tasks benefit from compositional representations",
+        "Action preconditions and effects learned during pretraining facilitate transfer when they align with embodied environment dynamics",
+        "Temporal action sequences (not just individual actions) must be aligned for effective transfer to sequential decision-making tasks"
+    ],
+    "new_predictions_likely": [
+        "Language models pretrained on action-rich text (e.g., game walkthroughs, instruction manuals with explicit action verbs) should show 20-50% better transfer to embodied tasks than models pretrained on descriptive text, measured by sample efficiency to reach equivalent performance",
+        "Introducing intermediate action representations (e.g., skill libraries, macro-actions) during pretraining should improve transfer by 30-60% compared to direct low-level action prediction, particularly for long-horizon tasks",
+        "Action tokenization schemes that preserve semantic similarity (e.g., similar actions have similar token representations through learned embeddings) should transfer 15-30% better than arbitrary tokenization schemes",
+        "Multi-level action hierarchies learned during pretraining should enable better compositional generalization to novel action sequences, with 40-70% higher success on unseen combinations compared to flat action representations",
+        "Pretraining with action prediction objectives (like PREVALENT's AP) should improve downstream task performance by 10-20% compared to language-only pretraining, even when actions differ between pretraining and target tasks"
+    ],
+    "new_predictions_unknown": [
+        "Whether learning action mappings through self-supervised objectives (e.g., predicting action effects from state transitions) during pretraining would be more effective than supervised action prediction, and by what margin",
+        "Whether action-space alignment can be learned purely from observation (e.g., watching videos without action labels) without explicit action labels, and how this compares to supervised approaches in terms of sample efficiency and final performance",
+        "Whether there exists an optimal level of action abstraction for transfer that balances semantic interpretability and motor precision, and whether this optimum varies systematically with task type",
+        "Whether action representations learned from text can ever fully capture the continuous, high-dimensional nature of real-world motor control, or if there is a fundamental ceiling on performance",
+        "Whether code-as-action representations (like Voyager) can scale to continuous control domains with appropriate API design, or if they are fundamentally limited to discrete action spaces",
+        "Whether multi-modal action representations (combining language, code, and continuous vectors) would outperform single-modality approaches, and under what conditions"
+    ],
+    "negative_experiments": [
+        "Demonstrating successful transfer to embodied tasks using language models with completely misaligned action spaces (e.g., text describing visual scenes used to control a robot) without any bridging mechanism would challenge the necessity of action-space alignment",
+        "Showing that random action mappings perform as well as semantically-meaningful mappings (within 5-10% performance) would challenge the importance of semantic alignment in action spaces",
+        "Finding that increasing action-space alignment does not improve transfer performance (or improves it by less than 5%) across multiple task types would challenge the centrality of this factor",
+        "Demonstrating that end-to-end learning from pixels to actions consistently outperforms hierarchical language-mediated approaches across all task types (including long-horizon tasks) would challenge the utility of language-based action decomposition",
+        "Showing that language models without any action-related pretraining transfer as well as action-aware models would challenge the importance of action representations in pretraining",
+        "Finding that direct action prediction during pretraining hurts rather than helps downstream transfer would challenge the value of action-aware pretraining"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "SIMA achieved substantial success across multiple 3D game environments using keyboard-mouse actions without explicit language-action alignment during pretraining, suggesting perception and general multimodal understanding may sometimes be sufficient",
+            "uuids": [
+                "e1721.0"
+            ]
+        },
+        {
+            "text": "BC-Z achieved zero-shot task generalization using only task embeddings (Universal Sentence Encoder) without explicit action mapping, suggesting semantic task representations may sometimes be more important than action representations",
+            "uuids": [
+                "e1772.0"
+            ]
+        },
+        {
+            "text": "Some vision-only approaches (like certain RT-1 variants) achieved reasonable performance without language-mediated action representations, suggesting alternative pathways to action learning",
+            "uuids": []
+        },
+        {
+            "text": "How to optimally balance action abstraction level (high-level skills vs low-level primitives) for different task types and transfer scenarios, and whether this can be learned automatically",
+            "uuids": []
+        },
+        {
+            "text": "The role of action affordances and physical constraints in determining effective action representations for transfer, and how these interact with language-based representations",
+            "uuids": []
+        },
+        {
+            "text": "How action-space alignment interacts with other factors like perception quality, sample complexity, and environment stochasticity in determining overall transfer success",
+            "uuids": []
+        },
+        {
+            "text": "Why some hierarchical approaches (IGOR) required substantial task-specific data despite explicit action decomposition, suggesting alignment alone may be insufficient without other factors",
+            "uuids": [
+                "e1728.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "MineCLIP achieved strong transfer (competitive with hand-engineered rewards) using language only for reward specification (not action mapping), suggesting indirect action specification can be sufficient and sometimes preferable to direct mapping",
+            "uuids": [
+                "e1851.0",
+                "e1830.0"
+            ]
+        },
+        {
+            "text": "BC-Z achieved zero-shot task generalization (44% average success on held-out tasks) using only task embeddings without explicit action mapping, suggesting semantic task representations may be more important than action representations in some contexts",
+            "uuids": [
+                "e1772.0"
+            ]
+        },
+        {
+            "text": "SIMA achieved cross-environment generalization using pretrained vision-language encoders without explicit action-space alignment during pretraining, suggesting general multimodal understanding may sometimes substitute for action alignment",
+            "uuids": [
+                "e1721.0"
+            ]
+        },
+        {
+            "text": "Some hierarchical approaches (IGOR) required substantial task-specific data (109 training instructions) despite explicit action decomposition, suggesting alignment alone is insufficient without adequate coverage of task variations",
+            "uuids": [
+                "e1728.0"
+            ]
+        },
+        {
+            "text": "RecBert pretrained on ALFRED failed to transfer to R2R despite having action prediction during pretraining, suggesting action-space alignment can fail when other factors (visual domain mismatch) dominate",
+            "uuids": [
+                "e1729.2"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For tasks with naturally discrete, semantic action spaces (e.g., text-based games, high-level navigation commands), direct action mapping is most effective and can achieve near-optimal transfer with minimal embodied data",
+        "For continuous control tasks requiring precise motor coordination, hierarchical decomposition or indirect specification through goals is typically necessary, as direct token mapping of continuous actions is inefficient",
+        "Action-space alignment is less critical when the embodied task has abundant training data (&gt;10k demonstrations) that can learn the mapping from scratch, as shown by vision-only approaches",
+        "Real-time control tasks requiring fast inference (&lt;100ms) may require action representations that support fast inference, limiting the complexity of language-based action mappings and favoring simpler hierarchies",
+        "For long-horizon tasks (&gt;50 steps), compositional action representations (skills, macros) are essential regardless of alignment mechanism, as flat action spaces become intractable",
+        "In partially observable environments, action representations must encode sufficient state information to enable sequential decision-making, which may require recurrent or memory-augmented architectures",
+        "When action effects are stochastic or environment dynamics are complex, indirect specification through goals/rewards may be more robust than direct action mapping",
+        "For multi-task settings, shared action representations across tasks improve transfer efficiency, but task-specific action mappings may be necessary for optimal performance on individual tasks"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Sutton et al. (1999) Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning [Options framework for hierarchical RL, foundational work on action abstraction and temporal hierarchies]",
+            "Konidaris & Barto (2009) Skill discovery in continuous reinforcement learning domains using skill chaining [Automatic discovery of action hierarchies, related to learning action decompositions]",
+            "Andreas et al. (2017) Modular multitask reinforcement learning with policy sketches [Using language to specify high-level action sequences, early work on language-action alignment]",
+            "Jiang et al. (2019) Language as an abstraction for hierarchical deep reinforcement learning [Using language to define action abstractions in RL, directly related to hierarchical action decomposition]",
+            "Shridhar et al. (2020) ALFRED: A Benchmark for Interpreting Grounded Instructions for Everyday Tasks [Established benchmark for language-to-action mapping in embodied AI]",
+            "Lynch & Sermanet (2020) Grounding language in play [Early work on learning action mappings through interactive play]",
+            "Brohan et al. (2022) RT-1: Robotics Transformer for Real-World Control at Scale [Demonstrated direct action tokenization for robot control, precursor to RT-2]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

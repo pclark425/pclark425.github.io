@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolute Reward Preservation Theory for Reasoning - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-33</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-33</p>
+                <p><strong>Name:</strong> Absolute Reward Preservation Theory for Reasoning</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> </p>
+                <p><strong>Description:</strong> For correctness-sensitive reasoning tasks, preference optimization algorithms that explicitly increase absolute rewards of chosen (correct) solutions while decreasing rejected solutions outperform algorithms that only optimize relative rankings. Standard DPO and similar relative-ranking methods tend to push down absolute rewards of both chosen and rejected solutions when applied to reasoning tasks, leading to performance degradation. Effective algorithms (KTO, NCA, DPO+NLL, reward models with Direct-Reward terms) share the property of maintaining or increasing chosen solution probabilities while decreasing rejected ones. The mechanism is critical because: (1) reasoning correctness is absolute not relative, (2) decreasing chosen probabilities reduces the model's ability to generate correct solutions, (3) relative-only optimization creates a 'race to the bottom' where both chosen and rejected probabilities decrease, and (4) the effect is amplified for multi-step reasoning where each step's probability compounds.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2025</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 9</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Preference optimization algorithms that increase absolute log-probability of chosen solutions provide 3-5 percentage point improvements over relative-only methods for reasoning tasks.</li>
+                <li>Standard DPO and similar Bradley-Terry derived methods tend to decrease absolute rewards of chosen solutions by 10-30% when applied to reasoning tasks, leading to performance degradation.</li>
+                <li>The effect is amplified for multi-step reasoning: each step's probability decrease compounds, leading to exponentially lower probability of generating complete correct solutions.</li>
+                <li>Algorithms that explicitly include an NLL (negative log-likelihood) term for chosen solutions or a Direct-Reward term maintain chosen probabilities and achieve 2-4 percentage point improvements.</li>
+                <li>The importance of absolute reward preservation increases with task difficulty: harder reasoning tasks show larger performance gaps between absolute-preserving and relative-only methods.</li>
+                <li>For reasoning tasks, maintaining high probability of correct solutions is more important than creating large margins between correct and incorrect solutions.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Standard DPO decreased Eurus-7B performance from 46.5 to 44.5 (-2.0 points) on reasoning tasks, with rewards collapsing for Eurus-70B, while KTO improved performance to 48.8 (+2.3 points) by increasing absolute rewards. <a href="../results/extraction-result-224.html#e224.3" class="evidence-link">[e224.3]</a> <a href="../results/extraction-result-224.html#e224.4" class="evidence-link">[e224.4]</a> </li>
+    <li>Iterative RPO with NLL term achieved 81.6% on GSM8K, while standard DPO without NLL achieved only 61.8% - the NLL term prevents chosen sequence probabilities from falling. <a href="../results/extraction-result-218.html#e218.0" class="evidence-link">[e218.0]</a> <a href="../results/extraction-result-218.html#e218.2" class="evidence-link">[e218.2]</a> </li>
+    <li>Eurus-RM trained with Direct-Reward (DR) term achieved RewardBench reasoning score of 87.0, compared to 77.5 without DR, showing the importance of increasing absolute rewards for chosen solutions. <a href="../results/extraction-result-224.html#e224.7" class="evidence-link">[e224.7]</a> </li>
+    <li>NCA (Noise Contrastive Alignment) improved Eurus-7B to 48.1 and Eurus-70B to 59.0 by using a contrastive objective that increases chosen rewards while decreasing rejected ones. <a href="../results/extraction-result-224.html#e224.5" class="evidence-link">[e224.5]</a> </li>
+    <li>DPO on reasoning datasets tends to optimize relative preference differences without explicitly increasing absolute rewards, leading to degraded downstream reasoning performance. <a href="../results/extraction-result-224.html#e224.3" class="evidence-link">[e224.3]</a> </li>
+    <li>SFT on chosen sequences alone (without explicit negative examples) achieved 65.2% on GSM8K, better than standard DPO (61.8%), suggesting that maintaining chosen probabilities is more important than relative contrast for some tasks. <a href="../results/extraction-result-218.html#e218.3" class="evidence-link">[e218.3]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Applying KTO or DPO+NLL to scientific literature QA would yield 2-4 percentage point improvements over standard DPO, with larger gains for multi-step reasoning questions.</li>
+                <li>Training reward models for scientific QA with a Direct-Reward term would improve reranking performance by 5-10 percentage points on reasoning-heavy questions compared to standard Bradley-Terry objectives.</li>
+                <li>Monitoring chosen solution log-probabilities during DPO training would show consistent decreases for reasoning tasks but not for general instruction-following tasks.</li>
+                <li>Combining absolute reward preservation (NLL term) with step-localized preferences would yield additive improvements of 4-6 percentage points over either method alone.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether absolute reward preservation is equally important for scientific QA tasks that don't have clear correctness criteria (e.g., literature review questions, hypothesis generation).</li>
+                <li>The optimal weighting between the relative preference term and the absolute reward term - whether it should be task-dependent or can be set universally.</li>
+                <li>Whether the mechanism would transfer to multi-document scientific reasoning where 'correctness' may be context-dependent or require weighing conflicting evidence.</li>
+                <li>How absolute reward preservation interacts with exploration-exploitation tradeoffs - whether maintaining high chosen probabilities reduces the model's ability to explore alternative reasoning paths.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If standard DPO performs as well as KTO/NCA/DPO+NLL when all use the same preference pairs and training steps, this would challenge the absolute reward preservation hypothesis.</li>
+                <li>If monitoring shows that standard DPO does not decrease chosen solution probabilities for reasoning tasks, this would invalidate the proposed mechanism.</li>
+                <li>If relative-only optimization performs as well as absolute-preserving methods for single-step reasoning tasks, this would suggest the effect only matters for multi-step reasoning.</li>
+                <li>If artificially constraining standard DPO to not decrease chosen probabilities (via regularization) does not improve performance, this would question whether probability preservation is the key mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Standard DPO achieved reasonable performance on some reasoning tasks (61.8% on GSM8K), suggesting it's not completely ineffective, just suboptimal compared to absolute-preserving methods. <a href="../results/extraction-result-218.html#e218.2" class="evidence-link">[e218.2]</a> </li>
+    <li>ORPO (odds-ratio preference optimization) achieved 61.7% on GSM8K, competitive with some absolute-preserving methods, despite being a relative-ranking approach. <a href="../results/extraction-result-214.html#e214.3" class="evidence-link">[e214.3]</a> </li>
+    <li>The theory doesn't explain why DPO works well for general instruction-following and dialogue tasks but fails for reasoning - suggests task-specific factors matter. <a href="../results/extraction-result-223.html#e223.4" class="evidence-link">[e223.4]</a> </li>
+    <li>Some models showed reward collapse (Eurus-70B) while others didn't (Eurus-7B showed degradation but not collapse), suggesting model-specific factors influence the effect. <a href="../results/extraction-result-224.html#e224.3" class="evidence-link">[e224.3]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Ethayarajh et al. (2024) KTO: Model Alignment as Prospect Theoretic Optimization [KTO algorithm that increases absolute rewards]</li>
+    <li>Chen et al. (2024) NCA: Noise Contrastive Alignment [Contrastive alignment that preserves chosen rewards]</li>
+    <li>Gulcehre et al. (2024) Reinforced Self-Training with Direct Preference Optimization [Analysis of DPO's effect on reasoning]</li>
+    <li>Rafailov et al. (2023) Direct Preference Optimization [Original DPO paper, relative-ranking focus]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Absolute Reward Preservation Theory for Reasoning",
+    "theory_description": "For correctness-sensitive reasoning tasks, preference optimization algorithms that explicitly increase absolute rewards of chosen (correct) solutions while decreasing rejected solutions outperform algorithms that only optimize relative rankings. Standard DPO and similar relative-ranking methods tend to push down absolute rewards of both chosen and rejected solutions when applied to reasoning tasks, leading to performance degradation. Effective algorithms (KTO, NCA, DPO+NLL, reward models with Direct-Reward terms) share the property of maintaining or increasing chosen solution probabilities while decreasing rejected ones. The mechanism is critical because: (1) reasoning correctness is absolute not relative, (2) decreasing chosen probabilities reduces the model's ability to generate correct solutions, (3) relative-only optimization creates a 'race to the bottom' where both chosen and rejected probabilities decrease, and (4) the effect is amplified for multi-step reasoning where each step's probability compounds.",
+    "supporting_evidence": [
+        {
+            "text": "Standard DPO decreased Eurus-7B performance from 46.5 to 44.5 (-2.0 points) on reasoning tasks, with rewards collapsing for Eurus-70B, while KTO improved performance to 48.8 (+2.3 points) by increasing absolute rewards.",
+            "uuids": [
+                "e224.3",
+                "e224.4"
+            ]
+        },
+        {
+            "text": "Iterative RPO with NLL term achieved 81.6% on GSM8K, while standard DPO without NLL achieved only 61.8% - the NLL term prevents chosen sequence probabilities from falling.",
+            "uuids": [
+                "e218.0",
+                "e218.2"
+            ]
+        },
+        {
+            "text": "Eurus-RM trained with Direct-Reward (DR) term achieved RewardBench reasoning score of 87.0, compared to 77.5 without DR, showing the importance of increasing absolute rewards for chosen solutions.",
+            "uuids": [
+                "e224.7"
+            ]
+        },
+        {
+            "text": "NCA (Noise Contrastive Alignment) improved Eurus-7B to 48.1 and Eurus-70B to 59.0 by using a contrastive objective that increases chosen rewards while decreasing rejected ones.",
+            "uuids": [
+                "e224.5"
+            ]
+        },
+        {
+            "text": "DPO on reasoning datasets tends to optimize relative preference differences without explicitly increasing absolute rewards, leading to degraded downstream reasoning performance.",
+            "uuids": [
+                "e224.3"
+            ]
+        },
+        {
+            "text": "SFT on chosen sequences alone (without explicit negative examples) achieved 65.2% on GSM8K, better than standard DPO (61.8%), suggesting that maintaining chosen probabilities is more important than relative contrast for some tasks.",
+            "uuids": [
+                "e218.3"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Preference optimization algorithms that increase absolute log-probability of chosen solutions provide 3-5 percentage point improvements over relative-only methods for reasoning tasks.",
+        "Standard DPO and similar Bradley-Terry derived methods tend to decrease absolute rewards of chosen solutions by 10-30% when applied to reasoning tasks, leading to performance degradation.",
+        "The effect is amplified for multi-step reasoning: each step's probability decrease compounds, leading to exponentially lower probability of generating complete correct solutions.",
+        "Algorithms that explicitly include an NLL (negative log-likelihood) term for chosen solutions or a Direct-Reward term maintain chosen probabilities and achieve 2-4 percentage point improvements.",
+        "The importance of absolute reward preservation increases with task difficulty: harder reasoning tasks show larger performance gaps between absolute-preserving and relative-only methods.",
+        "For reasoning tasks, maintaining high probability of correct solutions is more important than creating large margins between correct and incorrect solutions."
+    ],
+    "new_predictions_likely": [
+        "Applying KTO or DPO+NLL to scientific literature QA would yield 2-4 percentage point improvements over standard DPO, with larger gains for multi-step reasoning questions.",
+        "Training reward models for scientific QA with a Direct-Reward term would improve reranking performance by 5-10 percentage points on reasoning-heavy questions compared to standard Bradley-Terry objectives.",
+        "Monitoring chosen solution log-probabilities during DPO training would show consistent decreases for reasoning tasks but not for general instruction-following tasks.",
+        "Combining absolute reward preservation (NLL term) with step-localized preferences would yield additive improvements of 4-6 percentage points over either method alone."
+    ],
+    "new_predictions_unknown": [
+        "Whether absolute reward preservation is equally important for scientific QA tasks that don't have clear correctness criteria (e.g., literature review questions, hypothesis generation).",
+        "The optimal weighting between the relative preference term and the absolute reward term - whether it should be task-dependent or can be set universally.",
+        "Whether the mechanism would transfer to multi-document scientific reasoning where 'correctness' may be context-dependent or require weighing conflicting evidence.",
+        "How absolute reward preservation interacts with exploration-exploitation tradeoffs - whether maintaining high chosen probabilities reduces the model's ability to explore alternative reasoning paths."
+    ],
+    "negative_experiments": [
+        "If standard DPO performs as well as KTO/NCA/DPO+NLL when all use the same preference pairs and training steps, this would challenge the absolute reward preservation hypothesis.",
+        "If monitoring shows that standard DPO does not decrease chosen solution probabilities for reasoning tasks, this would invalidate the proposed mechanism.",
+        "If relative-only optimization performs as well as absolute-preserving methods for single-step reasoning tasks, this would suggest the effect only matters for multi-step reasoning.",
+        "If artificially constraining standard DPO to not decrease chosen probabilities (via regularization) does not improve performance, this would question whether probability preservation is the key mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Standard DPO achieved reasonable performance on some reasoning tasks (61.8% on GSM8K), suggesting it's not completely ineffective, just suboptimal compared to absolute-preserving methods.",
+            "uuids": [
+                "e218.2"
+            ]
+        },
+        {
+            "text": "ORPO (odds-ratio preference optimization) achieved 61.7% on GSM8K, competitive with some absolute-preserving methods, despite being a relative-ranking approach.",
+            "uuids": [
+                "e214.3"
+            ]
+        },
+        {
+            "text": "The theory doesn't explain why DPO works well for general instruction-following and dialogue tasks but fails for reasoning - suggests task-specific factors matter.",
+            "uuids": [
+                "e223.4"
+            ]
+        },
+        {
+            "text": "Some models showed reward collapse (Eurus-70B) while others didn't (Eurus-7B showed degradation but not collapse), suggesting model-specific factors influence the effect.",
+            "uuids": [
+                "e224.3"
+            ]
+        }
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Ethayarajh et al. (2024) KTO: Model Alignment as Prospect Theoretic Optimization [KTO algorithm that increases absolute rewards]",
+            "Chen et al. (2024) NCA: Noise Contrastive Alignment [Contrastive alignment that preserves chosen rewards]",
+            "Gulcehre et al. (2024) Reinforced Self-Training with Direct Preference Optimization [Analysis of DPO's effect on reasoning]",
+            "Rafailov et al. (2023) Direct Preference Optimization [Original DPO paper, relative-ranking focus]"
+        ]
+    },
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification-Aggregation Duality for Stochastic Correctness - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-81</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-81</p>
+                <p><strong>Name:</strong> Verification-Aggregation Duality for Stochastic Correctness</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about variability and reproducibility in language model-driven scientific experimentation, based on the following results.</p>
+                <p><strong>Description:</strong> For tasks where correct solutions can be verified (e.g., code with unit tests, math with answer checking), stochastic sampling and verification form a dual approach to achieving high correctness: (1) sampling explores the solution space to find correct solutions among many attempts, (2) verification filters incorrect solutions to recover the correct one. The theory posits that Pass@k metrics capture the model's latent capability that is obscured by single-sample stochasticity, and that the gap between Pass@1 and Pass@k quantifies the 'stochastic correctness gap' - the capability lost to sampling randomness. This gap can be closed through three primary mechanisms: (a) increasing sample size k and using verification (exploration-verification), (b) training to increase single-sample reliability (e.g., via SFT scaling, alignment, or data resampling), or (c) using ranking heuristics to select the best sample without verification (proxy-verification). The theory predicts that verification-aggregation is most effective when the model has high latent capability (high Pass@k) but low single-sample reliability (low Pass@1), and that the optimal strategy depends on the relative costs of generation, verification, and training, as well as task characteristics (deterministic vs open-ended).</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>The stochastic correctness gap Δ = Pass@k - Pass@1 quantifies capability lost to sampling randomness and represents the potential improvement available through verification-aggregation.</li>
+                <li>For tasks with verification, effective correctness = min(Pass@k, verification_accuracy), showing verification quality is the bottleneck when Pass@k is high.</li>
+                <li>Training to increase Pass@1 is equivalent to reducing the stochastic correctness gap, making single samples more reliable and reducing the need for verification-aggregation.</li>
+                <li>Ranking heuristics (e.g., mean log-prob) can partially close the gap without verification, but are bounded by the quality of the ranking function and typically achieve intermediate performance between Pass@1 and oracle best-of-k.</li>
+                <li>The optimal sampling strategy depends on k: low k benefits from low temperature (exploitation), high k benefits from high temperature (exploration), with optimal temperature increasing with k.</li>
+                <li>Verification-aggregation is most cost-effective when verification is cheap relative to generation, when Pass@k >> Pass@1, and when the task has objective correctness criteria.</li>
+                <li>Process-level verification (step-by-step checking) can be more effective than outcome-level verification, especially for multi-step reasoning tasks.</li>
+                <li>The stochastic correctness gap is task-dependent: deterministic tasks (math, code) show larger gaps and benefit more from verification-aggregation than open-ended tasks (creative writing, instruction following).</li>
+                <li>Model alignment and instruction-tuning reduce the stochastic correctness gap by increasing Pass@1 without necessarily changing Pass@k, making single samples more reliable.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Pass@256 reaches 97.7% (GSM8K) and 72.0% (MATH) while Pass@1 is much lower (49.5% and 7.9%), showing large stochastic correctness gap that can be closed by sampling and verification. <a href="../results/extraction-result-662.html#e662.0" class="evidence-link">[e662.0]</a> </li>
+    <li>Scaling SFT data from 7.5K to 960K increased Pass@1 from ~49.5% to 82.6% (GSM8K) and MATH from ~7.9% to 40.6%, while Pass@256 remained high throughout, showing training can close the gap by increasing single-sample reliability. <a href="../results/extraction-result-662.html#e662.0" class="evidence-link">[e662.0]</a> </li>
+    <li>Mean token log-prob ranking achieves 44.5% pass rate when selecting single sample from k candidates, substantially better than random (28.8%), showing ranking can partially close the gap without verification. Average benefit over random ranking is 11.6 percentage points for Codex-S-12B. <a href="../results/extraction-result-631.html#e631.2" class="evidence-link">[e631.2]</a> </li>
+    <li>Best-of-N with reward model selection substantially improves performance, and oracle best-of-N shows small models can surpass GPT-4-Turbo on MMLU, GSM8K, HumanEval when best sampled response is selected, demonstrating the power of verification-aggregation. <a href="../results/extraction-result-482.html#e482.0" class="evidence-link">[e482.0]</a> </li>
+    <li>Self-consistency (majority vote over 40 samples) produces much larger gains than prompt-permutation ensembles (e.g., LaMDA GSM8K: ensemble ~19% vs self-consistency ~27.7%), showing aggregation over stochastic samples is more effective than aggregation over prompt variations. <a href="../results/extraction-result-646.html#e646.2" class="evidence-link">[e646.2]</a> </li>
+    <li>Self-consistency with 20 generations enables stochastic methods to surpass deterministic baselines on closed-ended tasks; temperature sampling improved from ~34.04% to 36.92% on Llama2-7B-Chat GSM8K when using 20-sample aggregation. <a href="../results/extraction-result-623.html#e623.2" class="evidence-link">[e623.2]</a> </li>
+    <li>Temperature tuning shows higher temperatures are optimal for larger k (increase sample diversity): optimal temperature T* = 0.2 for pass@1 and T* = 0.8 for pass@100 in 679M model, demonstrating the sampling-verification trade-off where exploration benefits from higher temperature. <a href="../results/extraction-result-631.html#e631.3" class="evidence-link">[e631.3]</a> </li>
+    <li>Filtering nondeterministic/stateful tasks via multi-sample verification (100 samples per problem, rerun verification several times) improved downstream Codex-S performance (+6.5 pp on pass@1 and +15.1 pp on pass@100), showing verification is essential for reliable training data. <a href="../results/extraction-result-631.html#e631.1" class="evidence-link">[e631.1]</a> </li>
+    <li>Pass@k estimation requires n=200 samples to be unbiased, showing the statistical requirements for reliable verification-aggregation and the computational cost of accurate measurement. <a href="../results/extraction-result-631.html#e631.3" class="evidence-link">[e631.3]</a> </li>
+    <li>Resampling training data to increase CoT complexity (upweighting longer CoT solutions) increased PassRatio@256 from 71.1% to 72.8% and improved accuracy for harder problems, showing data selection can improve single-sample reliability. <a href="../results/extraction-result-662.html#e662.8" class="evidence-link">[e662.8]</a> </li>
+    <li>Process reward models (PRMs) trained for step-wise verification enable better verification than outcome-only checking; Math-psa PRM achieved highest testing accuracy among compared PRMs across all tested computation budgets, showing process-level verification can be more effective than outcome-level. <a href="../results/extraction-result-621.html#e621.1" class="evidence-link">[e621.1]</a> </li>
+    <li>Greedy decoding outperforms sampling averaged across runs on most benchmarks (e.g., Qwen2-7B-Instruct GSM8K: greedy=83.5 vs sampling average=72.0), showing that for some tasks, deterministic selection is better than stochastic exploration, challenging the universal applicability of sampling-verification. <a href="../results/extraction-result-482.html#e482.1" class="evidence-link">[e482.1]</a> </li>
+    <li>Temperature effects are task-dependent: higher temperature slightly improves AlpacaEval but significantly harms reasoning and code generation (GSM8K, HumanEval), showing the verification-aggregation framework applies differently to deterministic vs open-ended tasks. <a href="../results/extraction-result-482.html#e482.3" class="evidence-link">[e482.3]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For any task with reliable verification, Pass@k will plateau at some k_max beyond which additional samples provide no benefit, and this k_max predicts the model's latent capability ceiling.</li>
+                <li>Training interventions that increase Pass@1 without changing Pass@k are more efficient than those that increase both, because they reduce the stochastic gap without requiring more samples at inference time.</li>
+                <li>Ranking heuristics will show diminishing returns: the gap between ranked-best and oracle-best will decrease logarithmically with k, with most gains achieved in the first 10-20 samples.</li>
+                <li>For tasks where verification is expensive (e.g., human evaluation), investing in training to increase Pass@1 will be more cost-effective than generating many samples.</li>
+                <li>Process reward models (PRMs) that provide step-by-step verification will outperform outcome reward models (ORMs) for multi-step reasoning tasks, with the gap increasing with task complexity.</li>
+                <li>The optimal temperature for sampling will increase linearly or logarithmically with k, with a crossover point where higher temperature becomes beneficial around k=10-20.</li>
+                <li>Data augmentation that increases training example diversity (e.g., resampling complex CoT examples) will increase Pass@1 more than Pass@k, reducing the stochastic gap.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exists a fundamental limit to how much training can increase Pass@1 relative to Pass@k, or whether perfect single-sample reliability (Pass@1 = Pass@k) is achievable for any task.</li>
+                <li>Whether the stochastic correctness gap is primarily task-dependent or model-dependent, and which factor dominates the gap size.</li>
+                <li>Whether verification-aggregation transfers across domains: if a model has high Pass@k on one task, does it have high Pass@k on related tasks, or is the gap task-specific?</li>
+                <li>Whether there exist tasks where Pass@1 > Pass@k (i.e., where sampling diversity hurts), and what characterizes such tasks - possibly tasks where consistency is more important than exploration.</li>
+                <li>Whether the relationship between Pass@1 and Pass@k is monotonic with training, or whether there are training regimes where increasing Pass@k decreases Pass@1 (e.g., by increasing diversity at the cost of reliability).</li>
+                <li>Whether process-level verification can be learned end-to-end during training, or whether it requires explicit supervision and separate reward models.</li>
+                <li>Whether the optimal k for verification-aggregation scales with model size, or whether larger models require fewer samples due to higher Pass@1.</li>
+                <li>Whether there exists a universal ranking heuristic that works across all tasks, or whether task-specific ranking functions are necessary.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding tasks where Pass@k decreases with k would challenge the exploration benefit of sampling and the assumption that more samples always help.</li>
+                <li>Demonstrating that ranking heuristics perform no better than random selection would challenge their utility for closing the gap without verification.</li>
+                <li>Showing that training to increase Pass@1 also decreases Pass@k would challenge the independence of these metrics and the assumption that training improves latent capability.</li>
+                <li>Finding that verification-aggregation provides no benefit over single-sample generation would challenge the entire framework and suggest that stochastic correctness is not a meaningful concept.</li>
+                <li>Demonstrating that process-level verification performs worse than outcome-level verification would challenge the assumption that finer-grained verification is always better.</li>
+                <li>Finding that higher temperature always hurts performance regardless of k would challenge the exploration-exploitation trade-off and the temperature-k relationship.</li>
+                <li>Showing that aligned models have the same stochastic correctness gap as unaligned models would challenge the role of alignment in reducing the gap.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to handle tasks with partial verification (e.g., code that passes some but not all tests), where correctness is not binary but graded. </li>
+    <li>The computational cost trade-offs between generating more samples vs training better models, including the amortized cost of training vs per-query cost of sampling. </li>
+    <li>How to design optimal ranking heuristics for tasks without clear log-probability signals or where token probabilities are not accessible (black-box models). </li>
+    <li>The interaction between verification quality and sample diversity: whether low-quality verification benefits more from diverse samples or high-quality samples. </li>
+    <li>How to combine process-level and outcome-level verification optimally, and whether they provide complementary or redundant information. </li>
+    <li>The role of model calibration in the stochastic correctness gap: whether well-calibrated models have smaller gaps because their confidence scores better predict correctness. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Chen et al. (2021) Evaluating Large Language Models Trained on Code [Introduces Pass@k metric but doesn't formalize the verification-aggregation duality or stochastic correctness gap]</li>
+    <li>Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Proposes self-consistency aggregation but doesn't connect to verification-aggregation duality or formalize the gap]</li>
+    <li>Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Uses verification and outcome reward models but doesn't formalize the stochastic correctness gap or the duality framework]</li>
+    <li>Lightman et al. (2023) Let's Verify Step by Step [Introduces process reward models for step-by-step verification but doesn't connect to the broader verification-aggregation framework]</li>
+    <li>Welleck et al. (2024) From Decoding to Meta-Generation [Discusses decoding strategies but doesn't formalize the verification-aggregation duality]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Verification-Aggregation Duality for Stochastic Correctness",
+    "theory_description": "For tasks where correct solutions can be verified (e.g., code with unit tests, math with answer checking), stochastic sampling and verification form a dual approach to achieving high correctness: (1) sampling explores the solution space to find correct solutions among many attempts, (2) verification filters incorrect solutions to recover the correct one. The theory posits that Pass@k metrics capture the model's latent capability that is obscured by single-sample stochasticity, and that the gap between Pass@1 and Pass@k quantifies the 'stochastic correctness gap' - the capability lost to sampling randomness. This gap can be closed through three primary mechanisms: (a) increasing sample size k and using verification (exploration-verification), (b) training to increase single-sample reliability (e.g., via SFT scaling, alignment, or data resampling), or (c) using ranking heuristics to select the best sample without verification (proxy-verification). The theory predicts that verification-aggregation is most effective when the model has high latent capability (high Pass@k) but low single-sample reliability (low Pass@1), and that the optimal strategy depends on the relative costs of generation, verification, and training, as well as task characteristics (deterministic vs open-ended).",
+    "supporting_evidence": [
+        {
+            "text": "Pass@256 reaches 97.7% (GSM8K) and 72.0% (MATH) while Pass@1 is much lower (49.5% and 7.9%), showing large stochastic correctness gap that can be closed by sampling and verification.",
+            "uuids": [
+                "e662.0"
+            ]
+        },
+        {
+            "text": "Scaling SFT data from 7.5K to 960K increased Pass@1 from ~49.5% to 82.6% (GSM8K) and MATH from ~7.9% to 40.6%, while Pass@256 remained high throughout, showing training can close the gap by increasing single-sample reliability.",
+            "uuids": [
+                "e662.0"
+            ]
+        },
+        {
+            "text": "Mean token log-prob ranking achieves 44.5% pass rate when selecting single sample from k candidates, substantially better than random (28.8%), showing ranking can partially close the gap without verification. Average benefit over random ranking is 11.6 percentage points for Codex-S-12B.",
+            "uuids": [
+                "e631.2"
+            ]
+        },
+        {
+            "text": "Best-of-N with reward model selection substantially improves performance, and oracle best-of-N shows small models can surpass GPT-4-Turbo on MMLU, GSM8K, HumanEval when best sampled response is selected, demonstrating the power of verification-aggregation.",
+            "uuids": [
+                "e482.0"
+            ]
+        },
+        {
+            "text": "Self-consistency (majority vote over 40 samples) produces much larger gains than prompt-permutation ensembles (e.g., LaMDA GSM8K: ensemble ~19% vs self-consistency ~27.7%), showing aggregation over stochastic samples is more effective than aggregation over prompt variations.",
+            "uuids": [
+                "e646.2"
+            ]
+        },
+        {
+            "text": "Self-consistency with 20 generations enables stochastic methods to surpass deterministic baselines on closed-ended tasks; temperature sampling improved from ~34.04% to 36.92% on Llama2-7B-Chat GSM8K when using 20-sample aggregation.",
+            "uuids": [
+                "e623.2"
+            ]
+        },
+        {
+            "text": "Temperature tuning shows higher temperatures are optimal for larger k (increase sample diversity): optimal temperature T* = 0.2 for pass@1 and T* = 0.8 for pass@100 in 679M model, demonstrating the sampling-verification trade-off where exploration benefits from higher temperature.",
+            "uuids": [
+                "e631.3"
+            ]
+        },
+        {
+            "text": "Filtering nondeterministic/stateful tasks via multi-sample verification (100 samples per problem, rerun verification several times) improved downstream Codex-S performance (+6.5 pp on pass@1 and +15.1 pp on pass@100), showing verification is essential for reliable training data.",
+            "uuids": [
+                "e631.1"
+            ]
+        },
+        {
+            "text": "Pass@k estimation requires n=200 samples to be unbiased, showing the statistical requirements for reliable verification-aggregation and the computational cost of accurate measurement.",
+            "uuids": [
+                "e631.3"
+            ]
+        },
+        {
+            "text": "Resampling training data to increase CoT complexity (upweighting longer CoT solutions) increased PassRatio@256 from 71.1% to 72.8% and improved accuracy for harder problems, showing data selection can improve single-sample reliability.",
+            "uuids": [
+                "e662.8"
+            ]
+        },
+        {
+            "text": "Process reward models (PRMs) trained for step-wise verification enable better verification than outcome-only checking; Math-psa PRM achieved highest testing accuracy among compared PRMs across all tested computation budgets, showing process-level verification can be more effective than outcome-level.",
+            "uuids": [
+                "e621.1"
+            ]
+        },
+        {
+            "text": "Greedy decoding outperforms sampling averaged across runs on most benchmarks (e.g., Qwen2-7B-Instruct GSM8K: greedy=83.5 vs sampling average=72.0), showing that for some tasks, deterministic selection is better than stochastic exploration, challenging the universal applicability of sampling-verification.",
+            "uuids": [
+                "e482.1"
+            ]
+        },
+        {
+            "text": "Temperature effects are task-dependent: higher temperature slightly improves AlpacaEval but significantly harms reasoning and code generation (GSM8K, HumanEval), showing the verification-aggregation framework applies differently to deterministic vs open-ended tasks.",
+            "uuids": [
+                "e482.3"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "The stochastic correctness gap Δ = Pass@k - Pass@1 quantifies capability lost to sampling randomness and represents the potential improvement available through verification-aggregation.",
+        "For tasks with verification, effective correctness = min(Pass@k, verification_accuracy), showing verification quality is the bottleneck when Pass@k is high.",
+        "Training to increase Pass@1 is equivalent to reducing the stochastic correctness gap, making single samples more reliable and reducing the need for verification-aggregation.",
+        "Ranking heuristics (e.g., mean log-prob) can partially close the gap without verification, but are bounded by the quality of the ranking function and typically achieve intermediate performance between Pass@1 and oracle best-of-k.",
+        "The optimal sampling strategy depends on k: low k benefits from low temperature (exploitation), high k benefits from high temperature (exploration), with optimal temperature increasing with k.",
+        "Verification-aggregation is most cost-effective when verification is cheap relative to generation, when Pass@k &gt;&gt; Pass@1, and when the task has objective correctness criteria.",
+        "Process-level verification (step-by-step checking) can be more effective than outcome-level verification, especially for multi-step reasoning tasks.",
+        "The stochastic correctness gap is task-dependent: deterministic tasks (math, code) show larger gaps and benefit more from verification-aggregation than open-ended tasks (creative writing, instruction following).",
+        "Model alignment and instruction-tuning reduce the stochastic correctness gap by increasing Pass@1 without necessarily changing Pass@k, making single samples more reliable."
+    ],
+    "new_predictions_likely": [
+        "For any task with reliable verification, Pass@k will plateau at some k_max beyond which additional samples provide no benefit, and this k_max predicts the model's latent capability ceiling.",
+        "Training interventions that increase Pass@1 without changing Pass@k are more efficient than those that increase both, because they reduce the stochastic gap without requiring more samples at inference time.",
+        "Ranking heuristics will show diminishing returns: the gap between ranked-best and oracle-best will decrease logarithmically with k, with most gains achieved in the first 10-20 samples.",
+        "For tasks where verification is expensive (e.g., human evaluation), investing in training to increase Pass@1 will be more cost-effective than generating many samples.",
+        "Process reward models (PRMs) that provide step-by-step verification will outperform outcome reward models (ORMs) for multi-step reasoning tasks, with the gap increasing with task complexity.",
+        "The optimal temperature for sampling will increase linearly or logarithmically with k, with a crossover point where higher temperature becomes beneficial around k=10-20.",
+        "Data augmentation that increases training example diversity (e.g., resampling complex CoT examples) will increase Pass@1 more than Pass@k, reducing the stochastic gap."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exists a fundamental limit to how much training can increase Pass@1 relative to Pass@k, or whether perfect single-sample reliability (Pass@1 = Pass@k) is achievable for any task.",
+        "Whether the stochastic correctness gap is primarily task-dependent or model-dependent, and which factor dominates the gap size.",
+        "Whether verification-aggregation transfers across domains: if a model has high Pass@k on one task, does it have high Pass@k on related tasks, or is the gap task-specific?",
+        "Whether there exist tasks where Pass@1 &gt; Pass@k (i.e., where sampling diversity hurts), and what characterizes such tasks - possibly tasks where consistency is more important than exploration.",
+        "Whether the relationship between Pass@1 and Pass@k is monotonic with training, or whether there are training regimes where increasing Pass@k decreases Pass@1 (e.g., by increasing diversity at the cost of reliability).",
+        "Whether process-level verification can be learned end-to-end during training, or whether it requires explicit supervision and separate reward models.",
+        "Whether the optimal k for verification-aggregation scales with model size, or whether larger models require fewer samples due to higher Pass@1.",
+        "Whether there exists a universal ranking heuristic that works across all tasks, or whether task-specific ranking functions are necessary."
+    ],
+    "negative_experiments": [
+        "Finding tasks where Pass@k decreases with k would challenge the exploration benefit of sampling and the assumption that more samples always help.",
+        "Demonstrating that ranking heuristics perform no better than random selection would challenge their utility for closing the gap without verification.",
+        "Showing that training to increase Pass@1 also decreases Pass@k would challenge the independence of these metrics and the assumption that training improves latent capability.",
+        "Finding that verification-aggregation provides no benefit over single-sample generation would challenge the entire framework and suggest that stochastic correctness is not a meaningful concept.",
+        "Demonstrating that process-level verification performs worse than outcome-level verification would challenge the assumption that finer-grained verification is always better.",
+        "Finding that higher temperature always hurts performance regardless of k would challenge the exploration-exploitation trade-off and the temperature-k relationship.",
+        "Showing that aligned models have the same stochastic correctness gap as unaligned models would challenge the role of alignment in reducing the gap."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to handle tasks with partial verification (e.g., code that passes some but not all tests), where correctness is not binary but graded.",
+            "uuids": []
+        },
+        {
+            "text": "The computational cost trade-offs between generating more samples vs training better models, including the amortized cost of training vs per-query cost of sampling.",
+            "uuids": []
+        },
+        {
+            "text": "How to design optimal ranking heuristics for tasks without clear log-probability signals or where token probabilities are not accessible (black-box models).",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between verification quality and sample diversity: whether low-quality verification benefits more from diverse samples or high-quality samples.",
+            "uuids": []
+        },
+        {
+            "text": "How to combine process-level and outcome-level verification optimally, and whether they provide complementary or redundant information.",
+            "uuids": []
+        },
+        {
+            "text": "The role of model calibration in the stochastic correctness gap: whether well-calibrated models have smaller gaps because their confidence scores better predict correctness.",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Back-translation ranking underperforms mean log-prob ranking and can overfit quickly, suggesting not all ranking heuristics are equally effective and some may be worse than simple baselines.",
+            "uuids": [
+                "e631.2"
+            ]
+        },
+        {
+            "text": "Greedy decoding outperforms sampling on most benchmarks (e.g., Qwen2-7B GSM8K: greedy=83.5 vs sampling=72.0), suggesting that for some tasks, deterministic selection is better than stochastic exploration, challenging the universal benefit of sampling-verification.",
+            "uuids": [
+                "e482.1"
+            ]
+        },
+        {
+            "text": "AlpacaEval shows higher win rate with sampling than greedy, opposite to reasoning/code tasks, suggesting the verification-aggregation framework applies differently to open-ended vs deterministic tasks.",
+            "uuids": [
+                "e482.1"
+            ]
+        },
+        {
+            "text": "Some tasks show Pass@1 improvements from training that don't correspond to Pass@k improvements, suggesting the metrics can be partially decoupled and training can affect them independently.",
+            "uuids": [
+                "e662.0"
+            ]
+        },
+        {
+            "text": "Temperature effects are task-dependent: higher temperature helps AlpacaEval but hurts GSM8K/HumanEval, suggesting the optimal sampling strategy varies by task type in ways not fully captured by the verification-aggregation framework.",
+            "uuids": [
+                "e482.3"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For tasks without verification (e.g., creative writing, open-ended instruction following), the framework doesn't apply and alternative aggregation methods (e.g., human evaluation, reward models) are needed.",
+        "For tasks with ambiguous verification (e.g., subjective correctness, style preferences), Pass@k may not be well-defined and the framework breaks down.",
+        "For very easy tasks where Pass@1 ≈ Pass@k ≈ 1, the framework provides no additional insight and verification-aggregation provides no benefit.",
+        "For tasks where verification is more expensive than generation (e.g., human evaluation, expensive simulation), the cost-benefit analysis may favor single-sample approaches or training to increase Pass@1.",
+        "For deterministic tasks (math, code), greedy decoding may outperform sampling on average, suggesting that for these tasks, the optimal strategy is deterministic selection rather than stochastic exploration.",
+        "For open-ended tasks (creative writing, instruction following), sampling may outperform greedy decoding, suggesting these tasks benefit from diversity rather than verification.",
+        "For aligned/instruction-tuned models, the stochastic correctness gap is smaller than for base models, suggesting alignment reduces the need for verification-aggregation.",
+        "For tasks with process-level verification available (e.g., math with step-by-step checking), process reward models can provide more effective verification than outcome-only checking.",
+        "For tasks where the model has very high Pass@k (&gt;90%), the bottleneck shifts from sampling to verification quality, and improving verification becomes more important than generating more samples."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Chen et al. (2021) Evaluating Large Language Models Trained on Code [Introduces Pass@k metric but doesn't formalize the verification-aggregation duality or stochastic correctness gap]",
+            "Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Proposes self-consistency aggregation but doesn't connect to verification-aggregation duality or formalize the gap]",
+            "Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Uses verification and outcome reward models but doesn't formalize the stochastic correctness gap or the duality framework]",
+            "Lightman et al. (2023) Let's Verify Step by Step [Introduces process reward models for step-by-step verification but doesn't connect to the broader verification-aggregation framework]",
+            "Welleck et al. (2024) From Decoding to Meta-Generation [Discusses decoding strategies but doesn't formalize the verification-aggregation duality]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 5,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

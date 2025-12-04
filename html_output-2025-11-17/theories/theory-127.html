@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complexity-Variation Capacity Constraint Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-127</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-127</p>
+                <p><strong>Name:</strong> Complexity-Variation Capacity Constraint Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of the fundamental trade-off between environment complexity and environment variation in embodied learning systems, based on the following results.</p>
+                <p><strong>Description:</strong> There exists a fundamental capacity constraint in embodied learning systems such that the joint burden of environment complexity and environment variation cannot exceed the effective learning capacity of the agent-algorithm combination without intervention. This constraint is not a simple multiplicative product but rather a more complex interaction where: (1) the type and structure of variation matters (observable vs unobservable, targeted vs simultaneous), (2) complexity and variation can interact synergistically (making each other worse) or be partially independent, and (3) the constraint manifests differently depending on whether variation is in task parameters, dynamics, or observations. When this constraint is violated, learning either fails completely, becomes prohibitively sample-inefficient, or converges to degenerate solutions. The effective capacity can be increased through: (1) curriculum learning that stages complexity or variation (but not both simultaneously), (2) architectural inductive biases that exploit structure (graph networks, object-centric representations, causal representations), (3) transfer learning from related tasks, (4) explicit representation learning that disentangles controllable factors, (5) massive scale in data and compute, or (6) appropriate sensor modalities that reduce effective complexity.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For any embodied learning system with fixed architecture and algorithm, there exists a maximum joint burden of complexity and variation beyond which learning fails, becomes impractical, or converges to degenerate solutions</li>
+                <li>The constraint is not a simple multiplicative product C×V but involves complex interactions where the type of variation (observable vs unobservable, targeted vs simultaneous, structured vs random) critically affects the burden</li>
+                <li>Curriculum learning effectively increases capacity by reducing instantaneous complexity or variation (but not both simultaneously), allowing staged progression to the target task</li>
+                <li>Architectural inductive biases (graph networks, object-centric representations, causal representations, hierarchical decomposition) increase effective capacity by exploiting environmental structure and reducing effective complexity</li>
+                <li>The capacity constraint manifests as: (1) complete learning failure, (2) exponential sample complexity growth, (3) convergence to degenerate local optima, or (4) catastrophic instability (e.g., safety violations)</li>
+                <li>Transfer learning and pre-training increase effective capacity by providing useful priors that reduce the effective complexity of new tasks</li>
+                <li>Massive scale in data and compute can increase capacity, but with diminishing returns (power-law scaling)</li>
+                <li>Appropriate sensor modalities (e.g., depth vs RGB) can reduce effective complexity and increase capacity for handling variation</li>
+                <li>Context-aware variation (observable changes) and context-unaware variation (unobservable changes) require different transfer strategies: whole-model transfer for context-aware, policy-only for context-unaware</li>
+                <li>Structured variation (e.g., similar failure scenarios, targeted parameter ranges) is more beneficial than unstructured random variation for building robust policies</li>
+                <li>There exist tasks where complexity exceeds any practical capacity (e.g., Stacking2 in CausalWorld), suggesting fundamental limits</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Model-free RL agents failed to learn in CausalWorld under extreme simultaneous randomization (Curriculum 2) even after 100M timesteps, while succeeding on single-block tasks with low variation <a href="../results/extraction-result-1074.html#e1074.0" class="evidence-link">[e1074.0]</a> </li>
+    <li>BEHAVIOR agents with primitives failed on most of 12 activities under high instance variation, but succeeded on simplified tasks with reduced variation <a href="../results/extraction-result-1057.html#e1057.1" class="evidence-link">[e1057.1]</a> </li>
+    <li>Point-mass gate task: Random curriculum (high variation, high complexity) achieved only 0.53±0.0 reward vs SPDL's 9.35±0.1 which used staged curriculum <a href="../results/extraction-result-1087.html#e1087.0" class="evidence-link">[e1087.0]</a> </li>
+    <li>Single-stage RL failed to converge on high-complexity GC-VAT drone tracking maps (citystreet, downtown, farmland), while curriculum-based training succeeded <a href="../results/extraction-result-1045.html#e1045.0" class="evidence-link">[e1045.0]</a> </li>
+    <li>PPO-volume baseline trained from scratch on full-complexity container management with high variation showed 27.11% safety violations vs curriculum-trained agent <a href="../results/extraction-result-1023.html#e1023.1" class="evidence-link">[e1023.1]</a> </li>
+    <li>RGB-only PointNav agents required both layout diversity (Gibson-2+) and appearance diversity (Matterport3D) to reach high performance (SPL ~0.929), demonstrating need for sufficient training variation to build capacity <a href="../results/extraction-result-1082.html#e1082.1" class="evidence-link">[e1082.1]</a> </li>
+    <li>Stacking2 task in CausalWorld: no tested method achieved >0.5 fractional success under any curriculum, suggesting task complexity exceeded agent capacity even with curriculum <a href="../results/extraction-result-1074.html#e1074.0" class="evidence-link">[e1074.0]</a> </li>
+    <li>AntMaze with teacher-student ACL showed no improvement after 1M steps, suggesting environment complexity overwhelmed curriculum benefits given the agent capacity <a href="../results/extraction-result-1026.html#e1026.1" class="evidence-link">[e1026.1]</a> </li>
+    <li>Graph network agents in construction tasks substantially outperformed CNN agents, showing architectural inductive biases increase effective capacity <a href="../results/extraction-result-1095.html#e1095.3" class="evidence-link">[e1095.3]</a> </li>
+    <li>Depth-based RL agents generalized better across visual variation than RGB agents (Depth: SPL=0.79 on Gibson vs RGB much lower in prior work), indicating sensor modality affects effective capacity <a href="../results/extraction-result-1083.html#e1083.0" class="evidence-link">[e1083.0]</a> </li>
+    <li>TriFinger agents: context-aware variation (observable task changes) benefited from whole-model transfer, while context-unaware variation (unobserved environmental changes like weight) broke value estimates and required policy-only transfer <a href="../results/extraction-result-1018.html#e1018.0" class="evidence-link">[e1018.0]</a> </li>
+    <li>CausalWorld agents trained with goal pose randomization (targeted variation) generalized robustly to different goal poses, but extreme domain randomization prevented learning <a href="../results/extraction-result-1074.html#e1074.0" class="evidence-link">[e1074.0]</a> </li>
+    <li>Genetic Curriculum (GC) improved robustness by generating similar failure scenarios (structured variation) rather than random high variation, achieving 2-8x lower failure rates <a href="../results/extraction-result-1088.html#e1088.5" class="evidence-link">[e1088.5]</a> </li>
+    <li>PAIRED's unconstrained minimax adversary drove agent reward to zero in Hopper by creating unsolvable dynamics (excessive variation), while regret-based PAIRED maintained feasibility <a href="../results/extraction-result-1038.html#e1038.1" class="evidence-link">[e1038.1]</a> </li>
+    <li>Active Domain Randomization (ADR) outperformed uniform randomization by prioritizing sparse hard regions, showing that structured variation sampling increases effective capacity <a href="../results/extraction-result-1069.html#e1069.1" class="evidence-link">[e1069.1]</a> </li>
+    <li>DD-PPO achieved near-perfect PointGoal navigation (SPL ~0.948) by training on 2.5B frames across high variation (Gibson-2+ + Matterport3D), demonstrating capacity can be increased with massive scale <a href="../results/extraction-result-1082.html#e1082.0" class="evidence-link">[e1082.0]</a> </li>
+    <li>ULTRA's unsupervised pre-training on varied scenes enabled 53.34% relative SPL improvement over A3C-from-scratch, showing pre-training increases effective capacity <a href="../results/extraction-result-1039.html#e1039.3" class="evidence-link">[e1039.3]</a> </li>
+    <li>CausalCF agents with causal representations and counterfactuals converged faster and generalized better than agents with interventions alone, showing representation learning increases capacity <a href="../results/extraction-result-1064.html#e1064.0" class="evidence-link">[e1064.0]</a> </li>
+    <li>Transformer-H4 with short history (4) achieved best static performance (68±2%) but degraded with longer history (46%), suggesting memory can hurt when variation is high <a href="../results/extraction-result-1085.html#e1085.1" class="evidence-link">[e1085.1]</a> </li>
+    <li>MBPO's heavy use of imagined rollouts hurt performance in complex navigation (21.9±3% success at 2000k transitions), showing model-generated variation can degrade performance when models are imperfect <a href="../results/extraction-result-1085.html#e1085.5" class="evidence-link">[e1085.5]</a> </li>
+    <li>StumpTracks with 80% unfeasible tasks: ACL methods that don't depend on expert priors (ALP-GMM, Covar-GMM) performed competitively, while methods requiring initial easy distributions (ADR, GoalGAN) failed <a href="../results/extraction-result-1089.html#e1089.0" class="evidence-link">[e1089.0]</a> </li>
+    <li>Ball-in-Cup task: SPRL controlling cup diameter curriculum made sparse-reward task learnable under 16 rollouts/iteration, while baselines failed <a href="../results/extraction-result-1022.html#e1022.2" class="evidence-link">[e1022.2]</a> </li>
+    <li>Ant gate environment: SPDL enabled reliable gate-passing in high-dimensional locomotion where other curricula failed or were unreliable <a href="../results/extraction-result-1087.html#e1087.1" class="evidence-link">[e1087.1]</a> </li>
+    <li>SGIM-PB with procedure-based representation learned hierarchical tasks that action-only learners could not, showing task decomposition increases capacity <a href="../results/extraction-result-1027.html#e1027.0" class="evidence-link">[e1027.0]</a> </li>
+    <li>TEXPLORE-VANIR's combination of variance-based and novelty-based intrinsic rewards yielded more accurate models than baselines in stochastic Light World, showing appropriate exploration increases capacity <a href="../results/extraction-result-1079.html#e1079.0" class="evidence-link">[e1079.0]</a> </li>
+    <li>VaPRL matched oracle RL performance while requiring ~500× fewer resets by using value-driven curriculum, showing curriculum can dramatically reduce sample requirements <a href="../results/extraction-result-1025.html#e1025.1" class="evidence-link">[e1025.1]</a> </li>
+    <li>EnvGen using LLM-generated adaptive environments improved Crafter score from 14.8% to 26.6% with only ~4 LLM calls, showing targeted variation generation increases capacity efficiently <a href="../results/extraction-result-1041.html#e1041.0" class="evidence-link">[e1041.0]</a> </li>
+    <li>PLR (prioritized level replay) improved sample efficiency and generalization over uniform sampling by curating high learning-potential levels <a href="../results/extraction-result-1086.html#e1086.1" class="evidence-link">[e1086.1]</a> </li>
+    <li>CM3's two-stage curriculum (single-agent then multi-agent) converged >15k episodes faster than independent actor-critic in cooperative navigation <a href="../results/extraction-result-1062.html#e1062.0" class="evidence-link">[e1062.0]</a> </li>
+    <li>GCL's grounded curriculum (mixing real tasks with generated tasks) achieved 81.85% success vs 75.05% for CLUTR baseline, showing grounding in target distribution matters <a href="../results/extraction-result-1024.html#e1024.0" class="evidence-link">[e1024.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>An agent that succeeds on a task with complexity C and variation V will fail if both are doubled simultaneously without curriculum or architectural changes</li>
+                <li>Introducing a curriculum that stages either complexity or variation (but not both simultaneously) will enable learning on tasks where naive training fails</li>
+                <li>Agents with stronger inductive biases (e.g., object-centric representations, graph networks) will tolerate higher complexity-variation burdens than agents with weaker biases (e.g., pixel-based MLPs)</li>
+                <li>Pre-training on related tasks will increase the maximum tolerable complexity-variation burden for a target task</li>
+                <li>For a given task, there exists an optimal curriculum schedule that balances complexity and variation progression; deviating from this schedule will reduce final performance or sample efficiency</li>
+                <li>Targeted variation along specific axes (e.g., goal positions) will enable better generalization along those axes than simultaneous variation along all axes</li>
+                <li>Combining multiple capacity-increasing interventions (e.g., curriculum + architectural bias + pre-training) will have multiplicative rather than additive benefits</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>There may exist a critical ratio of complexity to variation where learning transitions sharply from success to failure, analogous to phase transitions in physics</li>
+                <li>The capacity constraint may be fundamentally different for on-policy vs off-policy algorithms, with off-policy methods potentially tolerating higher variation due to replay buffers</li>
+                <li>Meta-learning approaches that learn to learn may be able to increase effective capacity super-linearly with meta-training experience, potentially breaking the constraint</li>
+                <li>The constraint may be asymmetric: increasing complexity may be more detrimental than increasing variation, or vice versa, depending on the task structure and learning algorithm</li>
+                <li>There may exist a fundamental information-theoretic limit to capacity that cannot be overcome with any architecture or algorithm, related to the minimum description length of the task</li>
+                <li>Certain combinations of complexity and variation may be fundamentally incompatible (e.g., high dynamics complexity + high unobservable variation) regardless of capacity</li>
+                <li>The constraint may have different forms for different types of embodied tasks (navigation vs manipulation vs locomotion), suggesting task-specific capacity theories</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding an agent-algorithm combination that can learn arbitrary complexity-variation burdens without curriculum or architectural interventions would falsify the theory</li>
+                <li>Demonstrating that curriculum learning does not help when the complexity-variation burden exceeds a threshold would challenge the theory's claim that curriculum increases capacity</li>
+                <li>Showing that architectural inductive biases do not increase effective capacity in controlled experiments would contradict a core mechanism of the theory</li>
+                <li>Finding cases where doubling both complexity and variation simultaneously does not impair learning would challenge the capacity constraint</li>
+                <li>Demonstrating that structured variation is not more beneficial than random variation would challenge the theory's claims about variation type</li>
+                <li>Finding cases where context-unaware variation benefits from whole-model transfer would challenge the theory's distinction between variation types</li>
+                <li>Showing that massive scale does not increase capacity (e.g., no improvement beyond a certain data size) would challenge the scalability mechanism</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The exact mathematical form of the capacity constraint (multiplicative, additive, or other functional form) is not fully specified </li>
+    <li>How capacity scales with network size, training time, and other hyperparameters is not fully characterized quantitatively </li>
+    <li>Whether there are fundamental limits to capacity that cannot be overcome with any architecture or algorithm (information-theoretic limits) </li>
+    <li>The theory does not fully explain why some tasks (e.g., Stacking2) remain unsolvable even with curriculum and architectural interventions <a href="../results/extraction-result-1074.html#e1074.0" class="evidence-link">[e1074.0]</a> </li>
+    <li>The relative importance of different capacity-increasing mechanisms (curriculum vs architecture vs scale) is not quantified </li>
+    <li>How the constraint changes with different reward structures (sparse vs dense, shaped vs unshaped) is not fully addressed </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Bengio et al. (2009) Curriculum learning [Introduced curriculum learning but did not formalize complexity-variation trade-offs or capacity constraints]</li>
+    <li>Narvekar et al. (2020) Curriculum Learning for Reinforcement Learning Domains: A Framework and Survey [Comprehensive survey but does not formalize capacity constraints or complexity-variation interactions]</li>
+    <li>Packer et al. (2018) Assessing Generalization in Deep Reinforcement Learning [Studied generalization and train-test mismatch but not complexity-variation trade-offs explicitly]</li>
+    <li>Cobbe et al. (2019) Quantifying Generalization in Reinforcement Learning [Studied generalization and proposed metrics but did not formalize capacity constraints]</li>
+    <li>Tobin et al. (2017) Domain randomization for transferring deep neural networks from simulation to the real world [Introduced domain randomization but did not formalize limits or capacity constraints]</li>
+    <li>OpenAI et al. (2019) Solving Rubik's Cube with a Robot Hand [Demonstrated extreme domain randomization but did not formalize when it fails]</li>
+    <li>Rajeswaran et al. (2017) EPOpt: Learning Robust Neural Network Policies Using Model Ensembles [Studied robustness to variation but not complexity-variation trade-offs]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Complexity-Variation Capacity Constraint Theory",
+    "theory_description": "There exists a fundamental capacity constraint in embodied learning systems such that the joint burden of environment complexity and environment variation cannot exceed the effective learning capacity of the agent-algorithm combination without intervention. This constraint is not a simple multiplicative product but rather a more complex interaction where: (1) the type and structure of variation matters (observable vs unobservable, targeted vs simultaneous), (2) complexity and variation can interact synergistically (making each other worse) or be partially independent, and (3) the constraint manifests differently depending on whether variation is in task parameters, dynamics, or observations. When this constraint is violated, learning either fails completely, becomes prohibitively sample-inefficient, or converges to degenerate solutions. The effective capacity can be increased through: (1) curriculum learning that stages complexity or variation (but not both simultaneously), (2) architectural inductive biases that exploit structure (graph networks, object-centric representations, causal representations), (3) transfer learning from related tasks, (4) explicit representation learning that disentangles controllable factors, (5) massive scale in data and compute, or (6) appropriate sensor modalities that reduce effective complexity.",
+    "supporting_evidence": [
+        {
+            "text": "Model-free RL agents failed to learn in CausalWorld under extreme simultaneous randomization (Curriculum 2) even after 100M timesteps, while succeeding on single-block tasks with low variation",
+            "uuids": [
+                "e1074.0"
+            ]
+        },
+        {
+            "text": "BEHAVIOR agents with primitives failed on most of 12 activities under high instance variation, but succeeded on simplified tasks with reduced variation",
+            "uuids": [
+                "e1057.1"
+            ]
+        },
+        {
+            "text": "Point-mass gate task: Random curriculum (high variation, high complexity) achieved only 0.53±0.0 reward vs SPDL's 9.35±0.1 which used staged curriculum",
+            "uuids": [
+                "e1087.0"
+            ]
+        },
+        {
+            "text": "Single-stage RL failed to converge on high-complexity GC-VAT drone tracking maps (citystreet, downtown, farmland), while curriculum-based training succeeded",
+            "uuids": [
+                "e1045.0"
+            ]
+        },
+        {
+            "text": "PPO-volume baseline trained from scratch on full-complexity container management with high variation showed 27.11% safety violations vs curriculum-trained agent",
+            "uuids": [
+                "e1023.1"
+            ]
+        },
+        {
+            "text": "RGB-only PointNav agents required both layout diversity (Gibson-2+) and appearance diversity (Matterport3D) to reach high performance (SPL ~0.929), demonstrating need for sufficient training variation to build capacity",
+            "uuids": [
+                "e1082.1"
+            ]
+        },
+        {
+            "text": "Stacking2 task in CausalWorld: no tested method achieved &gt;0.5 fractional success under any curriculum, suggesting task complexity exceeded agent capacity even with curriculum",
+            "uuids": [
+                "e1074.0"
+            ]
+        },
+        {
+            "text": "AntMaze with teacher-student ACL showed no improvement after 1M steps, suggesting environment complexity overwhelmed curriculum benefits given the agent capacity",
+            "uuids": [
+                "e1026.1"
+            ]
+        },
+        {
+            "text": "Graph network agents in construction tasks substantially outperformed CNN agents, showing architectural inductive biases increase effective capacity",
+            "uuids": [
+                "e1095.3"
+            ]
+        },
+        {
+            "text": "Depth-based RL agents generalized better across visual variation than RGB agents (Depth: SPL=0.79 on Gibson vs RGB much lower in prior work), indicating sensor modality affects effective capacity",
+            "uuids": [
+                "e1083.0"
+            ]
+        },
+        {
+            "text": "TriFinger agents: context-aware variation (observable task changes) benefited from whole-model transfer, while context-unaware variation (unobserved environmental changes like weight) broke value estimates and required policy-only transfer",
+            "uuids": [
+                "e1018.0"
+            ]
+        },
+        {
+            "text": "CausalWorld agents trained with goal pose randomization (targeted variation) generalized robustly to different goal poses, but extreme domain randomization prevented learning",
+            "uuids": [
+                "e1074.0"
+            ]
+        },
+        {
+            "text": "Genetic Curriculum (GC) improved robustness by generating similar failure scenarios (structured variation) rather than random high variation, achieving 2-8x lower failure rates",
+            "uuids": [
+                "e1088.5"
+            ]
+        },
+        {
+            "text": "PAIRED's unconstrained minimax adversary drove agent reward to zero in Hopper by creating unsolvable dynamics (excessive variation), while regret-based PAIRED maintained feasibility",
+            "uuids": [
+                "e1038.1"
+            ]
+        },
+        {
+            "text": "Active Domain Randomization (ADR) outperformed uniform randomization by prioritizing sparse hard regions, showing that structured variation sampling increases effective capacity",
+            "uuids": [
+                "e1069.1"
+            ]
+        },
+        {
+            "text": "DD-PPO achieved near-perfect PointGoal navigation (SPL ~0.948) by training on 2.5B frames across high variation (Gibson-2+ + Matterport3D), demonstrating capacity can be increased with massive scale",
+            "uuids": [
+                "e1082.0"
+            ]
+        },
+        {
+            "text": "ULTRA's unsupervised pre-training on varied scenes enabled 53.34% relative SPL improvement over A3C-from-scratch, showing pre-training increases effective capacity",
+            "uuids": [
+                "e1039.3"
+            ]
+        },
+        {
+            "text": "CausalCF agents with causal representations and counterfactuals converged faster and generalized better than agents with interventions alone, showing representation learning increases capacity",
+            "uuids": [
+                "e1064.0"
+            ]
+        },
+        {
+            "text": "Transformer-H4 with short history (4) achieved best static performance (68±2%) but degraded with longer history (46%), suggesting memory can hurt when variation is high",
+            "uuids": [
+                "e1085.1"
+            ]
+        },
+        {
+            "text": "MBPO's heavy use of imagined rollouts hurt performance in complex navigation (21.9±3% success at 2000k transitions), showing model-generated variation can degrade performance when models are imperfect",
+            "uuids": [
+                "e1085.5"
+            ]
+        },
+        {
+            "text": "StumpTracks with 80% unfeasible tasks: ACL methods that don't depend on expert priors (ALP-GMM, Covar-GMM) performed competitively, while methods requiring initial easy distributions (ADR, GoalGAN) failed",
+            "uuids": [
+                "e1089.0"
+            ]
+        },
+        {
+            "text": "Ball-in-Cup task: SPRL controlling cup diameter curriculum made sparse-reward task learnable under 16 rollouts/iteration, while baselines failed",
+            "uuids": [
+                "e1022.2"
+            ]
+        },
+        {
+            "text": "Ant gate environment: SPDL enabled reliable gate-passing in high-dimensional locomotion where other curricula failed or were unreliable",
+            "uuids": [
+                "e1087.1"
+            ]
+        },
+        {
+            "text": "SGIM-PB with procedure-based representation learned hierarchical tasks that action-only learners could not, showing task decomposition increases capacity",
+            "uuids": [
+                "e1027.0"
+            ]
+        },
+        {
+            "text": "TEXPLORE-VANIR's combination of variance-based and novelty-based intrinsic rewards yielded more accurate models than baselines in stochastic Light World, showing appropriate exploration increases capacity",
+            "uuids": [
+                "e1079.0"
+            ]
+        },
+        {
+            "text": "VaPRL matched oracle RL performance while requiring ~500× fewer resets by using value-driven curriculum, showing curriculum can dramatically reduce sample requirements",
+            "uuids": [
+                "e1025.1"
+            ]
+        },
+        {
+            "text": "EnvGen using LLM-generated adaptive environments improved Crafter score from 14.8% to 26.6% with only ~4 LLM calls, showing targeted variation generation increases capacity efficiently",
+            "uuids": [
+                "e1041.0"
+            ]
+        },
+        {
+            "text": "PLR (prioritized level replay) improved sample efficiency and generalization over uniform sampling by curating high learning-potential levels",
+            "uuids": [
+                "e1086.1"
+            ]
+        },
+        {
+            "text": "CM3's two-stage curriculum (single-agent then multi-agent) converged &gt;15k episodes faster than independent actor-critic in cooperative navigation",
+            "uuids": [
+                "e1062.0"
+            ]
+        },
+        {
+            "text": "GCL's grounded curriculum (mixing real tasks with generated tasks) achieved 81.85% success vs 75.05% for CLUTR baseline, showing grounding in target distribution matters",
+            "uuids": [
+                "e1024.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For any embodied learning system with fixed architecture and algorithm, there exists a maximum joint burden of complexity and variation beyond which learning fails, becomes impractical, or converges to degenerate solutions",
+        "The constraint is not a simple multiplicative product C×V but involves complex interactions where the type of variation (observable vs unobservable, targeted vs simultaneous, structured vs random) critically affects the burden",
+        "Curriculum learning effectively increases capacity by reducing instantaneous complexity or variation (but not both simultaneously), allowing staged progression to the target task",
+        "Architectural inductive biases (graph networks, object-centric representations, causal representations, hierarchical decomposition) increase effective capacity by exploiting environmental structure and reducing effective complexity",
+        "The capacity constraint manifests as: (1) complete learning failure, (2) exponential sample complexity growth, (3) convergence to degenerate local optima, or (4) catastrophic instability (e.g., safety violations)",
+        "Transfer learning and pre-training increase effective capacity by providing useful priors that reduce the effective complexity of new tasks",
+        "Massive scale in data and compute can increase capacity, but with diminishing returns (power-law scaling)",
+        "Appropriate sensor modalities (e.g., depth vs RGB) can reduce effective complexity and increase capacity for handling variation",
+        "Context-aware variation (observable changes) and context-unaware variation (unobservable changes) require different transfer strategies: whole-model transfer for context-aware, policy-only for context-unaware",
+        "Structured variation (e.g., similar failure scenarios, targeted parameter ranges) is more beneficial than unstructured random variation for building robust policies",
+        "There exist tasks where complexity exceeds any practical capacity (e.g., Stacking2 in CausalWorld), suggesting fundamental limits"
+    ],
+    "new_predictions_likely": [
+        "An agent that succeeds on a task with complexity C and variation V will fail if both are doubled simultaneously without curriculum or architectural changes",
+        "Introducing a curriculum that stages either complexity or variation (but not both simultaneously) will enable learning on tasks where naive training fails",
+        "Agents with stronger inductive biases (e.g., object-centric representations, graph networks) will tolerate higher complexity-variation burdens than agents with weaker biases (e.g., pixel-based MLPs)",
+        "Pre-training on related tasks will increase the maximum tolerable complexity-variation burden for a target task",
+        "For a given task, there exists an optimal curriculum schedule that balances complexity and variation progression; deviating from this schedule will reduce final performance or sample efficiency",
+        "Targeted variation along specific axes (e.g., goal positions) will enable better generalization along those axes than simultaneous variation along all axes",
+        "Combining multiple capacity-increasing interventions (e.g., curriculum + architectural bias + pre-training) will have multiplicative rather than additive benefits"
+    ],
+    "new_predictions_unknown": [
+        "There may exist a critical ratio of complexity to variation where learning transitions sharply from success to failure, analogous to phase transitions in physics",
+        "The capacity constraint may be fundamentally different for on-policy vs off-policy algorithms, with off-policy methods potentially tolerating higher variation due to replay buffers",
+        "Meta-learning approaches that learn to learn may be able to increase effective capacity super-linearly with meta-training experience, potentially breaking the constraint",
+        "The constraint may be asymmetric: increasing complexity may be more detrimental than increasing variation, or vice versa, depending on the task structure and learning algorithm",
+        "There may exist a fundamental information-theoretic limit to capacity that cannot be overcome with any architecture or algorithm, related to the minimum description length of the task",
+        "Certain combinations of complexity and variation may be fundamentally incompatible (e.g., high dynamics complexity + high unobservable variation) regardless of capacity",
+        "The constraint may have different forms for different types of embodied tasks (navigation vs manipulation vs locomotion), suggesting task-specific capacity theories"
+    ],
+    "negative_experiments": [
+        "Finding an agent-algorithm combination that can learn arbitrary complexity-variation burdens without curriculum or architectural interventions would falsify the theory",
+        "Demonstrating that curriculum learning does not help when the complexity-variation burden exceeds a threshold would challenge the theory's claim that curriculum increases capacity",
+        "Showing that architectural inductive biases do not increase effective capacity in controlled experiments would contradict a core mechanism of the theory",
+        "Finding cases where doubling both complexity and variation simultaneously does not impair learning would challenge the capacity constraint",
+        "Demonstrating that structured variation is not more beneficial than random variation would challenge the theory's claims about variation type",
+        "Finding cases where context-unaware variation benefits from whole-model transfer would challenge the theory's distinction between variation types",
+        "Showing that massive scale does not increase capacity (e.g., no improvement beyond a certain data size) would challenge the scalability mechanism"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The exact mathematical form of the capacity constraint (multiplicative, additive, or other functional form) is not fully specified",
+            "uuids": []
+        },
+        {
+            "text": "How capacity scales with network size, training time, and other hyperparameters is not fully characterized quantitatively",
+            "uuids": []
+        },
+        {
+            "text": "Whether there are fundamental limits to capacity that cannot be overcome with any architecture or algorithm (information-theoretic limits)",
+            "uuids": []
+        },
+        {
+            "text": "The theory does not fully explain why some tasks (e.g., Stacking2) remain unsolvable even with curriculum and architectural interventions",
+            "uuids": [
+                "e1074.0"
+            ]
+        },
+        {
+            "text": "The relative importance of different capacity-increasing mechanisms (curriculum vs architecture vs scale) is not quantified",
+            "uuids": []
+        },
+        {
+            "text": "How the constraint changes with different reward structures (sparse vs dense, shaped vs unshaped) is not fully addressed",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some simple tasks with low complexity and low variation still fail to be learned by certain agents (e.g., some BEHAVIOR primitives tasks), suggesting factors beyond the complexity-variation burden",
+            "uuids": [
+                "e1057.1"
+            ]
+        },
+        {
+            "text": "Classic SLAM maintains steady performance without training and can outperform learned agents at low training budgets, suggesting that learning-free methods may not be subject to the same capacity constraints",
+            "uuids": [
+                "e1083.4"
+            ]
+        },
+        {
+            "text": "Some evidence suggests that longer history (more capacity) can hurt performance (Transformer-H4: 68% → 46% when history increased from 4 to 8), which seems to contradict the idea that more capacity is always better",
+            "uuids": [
+                "e1085.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "The constraint may be relaxed for tasks with strong hierarchical structure that can be exploited through task decomposition or procedural representations",
+        "Environments with deterministic dynamics may have different capacity constraints than stochastic environments, as stochasticity adds effective variation",
+        "The constraint may be different for discrete vs continuous action spaces, with continuous spaces potentially requiring more capacity",
+        "Context-aware variation (observable task parameters) allows whole-model transfer and may have a different capacity constraint than context-unaware variation (unobservable environmental parameters)",
+        "Targeted variation along specific axes may not count fully toward the variation burden if the agent can learn to ignore irrelevant variation",
+        "The constraint may be temporarily violated during training if curriculum or other interventions allow eventual convergence, suggesting a time-dependent formulation",
+        "Tasks with sparse rewards may have effectively higher complexity than tasks with dense rewards, even if the environment structure is identical",
+        "The constraint may be different for sim-to-real transfer, where the variation is between simulation and reality rather than within a single domain"
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Bengio et al. (2009) Curriculum learning [Introduced curriculum learning but did not formalize complexity-variation trade-offs or capacity constraints]",
+            "Narvekar et al. (2020) Curriculum Learning for Reinforcement Learning Domains: A Framework and Survey [Comprehensive survey but does not formalize capacity constraints or complexity-variation interactions]",
+            "Packer et al. (2018) Assessing Generalization in Deep Reinforcement Learning [Studied generalization and train-test mismatch but not complexity-variation trade-offs explicitly]",
+            "Cobbe et al. (2019) Quantifying Generalization in Reinforcement Learning [Studied generalization and proposed metrics but did not formalize capacity constraints]",
+            "Tobin et al. (2017) Domain randomization for transferring deep neural networks from simulation to the real world [Introduced domain randomization but did not formalize limits or capacity constraints]",
+            "OpenAI et al. (2019) Solving Rubik's Cube with a Robot Hand [Demonstrated extreme domain randomization but did not formalize when it fails]",
+            "Rajeswaran et al. (2017) EPOpt: Learning Robust Neural Network Policies Using Model Ensembles [Studied robustness to variation but not complexity-variation trade-offs]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 0,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact and Friction Fidelity Requirements for Manipulation Transfer - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-170</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-170</p>
+                <p><strong>Name:</strong> Contact and Friction Fidelity Requirements for Manipulation Transfer</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about minimal simulator fidelity requirements for training transferable scientific reasoning in domains such as thermodynamics, circuits, and biology, based on the following results.</p>
+                <p><strong>Description:</strong> For robotic manipulation tasks involving contact-rich interactions, successful sim-to-real transfer requires accurate modeling of contact detection, contact forces, friction, and their interaction with actuator dynamics. The required fidelity depends on task characteristics: (1) Contact detection must reliably identify collisions without false positives/negatives; (2) Contact force models must balance penetration prevention with numerical stability through appropriate stiffness and damping; (3) Friction models must capture both static and dynamic friction with coefficients matched to real materials or broadly randomized; (4) Contact solver parameters (timestep, iterations, tolerance) must be tuned to task precision requirements; (5) Contact modeling must be coupled with accurate actuator dynamics and latency modeling. Simplified contact models (penalty-based, impulse-based) are acceptable if parameters are well-tuned or randomized across appropriate ranges, but completely omitting contact modeling or using grossly incorrect parameters causes transfer failure. The minimum required contact fidelity scales with task precision: coarse manipulation tolerates simplified models, while precision assembly requires detailed contact geometry and tight solver tolerances.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Contact detection must reliably identify when objects are in contact; missed contacts cause objects to pass through each other (e.g., PyBullet gripper over cube), false contacts cause spurious collisions</li>
+                <li>Contact force models must prevent or limit penetration while maintaining numerical stability; excessive penetration causes unrealistic behavior, excessive stiffness causes numerical instability and oscillations</li>
+                <li>Friction models must distinguish static (sticking) and dynamic (sliding) friction; incorrect friction coefficients cause objects to slip when they should stick or stick when they should slide</li>
+                <li>Contact solver parameters (iterations, tolerance, timestep) significantly affect behavior and must be tuned to task requirements; insufficient iterations cause soft/compliant contacts, excessive iterations are computationally expensive but may be necessary for precision tasks</li>
+                <li>Randomization of contact parameters (friction coefficients 0.5-1.25, contact stiffness, damping) can compensate for modeling errors and improve robustness when exact parameters are unknown</li>
+                <li>Contact modeling must be coupled with accurate actuator dynamics and latency modeling; contact modeling alone is insufficient without proper actuator fidelity</li>
+                <li>The minimum required contact fidelity scales with task precision: coarse manipulation (grasping, pushing) tolerates simplified penalty-based models, while precision tasks (assembly, surgical manipulation) require detailed contact geometry and tight solver tolerances</li>
+                <li>Different physics engines with similar contact models can produce different behaviors due to solver implementation, integration method, and default parameter choices; engine selection and configuration matter as much as the contact model itself</li>
+                <li>Damping parameters are particularly difficult to identify and optimize, yet significantly affect contact behavior and transfer success</li>
+                <li>Curriculum learning from soft/relaxed contacts to stiff/realistic contacts enables optimization in contact-rich scenarios where direct optimization in high-fidelity contact models fails</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>MuJoCo's simplified contact/damping models contributed to sim-to-real gaps; damping parameters were particularly challenging for baselines to identify/optimize, and unmodeled stochastic forces caused mismatches <a href="../results/extraction-result-1310.html#e1310.0" class="evidence-link">[e1310.0]</a> <a href="../results/extraction-result-1310.html#e1310.1" class="evidence-link">[e1310.1]</a> </li>
+    <li>Accurate timestep, friction (lateral/rolling/sliding), and contact parameters were critical for manipulation transfer across multiple physics engines (V-Rep with Bullet, ODE, Newton, Vortex) <a href="../results/extraction-result-1523.html#e1523.1" class="evidence-link">[e1523.1]</a> <a href="../results/extraction-result-1523.html#e1523.2" class="evidence-link">[e1523.2]</a> <a href="../results/extraction-result-1523.html#e1523.4" class="evidence-link">[e1523.4]</a> </li>
+    <li>Contact and collision modeling were necessary for manipulation transfer; PyBullet's contact failures (gripper passing over cube) demonstrated importance of contact detection, while good kinematic fidelity alone was insufficient <a href="../results/extraction-result-1537.html#e1537.1" class="evidence-link">[e1537.1]</a> <a href="../results/extraction-result-1537.html#e1537.3" class="evidence-link">[e1537.3]</a> </li>
+    <li>Permissive collision model in SOFA simulation led to excessive tissue stress and collisions in reality for surgical manipulation, demonstrating need for accurate contact constraints <a href="../results/extraction-result-1307.html#e1307.0" class="evidence-link">[e1307.0]</a> </li>
+    <li>QuasiSim's parameterized contact model (distance threshold d_c, spring stiffness k_n, damping k_d, friction stiffness k_f) required curriculum from soft/relaxed contacts to stiff/tight contacts for successful optimization and transfer to high-fidelity simulators <a href="../results/extraction-result-1317.html#e1317.0" class="evidence-link">[e1317.0]</a> </li>
+    <li>Different Bullet versions and integration methods exhibited different contact behavior (oscillations, unrealistic cube rotations) depending on solver settings, timestep, and host integration, showing contact fidelity depends on implementation details <a href="../results/extraction-result-1537.html#e1537.3" class="evidence-link">[e1537.3]</a> </li>
+    <li>Domain randomization of friction coefficients (0.5-1.25 for contact friction, 0-0.05 Nm for motor friction) and contact parameters improved manipulation transfer robustness <a href="../results/extraction-result-1328.html#e1328.0" class="evidence-link">[e1328.0]</a> <a href="../results/extraction-result-1506.html#e1506.2" class="evidence-link">[e1506.2]</a> <a href="../results/extraction-result-1534.html#e1534.2" class="evidence-link">[e1534.2]</a> </li>
+    <li>MuJoCo review notes that contact and friction modeling matter for manipulation, and that different engines show deficits in dynamic contacts; no single engine uniformly best due to solver and contact/friction modeling differences <a href="../results/extraction-result-1321.html#e1321.0" class="evidence-link">[e1321.0]</a> <a href="../results/extraction-result-1321.html#e1321.1" class="evidence-link">[e1321.1]</a> </li>
+    <li>Vanilla PyBullet without augmented contact/friction modeling failed to reproduce real robot behavior for BALLU; adding residual physics for contacts improved transfer <a href="../results/extraction-result-1327.html#e1327.1" class="evidence-link">[e1327.1]</a> </li>
+    <li>Ellipsoidal limit-surface contact model for planar pushing captured quasi-static contact but failed to predict many real outcomes due to coarse contact approximations and inability to capture heterogeneous friction <a href="../results/extraction-result-1525.html#e1525.1" class="evidence-link">[e1525.1]</a> </li>
+    <li>gradSim's differentiable physics with contact modeling enabled system identification from images; dynamics mismatch caused larger errors than rendering mismatch <a href="../results/extraction-result-1536.html#e1536.1" class="evidence-link">[e1536.1]</a> </li>
+    <li>ODE in V-Rep produced unstable simulation with self-contacts for Kinova arm, demonstrating that default contact parameters can make engines unusable <a href="../results/extraction-result-1537.html#e1537.6" class="evidence-link">[e1537.6]</a> </li>
+    <li>Vortex modeled control well but exhibited limited fidelity in cube interaction due to poor contact modeling <a href="../results/extraction-result-1537.html#e1537.5" class="evidence-link">[e1537.5]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Penalty-based contact models with randomized stiffness (range covering 0.5-2x nominal) and damping should enable transfer for manipulation tasks with moderate contact forces and tolerances >5mm</li>
+                <li>Impulse-based contact models with randomized friction coefficients (0.5-1.5x nominal) should enable transfer for dynamic manipulation (throwing, hitting) where contact duration is brief</li>
+                <li>Simplified contact models (point contacts, no rolling friction) should suffice for grasping tasks where contact geometry is simple and forces are primarily normal to surfaces</li>
+                <li>For precision assembly tasks requiring <1mm tolerances, contact solver iterations should be increased by 2-5x over default values and timestep reduced by 2-4x</li>
+                <li>Domain randomization of contact parameters combined with accurate actuator modeling should outperform high-fidelity contact models with idealized actuators</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether simplified contact models can enable transfer for precision assembly tasks requiring <0.5mm tolerances, or if detailed contact geometry and mesh-level collision detection become necessary</li>
+                <li>The minimum contact solver fidelity (iterations, timestep) required as a function of contact stiffness and task precision - whether there is a quantitative relationship or task-specific tuning is always required</li>
+                <li>Whether soft-body contact models are necessary for transfer to deformable object manipulation, or if rigid-body models with appropriate compliance parameters suffice</li>
+                <li>Whether learned residual contact models can compensate for simplified analytical contact models across a wide range of materials and geometries, or if material-specific tuning is required</li>
+                <li>The extent to which contact model errors can be compensated by other randomizations (actuator, sensor noise) versus requiring direct contact parameter tuning</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that contact-free models (e.g., magnetic levitation, non-contact manipulation) enable transfer to contact-rich tasks would challenge the contact modeling requirement</li>
+                <li>Demonstrating successful transfer with systematically incorrect friction models (e.g., friction coefficients off by 2-5x) would challenge the friction accuracy requirement</li>
+                <li>Showing that extremely coarse contact approximations (e.g., bounding boxes only, no friction) enable precise manipulation (<1mm tolerance) would challenge the fidelity scaling hypothesis</li>
+                <li>Finding that contact modeling without actuator dynamics modeling enables reliable transfer would challenge the coupling requirement</li>
+                <li>Demonstrating that fixed contact parameters (no randomization) enable transfer across diverse materials and geometries would challenge the randomization strategy</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to systematically determine optimal contact parameters (stiffness, damping, friction) without extensive real-world experimentation or system identification </li>
+    <li>The quantitative relationship between task precision requirements and minimum required contact solver fidelity (iterations, timestep, tolerance) </li>
+    <li>Whether contact models that work for rigid objects transfer to deformable objects, or if fundamentally different contact formulations are required </li>
+    <li>The interaction between contact modeling fidelity and other simulator aspects (rendering quality, sensor noise, environmental stochasticity) - whether they are independent or coupled </li>
+    <li>How to predict a priori which contact parameters are most critical for a given task, to focus tuning or randomization efforts </li>
+    <li>The role of contact model differentiability for gradient-based learning and system identification <a href="../results/extraction-result-1536.html#e1536.1" class="evidence-link">[e1536.1]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Stewart & Trinkle (1996) An Implicit Time-Stepping Scheme for Rigid Body Dynamics with Inelastic Collisions and Coulomb Friction [Foundational contact mechanics theory]</li>
+    <li>Todorov et al. (2012) MuJoCo: A physics engine for model-based control [Contact modeling in MuJoCo, widely used baseline]</li>
+    <li>Erez et al. (2015) Simulation tools for model-based robotics: Comparison of Bullet, Havok, MuJoCo, ODE and PhysX [Systematic comparison of contact models across engines]</li>
+    <li>Muratore et al. (2018) Assessing Transferability from Simulation to Reality for Reinforcement Learning [Domain randomization including contact parameters]</li>
+    <li>Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience [Adaptive contact parameter tuning]</li>
+    <li>Collins et al. (2021) A Review of Physics Simulators for Robotic Applications [Survey noting contact/friction as key sim-to-real gap source]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Contact and Friction Fidelity Requirements for Manipulation Transfer",
+    "theory_description": "For robotic manipulation tasks involving contact-rich interactions, successful sim-to-real transfer requires accurate modeling of contact detection, contact forces, friction, and their interaction with actuator dynamics. The required fidelity depends on task characteristics: (1) Contact detection must reliably identify collisions without false positives/negatives; (2) Contact force models must balance penetration prevention with numerical stability through appropriate stiffness and damping; (3) Friction models must capture both static and dynamic friction with coefficients matched to real materials or broadly randomized; (4) Contact solver parameters (timestep, iterations, tolerance) must be tuned to task precision requirements; (5) Contact modeling must be coupled with accurate actuator dynamics and latency modeling. Simplified contact models (penalty-based, impulse-based) are acceptable if parameters are well-tuned or randomized across appropriate ranges, but completely omitting contact modeling or using grossly incorrect parameters causes transfer failure. The minimum required contact fidelity scales with task precision: coarse manipulation tolerates simplified models, while precision assembly requires detailed contact geometry and tight solver tolerances.",
+    "supporting_evidence": [
+        {
+            "text": "MuJoCo's simplified contact/damping models contributed to sim-to-real gaps; damping parameters were particularly challenging for baselines to identify/optimize, and unmodeled stochastic forces caused mismatches",
+            "uuids": [
+                "e1310.0",
+                "e1310.1"
+            ]
+        },
+        {
+            "text": "Accurate timestep, friction (lateral/rolling/sliding), and contact parameters were critical for manipulation transfer across multiple physics engines (V-Rep with Bullet, ODE, Newton, Vortex)",
+            "uuids": [
+                "e1523.1",
+                "e1523.2",
+                "e1523.4"
+            ]
+        },
+        {
+            "text": "Contact and collision modeling were necessary for manipulation transfer; PyBullet's contact failures (gripper passing over cube) demonstrated importance of contact detection, while good kinematic fidelity alone was insufficient",
+            "uuids": [
+                "e1537.1",
+                "e1537.3"
+            ]
+        },
+        {
+            "text": "Permissive collision model in SOFA simulation led to excessive tissue stress and collisions in reality for surgical manipulation, demonstrating need for accurate contact constraints",
+            "uuids": [
+                "e1307.0"
+            ]
+        },
+        {
+            "text": "QuasiSim's parameterized contact model (distance threshold d_c, spring stiffness k_n, damping k_d, friction stiffness k_f) required curriculum from soft/relaxed contacts to stiff/tight contacts for successful optimization and transfer to high-fidelity simulators",
+            "uuids": [
+                "e1317.0"
+            ]
+        },
+        {
+            "text": "Different Bullet versions and integration methods exhibited different contact behavior (oscillations, unrealistic cube rotations) depending on solver settings, timestep, and host integration, showing contact fidelity depends on implementation details",
+            "uuids": [
+                "e1537.3"
+            ]
+        },
+        {
+            "text": "Domain randomization of friction coefficients (0.5-1.25 for contact friction, 0-0.05 Nm for motor friction) and contact parameters improved manipulation transfer robustness",
+            "uuids": [
+                "e1328.0",
+                "e1506.2",
+                "e1534.2"
+            ]
+        },
+        {
+            "text": "MuJoCo review notes that contact and friction modeling matter for manipulation, and that different engines show deficits in dynamic contacts; no single engine uniformly best due to solver and contact/friction modeling differences",
+            "uuids": [
+                "e1321.0",
+                "e1321.1"
+            ]
+        },
+        {
+            "text": "Vanilla PyBullet without augmented contact/friction modeling failed to reproduce real robot behavior for BALLU; adding residual physics for contacts improved transfer",
+            "uuids": [
+                "e1327.1"
+            ]
+        },
+        {
+            "text": "Ellipsoidal limit-surface contact model for planar pushing captured quasi-static contact but failed to predict many real outcomes due to coarse contact approximations and inability to capture heterogeneous friction",
+            "uuids": [
+                "e1525.1"
+            ]
+        },
+        {
+            "text": "gradSim's differentiable physics with contact modeling enabled system identification from images; dynamics mismatch caused larger errors than rendering mismatch",
+            "uuids": [
+                "e1536.1"
+            ]
+        },
+        {
+            "text": "ODE in V-Rep produced unstable simulation with self-contacts for Kinova arm, demonstrating that default contact parameters can make engines unusable",
+            "uuids": [
+                "e1537.6"
+            ]
+        },
+        {
+            "text": "Vortex modeled control well but exhibited limited fidelity in cube interaction due to poor contact modeling",
+            "uuids": [
+                "e1537.5"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Contact detection must reliably identify when objects are in contact; missed contacts cause objects to pass through each other (e.g., PyBullet gripper over cube), false contacts cause spurious collisions",
+        "Contact force models must prevent or limit penetration while maintaining numerical stability; excessive penetration causes unrealistic behavior, excessive stiffness causes numerical instability and oscillations",
+        "Friction models must distinguish static (sticking) and dynamic (sliding) friction; incorrect friction coefficients cause objects to slip when they should stick or stick when they should slide",
+        "Contact solver parameters (iterations, tolerance, timestep) significantly affect behavior and must be tuned to task requirements; insufficient iterations cause soft/compliant contacts, excessive iterations are computationally expensive but may be necessary for precision tasks",
+        "Randomization of contact parameters (friction coefficients 0.5-1.25, contact stiffness, damping) can compensate for modeling errors and improve robustness when exact parameters are unknown",
+        "Contact modeling must be coupled with accurate actuator dynamics and latency modeling; contact modeling alone is insufficient without proper actuator fidelity",
+        "The minimum required contact fidelity scales with task precision: coarse manipulation (grasping, pushing) tolerates simplified penalty-based models, while precision tasks (assembly, surgical manipulation) require detailed contact geometry and tight solver tolerances",
+        "Different physics engines with similar contact models can produce different behaviors due to solver implementation, integration method, and default parameter choices; engine selection and configuration matter as much as the contact model itself",
+        "Damping parameters are particularly difficult to identify and optimize, yet significantly affect contact behavior and transfer success",
+        "Curriculum learning from soft/relaxed contacts to stiff/realistic contacts enables optimization in contact-rich scenarios where direct optimization in high-fidelity contact models fails"
+    ],
+    "new_predictions_likely": [
+        "Penalty-based contact models with randomized stiffness (range covering 0.5-2x nominal) and damping should enable transfer for manipulation tasks with moderate contact forces and tolerances &gt;5mm",
+        "Impulse-based contact models with randomized friction coefficients (0.5-1.5x nominal) should enable transfer for dynamic manipulation (throwing, hitting) where contact duration is brief",
+        "Simplified contact models (point contacts, no rolling friction) should suffice for grasping tasks where contact geometry is simple and forces are primarily normal to surfaces",
+        "For precision assembly tasks requiring &lt;1mm tolerances, contact solver iterations should be increased by 2-5x over default values and timestep reduced by 2-4x",
+        "Domain randomization of contact parameters combined with accurate actuator modeling should outperform high-fidelity contact models with idealized actuators"
+    ],
+    "new_predictions_unknown": [
+        "Whether simplified contact models can enable transfer for precision assembly tasks requiring &lt;0.5mm tolerances, or if detailed contact geometry and mesh-level collision detection become necessary",
+        "The minimum contact solver fidelity (iterations, timestep) required as a function of contact stiffness and task precision - whether there is a quantitative relationship or task-specific tuning is always required",
+        "Whether soft-body contact models are necessary for transfer to deformable object manipulation, or if rigid-body models with appropriate compliance parameters suffice",
+        "Whether learned residual contact models can compensate for simplified analytical contact models across a wide range of materials and geometries, or if material-specific tuning is required",
+        "The extent to which contact model errors can be compensated by other randomizations (actuator, sensor noise) versus requiring direct contact parameter tuning"
+    ],
+    "negative_experiments": [
+        "Finding that contact-free models (e.g., magnetic levitation, non-contact manipulation) enable transfer to contact-rich tasks would challenge the contact modeling requirement",
+        "Demonstrating successful transfer with systematically incorrect friction models (e.g., friction coefficients off by 2-5x) would challenge the friction accuracy requirement",
+        "Showing that extremely coarse contact approximations (e.g., bounding boxes only, no friction) enable precise manipulation (&lt;1mm tolerance) would challenge the fidelity scaling hypothesis",
+        "Finding that contact modeling without actuator dynamics modeling enables reliable transfer would challenge the coupling requirement",
+        "Demonstrating that fixed contact parameters (no randomization) enable transfer across diverse materials and geometries would challenge the randomization strategy"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to systematically determine optimal contact parameters (stiffness, damping, friction) without extensive real-world experimentation or system identification",
+            "uuids": []
+        },
+        {
+            "text": "The quantitative relationship between task precision requirements and minimum required contact solver fidelity (iterations, timestep, tolerance)",
+            "uuids": []
+        },
+        {
+            "text": "Whether contact models that work for rigid objects transfer to deformable objects, or if fundamentally different contact formulations are required",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between contact modeling fidelity and other simulator aspects (rendering quality, sensor noise, environmental stochasticity) - whether they are independent or coupled",
+            "uuids": []
+        },
+        {
+            "text": "How to predict a priori which contact parameters are most critical for a given task, to focus tuning or randomization efforts",
+            "uuids": []
+        },
+        {
+            "text": "The role of contact model differentiability for gradient-based learning and system identification",
+            "uuids": [
+                "e1536.1"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some studies found that contact modeling alone was insufficient without accurate actuator and latency modeling, suggesting contact fidelity is necessary but not sufficient",
+            "uuids": [
+                "e1506.2"
+            ]
+        },
+        {
+            "text": "Different physics engines with similar contact models produced different behaviors due to solver differences, integration methods, and default parameters, making it unclear whether 'contact model' or 'solver implementation' is the critical factor",
+            "uuids": [
+                "e1537.3",
+                "e1523.1",
+                "e1321.0"
+            ]
+        },
+        {
+            "text": "Some simplified contact models (ellipsoidal limit surface) failed to predict real contact outcomes despite capturing quasi-static physics, while other simplified models with randomization succeeded, suggesting the role of stochasticity vs. deterministic accuracy is unclear",
+            "uuids": [
+                "e1525.1"
+            ]
+        },
+        {
+            "text": "Curriculum learning from soft to stiff contacts was necessary for optimization in some cases but not discussed in others, suggesting task-dependent requirements",
+            "uuids": [
+                "e1317.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Grasping tasks require accurate static friction to prevent slip, but can tolerate simplified contact geometry if contact forces are primarily normal",
+        "Dynamic manipulation (throwing, hitting) requires accurate restitution and dynamic friction, but can tolerate coarser contact detection due to brief contact duration",
+        "Precision assembly requires tight contact tolerances (&lt;1mm), accurate contact geometry, and high solver fidelity (small timestep, many iterations)",
+        "Soft object manipulation may require deformable contact models beyond rigid-body approximations, or rigid models with carefully tuned compliance",
+        "Non-prehensile manipulation (pushing, sliding) is particularly sensitive to friction coefficients and may require material-specific tuning or broad randomization",
+        "Multi-contact scenarios (dexterous manipulation with many simultaneous contacts) may require higher solver fidelity than single-contact tasks",
+        "Surgical manipulation requires accurate contact constraints to prevent excessive tissue stress, even if absolute position accuracy is moderate",
+        "Contact-rich locomotion (legged robots) requires accurate ground contact modeling but may be less sensitive to object-object contact details"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Stewart & Trinkle (1996) An Implicit Time-Stepping Scheme for Rigid Body Dynamics with Inelastic Collisions and Coulomb Friction [Foundational contact mechanics theory]",
+            "Todorov et al. (2012) MuJoCo: A physics engine for model-based control [Contact modeling in MuJoCo, widely used baseline]",
+            "Erez et al. (2015) Simulation tools for model-based robotics: Comparison of Bullet, Havok, MuJoCo, ODE and PhysX [Systematic comparison of contact models across engines]",
+            "Muratore et al. (2018) Assessing Transferability from Simulation to Reality for Reinforcement Learning [Domain randomization including contact parameters]",
+            "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience [Adaptive contact parameter tuning]",
+            "Collins et al. (2021) A Review of Physics Simulators for Robotic Applications [Survey noting contact/friction as key sim-to-real gap source]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 6,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

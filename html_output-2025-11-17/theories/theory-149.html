@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Scaling Laws for World Models - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-149</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-149</p>
+                <p><strong>Name:</strong> Architectural Scaling Laws for World Models</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about what constitutes an optimal world model for AI systems, incorporating fidelity, interpretability, computational efficiency, and task-specific utility, based on the following results.</p>
+                <p><strong>Description:</strong> The optimal world model architecture depends on multiple interacting factors: temporal structure, scale, computational constraints, and task requirements. RNN-based models (RSSM, LSTM, GRU) excel at short-to-medium context real-time control with limited memory, achieving strong performance across diverse domains with fixed hyperparameters. Transformer-based models excel at long-range dependencies and offline learning, with quadratic scaling in sequence length but superior parallelization during training. Structured state-space models (S4, S4WM) offer a middle ground with linear scaling and competitive performance at lower parameter counts. Diffusion models achieve highest visual fidelity for multi-modal generation but require substantial compute. Hybrid architectures (e.g., Transformer-XL with recurrence, hierarchical models) can achieve better efficiency-performance trade-offs by combining local and global processing. The choice should be guided by: (1) required effective context length and memory horizon, (2) real-time vs offline constraints, (3) multi-modality and stochasticity requirements, (4) available computational budget and hardware, (5) training data scale, and (6) need for discrete vs continuous representations. Discrete tokenization enables architectural scaling by reducing sequence length, while architectural modifications like recurrence and relative positional encodings extend effective context without quadratic cost growth.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>RNN-based world models are optimal for real-time control applications requiring low latency (<100ms per decision) and effective context lengths under ~200 steps, with memory efficiency advantages</li>
+                <li>Transformer-based world models are optimal for offline learning scenarios with effective context requirements >200 steps, where training parallelization benefits outweigh quadratic inference costs</li>
+                <li>Structured state-space models (S4-family) offer competitive performance to transformers at 2-4x lower parameter counts, representing an underexplored middle ground for medium-length sequences</li>
+                <li>Diffusion-based world models are optimal when high-fidelity multi-modal generation is required and computational budget allows (typically offline scenario generation rather than real-time control)</li>
+                <li>Hybrid architectures combining recurrence with attention (e.g., Transformer-XL) achieve 50-80% longer effective context than pure RNNs while maintaining sub-quadratic scaling through caching</li>
+                <li>Discrete tokenization enables transformer scaling to higher-resolution inputs by reducing sequence length proportionally to compression factor (e.g., 16x compression → 16x shorter sequences)</li>
+                <li>The computational cost of transformers scales quadratically with sequence length for vanilla attention, but architectural modifications (recurrence, relative encodings, sparse attention) can reduce this to near-linear</li>
+                <li>RNN-based models can achieve strong generalization across diverse domains with fixed hyperparameters (demonstrated across 150+ tasks), challenging the assumption that transformers are always superior for generalization</li>
+                <li>Training data scale interacts with architecture choice: transformers benefit more from large-scale pretraining while RNNs can be effective with smaller datasets</li>
+                <li>The optimal architecture depends on whether the task requires modeling precise long-range dependencies (favoring transformers) vs maintaining stable hidden state over time (favoring RNNs)</li>
+                <li>Architectural choice interacts with latent representation: discrete latents enable more efficient transformer processing while continuous latents may be more natural for RNN dynamics</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Transformer-XL achieves ~80% longer effective context length (RECL) than RNNs with better perplexity on language modeling benchmarks (e.g., WikiText-103, One Billion Word) <a href="../results/extraction-result-1398.html#e1398.0" class="evidence-link">[e1398.0]</a> <a href="../results/extraction-result-1398.html#e1398.2" class="evidence-link">[e1398.2]</a> </li>
+    <li>TWM transformer world model outperforms RNN baselines (DreamerV2) on Atari 100k with better aggregate metrics (median, IQM, mean) and lower dynamics/consistency losses, but requires more memory and reduced imagined trajectories per batch <a href="../results/extraction-result-1242.html#e1242.0" class="evidence-link">[e1242.0]</a> </li>
+    <li>TSSM transformer enables direct access to past states improving long-term memory tasks (Hidden Order Discovery: 4-Ball Dense context=60 foreground MSE 211.2 vs DreamerV2 281.9), but converges more slowly on short-horizon tasks (DMC, Atari) <a href="../results/extraction-result-1405.html#e1405.0" class="evidence-link">[e1405.0]</a> </li>
+    <li>IRIS transformer achieves state-of-the-art on Atari 100k among no-search methods (mean 1.046, superhuman on 10/26 games) but requires 7 days training on 8 A100 GPUs, demonstrating high compute requirements <a href="../results/extraction-result-1255.html#e1255.0" class="evidence-link">[e1255.0]</a> </li>
+    <li>S4WM structured state-space model achieves near-TECO quality (PSNR 20.6 vs 21.9) with substantially fewer parameters (41M vs 169M) on DMLab, showing efficiency of alternative architectures <a href="../results/extraction-result-1261.html#e1261.5" class="evidence-link">[e1261.5]</a> </li>
+    <li>DIAMOND diffusion model with EDM formulation produces stable long-horizon autoregressive rollouts (stable even at n=1 denoising steps in some games) enabling high visual fidelity (mean HNS 1.46 on Atari) <a href="../results/extraction-result-1259.html#e1259.0" class="evidence-link">[e1259.0]</a> <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> </li>
+    <li>DreamerV3 RSSM achieves strong performance across 150+ diverse tasks with fixed hyperparameters (Visual Control Suite mean 739.6, Minecraft diamonds), showing RNN robustness and generality <a href="../results/extraction-result-1416.html#e1416.0" class="evidence-link">[e1416.0]</a> <a href="../results/extraction-result-1244.html#e1244.1" class="evidence-link">[e1244.1]</a> </li>
+    <li>TWM is >20x faster than SimPLe and uses Transformer-XL (recurrence + relative positional encodings) for efficiency gains, with almost 2x throughput vs vanilla transformer <a href="../results/extraction-result-1242.html#e1242.0" class="evidence-link">[e1242.0]</a> </li>
+    <li>Transformer-XL with recurrence and relative positional encodings enables longer effective context without full quadratic scaling, outperforming Shaw et al. relative encoding in generalization tests <a href="../results/extraction-result-1398.html#e1398.0" class="evidence-link">[e1398.0]</a> <a href="../results/extraction-result-1398.html#e1398.3" class="evidence-link">[e1398.3]</a> </li>
+    <li>IRIS discrete tokenization (16 tokens/frame default, 64 for higher fidelity) enables transformer scaling to higher-resolution inputs by reducing sequence length, with token count trading off fidelity vs compute <a href="../results/extraction-result-1255.html#e1255.0" class="evidence-link">[e1255.0]</a> </li>
+    <li>Delta-IRIS achieves ~10x faster training than IRIS in Crafter and 5x speedup in Atari by using only 4 tokens/frame (40 bits vs 160 bits), demonstrating compression benefits for transformer efficiency <a href="../results/extraction-result-1232.html#e1232.0" class="evidence-link">[e1232.0]</a> </li>
+    <li>Memory-augmented architectures (NTM, Memory Networks) provide conceptual foundation for caching mechanisms; Transformer-XL's cached hidden states function as memory similar to explicit memory-augmented networks <a href="../results/extraction-result-1398.html#e1398.4" class="evidence-link">[e1398.4]</a> </li>
+    <li>RNN-based world models (LSTM, GRU) have lower RECL (~400 at r=0.1) compared to Transformer-XL but are more memory-efficient per timestep and avoid gradient issues with proper gating <a href="../results/extraction-result-1398.html#e1398.2" class="evidence-link">[e1398.2]</a> </li>
+    <li>Transformer attention complexity scales quadratically O(n^2) with sequence length, limiting practical sequence lengths (e.g., GPT2-medium max 256 on 12GB VRAM for VQGAN latents) <a href="../results/extraction-result-1425.html#e1425.1" class="evidence-link">[e1425.1]</a> </li>
+    <li>Latent transformer on discrete VQGAN codes is far more efficient than pixel-space transformers (sequence length 256 vs 5120 for ImageGPT), enabling higher-resolution synthesis <a href="../results/extraction-result-1425.html#e1425.1" class="evidence-link">[e1425.1]</a> </li>
+    <li>PixelSNAIL convolutional autoregressive model trains ~2x faster than transformer on same latent representations but achieves worse NLL, showing local-bias efficiency vs global-composition trade-off <a href="../results/extraction-result-1425.html#e1425.2" class="evidence-link">[e1425.2]</a> </li>
+    <li>Hierarchical architectures (frame-level + state-level VQVAE) reduce decode cost during planning by operating at multiple abstraction levels <a href="../results/extraction-result-1411.html#e1411.3" class="evidence-link">[e1411.3]</a> </li>
+    <li>Deterministic RNN ablation shows memory capability but inability to represent uncertainty; stochastic SSM ablation shows multimodality but poor long-term memory; RSSM hybrid combines both strengths <a href="../results/extraction-result-1218.html#e1218.1" class="evidence-link">[e1218.1]</a> <a href="../results/extraction-result-1218.html#e1218.2" class="evidence-link">[e1218.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For real-time robotics control with <20 step planning horizons and <50ms latency requirements, RNN-based world models will achieve 2-5x lower latency than transformers with comparable task performance</li>
+                <li>In offline RL with trajectory lengths >200 steps, transformer-based world models will achieve 20-40% better sample efficiency than RNN models on tasks requiring long-range credit assignment</li>
+                <li>Hybrid architectures combining local RNN processing with global transformer attention will outperform pure approaches by 10-30% on medium-length sequences (100-300 steps) while maintaining <2x compute overhead</li>
+                <li>Structured state-space models will achieve within 5% of transformer performance on long-context tasks while using 50-70% fewer parameters and 30-50% less memory</li>
+                <li>Discrete tokenization with compression factors of 8-16x will enable transformer world models to scale to 4-8x higher resolution inputs while maintaining similar sequence modeling performance</li>
+                <li>For domains with effective context requirements between 50-200 steps, Transformer-XL with recurrence will outperform both pure RNNs and vanilla transformers by 15-25% in sample efficiency</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether state-space models (S4, Mamba) can fully replace transformers for long-context world modeling (>500 steps) while maintaining both efficiency and performance parity</li>
+                <li>If there exists a universal adaptive architecture that dynamically adjusts its computational pattern (RNN-like vs attention-like) based on sequence length and task requirements, achieving optimal efficiency across all regimes</li>
+                <li>Whether diffusion models can be made efficient enough (<10ms per frame generation) for real-time control applications through architectural innovations or distillation</li>
+                <li>If architectural choices interact with domain properties (e.g., visual complexity, stochasticity, action space dimensionality) in predictable ways that enable automatic architecture selection via meta-learning</li>
+                <li>Whether hybrid architectures can achieve the best of all worlds: RNN-like efficiency for short contexts, transformer-like long-range modeling, and diffusion-like multi-modal generation, without prohibitive computational costs</li>
+                <li>If the 'effective context length' metric generalizes across domains or if different domains require fundamentally different notions of context that favor different architectures</li>
+                <li>Whether emerging architectures (e.g., Mamba, RWKV) that claim linear scaling with sequence length can match transformer performance on world modeling tasks while delivering on efficiency promises at scale</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that RNNs consistently outperform transformers on long-context tasks (>500 steps) with proper training would challenge the scaling law and suggest architectural biases in current transformer training</li>
+                <li>Demonstrating that transformers are more efficient than RNNs for short-context real-time control (<20 steps) would contradict the latency-based architectural recommendation</li>
+                <li>Showing that architectural choice has no systematic relationship with task properties (context length, stochasticity, etc.) after controlling for model capacity would invalidate the domain-matching principle</li>
+                <li>Finding that a single architecture (e.g., a sufficiently large transformer) can match specialized architectures across all regimes without efficiency penalties would suggest the scaling laws are artifacts of insufficient scale</li>
+                <li>Demonstrating that discrete tokenization provides no efficiency benefits for transformers when sequence length is held constant would challenge the compression-based scaling mechanism</li>
+                <li>Showing that hybrid architectures consistently underperform pure approaches would suggest that combining architectural patterns introduces detrimental interference rather than complementary benefits</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The role of training data scale and diversity in determining optimal architecture is not fully characterized - how much data is needed for each architecture to reach its potential? </li>
+    <li>How architectural choices interact with other design decisions like latent dimensionality, discrete vs continuous representations, and hierarchical vs flat structure </li>
+    <li>The impact of hardware constraints (GPU memory, TPU vs GPU, batch size limitations) on optimal architecture selection in practice </li>
+    <li>Whether the architectural scaling laws generalize across modalities (vision, language, audio, multi-modal) or are domain-specific </li>
+    <li>The role of training stability and hyperparameter sensitivity in architectural choice - some architectures may be more robust to hyperparameter choices </li>
+    <li>How architectural choice interacts with the exploration-exploitation trade-off in RL - do some architectures enable better exploration? </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Vaswani et al. (2017) Attention Is All You Need [Transformer architecture, foundational work on attention-based sequence modeling]</li>
+    <li>Dai et al. (2019) Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context [Recurrent transformers for long context, relative positional encodings]</li>
+    <li>Gu et al. (2022) Efficiently Modeling Long Sequences with Structured State Spaces [S4 models, alternative to transformers with linear scaling]</li>
+    <li>Kaplan et al. (2020) Scaling Laws for Neural Language Models [General scaling laws for neural architectures, parameter count vs performance]</li>
+    <li>Hochreiter & Schmidhuber (1997) Long Short-Term Memory [LSTM architecture, foundational RNN work]</li>
+    <li>Tay et al. (2022) Efficient Transformers: A Survey [Comprehensive survey of transformer efficiency techniques]</li>
+    <li>Hafner et al. (2023) Mastering Diverse Domains through World Models [DreamerV3, demonstrating RNN robustness across domains]</li>
+    <li>Gu & Dao (2023) Mamba: Linear-Time Sequence Modeling with Selective State Spaces [Recent state-space model claiming to match transformers with linear scaling]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Architectural Scaling Laws for World Models",
+    "theory_description": "The optimal world model architecture depends on multiple interacting factors: temporal structure, scale, computational constraints, and task requirements. RNN-based models (RSSM, LSTM, GRU) excel at short-to-medium context real-time control with limited memory, achieving strong performance across diverse domains with fixed hyperparameters. Transformer-based models excel at long-range dependencies and offline learning, with quadratic scaling in sequence length but superior parallelization during training. Structured state-space models (S4, S4WM) offer a middle ground with linear scaling and competitive performance at lower parameter counts. Diffusion models achieve highest visual fidelity for multi-modal generation but require substantial compute. Hybrid architectures (e.g., Transformer-XL with recurrence, hierarchical models) can achieve better efficiency-performance trade-offs by combining local and global processing. The choice should be guided by: (1) required effective context length and memory horizon, (2) real-time vs offline constraints, (3) multi-modality and stochasticity requirements, (4) available computational budget and hardware, (5) training data scale, and (6) need for discrete vs continuous representations. Discrete tokenization enables architectural scaling by reducing sequence length, while architectural modifications like recurrence and relative positional encodings extend effective context without quadratic cost growth.",
+    "supporting_evidence": [
+        {
+            "text": "Transformer-XL achieves ~80% longer effective context length (RECL) than RNNs with better perplexity on language modeling benchmarks (e.g., WikiText-103, One Billion Word)",
+            "uuids": [
+                "e1398.0",
+                "e1398.2"
+            ]
+        },
+        {
+            "text": "TWM transformer world model outperforms RNN baselines (DreamerV2) on Atari 100k with better aggregate metrics (median, IQM, mean) and lower dynamics/consistency losses, but requires more memory and reduced imagined trajectories per batch",
+            "uuids": [
+                "e1242.0"
+            ]
+        },
+        {
+            "text": "TSSM transformer enables direct access to past states improving long-term memory tasks (Hidden Order Discovery: 4-Ball Dense context=60 foreground MSE 211.2 vs DreamerV2 281.9), but converges more slowly on short-horizon tasks (DMC, Atari)",
+            "uuids": [
+                "e1405.0"
+            ]
+        },
+        {
+            "text": "IRIS transformer achieves state-of-the-art on Atari 100k among no-search methods (mean 1.046, superhuman on 10/26 games) but requires 7 days training on 8 A100 GPUs, demonstrating high compute requirements",
+            "uuids": [
+                "e1255.0"
+            ]
+        },
+        {
+            "text": "S4WM structured state-space model achieves near-TECO quality (PSNR 20.6 vs 21.9) with substantially fewer parameters (41M vs 169M) on DMLab, showing efficiency of alternative architectures",
+            "uuids": [
+                "e1261.5"
+            ]
+        },
+        {
+            "text": "DIAMOND diffusion model with EDM formulation produces stable long-horizon autoregressive rollouts (stable even at n=1 denoising steps in some games) enabling high visual fidelity (mean HNS 1.46 on Atari)",
+            "uuids": [
+                "e1259.0",
+                "e1259.4"
+            ]
+        },
+        {
+            "text": "DreamerV3 RSSM achieves strong performance across 150+ diverse tasks with fixed hyperparameters (Visual Control Suite mean 739.6, Minecraft diamonds), showing RNN robustness and generality",
+            "uuids": [
+                "e1416.0",
+                "e1244.1"
+            ]
+        },
+        {
+            "text": "TWM is &gt;20x faster than SimPLe and uses Transformer-XL (recurrence + relative positional encodings) for efficiency gains, with almost 2x throughput vs vanilla transformer",
+            "uuids": [
+                "e1242.0"
+            ]
+        },
+        {
+            "text": "Transformer-XL with recurrence and relative positional encodings enables longer effective context without full quadratic scaling, outperforming Shaw et al. relative encoding in generalization tests",
+            "uuids": [
+                "e1398.0",
+                "e1398.3"
+            ]
+        },
+        {
+            "text": "IRIS discrete tokenization (16 tokens/frame default, 64 for higher fidelity) enables transformer scaling to higher-resolution inputs by reducing sequence length, with token count trading off fidelity vs compute",
+            "uuids": [
+                "e1255.0"
+            ]
+        },
+        {
+            "text": "Delta-IRIS achieves ~10x faster training than IRIS in Crafter and 5x speedup in Atari by using only 4 tokens/frame (40 bits vs 160 bits), demonstrating compression benefits for transformer efficiency",
+            "uuids": [
+                "e1232.0"
+            ]
+        },
+        {
+            "text": "Memory-augmented architectures (NTM, Memory Networks) provide conceptual foundation for caching mechanisms; Transformer-XL's cached hidden states function as memory similar to explicit memory-augmented networks",
+            "uuids": [
+                "e1398.4"
+            ]
+        },
+        {
+            "text": "RNN-based world models (LSTM, GRU) have lower RECL (~400 at r=0.1) compared to Transformer-XL but are more memory-efficient per timestep and avoid gradient issues with proper gating",
+            "uuids": [
+                "e1398.2"
+            ]
+        },
+        {
+            "text": "Transformer attention complexity scales quadratically O(n^2) with sequence length, limiting practical sequence lengths (e.g., GPT2-medium max 256 on 12GB VRAM for VQGAN latents)",
+            "uuids": [
+                "e1425.1"
+            ]
+        },
+        {
+            "text": "Latent transformer on discrete VQGAN codes is far more efficient than pixel-space transformers (sequence length 256 vs 5120 for ImageGPT), enabling higher-resolution synthesis",
+            "uuids": [
+                "e1425.1"
+            ]
+        },
+        {
+            "text": "PixelSNAIL convolutional autoregressive model trains ~2x faster than transformer on same latent representations but achieves worse NLL, showing local-bias efficiency vs global-composition trade-off",
+            "uuids": [
+                "e1425.2"
+            ]
+        },
+        {
+            "text": "Hierarchical architectures (frame-level + state-level VQVAE) reduce decode cost during planning by operating at multiple abstraction levels",
+            "uuids": [
+                "e1411.3"
+            ]
+        },
+        {
+            "text": "Deterministic RNN ablation shows memory capability but inability to represent uncertainty; stochastic SSM ablation shows multimodality but poor long-term memory; RSSM hybrid combines both strengths",
+            "uuids": [
+                "e1218.1",
+                "e1218.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "RNN-based world models are optimal for real-time control applications requiring low latency (&lt;100ms per decision) and effective context lengths under ~200 steps, with memory efficiency advantages",
+        "Transformer-based world models are optimal for offline learning scenarios with effective context requirements &gt;200 steps, where training parallelization benefits outweigh quadratic inference costs",
+        "Structured state-space models (S4-family) offer competitive performance to transformers at 2-4x lower parameter counts, representing an underexplored middle ground for medium-length sequences",
+        "Diffusion-based world models are optimal when high-fidelity multi-modal generation is required and computational budget allows (typically offline scenario generation rather than real-time control)",
+        "Hybrid architectures combining recurrence with attention (e.g., Transformer-XL) achieve 50-80% longer effective context than pure RNNs while maintaining sub-quadratic scaling through caching",
+        "Discrete tokenization enables transformer scaling to higher-resolution inputs by reducing sequence length proportionally to compression factor (e.g., 16x compression → 16x shorter sequences)",
+        "The computational cost of transformers scales quadratically with sequence length for vanilla attention, but architectural modifications (recurrence, relative encodings, sparse attention) can reduce this to near-linear",
+        "RNN-based models can achieve strong generalization across diverse domains with fixed hyperparameters (demonstrated across 150+ tasks), challenging the assumption that transformers are always superior for generalization",
+        "Training data scale interacts with architecture choice: transformers benefit more from large-scale pretraining while RNNs can be effective with smaller datasets",
+        "The optimal architecture depends on whether the task requires modeling precise long-range dependencies (favoring transformers) vs maintaining stable hidden state over time (favoring RNNs)",
+        "Architectural choice interacts with latent representation: discrete latents enable more efficient transformer processing while continuous latents may be more natural for RNN dynamics"
+    ],
+    "new_predictions_likely": [
+        "For real-time robotics control with &lt;20 step planning horizons and &lt;50ms latency requirements, RNN-based world models will achieve 2-5x lower latency than transformers with comparable task performance",
+        "In offline RL with trajectory lengths &gt;200 steps, transformer-based world models will achieve 20-40% better sample efficiency than RNN models on tasks requiring long-range credit assignment",
+        "Hybrid architectures combining local RNN processing with global transformer attention will outperform pure approaches by 10-30% on medium-length sequences (100-300 steps) while maintaining &lt;2x compute overhead",
+        "Structured state-space models will achieve within 5% of transformer performance on long-context tasks while using 50-70% fewer parameters and 30-50% less memory",
+        "Discrete tokenization with compression factors of 8-16x will enable transformer world models to scale to 4-8x higher resolution inputs while maintaining similar sequence modeling performance",
+        "For domains with effective context requirements between 50-200 steps, Transformer-XL with recurrence will outperform both pure RNNs and vanilla transformers by 15-25% in sample efficiency"
+    ],
+    "new_predictions_unknown": [
+        "Whether state-space models (S4, Mamba) can fully replace transformers for long-context world modeling (&gt;500 steps) while maintaining both efficiency and performance parity",
+        "If there exists a universal adaptive architecture that dynamically adjusts its computational pattern (RNN-like vs attention-like) based on sequence length and task requirements, achieving optimal efficiency across all regimes",
+        "Whether diffusion models can be made efficient enough (&lt;10ms per frame generation) for real-time control applications through architectural innovations or distillation",
+        "If architectural choices interact with domain properties (e.g., visual complexity, stochasticity, action space dimensionality) in predictable ways that enable automatic architecture selection via meta-learning",
+        "Whether hybrid architectures can achieve the best of all worlds: RNN-like efficiency for short contexts, transformer-like long-range modeling, and diffusion-like multi-modal generation, without prohibitive computational costs",
+        "If the 'effective context length' metric generalizes across domains or if different domains require fundamentally different notions of context that favor different architectures",
+        "Whether emerging architectures (e.g., Mamba, RWKV) that claim linear scaling with sequence length can match transformer performance on world modeling tasks while delivering on efficiency promises at scale"
+    ],
+    "negative_experiments": [
+        "Finding that RNNs consistently outperform transformers on long-context tasks (&gt;500 steps) with proper training would challenge the scaling law and suggest architectural biases in current transformer training",
+        "Demonstrating that transformers are more efficient than RNNs for short-context real-time control (&lt;20 steps) would contradict the latency-based architectural recommendation",
+        "Showing that architectural choice has no systematic relationship with task properties (context length, stochasticity, etc.) after controlling for model capacity would invalidate the domain-matching principle",
+        "Finding that a single architecture (e.g., a sufficiently large transformer) can match specialized architectures across all regimes without efficiency penalties would suggest the scaling laws are artifacts of insufficient scale",
+        "Demonstrating that discrete tokenization provides no efficiency benefits for transformers when sequence length is held constant would challenge the compression-based scaling mechanism",
+        "Showing that hybrid architectures consistently underperform pure approaches would suggest that combining architectural patterns introduces detrimental interference rather than complementary benefits"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The role of training data scale and diversity in determining optimal architecture is not fully characterized - how much data is needed for each architecture to reach its potential?",
+            "uuids": []
+        },
+        {
+            "text": "How architectural choices interact with other design decisions like latent dimensionality, discrete vs continuous representations, and hierarchical vs flat structure",
+            "uuids": []
+        },
+        {
+            "text": "The impact of hardware constraints (GPU memory, TPU vs GPU, batch size limitations) on optimal architecture selection in practice",
+            "uuids": []
+        },
+        {
+            "text": "Whether the architectural scaling laws generalize across modalities (vision, language, audio, multi-modal) or are domain-specific",
+            "uuids": []
+        },
+        {
+            "text": "The role of training stability and hyperparameter sensitivity in architectural choice - some architectures may be more robust to hyperparameter choices",
+            "uuids": []
+        },
+        {
+            "text": "How architectural choice interacts with the exploration-exploitation trade-off in RL - do some architectures enable better exploration?",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "DreamerV3 RSSM achieves strong performance across 150+ diverse tasks with fixed hyperparameters, suggesting RNNs may be more general and robust than the theory suggests, potentially challenging the need for transformers in many scenarios",
+            "uuids": [
+                "e1416.0",
+                "e1244.1"
+            ]
+        },
+        {
+            "text": "S4WM achieves competitive performance with 41M parameters vs TECO's 169M, suggesting alternative architectures (structured state-space models) may be significantly underexplored and could challenge transformer dominance",
+            "uuids": [
+                "e1261.5"
+            ]
+        },
+        {
+            "text": "TSSM transformer converges more slowly on short-horizon tasks (DMC, Atari) despite better long-term memory, suggesting the context-length threshold may not be the primary factor and task-specific properties matter more",
+            "uuids": [
+                "e1405.0"
+            ]
+        },
+        {
+            "text": "PixelSNAIL trains 2x faster than transformers but achieves worse NLL, suggesting that training speed and final performance may trade off in complex ways not captured by simple scaling laws",
+            "uuids": [
+                "e1425.2"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For very high-dimensional inputs (megapixel images), architectural efficiency may be dominated by encoder/decoder costs rather than sequence modeling, making the choice of compression scheme more important than sequence model architecture",
+        "In domains with strong Markovian structure (e.g., fully observable games), even short-context models may suffice regardless of architecture, and the benefits of long-context modeling may be minimal",
+        "For multi-modal generation tasks requiring diverse plausible futures, diffusion models may be necessary regardless of efficiency concerns, as other architectures struggle to capture multi-modality",
+        "In domains with extremely long sequences (&gt;10,000 steps), even transformer variants may be impractical, and hierarchical temporal abstraction or state-space models may be the only viable options",
+        "For real-time applications with strict latency budgets (&lt;10ms), architectural choice may be entirely determined by inference speed rather than modeling quality, favoring simple RNNs or even feedforward models",
+        "In low-data regimes (&lt;100k samples), architectural inductive biases may matter more than capacity, potentially favoring structured models (RNNs, S4) over transformers that require more data to reach potential",
+        "For tasks requiring precise long-range credit assignment (e.g., delayed rewards over 100+ steps), transformers may be necessary even if RNNs achieve similar average performance, due to better gradient flow"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Vaswani et al. (2017) Attention Is All You Need [Transformer architecture, foundational work on attention-based sequence modeling]",
+            "Dai et al. (2019) Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context [Recurrent transformers for long context, relative positional encodings]",
+            "Gu et al. (2022) Efficiently Modeling Long Sequences with Structured State Spaces [S4 models, alternative to transformers with linear scaling]",
+            "Kaplan et al. (2020) Scaling Laws for Neural Language Models [General scaling laws for neural architectures, parameter count vs performance]",
+            "Hochreiter & Schmidhuber (1997) Long Short-Term Memory [LSTM architecture, foundational RNN work]",
+            "Tay et al. (2022) Efficient Transformers: A Survey [Comprehensive survey of transformer efficiency techniques]",
+            "Hafner et al. (2023) Mastering Diverse Domains through World Models [DreamerV3, demonstrating RNN robustness across domains]",
+            "Gu & Dao (2023) Mamba: Linear-Time Sequence Modeling with Selective State Spaces [Recent state-space model claiming to match transformers with linear scaling]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 2,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

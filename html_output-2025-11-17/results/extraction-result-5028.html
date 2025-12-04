@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-5028 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-5028</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-5028</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-106.html">extraction-schema-106</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models (LLMs or neural language models) being used to solve puzzle games that require spatial knowledge (such as Sudoku or other spatial reasoning tasks). Include details about the models, the puzzles, the mechanisms or strategies used, performance metrics, evidence of spatial reasoning, limitations, and comparisons.</div>
+                <p><strong>Paper ID:</strong> paper-9ca3af4440eb4aa4fd0a65dfa559685b2c39cd42</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/9ca3af4440eb4aa4fd0a65dfa559685b2c39cd42" target="_blank">Composing graphical models with neural networks for structured representations and fast inference</a></p>
+                <p><strong>Paper Venue:</strong> Neural Information Processing Systems</p>
+                <p><strong>Paper TL;DR:</strong> A general modeling and inference framework that composes probabilistic graphical models with deep learning methods and combines their respective strengths is proposed, giving a scalable algorithm that leverages stochastic variational inference, natural gradients, graphical model message passing, and the reparameterization trick.</p>
+                <p><strong>Paper Abstract:</strong> We propose a general modeling and inference framework that composes probabilistic graphical models with deep learning methods and combines their respective strengths. Our model family augments graphical structure in latent variables with neural network observation models. For inference, we extend variational autoencoders to use graphical model approximating distributions with recognition networks that output conjugate potentials. All components of these models are learned simultaneously with a single objective, giving a scalable algorithm that leverages stochastic variational inference, natural gradients, graphical model message passing, and the reparameterization trick. We illustrate this framework with several example models and an application to mouse behavioral phenotyping.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-5028",
+    "paper_id": "paper-9ca3af4440eb4aa4fd0a65dfa559685b2c39cd42",
+    "extraction_schema_id": "extraction-schema-106",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0069555,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Composing graphical models with neural networks for structured representations and fast inference</h1>
+<p>Matthew James Johnson<br>Harvard University<br>mattjj@seas.harvard.edu<br>David Duvenaud<br>Harvard University<br>dduvenaud@seas.harvard.edu<br>Alexander B. Wiltschko<br>Harvard University, Twitter<br>awiltsch@fas.harvard.edu<br>Sandeep R. Datta<br>Harvard Medical School<br>srdatta@hms.harvard.edu<br>Ryan P. Adams<br>Harvard University, Twitter<br>rpa@seas.harvard.edu</p>
+<h4>Abstract</h4>
+<p>We propose a general modeling and inference framework that combines the complementary strengths of probabilistic graphical models and deep learning methods. Our model family composes latent graphical models with neural network observation likelihoods. For inference, we use recognition networks to produce local evidence potentials, then combine them with the model distribution using efficient message-passing algorithms. All components are trained simultaneously with a single stochastic variational inference objective. We illustrate this framework by automatically segmenting and categorizing mouse behavior from raw depth video, and demonstrate several other example models.</p>
+<h2>1 Introduction</h2>
+<p>Modeling often has two goals: first, to learn a flexible representation of complex high-dimensional data, such as images or speech recordings, and second, to find structure that is interpretable and generalizes to new tasks. Probabilistic graphical models [1,2] provide many tools to build structured representations, but often make rigid assumptions and may require significant feature engineering. Alternatively, deep learning methods allow flexible data representations to be learned automatically, but may not directly encode interpretable or tractable probabilistic structure. Here we develop a general modeling and inference framework that combines these complementary strengths.
+Consider learning a generative model for video of a mouse. Learning interpretable representations for such data, and comparing them as the animal's genes are edited or its brain chemistry altered, gives useful behavioral phenotyping tools for neuroscience and for high-throughput drug discovery [3]. Even though each image is encoded by hundreds of pixels, the data lie near a low-dimensional nonlinear manifold. A useful generative model must not only learn this manifold but also provide an interpretable representation of the mouse's behavioral dynamics. A natural representation from ethology [3] is that the mouse's behavior is divided into brief, reused actions, such as darts, rears, and grooming bouts. Therefore an appropriate model might switch between discrete states, with each state representing the dynamics of a particular action. These two learning tasks - identifying an image manifold and a structured dynamics model - are complementary: we want to learn the image manifold in terms of coordinates in which the structured dynamics fit well. A similar challenge arises in speech [4], where high-dimensional spectrographic data lie near a low-dimensional manifold because they are generated by a physical system with relatively few degrees of freedom [5] but also include the discrete latent dynamical structure of phonemes, words, and grammar [6].
+To address these challenges, we propose a new framework to design and learn models that couple nonlinear likelihoods with structured latent variable representations. Our approach uses graphical models for representing structured probability distributions while enabling fast exact inference subroutines, and uses ideas from variational autoencoders $[7,8]$ for learning not only the nonlinear</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Comparison of generative models fit to spiral cluster data. See Section 2.1.</p>
+<p>feature manifold but also bottom-up recognition networks to improve inference. Thus our method enables the combination of flexible deep learning feature models with structured Bayesian (and even nonparametric [9]) priors. Our approach yields a single variational inference objective in which all components of the model are learned simultaneously. Furthermore, we develop a scalable fitting algorithm that combines several advances in efficient inference, including stochastic variational inference [10], graphical model message passing [1], and backpropagation with the reparameterization trick [7]. Thus our algorithm can leverage conjugate exponential family structure where it exists to efficiently compute natural gradients with respect to some variational parameters, enabling effective second-order optimization [11], while using backpropagation to compute gradients with respect to all other parameters. We refer to our general approach as the structured variational autoencoder (SVAE).</p>
+<h2>2 Latent graphical models with neural net observations</h2>
+<p>In this paper we propose a broad family of models. Here we develop three specific examples.</p>
+<h3>2.1 Warped mixtures for arbitrary cluster shapes</h3>
+<p>One particularly natural structure used frequently in graphical models is the discrete mixture model. By fitting a discrete mixture model to data, we can discover natural clusters or units. These discrete structures are difficult to represent directly in neural network models.</p>
+<p>Consider the problem of modeling the data $y = {y_n}_{n=1}^N$ shown in Fig. 1a. A standard approach to finding the clusters in data is to fit a Gaussian mixture model (GMM) with a conjugate prior:</p>
+<p>$$
+\pi \sim \text{Dir}(\alpha), \quad (\mu_k, \Sigma_k) \stackrel{\text{iid}}{\sim} \text{NIW}(\lambda), \quad z_n | \pi \stackrel{\text{iid}}{\sim} \pi \quad y_n | z_n, {(\mu_k, \Sigma_k) }<em z_n="z_n">{k=1}^K \stackrel{\text{iid}}{\sim} \mathcal{N}(\mu</em>).
+$$}, \Sigma_{z_n</p>
+<p>However, the fit GMM does not represent the natural clustering of the data (Fig. 1b). Its inflexible Gaussian observation model limits its ability to parsimoniously fit the data and their natural semantics.</p>
+<p>Instead of using a GMM, a more flexible alternative would be a neural network density model:</p>
+<p>$$
+\gamma \sim p(\gamma) \quad x_n \stackrel{\text{iid}}{\sim} \mathcal{N}(0, I), \quad y_n | x_n, \gamma \stackrel{\text{iid}}{\sim} \mathcal{N}(\mu(x_n; \gamma), \Sigma(x_n; \gamma)),
+$$</p>
+<p>where $\mu(x_n; \gamma)$ and $\Sigma(x_n; \gamma)$ depend on $x_n$ through some smooth parametric function, such as multilayer perceptron (MLP), and where $p(\gamma)$ is a Gaussian prior [12]. This model fits the data density well (Fig. 1c) but does not explicitly represent discrete mixture components, which might provide insights into the data or natural units for generalization. See Fig. 2a for a graphical model.</p>
+<p>By composing a latent GMM with nonlinear observations, we can combine the modeling strengths of both [13], learning both discrete clusters along with non-Gaussian cluster shapes:</p>
+<p>$$
+\begin{aligned}
+\pi \sim \text{Dir}(\alpha), \quad (\mu_k, \Sigma_k) \stackrel{\text{iid}}{\sim} \text{NIW}(\lambda), \quad \gamma \sim p(\gamma) \
+z_n | \pi \stackrel{\text{iid}}{\sim} \pi \quad x_n \stackrel{\text{iid}}{\sim} \mathcal{N}(\mu^{(z_n)}, \Sigma^{(z_n)}), \quad y_n | x_n, \gamma \stackrel{\text{iid}}{\sim} \mathcal{N}(\mu(x_n; \gamma), \Sigma(x_n; \gamma)).
+\end{aligned}
+$$</p>
+<p>This combination of flexibility and structure is shown in Fig. 1d. See Fig. 2b for a graphical model.</p>
+<h3>2.2 Latent linear dynamical systems for modeling video</h3>
+<p>Now we consider a harder problem: generatively modeling video. Since a video is a sequence of image frames, a natural place to start is with a model for images. Kingma et al. [7] shows that the</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Generative graphical models discussed in Section 2.
+density network of Eq. (1) can accurately represent a dataset of high-dimensional images $\left{y_{n}\right}<em n="n">{n=1}^{N}$ in terms of the low-dimensional latent variables $\left{x</em>\right}<em n="n">{n=1}^{N}$, each with independent Gaussian distributions.
+To extend this image model into a model for videos, we can introduce dependence through time between the latent Gaussian samples $\left{x</em>\right}<em n="n">{n=1}^{N}$. For instance, we can make each latent variable $x</em>$ through a Gaussian linear dynamical system, writing}$ depend on the previous latent variable $x_{n-1</p>
+<p>$$
+x_{n}=A x_{n-1}+B u_{n}, \quad u_{n} \stackrel{\text { iid }}{=} \mathcal{N}(0, I), \quad A, B \in \mathbb{R}^{m \times m}
+$$</p>
+<p>where the matrices $A$ and $B$ have a conjugate prior. This model has low-dimensional latent states and dynamics as well as a rich nonlinear generative model of images. In addition, the timescales of the dynamics are represented directly in the eigenvalue spectrum of $A$, providing both interpretability and a natural way to encode prior information. See Fig. 2c for a graphical model.</p>
+<h1>2.3 Latent switching linear dynamical systems for parsing behavior from video</h1>
+<p>As a final example that combines both time series structure and discrete latent units, consider again the behavioral phenotyping problem described in Section 1. Drawing on graphical modeling tools, we can construct a latent switching linear dynamical system (SLDS) [14] to represent the data in terms of continuous latent states that evolve according to a discrete library of linear dynamics, and drawing on deep learning methods we can generate video frames with a neural network image model.
+At each time $n \in{1,2, \ldots, N}$ there is a discrete-valued latent state $z_{n} \in{1,2, \ldots, K}$ that evolves according to Markovian dynamics. The discrete state indexes a set of linear dynamical parameters, and the continuous-valued latent state $x_{n} \in \mathbb{R}^{m}$ evolves according to the corresponding dynamics,</p>
+<p>$$
+z_{n} \mid z_{n-1}, \pi \sim \pi_{z_{n-1}}, \quad x_{n}=A_{z_{n}} x_{n-1}+B_{z_{n}} u_{n}, \quad u_{n} \stackrel{\text { iid }}{=} \mathcal{N}(0, I)
+$$</p>
+<p>where $\pi=\left{\pi_{k}\right}<em k="k">{k=1}^{K}$ denotes the Markov transition matrix and $\pi</em>$ is its $k$ th row. We use the same neural net observation model as in Section 2.2. This SLDS model combines both continuous and discrete latent variables with rich nonlinear observations. See Fig. 2d for a graphical model.} \in \mathbb{R}_{+}^{K</p>
+<h2>3 Structured mean field inference and recognition networks</h2>
+<p>Why aren't such rich hybrid models used more frequently? The main difficulty with combining rich latent variable structure and flexible likelihoods is inference. The most efficient inference algorithms used in graphical models, like structured mean field and message passing, depend on conjugate exponential family likelihoods to preserve tractable structure. When the observations are more general, like neural network models, inference must either fall back to general algorithms that do not exploit the model structure or else rely on bespoke algorithms developed for one model at a time.
+In this section, we review inference ideas from conjugate exponential family probabilistic graphical models and variational autoencoders, which we combine and generalize in the next section.</p>
+<h3>3.1 Inference in graphical models with conjugacy structure</h3>
+<p>Graphical models and exponential families provide many algorithmic tools for efficient inference [15]. Given an exponential family latent variable model, when the observation model is a conjugate exponential family, the conditional distributions stay in the same exponential families as in the prior and hence allow for the same efficient inference algorithms.</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Variational families and recognition networks for the VAE [7] and three SVAE examples.
+For example, consider learning a Gaussian linear dynamical system model with linear Gaussian observations. The generative model for latent states $x=\left{x_{n}\right}<em n="n">{n=1}^{N}$ and observations $y=\left{y</em>$ is}\right}_{n=1}^{N</p>
+<p>$$
+x_{n}=A x_{n-1}+B u_{n}, \quad u_{n} \stackrel{\text { iid }}{\sim} \mathcal{N}(0, I), \quad y_{n}=C x_{n}+D v_{n}, \quad v_{n} \stackrel{\text { iid }}{\sim} \mathcal{N}(0, I)
+$$</p>
+<p>given parameters $\theta=(A, B, C, D)$ with a conjugate prior $p(\theta)$. To approximate the posterior $p(\theta, x \mid y)$, consider the mean field family $q(\theta) q(x)$ and the variational inference objective</p>
+<p>$$
+\mathcal{L}[q(\theta) q(x)]=\mathbb{E}_{q(\theta) q(x)}\left[\log \frac{p(\theta) p(x \mid \theta) p(y \mid x, \theta)}{q(\theta) q(x)}\right]
+$$</p>
+<p>where we can optimize the variational family $q(\theta) q(x)$ to approximate the posterior $p(\theta, x \mid y)$ by maximizing Eq. (2). Because the observation model $p(y \mid x, \theta)$ is conjugate to the latent variable model $p(x \mid \theta)$, for any fixed $q(\theta)$ the optimal factor $q^{<em>}(x) \triangleq \arg \max _{q(x)} \mathcal{L}[q(\theta) q(x)]$ is itself a Gaussian linear dynamical system with parameters that are simple functions of the expected statistics of $q(\theta)$ and the data $y$. As a result, for fixed $q(\theta)$ we can easily compute $q^{</em>}(x)$ and use message passing algorithms to perform exact inference in it. However, when the observation model is not conjugate to the latent variable model, these algorithmically exploitable structures break down.</p>
+<h1>3.2 Recognition networks in variational autoencoders</h1>
+<p>The variational autoencoder (VAE) [7] handles general non-conjugate observation models by introducing recognition networks. For example, when a Gaussian latent variable model $p(x)$ is paired with a general nonlinear observation model $p(y \mid x, \gamma)$, the posterior $p(x \mid y, \gamma)$ is non-Gaussian, and it is difficult to compute an optimal Gaussian approximation. The VAE instead learns to directly output a suboptimal Gaussian factor $q(x \mid y)$ by fitting a parametric map from data $y$ to a mean and covariance, $\mu(y ; \phi)$ and $\Sigma(y ; \phi)$, such as an MLP with parameters $\phi$. By optimizing over $\phi$, the VAE effectively learns how to condition on non-conjugate observations $y$ and produce a good approximating factor.</p>
+<h2>4 Structured variational autoencoders</h2>
+<p>We can combine the tractability of conjugate graphical model inference with the flexibility of variational autoencoders. The main idea is to use a conditional random field (CRF) variational family. We learn recognition networks that output conjugate graphical model potentials instead of outputting the complete variational distribution's parameters directly. These potentials are then used in graphical model inference algorithms in place of the non-conjugate observation likelihoods.
+The SVAE algorithm computes stochastic gradients of a mean field variational inference objective. It can be viewed as a generalization both of the natural gradient SVI algorithm for conditionally conjugate models [10] and of the AEVB algorithm for variational autoencoders [7]. Intuitively, it proceeds by sampling a data minibatch, applying the recognition model to compute graphical model potentials, and using graphical model inference algorithms to compute the variational factor, combining the evidence from the potentials with the prior structure in the model. This variational factor is then used to compute gradients of the mean field objective. See Fig. 3 for graphical models of the variational families with recognition networks for the models developed in Section 2.
+In this section, we outline the SVAE model class more formally, write the mean field variational inference objective, and show how to efficiently compute unbiased stochastic estimates of its gradients. The resulting algorithm for computing gradients of the mean field objective, shown in Algorithm 1, is</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">Estimate</span><span class="w"> </span><span class="n">SVAE</span><span class="w"> </span><span class="n">lower</span><span class="w"> </span><span class="n">bound</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="n">gradients</span>
+<span class="n">Input</span><span class="p">:</span><span class="w"> </span><span class="n">Variational</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">},</span><span class="w"> </span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">},</span><span class="w"> </span>\<span class="n">phi</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span>\<span class="p">(</span><span class="n">y</span>\<span class="p">)</span>
+<span class="w">    </span><span class="n">function</span><span class="w"> </span><span class="n">SVAEGRADIENTS</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">},</span><span class="w"> </span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">},</span><span class="w"> </span>\<span class="n">phi</span><span class="p">,</span><span class="w"> </span><span class="n">y</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">)</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">psi</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span><span class="n">r</span>\<span class="n">left</span><span class="p">(</span><span class="n">y_</span><span class="p">{</span><span class="n">n</span><span class="p">}</span><span class="w"> </span><span class="p">;</span><span class="w"> </span>\<span class="n">phi</span>\<span class="n">right</span><span class="p">)</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Get</span><span class="w"> </span><span class="n">evidence</span><span class="w"> </span><span class="n">potentials</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">hat</span><span class="p">{</span><span class="n">x</span><span class="p">},</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">t</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">x</span><span class="p">},</span><span class="w"> </span>\<span class="n">mathrm</span><span class="p">{</span><span class="n">KL</span><span class="p">}</span><span class="o">^</span><span class="p">{</span>\<span class="n">text</span><span class="w"> </span><span class="p">{</span><span class="n">local</span><span class="w"> </span><span class="p">}}</span>\<span class="n">right</span><span class="p">)</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">PGMINFERENCE</span><span class="p">}</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">},</span><span class="w"> </span>\<span class="n">psi</span>\<span class="n">right</span><span class="p">)</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Combine</span><span class="w"> </span><span class="n">evidence</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">prior</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">hat</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">}</span><span class="w"> </span>\<span class="n">sim</span><span class="w"> </span><span class="n">q</span><span class="p">(</span>\<span class="n">gamma</span><span class="p">)</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Sample</span><span class="w"> </span><span class="n">observation</span><span class="w"> </span><span class="n">parameters</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span><span class="n">N</span><span class="w"> </span>\<span class="nb">log</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="n">y</span><span class="w"> </span>\<span class="n">mid</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">x</span><span class="p">},</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">})</span><span class="o">-</span><span class="n">N</span><span class="w"> </span>\<span class="n">mathrm</span><span class="p">{</span><span class="n">KL</span><span class="p">}</span><span class="o">^</span><span class="p">{</span>\<span class="n">text</span><span class="w"> </span><span class="p">{</span><span class="n">local</span><span class="w"> </span><span class="p">}}</span><span class="o">-</span>\<span class="n">mathrm</span><span class="p">{</span><span class="n">KL</span><span class="p">}(</span><span class="n">q</span><span class="p">(</span>\<span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="n">q</span><span class="p">(</span>\<span class="n">gamma</span><span class="p">)</span><span class="w"> </span>\<span class="o">|</span><span class="w"> </span><span class="n">p</span><span class="p">(</span>\<span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="n">p</span><span class="p">(</span>\<span class="n">gamma</span><span class="p">))</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Estimate</span><span class="w"> </span><span class="n">variational</span><span class="w"> </span><span class="n">bound</span>
+<span class="w">        </span>\<span class="p">(</span>\<span class="n">widehat</span><span class="p">{</span>\<span class="n">nabla</span><span class="p">}</span><span class="n">_</span><span class="p">{</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">}}</span><span class="w"> </span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span><span class="w"> </span>\<span class="n">leftarrow</span><span class="w"> </span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">}</span><span class="o">^</span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="o">-</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">}</span><span class="o">+</span><span class="n">N</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">hat</span><span class="p">{</span><span class="n">t</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">x</span><span class="p">},</span><span class="w"> </span><span class="mi">1</span>\<span class="n">right</span><span class="p">)</span><span class="o">+</span><span class="n">N</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">nabla_</span><span class="p">{</span>\<span class="n">eta_</span><span class="p">{</span><span class="n">x</span><span class="p">}}</span><span class="w"> </span>\<span class="nb">log</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="n">y</span><span class="w"> </span>\<span class="n">mid</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span><span class="n">x</span><span class="p">},</span><span class="w"> </span>\<span class="n">hat</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">}),</span><span class="w"> </span><span class="mi">0</span>\<span class="n">right</span><span class="p">)</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Compute</span><span class="w"> </span><span class="n">natural</span><span class="w"> </span><span class="n">gradient</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">lower</span><span class="w"> </span><span class="n">bound</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span>\<span class="p">),</span><span class="w"> </span><span class="n">natural</span><span class="w"> </span><span class="n">gradient</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">widehat</span><span class="p">{</span>\<span class="n">nabla</span><span class="p">}</span><span class="n">_</span><span class="p">{</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">}}</span><span class="w"> </span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span>\<span class="p">),</span><span class="w"> </span><span class="n">gradients</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">nabla_</span><span class="p">{</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">gamma</span><span class="p">},</span><span class="w"> </span>\<span class="n">phi</span><span class="p">}</span><span class="w"> </span>\<span class="n">mathcal</span><span class="p">{</span><span class="n">L</span><span class="p">}</span>\<span class="p">)</span>
+<span class="w">    </span><span class="n">function</span><span class="w"> </span><span class="n">PGMINFERENCE</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">},</span><span class="w"> </span>\<span class="n">psi</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">)</span>
+<span class="w">        </span>\<span class="p">(</span><span class="n">q</span><span class="o">^</span><span class="p">{</span>\<span class="n">star</span><span class="p">}(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span>\<span class="n">leftarrow</span>\<span class="p">)</span><span class="w"> </span><span class="n">OPTIMIZELOCALFACTORS</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">left</span><span class="p">(</span>\<span class="n">eta_</span><span class="p">{</span>\<span class="n">theta</span><span class="p">},</span><span class="w"> </span>\<span class="n">psi</span>\<span class="n">right</span><span class="p">)</span><span class="w"> </span>\<span class="n">quad</span><span class="w"> </span>\<span class="n">triangleright</span>\<span class="p">)</span><span class="w"> </span><span class="n">Fast</span><span class="w"> </span><span class="n">message</span><span class="o">-</span><span class="n">passing</span><span class="w"> </span><span class="n">inference</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">hat</span><span class="p">{</span><span class="n">x</span><span class="p">}</span><span class="w"> </span>\<span class="n">sim</span><span class="w"> </span><span class="n">q</span><span class="o">^</span><span class="p">{</span>\<span class="n">star</span><span class="p">}(</span><span class="n">x</span><span class="p">)</span>\<span class="p">),</span><span class="w"> </span><span class="n">statistics</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">mathbb</span><span class="p">{</span><span class="n">E</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">q</span><span class="o">^</span><span class="p">{</span>\<span class="n">star</span><span class="p">}(</span><span class="n">x</span><span class="p">)}</span><span class="w"> </span><span class="n">t_</span><span class="p">{</span><span class="n">x</span><span class="p">}(</span><span class="n">x</span><span class="p">)</span>\<span class="p">),</span><span class="w"> </span><span class="n">divergence</span><span class="w"> </span>\<span class="p">(</span>\<span class="n">mathbb</span><span class="p">{</span><span class="n">E</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">q</span><span class="p">(</span>\<span class="n">theta</span><span class="p">)}</span><span class="w"> </span>\<span class="n">operatorname</span><span class="p">{</span><span class="n">KL</span><span class="p">}</span>\<span class="n">left</span><span class="p">(</span><span class="n">q</span><span class="o">^</span><span class="p">{</span>\<span class="n">star</span><span class="p">}(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span>\<span class="o">|</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="w"> </span>\<span class="n">mid</span><span class="w"> </span>\<span class="n">theta</span><span class="p">)</span>\<span class="n">right</span><span class="p">)</span>\<span class="p">)</span>
+</code></pre></div>
+
+<p>simple and efficient and can be readily applied to a variety of learning problems and graphical model structures. See the supplementals for details and proofs.</p>
+<h1>4.1 SVAE model class</h1>
+<p>To set up notation for a general SVAE, we first define a conjugate pair of exponential family densities on global latent variables $\theta$ and local latent variables $x=\left{x_{n}\right}_{n=1}^{N}$. Let $p(x \mid \theta)$ be an exponential family and let $p(\theta)$ be its corresponding natural exponential family conjugate prior, writing</p>
+<p>$$
+\begin{aligned}
+p(\theta) &amp; =\exp \left{\left\langle\eta_{\theta}^{0}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}^{0}\right)\right} \
+p(x \mid \theta) &amp; =\exp \left{\left\langle\eta_{x}^{0}(\theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}^{0}(\theta)\right)\right}=\exp \left{\left\langle t_{\theta}(\theta),\left(t_{x}(x), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>where we used exponential family conjugacy to write $t_{\theta}(\theta)=\left(\eta_{x}^{0}(\theta),-\log Z_{x}\left(\eta_{x}^{0}(\theta)\right)\right)$. The local latent variables $x$ could have additional structure, like including both discrete and continuous latent variables or tractable graph structure, but here we keep the notation simple.
+Next, we define a general likelihood function. Let $p(y \mid x, \gamma)$ be a general family of densities and let $p(\gamma)$ be an exponential family prior on its parameters. For example, each observation $y_{n}$ may depend on the latent value $x_{n}$ through an MLP, as in the density network model of Section 2. This generic non-conjugate observation model provides modeling flexibility, yet the SVAE can still leverage conjugate exponential family structure in inference, as we show next.</p>
+<h3>4.2 Stochastic variational inference algorithm</h3>
+<p>Though the general observation model $p(y \mid x, \gamma)$ means that conjugate updates and natural gradient SVI [10] cannot be directly applied, we show that by generalizing the recognition network idea we can still approximately optimize out the local variational factors leveraging conjugacy structure.
+For fixed $y$, consider the mean field family $q(\theta) q(\gamma) q(x)$ and the variational inference objective</p>
+<p>$$
+\mathcal{L}[q(\theta) q(\gamma) q(x)] \triangleq \mathbb{E}_{q(\theta) q(\gamma) q(x)}\left[\log \frac{p(\theta) p(\gamma) p(x \mid \theta) p(y \mid x, \gamma)}{q(\theta) q(\gamma) q(x)}\right]
+$$</p>
+<p>Without loss of generality we can take the global factor $q(\theta)$ to be in the same exponential family as the prior $p(\theta)$, and we denote its natural parameters by $\eta_{\theta}$. We restrict $q(\gamma)$ to be in the same exponential family as $p(\gamma)$ with natural parameters $\eta_{\gamma}$. Finally, we restrict $q(x)$ to be in the same exponential family as $p(x \mid \theta)$, writing its natural parameter as $\eta_{x}$. Using these explicit variational parameters, we write the mean field variational inference objective in Eq. (3) as $\mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x}\right)$.
+To perform efficient optimization of the objective $\mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x}\right)$, we consider choosing the variational parameter $\eta_{x}$ as a function of the other parameters $\eta_{\theta}$ and $\eta_{\gamma}$. One natural choice is to set $\eta_{x}$ to be a local partial optimizer of $\mathcal{L}$. However, without conjugacy structure finding a local partial optimizer may be computationally expensive for general densities $p(y \mid x, \gamma)$, and in the large data setting this expensive optimization would have to be performed for each stochastic gradient update. Instead, we choose $\eta_{x}$ by optimizing over a surrogate objective $\widetilde{\mathcal{L}}$ with conjugacy structure, given by</p>
+<p>$$
+\widetilde{\mathcal{L}}\left(\eta_{\theta}, \eta_{x}, \phi\right) \triangleq \mathbb{E}<em x="x">{q(\theta) q(x)}\left[\log \frac{p(\theta) p(x \mid \theta) \exp {\psi(x ; y, \phi)}}{q(\theta) q(x)}\right], \quad \psi(x ; y, \phi) \triangleq\langle r(y ; \phi), t</em>(x)\rangle
+$$</p>
+<p>where ${r(y ; \phi)}<em _mathrm_x="\mathrm{x">{\phi \in \mathbb{R}^{m}}$ is some parameterized class of functions that serves as the recognition model. Note that the potentials $\psi(x ; y, \phi)$ have a form conjugate to the exponential family $p(x \mid \theta)$. We define $\eta</em>^{}<em>}\left(\eta_{\theta}, \phi\right)$ to be a local partial optimizer of $\widetilde{\mathcal{L}}$ along with the corresponding factor $q^{</em>}(x)$,</p>
+<p>$$
+\eta_{\mathrm{x}}^{<em>}\left(\eta_{\theta}, \phi\right) \triangleq \underset{\eta_{x}}{\arg \min } \widetilde{\mathcal{L}}\left(\eta_{\theta}, \eta_{x}, \phi\right), \quad q^{</em>}(x)=\exp \left{\left\langle\eta_{\mathrm{x}}^{<em>}\left(\eta_{\theta}, \phi\right), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{\mathrm{x}}^{</em>}\left(\eta_{\theta}, \phi\right)\right)\right}
+$$</p>
+<p>As with the variational autoencoder of Section 3.2, the resulting variational factor $q^{<em>}(x)$ is suboptimal for the variational objective $\mathcal{L}$. However, because the surrogate objective has the same form as a variational inference objective for a conjugate observation model, the factor $q^{</em>}(x)$ not only is easy to compute but also inherits exponential family and graphical model structure for tractable inference.
+Given this choice of $\eta_{\mathrm{x}}^{<em>}\left(\eta_{\theta}, \phi\right)$, the SVAE objective is $\mathcal{L}<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>^{}, \eta_{\gamma}, \phi\right) \triangleq \mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{\mathrm{x}</em>}\left(\eta_{\theta}, \phi\right)\right)$. This objective is a lower bound for the variational inference objective Eq. (3) in the following sense.
+Proposition 4.1 (The SVAE objective lower-bounds the mean field objective)
+The SVAE objective function $\mathcal{L}_{\mathrm{SVAE}}$ lower-bounds the mean field objective $\mathcal{L}$ in the sense that</p>
+<p>$$
+\max <em _eta__x="\eta_{x">{q(x)} \mathcal{L}[q(\theta) q(\gamma) q(x)] \geq \max </em>}} \mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x}\right) \geq \mathcal{L<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>
+$$}, \eta_{\gamma}, \phi\right) \quad \forall \phi \in \mathbb{R}^{m</p>
+<p>for any parameterized function class ${r(y ; \phi)}<em q_gamma_="q(\gamma)">{\phi \in \mathbb{R}^{m}}$. Furthermore, if there is some $\phi^{<em>} \in \mathbb{R}^{m}$ such that $\psi\left(x ; y, \phi^{</em>}\right)=\mathbb{E}</em> \log p(y \mid x, \gamma)$, then the bound can be made tight in the sense that</p>
+<p>$$
+\max <em _eta__x="\eta_{x">{q(x)} \mathcal{L}[q(\theta) q(\gamma) q(x)]=\max </em>\right)=\max }} \mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x<em _mathrm_SVAE="\mathrm{SVAE">{\phi} \mathcal{L}</em>, \phi\right)
+$$}}\left(\eta_{\theta}, \eta_{\gamma</p>
+<p>Thus by using gradient-based optimization to maximize $\mathcal{L}<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>$ to be as rich as possible.}, \eta_{\gamma}, \phi\right)$ we are maximizing a lower bound on the model log evidence $\log p(y)$. In particular, by optimizing over $\phi$ we are effectively learning how to condition on observations so as to best approximate the posterior while maintaining conjugacy structure. Furthermore, to provide the best lower bound we may choose the recognition model function class ${r(y ; \phi)}_{\phi \in \mathbb{R}^{m}</p>
+<p>Choosing $\eta_{\mathrm{x}}^{<em>}\left(\eta_{\theta}, \phi\right)$ to be a local partial optimizer of $\widetilde{\mathcal{L}}$ provides two computational advantages. First, it allows $\eta_{\mathrm{x}}^{</em>}\left(\eta_{\theta}, \phi\right)$ and expectations with respect to $q^{*}(x)$ to be computed efficiently by exploiting exponential family graphical model structure. Second, it provides computationally efficient ways to estimate the natural gradient with respect to the latent model parameters, as we summarize next.
+Proposition 4.2 (Natural gradient of the SVAE objective)
+The natural gradient of the SVAE objective $\mathcal{L}<em _theta="\theta">{\mathrm{SVAE}}$ with respect to $\eta</em>$ can be estimated as</p>
+<p>$$
+\widetilde{\nabla}<em _theta="\theta">{\eta</em>}} \mathcal{L<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>}, \eta_{\gamma}, \phi\right)=\left(\eta_{\theta}^{0}+\mathbb{E<em x="x">{q^{*}(x)}\left[\left(t</em>\right)
+$$}(x), 1\right)\right]-\eta_{\theta}\right)+\left(\nabla^{2} \log Z_{\theta}\left(\eta_{\theta}\right)\right)^{-1} \nabla F\left(\eta_{\theta</p>
+<p>where $F\left(\eta_{\theta}^{\prime}\right)=\mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{\mathrm{x}}^{*}\left(\eta_{\theta}^{\prime}, \phi\right)\right)$. When there is only one local variational factor $q(x)$, then we can simplify the estimator to</p>
+<p>$$
+\widetilde{\nabla}<em _theta="\theta">{\eta</em>}} \mathcal{L<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>}, \eta_{\gamma}, \phi\right)=\left(\eta_{\theta}^{0}+\mathbb{E<em _theta="\theta">{q^{<em>}(x)}\left[\left(t_{x}(x), 1\right)\right]-\eta_{\theta}\right)+\left(\nabla_{\eta_{x}} \mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{\mathrm{x}}^{</em>}\left(\eta</em>, \phi\right)\right), 0\right)
+$$</p>
+<p>Note that the first term in Eq. (4) is the same as the expression for the natural gradient in SVI for conjugate models [10], while a stochastic estimate of $\nabla F\left(\eta_{\theta}\right)$ in the first expression or, alternatively, a stochastic estimate of $\nabla_{\eta_{\theta}} \mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{\mathrm{x}}^{*}\left(\eta_{\theta}, \phi\right)\right)$ in the second expression is computed automatically as part of the backward pass for computing the gradients with respect to the other parameters, as described next. Thus we have an expression for the natural gradient with respect to the latent model's parameters that is almost as simple as the one for conjugate models, differing only by a term involving the neural network likelihood function. Natural gradients are invariant to smooth invertible reparameterizations of the variational family $[16,17]$ and provide effective second-order optimization updates $[18,11]$.
+The gradients of the objective with respect to the other variational parameters, namely $\nabla_{\eta_{\gamma}} \mathcal{L}<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>}, \eta_{\gamma}, \phi\right)$ and $\nabla_{\phi} \mathcal{L<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>, \phi\right)$, can be computed using the reparameterization trick and standard automatic differentiation techniques. To isolate the terms that require the reparameterization trick, we rearrange the objective as}, \eta_{\gamma</p>
+<p>$$
+\mathcal{L}<em _theta="\theta">{\mathrm{SVAE}}\left(\eta</em>_{q(\gamma) q^{}, \eta_{\gamma}, \phi\right)=\mathbb{E<em>}(x)} \log p(y \mid x, \gamma)-\operatorname{KL}\left(q(\theta) q^{</em>}(x) | p(\theta, x)\right)-\operatorname{KL}(q(\gamma) | p(\gamma))
+$$</p>
+<p>The KL divergence terms are between members of the same tractable exponential families. An unbiased estimate of the first term can be computed by sampling $\hat{x} \sim q^{*}(x)$ and $\hat{\gamma} \sim q(\gamma)$ and computing $\nabla_{\eta_{\gamma}, \phi} \log p(y \mid \hat{x}, \hat{\gamma})$ with automatic differentiation.</p>
+<h1>5 Related work</h1>
+<p>In addition to the papers already referenced, there are several recent papers to which this work is related.</p>
+<p>The two papers closest to this work are Krishnan et al. [19] and Archer et al. [20]. In Krishnan et al. [19] the authors consider combining variational autoencoders with continuous state-space models, emphasizing the relationship to linear dynamical systems (also called Kalman filter models). They primarily focus on nonlinear dynamics and an RNN-based variational family, as well as allowing control inputs. However, the approach does not extend to general graphical models or discrete latent variables. It also does not leverage natural gradients or exact inference subroutines.</p>
+<p>In Archer et al. [20] the authors also consider the problem of variational inference in general continuous state space models but focus on using a structured Gaussian variational family without considering parameter learning. As with Krishnan et al. [19], this approach does not include discrete latent variables (or any latent variables other than the continuous states). However, the method they develop could be used with an SVAE to handle inference with nonlinear dynamics.</p>
+<p>In addition, both Gregor et al. [21] and Chung et al. [22] extend the variational autoencoder framework to sequential models, though they focus on RNNs rather than probabilistic graphical models.</p>
+<p>Finally, there is much related work on handling nonconjugate model terms in mean field variational inference. In Khan et al. [23] and Khan et al. [24] the authors present a general scheme that is able to exploit conjugate exponential family structure while also handling arbitrary nonconjugate model factors, including the nonconjugate observation models we consider here. In particular, they propose using a proximal gradient framework and splitting the variational inference objective into a difficult term to be linearized (with respect to mean parameters) and a tractable concave term, so that the resulting proximal gradient update is easy to compute, just like in a fully conjugate model. In Knowles et al. [25], the authors propose performing natural gradient descent with respect to natural parameters on each of the variational factors in turn, and they focus on approximating expectations of nonconjugate energy terms in the objective with model-specific lower-bounds (rather than estimating them with generic Monte Carlo). As in conjugate SVI [10], they observe that, on conjugate factors and with an undamped update (i.e. a unit step size), the natural gradient update reduces to the standard conjugate mean field update.</p>
+<p>In contrast to the approaches of Khan et al. [23], Khan et al. [24], and Knowles et al. [25], rather than linearizing intractable terms around the current iterate, in this work we handle intractable terms via recognition networks and amoritized inference (and the remaining tractable objective terms are multi-concave in general, analogous to SVI [10]). That is, we use parametric function approximators to learn to condition on evidence in a conjugate form. We expect these approaches to handling nonconjugate objective terms may be complementary, and the best choice may be situation-dependent. For models with local latent variables and datasets where minibatch-based updating is important, using inference networks to compute local variational parameters in a fixed-depth circuit (as in the VAE [7, 8]) or optimizing out the local variational factors using fast conjugate updates (as in conjugate SVI [10]) can be advantageous because in both cases local variational parameters for the entire dataset need not be maintained across updates. The SVAE we propose here is a way to combine the inference network and conjugate SVI approaches.</p>
+<h2>6 Experiments</h2>
+<p>We apply the SVAE to both synthetic and real data and demonstrate its ability to learn feature representations and latent structure. Code is available at github.com/mattjj/svae.</p>
+<h3>6.1 LDS SVAE for modeling synthetic data</h3>
+<p>Consider a sequence of 1D images representing a dot bouncing from one side of the image to the other, as shown at the top of Fig. 4. We use an LDS SVAE to find a low-dimensional latent state space representation along with a nonlinear image model. The model is able to represent the image accurately and to make long-term predictions with uncertainty. See supplementals for details.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Predictions from an LDS SVAE fit to 1D dot image data at two stages of training. The top panel shows an example sequence with time on the horizontal axis. The middle panel shows the noiseless predictions given data up to the vertical line, while the bottom panel shows the latent states.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Experimental results from LDS SVAE models on synthetic data and real mouse data.
+This experiment also demonstrates the optimization advantages that can be provided by the natural gradient updates. In Fig. 5a we compare natural gradient updates with standard gradient updates at three different learning rates. The natural gradient algorithm not only learns much faster but also is less dependent on parameterization details: while the natural gradient update used an untuned stepsize of 0.1 , the standard gradient dynamics at step sizes of both 0.1 and 0.05 resulted in some matrix parameters to be updated to indefinite values.</p>
+<h1>6.2 LDS SVAE for modeling video</h1>
+<p>We also apply an LDS SVAE to model depth video recordings of mouse behavior. We use the dataset from Wiltschko et al. [3] in which a mouse is recorded from above using a Microsoft Kinect. We used a subset consisting of 8 recordings, each of a distinct mouse, 20 minutes long at 30 frames per second, for a total of 288000 video fames downsampled to $30 \times 30$ pixels.</p>
+<p>We use MLP observation and recognition models with two hidden layers of 200 units each and a 10D latent space. Fig. 5b shows images corresponding to a regular grid on a random 2D subspace of the latent space, illustrating that the learned image manifold accurately captures smooth variation in the mouse's body pose. Fig. 6 shows predictions from the model paired with real data.</p>
+<h3>6.3 SLDS SVAE for parsing behavior</h3>
+<p>Finally, because the LDS SVAE can accurately represent the depth video over short timescales, we apply the latent switching linear dynamical system (SLDS) model to discover the natural units of behavior. Fig. 7 and Fig. 8 in the appendix show some of the discrete states that arise from fitting an SLDS SVAE with 30 discrete states to the depth video data. The discrete states that emerge show a natural clustering of short-timescale patterns into behavioral units. See the supplementals for more.</p>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: Predictions from an LDS SVAE fit to depth video. In each panel, the top is a sampled prediction and the bottom is real data. The model is conditioned on observations to the left of the line.
+<img alt="img-6.jpeg" src="img-6.jpeg" />
+(b) Fall from rear</p>
+<p>Figure 7: Examples of behavior states inferred from depth video. Each frame sequence is padded on both sides, with a square in the lower-right of a frame depicting when the state is the most probable.</p>
+<h1>7 Conclusion</h1>
+<p>Structured variational autoencoders provide a general framework that combines some of the strengths of probabilistic graphical models and deep learning methods. In particular, they use graphical models both to give models rich latent representations and to enable fast variational inference with CRF-like structured approximating distributions. To complement these structured representations, SVAEs use neural networks to produce not only flexible nonlinear observation models but also fast recognition networks that map observations to conjugate graphical model potentials.</p>
+<h1>References</h1>
+<p>[1] Daphne Koller and Nir Friedman. Probabilistic graphical models: principles and techniques. MIT Press, 2009.
+[2] Kevin P Murphy. Machine Learning: a Probabilistic Perspective. MIT Press, 2012.
+[3] Alexander B. Wiltschko, Matthew J. Johnson, Giuliano Iurilli, Ralph E. Peterson, Jesse M. Katon, Stan L. Pashkovski, Victoria E. Abraira, Ryan P. Adams, and Sandeep Robert Datta. "Mapping Sub-Second Structure in Mouse Behavior". In: Neuron 88.6 (2015), pp. 1121-1135.
+[4] Geoffrey Hinton, Li Deng, Dong Yu, George E Dahl, Abdel-rahman Mohamed, Navdeep Jaitly, Andrew Senior, Vincent Vanhoucke, Patrick Nguyen, Tara N Sainath, et al. "Deep neural networks for acoustic modeling in speech recognition: The shared views of four research groups". In: Signal Processing Magazine, IEEE 29.6 (2012), pp. 82-97.
+[5] Li Deng. "Computational models for speech production". In: Computational Models of Speech Pattern Processing. Springer, 1999, pp. 199-213.
+[6] Li Deng. "Switching dynamic system models for speech articulation and acoustics". In: Mathematical Foundations of Speech and Language Processing. Springer, 2004, pp. 115-133.
+[7] Diederik P. Kingma and Max Welling. "Auto-Encoding Variational Bayes". In: International Conference on Learning Representations (2014).
+[8] Danilo J Rezende, Shakir Mohamed, and Daan Wierstra. "Stochastic Backpropagation and Approximate Inference in Deep Generative Models". In: Proceedings of the 31st International Conference on Machine Learning. 2014, pp. 1278-1286.
+[9] Matthew J. Johnson and Alan S. Willsky. "Stochastic Variational Inference for Bayesian Time Series Models". In: International Conference on Machine Learning. 2014.
+[10] Matthew D. Hoffman, David M. Blei, Chong Wang, and John Paisley. "Stochastic variational inference". In: Journal of Machine Learning Research (2013).
+[11] James Martens. "New insights and perspectives on the natural gradient method". In: arXiv preprint arXiv:1412.1193 (2015).
+[12] David J.C. MacKay and Mark N. Gibbs. "Density networks". In: Statistics and neural networks: advances at the interface. Oxford University Press, Oxford (1999), pp. 129-144.
+[13] Tomoharu Iwata, David Duvenaud, and Zoubin Ghahramani. "Warped Mixtures for Nonparametric Cluster Shapes". In: Conference on Uncertainty in Artificial Intelligence (UAI). 2013, pp. 311-319.
+[14] E.B. Fox, E.B. Sudderth, M.I. Jordan, and A.S. Willsky. "Bayesian Nonparametric Inference of Switching Dynamic Linear Models". In: IEEE Transactions on Signal Processing 59.4 (2011).
+[15] Martin J. Wainwright and Michael I. Jordan. "Graphical Models, Exponential Families, and Variational Inference". In: Foundations and Trends in Machine Learning (2008).
+[16] Shun-Ichi Amari. "Natural gradient works efficiently in learning". In: Neural computation 10.2 (1998), pp. 251-276.
+[17] Shun-ichi Amari and Hiroshi Nagaoka. Methods of Information Geometry. American Mathematical Society, 2007.
+[18] James Martens and Roger Grosse. "Optimizing Neural Networks with Kronecker-factored Approximate Curvature". In: arXiv preprint arXiv:1503.05671 (2015).
+[19] Rahul G Krishnan, Uri Shalit, and David Sontag. "Deep Kalman Filters". In: arXiv preprint arXiv:1511.05121 (2015).
+[20] Evan Archer, Il Memming Park, Lars Buesing, John Cunningham, and Liam Paninski. "Black box variational inference for state space models". In: arXiv preprint arXiv:1511.07367 (2015).
+[21] Karol Gregor, Ivo Danihelka, Alex Graves, and Daan Wierstra. "DRAW: A recurrent neural network for image generation". In: arXiv preprint arXiv:1502.04623 (2015).
+[22] Junyoung Chung, Kyle Kastner, Laurent Dinh, Kratarth Goel, Aaron C Courville, and Yoshua Bengio. "A recurrent latent variable model for sequential data". In: Advances in Neural information processing systems. 2015, pp. 2962-2970.
+[23] Mohammad E Khan, Pierre Baqué, François Fleuret, and Pascal Fua. "Kullback-Leibler proximal variational inference". In: Advances in Neural Information Processing Systems. 2015, pp. 3402-3410.</p>
+<p>[24] Mohammad Emtiyaz Khan, Reza Babanezhad, Wu Lin, Mark Schmidt, and Masashi Sugiyama. "Faster Stochastic Variational Inference using Proximal-Gradient Methods with General Divergence Functions". In: Conference on Uncertainty in Artificial Intelligence (UAI). 2016.
+[25] David A Knowles and Tom Minka. "Non-conjugate variational message passing for multinomial and binary regression". In: Advances in Neural Information Processing Systems. 2011, pp. 1701-1709.
+[26] Dimitri P Bertsekas. Nonlinear programming. 2nd ed. Athena Scientific, 1999.
+[27] John M. Danskin. The theory of max-min and its application to weapons allocation problems. Springer-Verlag, New York, 1967.
+[28] Anthony-V Fiacco. Introduction to sensitivity and stability analysis in nonlinear programming. Academic Press, Inc., 1984.
+[29] J Frederic Bonnans and Alexander Shapiro. Perturbation Analysis of Optimization Problems. Springer Science \&amp; Business Media, 2000.
+[30] James Martens and Roger Grosse. "Optimizing Neural Networks with Kronecker-factored Approximate Curvature". In: Proceedings of the 32nd International Conference on Machine Learning. 2015.
+[31] David Duvenaud and Ryan P. Adams. "Black-box stochastic variational inference in five lines of Python". In: NIPS Workshop on Black-box Learning and Inference (2015).</p>
+<h1>A Optimization</h1>
+<p>In this section we fix our notation for gradients and establish some basic definitions and results that we use in the sequel.</p>
+<h2>A. 1 Gradient notation</h2>
+<p>We follow the notation in Bertsekas [26, A.5]. In particular, if $f: \mathbb{R}^{n} \rightarrow \mathbb{R}^{m}$ is a continuously differentiable function, we define the gradient matrix of $f$, denoted $\nabla f(x)$, to be the $n \times m$ matrix in which the $i$ th column is the gradient $\nabla f_{i}(x)$ of $f_{i}$, the $i$ th coordinate function of $f$, for $i=1,2, \ldots, m$. That is,</p>
+<p>$$
+\nabla f(x)=\left[\begin{array}{lll}
+\nabla f_{1}(x) &amp; \cdots &amp; \nabla f_{m}(x)
+\end{array}\right]
+$$</p>
+<p>The transpose of $\nabla f$ is the Jacobian matrix of $f$, in which the $i j$ th entry is the function $\partial f_{i} / \partial x_{j}$.
+If $f: \mathbb{R}^{n} \rightarrow \mathbb{R}$ is continuously differentiable with continuously differentiable partial derivatives, then we define the Hessian matrix of $f$, denoted $\nabla^{2} f$, to be the matrix in which the $i j$ th entry is the function $\partial^{2} f / \partial x_{i} \partial x_{j}$.
+Finally, if $f: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ is a function of $(x, y)$ with $x \in R^{n}$ and $y \in \mathbb{R}^{m}$, we write</p>
+<p>$$
+\begin{gathered}
+\nabla_{x} f(x, y)=\left(\begin{array}{c}
+\frac{\partial f(x, y)}{\partial x_{1}} \
+\vdots \
+\frac{\partial f(x, y)}{\partial x_{m}}
+\end{array}\right), \quad \nabla_{y} f(x, y)=\left(\begin{array}{c}
+\frac{\partial f(x, y)}{\partial y_{1}} \
+\vdots \
+\frac{\partial f(x, y)}{\partial y_{m}}
+\end{array}\right) \
+\nabla_{x x}^{2} f(x, y)=\left(\frac{\partial^{2} f(x, y)}{\partial x_{i} \partial x_{j}}\right), \quad \nabla_{y y}^{2} f(x, y)=\left(\frac{\partial^{2} f(x, y)}{\partial y_{i} \partial y_{j}}\right) \
+\nabla_{x y}^{2} f(x, y)=\left(\frac{\partial^{2} f(x, y)}{\partial x_{i} \partial y_{j}}\right)
+\end{gathered}
+$$</p>
+<h2>A. 2 Local and partial optimizers</h2>
+<p>In this section we state the definitions of local partial optimizer and necessary conditions for optimality that we use in the sequel.
+Definition A. 1 (Partial optimizer, local partial optimizer)
+Let $f: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ be an objective function to be maximized. For a fixed $x \in \mathbb{R}^{n}$, we call a point $y^{*} \in \mathbb{R}^{m}$ an unconstrained partial optimizer of $f$ given $x$ if</p>
+<p>$$
+f(x, y) \leq f\left(x, y^{*}\right) \quad \forall y \in \mathbb{R}^{m}
+$$</p>
+<p>and we call $y^{*}$ an unconstrained local partial optimizer of $f$ given $x$ if there exists an $\epsilon&gt;0$ such that</p>
+<p>$$
+f(x, y) \leq f\left(x, y^{<em>}\right) \quad \forall y \text { with }\left|y-y^{</em>}\right|&lt;\epsilon
+$$</p>
+<p>where $|\cdot|$ is any vector norm.
+Proposition A. 2 (Necessary conditions for optimality, Prop. 3.1.1 of Bertsekas [26])
+Let $f: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ be continuously differentiable. For fixed $x \in \mathbb{R}^{n}$ if $y^{*} \in \mathbb{R}^{m}$ is an unconstrained local partial optimizer for $f$ given $x$ then</p>
+<p>$$
+\nabla_{y} f\left(x, y^{*}\right)=0
+$$</p>
+<p>If instead $x$ and $y$ are subject to the constraints $h(x, y)=0$ for some continuously differentiable $h: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}^{m}$ and $y^{<em>}$ is a constrained local partial optimizer for $f$ given $x$ with the regularity condition that $\nabla_{y} h\left(x, y^{</em>}\right)$ is full rank, then there exists a Lagrange multiplier $\lambda^{*} \in \mathbb{R}^{m}$ such that</p>
+<p>$$
+\nabla_{y} f\left(x, y^{<em>}\right)+\nabla_{y} h\left(x, y^{</em>}\right) \lambda^{*}=0
+$$</p>
+<p>and hence the cost gradient $\nabla_{y} f\left(x, y^{<em>}\right)$ is orthogonal to the first-order feasible variations in $y$ given by the null space of $\nabla_{y} h\left(x, y^{</em>}\right)^{\mathrm{T}}$.</p>
+<p>Note that the regularity condition on the constraints is not needed if the constraints are linear [26, Prop. 3.3.7].</p>
+<p>For a continuously differentiable function $f: \mathbb{R}^{n} \rightarrow \mathbb{R}$, we say $x^{<em>}$ is a stationary point of $f$ if $\nabla f\left(x^{</em>}\right)=0$. For general unconstrained smooth optimization, the limit points of gradient-based algorithms are guaranteed only to be stationary points of the objective, not necessarily local optima. Block coordinate ascent methods, when available, provide slightly stronger guarantees: not only is every limit point a stationary point of the objective, in addition each coordinate block is a partial optimizer of the objective. Note that the objective functions we consider maximizing in the following are bounded above.</p>
+<h1>A. 3 Partial optimization and the Implicit Function Theorem</h1>
+<p>Let $f: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ be a scalar-valued objective function of two unconstrained arguments $x \in \mathbb{R}^{n}$ and $y \in \mathbb{R}^{m}$, and let $y^{<em>}: \mathbb{R}^{n} \rightarrow \mathbb{R}^{m}$ be some function that assigns to each $x \in \mathbb{R}^{n}$ a value $y^{</em>}(x) \in \mathbb{R}^{m}$. Define the composite function $g: \mathbb{R}^{n} \rightarrow \mathbb{R}$ as</p>
+<p>$$
+g(x) \triangleq f\left(x, y^{*}(x)\right)
+$$</p>
+<p>and using the chain rule write its gradient as</p>
+<p>$$
+\nabla g(x)=\nabla_{x} f\left(x, y^{<em>}(x)\right)+\nabla y^{</em>}(x) \nabla_{y} f\left(x, y^{*}(x)\right)
+$$</p>
+<p>One choice of the function $y^{<em>}(x)$ is to partially optimize $f$ for any fixed value of $x$. For example, assuming that $\arg \max _{y} f(x, y)$ is nonempty for every $x \in \mathbb{R}^{n}$, we could choose $y^{</em>}$ to satisfy $y^{<em>}(x) \in \arg \max <em y="y">{y} f(x, y)$, so that $g(x)=\max </em>$ Similarly, if $y^{} f(x, y) .{ }^{1</em>}(x)$ is chosen so that $\nabla_{y} f\left(x, y^{<em>}(x)\right)=0$, which is satisfied when $y^{</em>}(x)$ is an unconstrained local partial optimizer for $f$ given $x$, then the expression in Eq. (5) can be simplified as in the following proposition.
+Proposition A. 3 (Gradients of locally partially optimized objectives)
+Let $f: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ be continuously differentiable, let $y^{<em>}$ be a local partial optimizer of $f$ given $x$ such that $y^{</em>}(x)$ is differentiable, and define $g(x)=f\left(x, y^{*}(x)\right)$. Then</p>
+<p>$$
+\nabla g(x)=\nabla_{x} f\left(x, y^{*}(x)\right)
+$$</p>
+<p>Proof. If $y^{<em>}$ is an unconstrained local partial optimizer of $f$ given $x$ then it satisfies $\nabla_{y} f\left(x, y^{</em>}\right)=0$, and if $y^{<em>}$ is a regularly-constrained local partial optimizer then the feasible variation $\nabla y^{</em>}(x)$ is orthogonal to the cost gradient $\nabla_{y} f\left(x, y^{*}\right)$. In both cases the second term in the expression for $\nabla g(x)$ in Eq. (5) is zero.</p>
+<p>In general, when $y^{<em>}(x)$ is not a stationary point of $f(x, \cdot)$, to evaluate the gradient $\nabla g(x)$ we need to evaluate $\nabla y^{</em>}(x)$ in Eq. (5). However, this term may be difficult to compute directly. The function $y^{<em>}(x)$ may arise implicitly from some system of equations of the form $h(x, y)=0$ for some continuously differentiable function $h: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}^{m}$. For example, the value of $y$ may be computed from $x$ and $h$ using a black-box iterative numerical algorithm. However, the Implicit Function Theorem provides another means to compute $\nabla y^{</em>}(x)$ using only the derivatives of $h$ and the value of $y^{*}(x)$.
+Proposition A. 4 (Implicit Function Theorem, Prop. A. 25 of Bertsekas [26])
+Let $h: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}^{m}$ be a function and $\bar{x} \in \mathbb{R}^{n}$ and $\bar{y} \in \mathbb{R}^{m}$ be points such that</p>
+<ol>
+<li>$h(\bar{x}, \bar{y})=0$</li>
+<li>$h$ is continuous and has a continuous nonsingular gradient matrix $\nabla_{y} h(x, y)$ in an open set containing $(\bar{x}, \bar{y})$.</li>
+</ol>
+<p>Then there exist open sets $S_{\bar{x}} \subseteq \mathbb{R}^{n}$ and $S_{\bar{y}} \subseteq \mathbb{R}^{m}$ containing $\bar{x}$ and $\bar{y}$, respectively, and a continuous function $y^{<em>}: S_{\bar{x}} \rightarrow S_{\bar{y}}$ such that $\bar{y}=y^{</em>}(x)$ and $h\left(x, y^{<em>}(x)\right)=0$ for all $x \in S_{\bar{x}}$. The function $y^{</em>}$ is</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>unique in the sense that if $x \in S_{\bar{x}}, y \in S_{\bar{y}}$, and $h(x, y)=0$, then $y=y^{<em>}(x)$. Furthermore, if for some $p&gt;0, h$ is $p$ times continuously differentiable, the same is true for $y^{</em>}$, and we have</p>
+<p>$$
+\nabla y^{<em>}(x)=-\nabla_{x} h\left(x, y^{</em>}(x)\right)\left(\nabla_{y} h\left(x, y^{*}(x)\right)\right)^{-1}, \quad \forall x \in S_{\bar{x}}
+$$</p>
+<p>As a special case, the equations $h(x, y)=0$ may be the first-order stationary conditions of another unconstrained optimization problem. That is, the value of $y$ may be chosen by locally partially optimizing the value of $u(x, y)$ for a function $u: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ with no constraints on $y$, leading to the following corollary.
+Corollary A. 5 (Implicit Function Theorem for optimization subroutines)
+Let $u: \mathbb{R}^{n} \times \mathbb{R}^{m} \rightarrow \mathbb{R}$ be a twice continuously differentiable function such that the choice $h=\nabla_{y} u$ satisfies the hypotheses of Proposition A. 4 at some point $(\bar{x}, \bar{y})$, and define $y^{*}$ as in Proposition A.4. Then we have</p>
+<p>$$
+\nabla y^{<em>}(x)=-\nabla_{x y}^{2} u\left(x, y^{</em>}(x)\right)\left(\nabla_{y y}^{2} u\left(x, y^{*}(x)\right)\right)^{-1}, \quad \forall x \in S_{\bar{x}}
+$$</p>
+<h1>B Exponential families</h1>
+<p>In this section we set up notation for exponential families and outline some basic results. Throughout this section we take all densities to be absolutely continuous with respect to the appropriate Lebesgue measure (when the underlying set $\mathcal{X}$ is Euclidean space) or counting measure (when $\mathcal{X}$ is discrete), and denote the Borel $\sigma$-algebra of a set $\mathcal{X}$ as $\mathcal{B}(\mathcal{X})$ (generated by Euclidean and discrete topologies, respectively). We assume measurability of all functions as necessary.
+Given a statistic function $t_{x}: \mathcal{X} \rightarrow \mathbb{R}^{n}$ and a base measure $\nu_{\mathcal{X}}$, we can define an exponential family of probability densities on $\mathcal{X}$ relative to $\nu_{\mathcal{X}}$ and indexed by natural parameter $\eta_{x} \in \mathbb{R}^{n}$ by</p>
+<p>$$
+p\left(x \mid \eta_{x}\right) \propto \exp \left{\left\langle\eta_{x}, t_{x}(x)\right\rangle\right}, \quad \forall \eta_{x} \in \mathbb{R}^{n}
+$$</p>
+<p>where $\langle\cdot, \cdot\rangle$ is the standard inner product on $\mathbb{R}^{n}$. We also define the partition function as</p>
+<p>$$
+Z_{x}\left(\eta_{x}\right) \triangleq \int \exp \left{\left\langle\eta_{x}, t_{x}(x)\right\rangle\right} \nu_{\mathcal{X}}(d x)
+$$</p>
+<p>and define $H \subseteq \mathbb{R}^{n}$ to be the set of all normalizable natural parameters,</p>
+<p>$$
+H \triangleq\left{\eta \in \mathbb{R}^{n}: Z_{x}(\eta)&lt;\infty\right}
+$$</p>
+<p>We can write the normalized probability density as</p>
+<p>$$
+p(x \mid \eta)=\exp \left{\left\langle\eta_{x}, t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}\right)\right}
+$$</p>
+<p>We say that an exponential family is regular if $H$ is open, and minimal if there is no $\eta \in \mathbb{R}^{n} \backslash{0}$ such that $\left\langle\eta, t_{x}(x)\right\rangle=0$ ( $\nu_{\mathcal{X}}$-a.e.). We assume all families are regular and minimal. ${ }^{2}$ Finally, when we parameterize the family with some other coordinates $\theta$, we write the natural parameter as a continuous function $\eta_{x}(\theta)$ and write the density as</p>
+<p>$$
+p(x \mid \theta)=\exp \left{\left\langle\eta_{x}(\theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}(\theta)\right)\right}
+$$</p>
+<p>and take $\Theta=\eta_{x}^{-1}(H)$ to be the open set of parameters that correspond to normalizable densities. We summarize this notation in the following definition.
+Definition B. 1 (Exponential family of densities)
+Given a measure space $(\mathcal{X}, \mathcal{B}(\mathcal{X}), \nu_{\mathcal{X}})$, a statistic function $t_{x}: \mathcal{X} \rightarrow \mathbb{R}^{n}$, and a natural parameter function $\eta_{x}: \Theta \rightarrow \mathbb{R}^{n}$, the corresponding exponential family of densities relative to $\nu_{\mathcal{X}}$ is</p>
+<p>$$
+p(x \mid \theta)=\exp \left{\left\langle\eta_{x}(\theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}(\theta)\right)\right}
+$$</p>
+<p>where</p>
+<p>$$
+\log Z_{x}\left(\eta_{x}\right) \triangleq \log \int \exp \left{\left\langle\eta_{x}, t_{x}(x)\right\rangle\right} \nu_{\mathcal{X}}(d x)
+$$</p>
+<p>is the log partition function.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>When we write exponential families of densities for different random variables, we change the subscripts on the statistic function, natural parameter function, and log partition function to correspond to the symbol used for the random variable. When the corresponding random variable is clear from context, we drop the subscripts to simplify notation.</p>
+<p>The next proposition shows that the log partition function of an exponential family generates cumulants of the statistic.
+Proposition B. 2 (Gradients of $\log Z$ and expected statistics)
+The gradient of the log partition function of an exponential family gives the expected sufficient statistic,</p>
+<p>$$
+\nabla \log Z(\eta)=\mathbb{E}_{p(x \mid \eta)}[t(x)]
+$$</p>
+<p>where the expectation is over the random variable $x$ with density $p(x \mid \eta)$. More generally, the moment generating function of $t(x)$ can be written</p>
+<p>$$
+\mathrm{M}<em _eta_="\eta)" _mid="\mid" p_x="p(x">{t(x)}(\mathrm{s}) \triangleq \mathbb{E}</em>
+$$}\left[e^{(s, t(x))}\right]=e^{\log Z(\eta+s)-\log Z(\eta)</p>
+<p>and so derivatives of $\log Z$ give cumulants of $t(x)$, where the first cumulant is the mean and the second and third cumulants are the second and third central moments, respectively.</p>
+<p>Given an exponential family of densities on $\mathcal{X}$ as in Definition B.1, we can define a related exponential family of densities on $\Theta$ by defining a statistic function $t_{\theta}(\theta)$ in terms of the functions $\eta_{x}(\theta)$ and $\log Z_{x}\left(\eta_{x}(\theta)\right)$
+Definition B. 3 (Natural exponential family conjugate prior)
+Given the exponential family $p(x \mid \theta)$ of Definition B.1, define the statistic function $t_{\theta}: \Theta \rightarrow \mathbb{R}^{n+1}$ as the concatenation</p>
+<p>$$
+t_{\theta}(\theta) \triangleq\left(\eta_{x}(\theta),-\log Z_{x}\left(\eta_{x}(\theta)\right)\right)
+$$</p>
+<p>where the first $n$ coordinates of $t_{\theta}(\theta)$ are given by $\eta_{x}(\theta)$ and the last coordinate is given by $-\log Z_{x}\left(\eta_{x}(\theta)\right)$. We call the exponential family with statistic $t_{\theta}(\theta)$ the natural exponential family conjugate prior to the density $p(x \mid \theta)$ and write</p>
+<p>$$
+p(\theta)=\exp \left{\left\langle\eta_{\theta}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right}
+$$</p>
+<p>where $\eta_{\theta} \in \mathbb{R}^{n+1}$ and the density is taken relative to some measure $\nu_{\Theta}$ on $(\Theta, \mathcal{B}(\Theta))$.
+Notice that using $t_{\theta}(\theta)$ we can rewrite the original density $p(x \mid \theta)$ as</p>
+<p>$$
+\begin{aligned}
+p(x \mid \theta) &amp; =\exp \left{\left\langle\eta_{x}(\theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}(\theta)\right)\right} \
+&amp; =\exp \left{\left\langle t_{\theta}(\theta),\left(t_{x}(x), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>This relationship is useful in Bayesian inference: when the exponential family $p(x \mid \theta)$ is a likelihood function and the family $p(\theta)$ is used as a prior, the pair enjoy a convenient conjugacy property, as summarized in the next proposition.</p>
+<h1>Proposition B. 4 (Conjugacy)</h1>
+<p>Let the densities $p(x \mid \theta)$ and $p(\theta)$ be defined as in Definitions B.1 and B.3, respectively. We have the relations</p>
+<p>$$
+\begin{aligned}
+p(\theta, x) &amp; =\exp \left{\left\langle\eta_{\theta}+\left(t_{x}(x), 1\right), t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right} \
+p(\theta \mid x) &amp; =\exp \left{\left\langle\eta_{\theta}+\left(t_{x}(x), 1\right), t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}+\left(t_{x}(x), 1\right)\right)\right}
+\end{aligned}
+$$</p>
+<p>and hence in particular the posterior $p(\theta \mid x)$ is in the same exponential family as $p(\theta)$ with the natural parameter $\eta_{\theta}+\left(t_{x}(x), 1\right)$. Similarly, with multiple likelihood terms $p\left(x_{i} \mid \theta\right)$ for $i=1,2, \ldots, N$ we have</p>
+<p>$$
+p(\theta) \prod_{i=1}^{N} p\left(x_{i} \mid \theta\right)=\exp \left{\left\langle\eta_{\theta}+\sum_{i=1}^{N}\left(t_{x}\left(x_{i}\right), 1\right), t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right}
+$$</p>
+<p>Finally, we give a few more exponential family properties that are useful for gradient-based optimization algorithms and variational inference. In particular, we note that the Fisher information matrix of an exponential family can be computed as the Hessian matrix of its log partition function, and that the KL divergence between two members of the same exponential family has a simple expression.</p>
+<p>Definition B. 5 (Score vector and Fisher information matrix)
+Given a family of densities $p(x \mid \theta)$ indexed by a parameter $\theta$, the score vector $v(x, \theta)$ is the gradient of the log density with respect to the parameter,</p>
+<p>$$
+v(x, \theta) \triangleq \nabla_{\theta} \log p(x \mid \theta)
+$$</p>
+<p>and the Fisher information matrix for the parameter $\theta$ is the covariance of the score,</p>
+<p>$$
+I(\theta) \triangleq \mathbb{E}\left[v(x, \theta) v(x, \theta)^{\top}\right]
+$$</p>
+<p>where the expectation is taken over the random variable $x$ with density $p(x \mid \theta)$, and where we have used the identity $\mathbb{E}[v(x, \theta)]=0$.
+Proposition B. 6 (Score and Fisher information for exponential families)
+Given an exponential family of densities $p(x \mid \eta)$ indexed by the natural parameter $\eta$, as in Eq. (6), the score with respect to the natural parameter is given by</p>
+<p>$$
+v(x, \eta)=\nabla_{\eta} \log p(x \mid \eta)=t(x)-\nabla \log Z(\eta)
+$$</p>
+<p>and the Fisher information matrix is given by</p>
+<p>$$
+I(\eta)=\nabla^{2} \log Z(\eta)
+$$</p>
+<p>Proposition B. 7 (KL divergence in an exponential family)
+Given an exponential family of densities $p(x \mid \eta)$ indexed by the natural parameter $\eta$, as in Eq. (6), and two particular members with natural parameters $\eta_{1}$ and $\eta_{2}$, respectively, the KL divergence from one to the other is</p>
+<p>$$
+\begin{aligned}
+\operatorname{KL}\left(p\left(x \mid \eta_{1}\right) | p\left(x \mid \eta_{2}\right)\right) &amp; \triangleq \mathbb{E}<em 1="1">{p\left(x \mid \eta</em>\right] \
+&amp; =\left\langle\eta_{1}-\eta_{2}, \nabla \log Z\left(\eta_{1}\right)\right\rangle-\left(\log Z\left(\eta_{1}\right)-\log Z\left(\eta_{2}\right)\right\rangle
+\end{aligned}
+$$}\right)}\left[\log \frac{p\left(x \mid \eta_{1}\right)}{p\left(x \mid \eta_{2}\right)</p>
+<h1>C Natural gradient SVI for exponential families</h1>
+<p>In this section we give a derivation of the natural gradient stochastic variational inference (SVI) method of Hoffman et al. [10] using our notation. We extend the algorithm in Section D.</p>
+<h2>C. 1 SVI objective</h2>
+<p>Let $p(x, y \mid \theta)$ be an exponential family and $p(\theta)$ be its corresponding natural exponential family prior as in Definitions B. 1 and B.3, writing</p>
+<p>$$
+\begin{aligned}
+p(\theta) &amp; =\exp \left{\left\langle\eta_{\theta}^{0}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}^{0}\right)\right} \
+p(x, y \mid \theta) &amp; =\exp \left{\left\langle\eta_{x y}^{0}(\theta), t_{x y}(x, y)\right\rangle-\log Z_{x y}\left(\eta_{x y}^{0}(\theta)\right)\right} \
+&amp; =\exp \left{\left\langle t_{\theta}(\theta),\left(t_{x y}(x, y), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>where we have used $t_{\theta}(\theta)=\left(\eta_{x y}^{0}(\theta),-\log Z_{x y}\left(\eta_{x y}^{0}(\theta)\right)\right)$ in Eq. (9).
+Given a fixed observation $y$, for any density $q(\theta, x)=q(\theta) q(x)$ we have</p>
+<p>$$
+\begin{aligned}
+\log p(y) &amp; =\mathbb{E}<em q_theta_="q(\theta)" q_x_="q(x)">{q(\theta) q(x)}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q(x)}\right]+\operatorname{KL}(q(\theta) q(x) | p(\theta, x \mid y)) \
+&amp; \geq \mathbb{E}</em>\right]
+\end{aligned}
+$$}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q(x)</p>
+<p>where we have used the fact that the KL divergence is always nonnegative. Therefore to choose $q(\theta) q(x)$ to minimize the KL divergence to the posterior $p(\theta, x \mid y)$ we define the mean field variational inference objective as</p>
+<p>$$
+\mathcal{L}[q(\theta) q(x)] \triangleq \mathbb{E}_{q(\theta) q(x)}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q(x)}\right]
+$$</p>
+<p>and the mean field variational inference problem as</p>
+<p>$$
+\max _{q(\theta) q(x)} \mathcal{L}[q(\theta) q(x)]
+$$</p>
+<p>The following proposition shows that because of the exponential family conjugacy structure, we can fix the parameterization of $q(\theta)$ and still optimize over all possible densities without loss of generality.</p>
+<p>Proposition C. 1 (Optimal form of the global variational factor)
+Given the mean field optimization problem Eq. (11), for any fixed $q(x)$ the optimal factor $q(\theta)$ is detetermined ( $v_{\Theta}$-a.e.) by</p>
+<p>$$
+q(\theta) \propto \exp \left{\left\langle\eta_{\theta}^{0}+\mathbb{E}<em x="x" y="y">{q(x)}\left[\left(t</em>(\theta)\right\rangle\right}
+$$}(x, y), 1\right)\right], t_{\theta</p>
+<p>In particular, the optimal $q(\theta)$ is in the same exponential family as the prior $p(\theta)$.
+This proposition follows immediately from a more general lemma, which we reuse in the sequel.
+Lemma C. 2 (Optimizing a mean field factor)
+Let $p(a, b, c)$ be a joint density and let $q(a), q(b)$, and $q(c)$ be mean field factors. Consider the mean field variational inference objective</p>
+<p>$$
+\mathbb{E}_{q(a) q(b) q(c)}\left[\log \frac{p(a, b, c)}{q(a) q(b) q(c)}\right]
+$$</p>
+<p>For fixed $q(a)$ and $q(c)$, the partially optimal factor $q^{*}(b)$ over all possible densities,</p>
+<p>$$
+q^{*}(b) \triangleq \underset{q(b)}{\arg \max } \mathbb{E}_{q(a) q(b) q(c)}\left[\log \frac{p(a, b, c)}{q(a) q(b) q(c)}\right]
+$$</p>
+<p>is defined (almost everywhere) by</p>
+<p>$$
+q^{*}(b) \propto \exp \left{\mathbb{E}_{q(a) q(c)} \log p(a, b, c)\right}
+$$</p>
+<p>In particular, if $p(c \mid b, a)$ is an exponential family with $p(b \mid a)$ its natural exponential family conjugate prior, and $\log p(b, c \mid a)$ is a multilinear polynomial in the statistics $t_{b}(b)$ and $t_{c}(c)$, written</p>
+<p>$$
+\begin{aligned}
+p(b \mid a) &amp; =\exp \left{\left\langle\eta_{b}^{0}(a), t_{b}(b)\right\rangle-\log Z_{b}\left(\eta_{b}^{0}(a)\right)\right} \
+p(c \mid b, a) &amp; =\exp \left{\left\langle\eta_{c}^{0}(b, a), t_{c}(c)\right\rangle-\log Z_{c}\left(\eta_{c}^{0}(b, a)\right)\right} \
+&amp; =\exp \left{\left\langle t_{b}(b), \eta_{c}^{0}(a)^{\top}\left(t_{c}(c), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>for some matrix $\eta_{c}^{0}(a)$, then the optimal factor can be written</p>
+<p>$$
+q^{<em>}(b)=\exp \left{\left\langle\eta_{b}^{</em>}, t_{b}(b)\right\rangle-\log Z_{b}\left(\eta_{b}^{<em>}\right)\right}, \quad \eta_{b}^{</em>} \triangleq \mathbb{E}<em b="b">{q(a)} \eta</em>}^{0}(a)+\mathbb{E<em c="c">{q(a) q(c)} \eta</em>(c), 1\right)
+$$}^{0}(a)^{\top}\left(t_{c</p>
+<p>As a special case, when $c$ is conditionally independent of $b$ given $a$, so that $p(c \mid b, a)=p(c \mid b)$, then</p>
+<p>$$
+p(c \mid b)=\exp \left{\left\langle t_{b}(b),\left(t_{c}(c), 1\right)\right\rangle\right}, \quad \eta_{b}^{*} \triangleq \mathbb{E}<em b="b">{q(a)} \eta</em>}^{0}(a)+\mathbb{E<em c="c">{q(c)}\left(t</em>(c), 1\right)
+$$</p>
+<p>Proof. Rewrite the objective in Eq. (12), dropping terms that are constant with respect to $q(b)$, as</p>
+<p>$$
+\begin{aligned}
+\mathbb{E}<em q_b_="q(b)">{q(a) q(b) q(c)}\left[\log \frac{p(a, b, c)}{q(b)}\right] &amp; =\mathbb{E}</em>}\left[\mathbb{E<em q_b_="q(b)">{q(a) q(c)} \log p(a, b, c)-\log q(b)\right] \
+&amp; =\mathbb{E}</em>}\left[\log \exp \mathbb{E<em q_b_="q(b)">{q(a) q(c)} \log p(a, b, c)-\log q(b)\right] \
+&amp; =-\mathbb{E}</em> \
+&amp; =-\mathrm{KL}(q(b) | \widetilde{p}(b))+\text { const }
+\end{aligned}
+$$}\left[\frac{q(b)}{\widetilde{p}(b)}\right]+\text { const </p>
+<p>where we have defined a new density $\widetilde{p}(b) \propto \exp \left{\mathbb{E}<em q_a_="q(a)" q_c_="q(c)">{q(a) q(c)} \log p(a, b, c)\right}$. We can maximize the objective by setting the KL divergence to zero, choosing $q(b) \propto \exp \left{\mathbb{E}</em> \log p(a, b, c)\right}$. The rest follows from plugging in the exponential family densities.</p>
+<p>Proposition C. 1 justifies parameterizing the density $q(\theta)$ with variational natural parameters $\eta_{\theta}$ as</p>
+<p>$$
+q(\theta)=\exp \left{\left\langle\eta_{\theta}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right}
+$$</p>
+<p>where the statistic function $t_{\theta}$ and the log partition function $\log Z_{\theta}$ are the same as in the prior family $p(\theta)$. Using this parameterization, we can define the mean field objective as a function of the parameters $\eta_{\theta}$, partially optimizing over $q(x)$,</p>
+<p>$$
+\mathcal{L}\left(\eta_{\theta}\right) \triangleq \max <em q_theta_="q(\theta)" q_x_="q(x)">{q(x)} \mathbb{E}</em>\right]
+$$}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q(x)</p>
+<p>The partial optimization over $q(x)$ in Eq. (13) should be read as choosing $q(x)$ to be a local partial optimizer of Eq. (10); in general, it may be intractable to find a global partial optimizer, and the results that follow use only first-order stationary conditions on $q(x)$. We refer to this objective function, where we locally partially optimize the mean field objective Eq. (10) over $q(x)$, as the SVI objective.</p>
+<h1>C. 2 Easy natural gradients of the SVI objective</h1>
+<p>By again leveraging the conjugate exponential family structure, we can write a simple expression for the gradient of the SVI objective, and even for its natural gradient.
+Proposition C. 3 (Gradient of the SVI objective)
+Let the SVI objective $\mathcal{L}\left(\eta_{\theta}\right)$ be defined as in Eq. (13). Then the gradient $\nabla \mathcal{L}\left(\eta_{\theta}\right)$ is</p>
+<p>$$
+\nabla \mathcal{L}\left(\eta_{\theta}\right)=\left(\nabla^{2} \log Z_{\theta}\left(\eta_{\theta}\right)\right)\left(\eta_{\theta}^{0}+\mathbb{E}<em x="x" y="y">{q^{\prime \prime}(x)}\left[\left(t</em>\right)
+$$}(x, y), 1\right)\right]-\eta_{\theta</p>
+<p>where $q^{\prime \prime}(x)$ is a local partial optimizer of the mean field objective Eq. (10) for fixed global variational parameters $\eta_{\theta}$.</p>
+<p>Proof. First, note that because $q^{\prime \prime}(x)$ is a local partial optimizer for Eq. (10) by Proposition A.3, we have</p>
+<p>$$
+\nabla \mathcal{L}\left(\eta_{\theta}\right)=\nabla_{\eta_{\theta}} \mathbb{E}_{q(\theta) q^{\prime \prime}(x)}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q^{\prime \prime}(x)}\right]
+$$</p>
+<p>Next, we use the conjugate exponential family structure and Proposition B.4, Eq. (7), to expand</p>
+<p>$$
+\begin{aligned}
+&amp; \mathbb{E}<em _theta="\theta">{q(\theta) q^{\prime \prime}(x)}\left[\log \frac{p(\theta) p(x, y \mid \theta)}{q(\theta) q^{\prime \prime}(x)}\right]=\left\langle\eta</em>}^{0}+\mathbb{E<em x="x" y="y">{q^{\prime \prime}(x)}\left(t</em>}(x, y), 1\right)-\eta_{\theta}, \mathbb{E<em _theta="\theta">{q(\theta)}[t</em>(\theta)]\right\rangle \
+&amp; -\left(\log Z_{\theta}\left(\eta_{\theta}^{0}\right)-\log Z_{\theta}\left(\eta_{\theta}\right)\right) .
+\end{aligned}
+$$</p>
+<p>Note that we can use Proposition B. 2 to replace $\mathbb{E}<em _theta="\theta">{q(\theta)}[t</em>$ and using the product rule, we have}(\theta)]$ with $\nabla \log Z_{\theta}\left(\eta_{\theta}\right)$. Differentiating with respect to $\eta_{\theta</p>
+<p>$$
+\begin{aligned}
+\nabla \mathcal{L}\left(\eta_{\theta}\right)= &amp; \nabla^{2} \log Z_{\theta}\left(\eta_{\theta}\right)\left(\eta_{\theta}^{0}+\mathbb{E}<em x="x" y="y">{q^{\prime \prime}(x)}\left(t</em>\right) \
+&amp; -\nabla \log Z_{\theta}\left(\eta_{\theta}\right)+\nabla \log Z_{\theta}\left(\eta_{\theta}\right) \
+= &amp; \nabla^{2} \log Z_{\theta}\left(\eta_{\theta}\right)\left(\eta_{\theta}^{0}+\mathbb{E}}(x, y), 1\right)-\eta_{\theta<em x="x" y="y">{q^{\prime \prime}(x)}\left(t</em>\right)
+\end{aligned}
+$$}(x, y), 1\right)-\eta_{\theta</p>
+<p>As an immediate result of Proposition C.3, the natural gradient [16] defined by</p>
+<p>$$
+\widetilde{\nabla} \mathcal{L}\left(\eta_{\theta}\right) \triangleq\left(\nabla^{2} \log Z_{\theta}\left(\eta_{\theta}\right)\right)^{-1} \nabla \mathcal{L}\left(\eta_{\theta}\right)
+$$</p>
+<p>has an even simpler expression.
+Corollary C. 4 (Natural gradient of the SVI objective)
+The natural gradient of the SVI objective Eq. (13) is</p>
+<p>$$
+\widetilde{\nabla} \mathcal{L}\left(\eta_{\theta}\right)=\eta_{\theta}^{0}+\mathbb{E}<em x="x" y="y">{q^{\prime \prime}(x)}\left[\left(t</em>
+$$}(x, y), 1\right)\right]-\eta_{\theta</p>
+<p>The natural gradient corrects for a kind of curvature in the variational family and is invariant to reparameterization of the family [17]. As a result, natural gradient ascent is effectively a secondorder quasi-Newton optimization algorithm, and using natural gradients can greatly accelerate the convergence of gradient-based optimization algorithms [30, 11]. It is a remarkable consequence of the exponential family structure that natural gradients of the partially optimized mean field objective with respect to the global variational parameters can be computed efficiently (without any backward pass as would be required in generic reverse-mode differentiation). Indeed, the exponential family conjugacy structure makes the natural gradient of the SVI objective even easier to compute than the flat gradient.</p>
+<h2>C. 3 Stochastic natural gradients for large datasets</h2>
+<p>The real utility of natural gradient SVI is in its application to large datasets. Consider the model composed of global latent variables $\theta$, local latent variables $x=\left{x_{n}\right}<em n="n">{n=1}^{N}$, and data $y=\left{y</em>$,}\right}_{n=1}^{N</p>
+<p>$$
+p(\theta, x, y)=p(\theta) \prod_{n=1}^{N} p\left(x_{n}, y_{n} \mid \theta\right)
+$$</p>
+<p>where each $p\left(x_{n}, y_{n} \mid \theta\right)$ is a copy of the same likelihood function with conjugate prior $p(\theta)$. For fixed observations $y=\left{y_{n}\right}_{n=1}^{N}$, let</p>
+<p>$$
+q(\theta, x)=q(\theta) \prod_{n=1}^{N} q\left(x_{n}\right)
+$$</p>
+<p>be a variational family to approximate the posterior $p(\theta, x \mid y)$ and consider the SVI objective given by Eq. (13). Using Eq. (8) of Proposition B.4, it is straightforward to extend the natural gradient expression in Corollary C. 4 to an unbiased Monte Carlo estimate which samples terms in the sum over data points.
+Corollary C. 5 (Unbiased Monte Carlo estimate of the SVI natural gradient)
+Using the model and variational family</p>
+<p>$$
+p(\theta, x, y)=p(\theta) \prod_{n=1}^{N} p\left(x_{n}, y_{n} \mid \theta\right), \quad q(\theta) q(x)=q(\theta) \prod_{n=1}^{N} q\left(x_{n}\right)
+$$</p>
+<p>where $p(\theta)$ and $p\left(x_{n}, y_{n} \mid \theta\right)$ are a conjugate pair of exponential families, define $\mathcal{L}\left(\eta_{\theta}\right)$ as in Eq. (13). Let the random index $\hat{n}$ be sampled from the set ${1,2, \ldots, N}$ and let $p_{n}&gt;0$ be the probability it takes value $n$. Then</p>
+<p>$$
+\widetilde{\nabla} \mathcal{L}\left(\eta_{\theta}\right)=\mathbb{E}<em _theta="\theta">{\hat{n}}\left[\eta</em>}^{0}+\frac{1}{p_{\hat{n}}} \mathbb{E<em _hat_n="\hat{n">{q^{\prime \prime}\left(x</em>\right]
+$$}}\right)}\left[\left(t_{x y}\left(x_{\hat{n}}, y_{\hat{n}}\right), 1\right)\right]-\eta_{\theta</p>
+<p>where $q^{\star}\left(x_{\hat{n}}\right)$ is a local partial optimizer of $\mathcal{L}$ given $q(\theta)$.
+Proof. Taking expectation over the index $\hat{n}$, we have</p>
+<p>$$
+\begin{aligned}
+\mathbb{E}<em _hat_n="\hat{n">{\hat{n}}\left[\frac{1}{p</em>}}} \mathbb{E<em _hat_n="\hat{n">{q^{\star}\left(x</em>}}\right)}\left[\left(t_{x y}\left(x_{\hat{n}}, y_{\hat{n}}\right), 1\right)\right]\right] &amp; =\sum_{n=1}^{N} \frac{p_{n}}{p_{n}} \mathbb{E<em n="n">{q^{\star}\left(x</em>\right), 1\right)\right] \
+&amp; =\sum_{n=1}^{N} \mathbb{E}}\right)}\left[\left(t_{x y}\left(x_{n}, y_{n<em n="n">{q^{\star}\left(x</em>\right), 1\right)\right]
+\end{aligned}
+$$}\right)}\left[\left(t_{x y}\left(x_{n}, y_{n</p>
+<p>The remainder of the proof follows from Proposition B. 4 and the same argument as in Proposition C.3.</p>
+<p>The unbiased stochastic gradient developed in Corollary C. 5 can be used in a scalable stochastic gradient ascent algorithm. To simplify notation, in the following sections we drop the notation for multiple likelihood terms $p\left(x_{n}, y_{n} \mid \theta\right)$ for $n=1,2, \ldots, N$ and return to working with a single likelihood term $p(x, y \mid \theta)$. The extension to multiple likelihood terms is immediate.</p>
+<h1>C. 4 Conditinally conjugate models and block updating</h1>
+<p>The model classes often considered for natural gradient SVI, and the main model classes we consider here, have additional conjugacy structure in the local latent variables. In this section we introduce notation for this extra structure in terms of the additional local latent variables $z$ and discuss the local block coordinate optimization that is often performed to compute the factor $q^{\star}(z) q^{\star}(x)$ for use in the natural gradient expression.
+Let $p(z, x, y \mid \theta)$ be an exponential family and $p(\theta)$ be its corresponding natural exponential family conjugate prior, writing</p>
+<p>$$
+\begin{aligned}
+p(\theta) &amp; =\exp \left{\left\langle\eta_{\theta}^{0}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}^{0}\right)\right} \
+p(z, x, y \mid \theta) &amp; =\exp \left{\left\langle\eta_{z x y}^{0}(\theta), t_{z x y}(z, x, y)\right\rangle-\log Z_{z x y}\left(\eta_{z x y}^{0}(\theta)\right)\right} \
+&amp; =\exp {\left\langle t_{\theta}(\theta),\left(t_{z x y}(z, x, y), 1\right)\right\rangle}
+\end{aligned}
+$$</p>
+<p>where we have used $t_{\theta}(\theta)=\left(\eta_{z x y}^{0}(\theta),-\log Z_{z x y}\left(\eta_{z x y}^{0}(\theta)\right)\right)$ in Eq. (15). Additionally, let $t_{z x y}(z, x, y)$ be a multilinear polynomial in the statistics functions $t_{x}(x), t_{y}(y)$, and $t_{z}(z)$, let $p(z \mid \theta)$,</p>
+<p>$p(x \mid z, \theta)$, and $p(y \mid x, z, \theta)=p(y \mid x, \theta)$ be exponential families, and let $p(z \mid \theta)$ be a conjugate prior to $p(x \mid z, \theta)$ and $p(x \mid z, \theta)$ be a conjugate prior to $p(y \mid x, \theta)$, so that</p>
+<p>$$
+\begin{aligned}
+p(z \mid \theta) &amp; =\exp \left{\left\langle\eta_{z}^{0}(\theta), t_{z}(z)\right\rangle-\log Z_{z}\left(\eta_{z}^{0}(\theta)\right)\right} \
+p(x \mid z, \theta) &amp; =\exp \left{\left\langle\eta_{x}^{0}(z, \theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}^{0}(z, \theta)\right)\right} \
+&amp; =\exp \left{\left\langle t_{z}(z), \eta_{z}^{0}(\theta)^{\top}\left(t_{x}(x), 1\right)\right\rangle\right} \
+p(y \mid x, \theta) &amp; =\exp \left{\left\langle\eta_{y}^{0}(x, \theta), t_{y}(y)\right\rangle-\log Z_{y}\left(\eta_{y}^{0}(x, z, \theta)\right)\right} \
+&amp; =\exp \left{\left\langle t_{x}(x), \eta_{y}^{0}(\theta)^{\top}\left(t_{y}(y), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>for some matrices $\eta_{z}^{0}(\theta)$ and $\eta_{y}^{0}(\theta)$.
+This model class includes many common models, including the latent Dirichlet allocation, switching linear dynamical systems with linear-Gaussian emissions, and mixture models and hidden Markov models with exponential family emissions. The conditionally conjugate structure is both powerful and restrictive: while it potentially limits the expressiveness of the model class, it enables block coordinate optimization with very simple and fast updates, as we show next. When conditionally conjugate structure is not present, these local optimizations can instead be performed with generic gradient-based methods and automatic differentiation [31].
+Proposition C. 6 (Unconstrained block coordinate ascent on $q(z)$ and $q(x)$ )
+Let $p(\theta, z, x, y)$ be a model as in Eqs. (14)-(18), and for fixed data y let $q(\theta) q(z) q(x)$ be a corresponding mean field variational family for approximating the posterior $p(\theta, z, x \mid y)$, with</p>
+<p>$$
+\begin{aligned}
+&amp; q(\theta)=\exp \left{\left\langle\eta_{\theta}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right} \
+&amp; q(z)=\exp \left{\left\langle\eta_{z}, t_{z}(z)\right\rangle-\log Z_{z}\left(\eta_{z}\right)\right} \
+&amp; q(x)=\exp \left{\left\langle\eta_{x}, t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}\right)\right}
+\end{aligned}
+$$</p>
+<p>and with the mean field variational inference objective</p>
+<p>$$
+\mathcal{L}[q(\theta) q(z) q(x)]=\mathbb{E}_{q(\theta) q(z) q(x)}\left[\log \frac{p(\theta) p(z \mid \theta) p(x \mid z, \theta) p(y \mid x, z, \theta)}{q(\theta) q(z) q(x)}\right]
+$$</p>
+<p>Fixing the other factors, the partial optimizers $q^{<em>}(z)$ and $q^{</em>}(x)$ for $\mathcal{L}$ over all possible densities are given by</p>
+<p>$$
+\begin{aligned}
+&amp; q^{<em>}(z) \triangleq \underset{q(z)}{\arg \max } \mathcal{L}[q(\theta) q(z) q(x)]=\exp \left{\left\langle\eta_{z}^{</em>}, t_{z}(z)\right\rangle-\log Z_{z}\left(\eta_{z}^{<em>}\right)\right} \
+&amp; q^{</em>}(x) \triangleq \underset{q(x)}{\arg \max } \mathcal{L}[q(\theta) q(z) q(x)]=\exp \left{\left\langle\eta_{x}^{<em>}, t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}^{</em>}\right)\right}
+\end{aligned}
+$$</p>
+<p>with</p>
+<p>$$
+\begin{aligned}
+\eta_{z}^{<em>} &amp; =\mathbb{E}<em z="z">{q(\theta)} \eta</em>}^{0}(\theta)+\mathbb{E<em x="x">{q(\theta) q(x)} \eta</em>(x), 1\right) \
+\eta_{x}^{}^{0}(\theta)^{\top}\left(t_{x</em>} &amp; =\mathbb{E}<em z="z">{q(\theta) q(z)} \eta</em>}^{0}(\theta) t_{z}(z)+\mathbb{E<em y="y">{q(\theta)} \eta</em>(y), 1\right)
+\end{aligned}
+$$}^{0}(\theta)^{\top}\left(t_{y</p>
+<p>Proof. This proposition is a consequence of Lemma C. 2 and the conjugacy structure.
+Proposition C. 6 gives an efficient block coordinate ascent algorithm: for fixed $\eta_{\theta}$, by alternatively updating $\eta_{z}$ and $\eta_{x}$ according to Eqs. (19)-(20) we are guaranteed to converge to a stationary point that is partially optimal in the parameters of each factor. In addition, performing each update requires only computing expected sufficient statistics in the variational factors, which means evaluating $\nabla \log Z_{\theta}\left(\eta_{\theta}\right), \nabla \log Z_{z}\left(\eta_{z}\right)$, and $\nabla \log Z_{x}\left(\eta_{x}\right)$, quantities that be computed anyway in a gradientbased optimization routine. The block coordinate ascent procedure leveraging this conditional conjugacy structure is thus not only efficient but also does not require a choice of step size.
+Note in particular that this procedure produces parameters $\eta_{z}^{<em>}\left(\eta_{\theta}\right)$ and $\eta_{x}^{</em>}\left(\eta_{\theta}\right)$ that are partially optimal (and hence stationary) for the objective. That is, defining the parameterized mean field variational inference objective as $L\left(\eta_{\theta}, \eta_{z}, \eta_{x}\right)=\mathcal{L}[q(\theta) q(z) q(x)]$, for fixed $\eta_{\theta}$ the block coordinate ascent procedure has limit points $\eta_{z}^{<em>}$ and $\eta_{x}^{</em>}$ that satisfy</p>
+<p>$$
+\nabla_{\eta_{z}} \mathcal{L}\left(\eta_{\theta}, \eta_{z}^{<em>}\left(\eta_{\theta}\right), \eta_{x}^{</em>}\left(\eta_{\theta}\right)\right)=0, \quad \nabla_{\eta_{x}} \mathcal{L}\left(\eta_{\theta}, \eta_{z}^{<em>}\left(\eta_{\theta}\right), \eta_{x}^{</em>}\left(\eta_{\theta}\right)\right)=0
+$$</p>
+<h1>D The SVAE objective and its gradients</h1>
+<p>In this section we define the SVAE variational lower bound and show how to efficiently compute unbiased stochastic estimates of its gradients, including an unbiased estimate of the natural gradient with respect to the variational parameters with conjugacy structure. The setup here parallels the setup for natural gradient SVI in Section C, but while SVI is restricted to complete-data conjugate models, here we consider more general likelihood models.</p>
+<h2>D. 1 SVAE objective</h2>
+<p>Let $p(x \mid \theta)$ be an exponential family and let $p(\theta)$ be its corresponding natural exponential family conjugate prior, as in Definitions B. 1 and B.3, writing</p>
+<p>$$
+\begin{aligned}
+p(\theta) &amp; =\exp \left{\left\langle\eta_{\theta}^{0}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}^{0}\right)\right} \
+p(x \mid \theta) &amp; =\exp \left{\left\langle\eta_{x}^{0}(\theta), t_{x}(x)\right\rangle-\log Z_{x}\left(\eta_{x}^{0}(\theta)\right)\right} \
+&amp; =\exp \left{\left\langle t_{\theta}(\theta),\left(t_{x}(x), 1\right)\right\rangle\right}
+\end{aligned}
+$$</p>
+<p>where we have used $t_{\theta}(\theta)=\left(\eta_{x}^{0}(\theta),-\log Z_{x}\left(\eta_{x}^{0}(\theta)\right)\right)$ in Eq. (22). Let $p(y \mid x, \gamma)$ be a general family of densities (not necessarily an exponential family) and let $p(\gamma)$ be an exponential family prior on its parameters of the form</p>
+<p>$$
+p(\gamma)=\exp \left{\left\langle\eta_{\gamma}^{0}, t_{\gamma}(\gamma)\right\rangle-\log Z_{\gamma}\left(\eta_{\gamma}^{0}\right)\right}
+$$</p>
+<p>For fixed $y$, consider the mean field family of densities $q(\theta, \gamma, x)=q(\theta) q(\gamma) q(x)$ and the mean field variational inference objective</p>
+<p>$$
+\mathcal{L}[q(\theta) q(\gamma) q(x)] \triangleq \mathbb{E}_{q(\theta) q(\gamma) q(x)}\left[\log \frac{p(\theta) p(\gamma) p(x \mid \theta) p(y \mid x, \gamma)}{q(\theta) q(\gamma) q(x)}\right]
+$$</p>
+<p>By the same argument as in Proposition C.1, without loss of generality we can take the global factor $q(\theta)$ to be in the same exponential family as the prior $p(\theta)$, and we denote its natural parameters by $\eta_{\theta}$, writing</p>
+<p>$$
+q(\theta)=\exp \left{\left\langle\eta_{\theta}, t_{\theta}(\theta)\right\rangle-\log Z_{\theta}\left(\eta_{\theta}\right)\right}
+$$</p>
+<p>We restrict $q(\gamma)$ to be in the same exponential family as $p(\gamma)$ with natural parameters $\eta_{\gamma}$, writing</p>
+<p>$$
+q(\gamma)=\exp \left{\left\langle\eta_{\gamma}, t_{\gamma}(\gamma)\right\rangle-\log Z_{\gamma}\left(\eta_{\gamma}\right)\right}
+$$</p>
+<p>Finally, we restrict ${ }^{3} q(x)$ to be in the same exponential family as $p(x \mid \theta)$, writing its natural parameter as $\eta_{x}$. Using these explicit variational natural parameters, we rewrite the mean field variational inference objective in Eq. (23) as</p>
+<p>$$
+\mathcal{L}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x}\right) \triangleq \mathbb{E}_{q(\theta) q(\gamma) q(x)}\left[\log \frac{p(\theta) p(\gamma) p(x \mid \theta) p(y \mid x, \gamma)}{q(\theta) q(\gamma) q(x)}\right]
+$$</p>
+<p>To perform efficient optimization in the objective $\mathcal{L}$ defined in Eq. (24), we consider choosing the variational parameter $\eta_{x}$ as a function of the other parameters $\eta_{\theta}$ and $\eta_{\gamma}$. One natural choice is to set $\eta_{x}$ to be a local partial optimizer of $\mathcal{L}$, as in Section C. However, finding a local partial optimizer may be computationally expensive for general densities $p(y \mid x, \gamma)$, and in the large data setting this expensive optimization would have to be performed for each stochastic gradient update. Instead, we choose $\eta_{x}$ by optimizing over a surrogate objective $\widehat{\mathcal{L}}$, which we design using exponential family structure to be both easy to optimize and to share curvature properties with the mean field objective $\mathcal{L}$. The surrogate objective $\widehat{\mathcal{L}}$ is</p>
+<p>$$
+\begin{aligned}
+\widehat{\mathcal{L}}\left(\eta_{\theta}, \eta_{\gamma}, \eta_{x}, \phi\right) &amp; \triangleq \mathbb{E}<em q_theta_="q(\theta)" q_x_="q(x)">{q(\theta) q(\gamma) q(x)}\left[\log \frac{p(\theta) p(\gamma) p(x \mid \theta) \exp {\psi(x ; y, \phi)}}{q(\theta) q(\gamma) q(x)}\right] \
+&amp; =\mathbb{E}</em>
+\end{aligned}
+$$}\left[\log \frac{p(\theta) p(x \mid \theta) \exp {\psi(x ; y, \phi)}}{q(\theta) q(x)}\right]+\text { const </p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{3}$ The parametric form for $q(x)$ need not be restricted a priori, but rather without loss of generality given the surrogate objective Eq. (25) and the form of $\psi$ used in Eq. (26), the optimal factor $q(x)$ is in the same family as $p(x \mid \theta)$. We treat it as a restriction here so that we can proceed with more concrete notation.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

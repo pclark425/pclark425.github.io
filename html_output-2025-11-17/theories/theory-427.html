@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost-Normalized Information Gain Principle - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-427</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-427</p>
+                <p><strong>Name:</strong> Cost-Normalized Information Gain Principle</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of optimal resource allocation in automated scientific discovery systems, balancing computational cost of evaluation against expected information gain, probability of breakthrough discoveries, and diversity of explored hypotheses under budget constraints, based on the following results.</p>
+                <p><strong>Description:</strong> Optimal resource allocation in budget-constrained discovery requires normalizing expected information gain by evaluation cost, with the optimal allocation selecting experiments that maximize information-per-unit-cost rather than absolute information gain. This principle applies across single-fidelity, multi-fidelity, multi-oracle, and batch settings. The effectiveness of cost normalization scales with cost heterogeneity: when costs vary by factors of 10x or more, cost-normalized methods achieve 2-20x improvements in sample efficiency; when costs are uniform or vary by less than 2x, the benefit is minimal. The principle extends beyond simple cost division to include: (1) objective-relevant information weighting (MOCU), (2) batch-level cost optimization with capacity constraints (MILP knapsack), (3) multi-step lookahead that accounts for future cost-information tradeoffs (MF-ENS), and (4) action-cost integration in physical exploration tasks.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>When evaluation costs vary by more than 10x, cost-normalized information gain outperforms cost-agnostic selection by factors of 2-20x in sample efficiency (measured as iterations to convergence or total cost to reach target performance)</li>
+                <li>The optimal allocation follows: x* = argmax_x [I(x) / C(x)] where I(x) is expected information gain and C(x) is evaluation cost, with extensions for batch settings: B* = argmax_B [Σ I(x_i) / Σ C(x_i)] subject to capacity constraints</li>
+                <li>For multi-fidelity systems, cheap low-fidelity evaluations should be used extensively for exploration (high β on L in MF-UCB, or high allocation in MFMES), with expensive high-fidelity reserved for exploitation and final validation</li>
+                <li>Cost normalization benefit scales with cost heterogeneity: minimal benefit when costs vary <2x, moderate benefit at 2-10x variation, substantial benefit (5-20x efficiency gains) at >10x variation</li>
+                <li>Objective-relevant information (MOCU) provides better cost-normalized utility than generic uncertainty reduction by focusing on uncertainty that impacts the operational objective rather than global model uncertainty</li>
+                <li>In multi-oracle settings, probabilistic models of oracle reliability combined with per-oracle costs enable optimal cost-accuracy tradeoffs; prefer cheaper oracles for representativeness/diversity and reserve expensive reliable oracles for high-informativeness queries</li>
+                <li>Batch-level cost optimization (knapsack formulations) outperforms greedy per-point cost normalization when batch effects, capacity constraints, or parallel resource limits exist</li>
+                <li>Nonmyopic cost-aware policies (MF-ENS, multi-step KG) that account for future cost-information tradeoffs outperform myopic cost normalization when cheap evaluations can inform expensive ones</li>
+                <li>In physical exploration tasks, action costs (travel distance, time, energy) should be integrated into acquisition via normalization or horizon-based planning to achieve order-of-magnitude efficiency gains</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>MFMES divides information gain (entropy reduction about high-fidelity minimum) by cost λ(l), preferring low-cost fidelities for exploration and reserving high-fidelity for refinement; performed well in high-dimensional/multimodal problems when full fidelity library exists <a href="../results/extraction-result-2493.html#e2493.7" class="evidence-link">[e2493.7]</a> </li>
+    <li>csKG (cost-sensitive Knowledge Gradient) with MGP/ICM/PCM surrogates shows variable performance improvements: mean costs reduced from 5-13 (MGP intersection training) in Rosenbrock scenarios; ICM and PCM more robust when hyperparameter training is difficult <a href="../results/extraction-result-2633.html#e2633.6" class="evidence-link">[e2633.6]</a> </li>
+    <li>MOCU framework explicitly minimizes expected remaining objective-relevant uncertainty, achieving ~5x reduction in iterations (SMA example: optimum found in ~2 iterations vs >10 for exploitation/random); emphasizes that objective-aware uncertainty reduction is more efficient than generic entropy reduction <a href="../results/extraction-result-2485.html#e2485.0" class="evidence-link">[e2485.0]</a> </li>
+    <li>MF-ENS nonmyopic policy that marginalizes over cheap L query outcomes to inform expensive H queries outperforms myopic MF-UCB; shows linearly increasing advantage in cumulative discoveries <a href="../results/extraction-result-2498.html#e2498.3" class="evidence-link">[e2498.3]</a> <a href="../results/extraction-result-2498.html#e2498.2" class="evidence-link">[e2498.2]</a> </li>
+    <li>Cost-aware query policies in robotic exploration achieve ~10x reduction in travel distance for similar RMSE by normalizing information gain by movement cost; horizon-based and normalized policies both effective <a href="../results/extraction-result-2494.html#e2494.2" class="evidence-link">[e2494.2]</a> </li>
+    <li>Multi-oracle active learning literature emphasizes selecting (x, oracle) pairs to maximize accuracy per cost, with probabilistic models of oracle reliability enabling optimal cost-accuracy tradeoffs <a href="../results/extraction-result-2493.html#e2493.9" class="evidence-link">[e2493.9]</a> </li>
+    <li>Review of autonomous chemistry highlights need for cost-sensitive acquisition but notes few implementations exist; advocates for rigorous cost-aware acquisition functions accounting for synthesis effort, failure rates, and batch economies <a href="../results/extraction-result-2440.html#e2440.2" class="evidence-link">[e2440.2]</a> </li>
+    <li>MFEI (Multifidelity Expected Improvement) multiplies EI by correlation-based discount factors α₁(x,m) and noise factors α₂(x,m), downweighting lower-fidelity utility; used in RAAL MILP for cost-aware resource allocation <a href="../results/extraction-result-2464.html#e2464.1" class="evidence-link">[e2464.1]</a> </li>
+    <li>RAAL MILP knapsack formulation explicitly optimizes batch selection under per-CPU capacity constraints, maximizing aggregate MFEI utility subject to per-fidelity costs λ(m) and capacity limits β_g; achieves 2-4x reductions in iterations-to-convergence <a href="../results/extraction-result-2464.html#e2464.3" class="evidence-link">[e2464.3]</a> </li>
+    <li>Budgeted Batch BO composes batches under explicit budget constraints, selecting points to maximize expected return while respecting total cost/size limits; uses multi-step lookahead and heuristics for budget-aware selection <a href="../results/extraction-result-2635.html#e2635.6" class="evidence-link">[e2635.6]</a> </li>
+    <li>BKG (Batch Knowledge Gradient) selects batches by greedy marginal KG maximization, always filling the batch (monotonic benefit); empirical results show larger batch sizes reduce opportunity cost for fixed number of batches K <a href="../results/extraction-result-2595.html#e2595.1" class="evidence-link">[e2595.1]</a> </li>
+    <li>MLMC (Multilevel Monte Carlo) allocates samples per level to minimize total cost for target MSE using variance and cost decay rates; sample allocation derived from rate-based formulas achieves orders-of-magnitude cost reductions in favorable settings <a href="../results/extraction-result-2626.html#e2626.6" class="evidence-link">[e2626.6]</a> </li>
+    <li>EGO with multifidelity extensions adaptively constructs surrogates using low- and high-fidelity data to reduce number of high-fidelity evaluations required; allocation via acquisition-driven selection on surrogate <a href="../results/extraction-result-2626.html#e2626.3" class="evidence-link">[e2626.3]</a> </li>
+    <li>Pairwise Task Similarity Recommender uses transfer learning to recommend lower-cost methods for low-data tasks, reducing unnecessary high-cost simulations by leveraging related high-data tasks <a href="../results/extraction-result-2454.html#e2454.3" class="evidence-link">[e2454.3]</a> </li>
+    <li>Williams et al. utility calculation for Eve provides heuristic ROI framework for active-learning screening; review notes this needs extension to handle variable experiment costs and batched synthesis tradeoffs <a href="../results/extraction-result-2440.html#e2440.4" class="evidence-link">[e2440.4]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>A unified cost-aware acquisition framework that works across single-fidelity, multi-fidelity, and multi-oracle settings would achieve 20-40% better efficiency than domain-specific methods by sharing learned cost models and allocation strategies</li>
+                <li>Adaptive cost estimation (learning cost models from observed evaluation times and resource usage) would improve allocation efficiency by 15-30% vs fixed cost assumptions, especially in heterogeneous computing environments</li>
+                <li>Batch selection with explicit cost constraints using mixed-integer programming (extending RAAL MILP to general BO) would outperform greedy cost-normalized selection by 10-25% in wall-clock time</li>
+                <li>Cost-aware diversity promotion (maximizing information per cost while maintaining diversity via DPP or qVS) would improve discovery of multiple high-quality solutions by 15-30% compared to cost-agnostic diversity methods</li>
+                <li>Hierarchical cost models that account for shared fixed costs in batch synthesis would enable 20-50% better resource utilization than per-molecule cost models in chemistry applications</li>
+                <li>Transfer learning of cost models across related discovery tasks would reduce initial exploration overhead by 30-50% compared to learning costs from scratch</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether cost normalization remains optimal when costs are stochastic with high variance (coefficient of variation > 1.0) and whether robust optimization or risk-sensitive formulations are needed</li>
+                <li>Whether there exist problem classes where ignoring cost and maximizing absolute information gain is superior to cost-normalized approaches (e.g., when high-cost evaluations are disproportionately more informative)</li>
+                <li>Whether cost-normalized allocation can be effectively combined with safety constraints in high-stakes domains without sacrificing either efficiency or safety guarantees</li>
+                <li>Whether learned cost models can be effectively transferred across different experimental platforms or laboratories with different resource constraints</li>
+                <li>Whether cost normalization principles extend to non-monetary costs like sample degradation, environmental impact, or ethical considerations in human-subjects research</li>
+                <li>Whether there are fundamental limits to the efficiency gains achievable through cost normalization as cost heterogeneity increases beyond 100x or 1000x</li>
+                <li>Whether cost-aware batch optimization can handle dynamic pricing or time-varying costs (e.g., cloud computing spot pricing) effectively</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding settings where cost-agnostic methods consistently outperform cost-normalized methods despite cost variation >10x would challenge the principle's generality</li>
+                <li>Demonstrating that random selection with simple cost thresholding (reject if cost > threshold) performs as well as optimized cost-normalized selection would undermine the need for sophisticated cost-aware acquisition</li>
+                <li>Showing that cost normalization leads to worse final solutions (not just slower convergence) in terms of objective value would be problematic for the theory</li>
+                <li>Finding that simple heuristics (always use cheapest option, or fixed allocation ratios) work as well as adaptive cost normalization would simplify the theory but challenge its necessity</li>
+                <li>Demonstrating that the computational overhead of cost-aware optimization exceeds the savings from reduced evaluations in practical settings would limit applicability</li>
+                <li>Finding cases where myopic cost normalization performs as well as nonmyopic lookahead despite significant cost differences would challenge the value of complex planning</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't fully address how to handle non-monetary costs like sample degradation, safety risks, opportunity costs, or environmental impact in a unified framework <a href="../results/extraction-result-2637.html#e2637.3" class="evidence-link">[e2637.3]</a> <a href="../results/extraction-result-2440.html#e2440.2" class="evidence-link">[e2440.2]</a> </li>
+    <li>Optimal strategies when costs are positively correlated with information content (expensive experiments are systematically more informative) need more theoretical analysis beyond empirical observations <a href="../results/extraction-result-2626.html#e2626.6" class="evidence-link">[e2626.6]</a> </li>
+    <li>The role of batch effects and economies of scale in cost calculations is mentioned but not fully formalized; shared fixed costs in synthesis batches complicate per-item cost normalization <a href="../results/extraction-result-2440.html#e2440.2" class="evidence-link">[e2440.2]</a> <a href="../results/extraction-result-2595.html#e2595.1" class="evidence-link">[e2595.1]</a> </li>
+    <li>How to handle time-varying or stochastic costs (e.g., cloud computing spot pricing, equipment availability) is not addressed </li>
+    <li>The interaction between cost normalization and other objectives (diversity, safety, interpretability) needs more systematic treatment <a href="../results/extraction-result-2422.html#e2422.2" class="evidence-link">[e2422.2]</a> </li>
+    <li>Computational cost of cost-aware optimization itself (MILP solving, nonmyopic planning) is acknowledged but not systematically traded off against evaluation cost savings <a href="../results/extraction-result-2464.html#e2464.3" class="evidence-link">[e2464.3]</a> <a href="../results/extraction-result-2622.html#e2622.0" class="evidence-link">[e2622.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Kandasamy et al. (2017) Multi-fidelity Bayesian Optimisation with Continuous Approximations [Multi-fidelity BO with cost considerations, continuous fidelity spaces]</li>
+    <li>Swersky et al. (2013) Multi-Task Bayesian Optimization [Cost-aware selection across multiple information sources]</li>
+    <li>Poloczek et al. (2017) Multi-information source optimization [Knowledge Gradient for multi-fidelity with costs]</li>
+    <li>Settles (2009) Active Learning Literature Survey [Discussion of cost-sensitive active learning, variable labeling costs]</li>
+    <li>Kapoor et al. (2007) Active Learning with Model Selection [Cost-aware oracle selection in active learning]</li>
+    <li>Lizotte et al. (2012) Practical Bayesian Optimization of Machine Learning Algorithms [GP EI with cost considerations]</li>
+    <li>Picheny et al. (2013) A benchmark of kriging-based infill criteria for noisy optimization [Cost-aware acquisition in noisy settings]</li>
+    <li>Huang et al. (2006) Global Optimization of Stochastic Black-Box Systems via Sequential Kriging Meta-Models [Knowledge Gradient with costs]</li>
+    <li>Giles (2008) Multilevel Monte Carlo Path Simulation [MLMC with optimal sample allocation based on cost-variance tradeoffs]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Cost-Normalized Information Gain Principle",
+    "theory_description": "Optimal resource allocation in budget-constrained discovery requires normalizing expected information gain by evaluation cost, with the optimal allocation selecting experiments that maximize information-per-unit-cost rather than absolute information gain. This principle applies across single-fidelity, multi-fidelity, multi-oracle, and batch settings. The effectiveness of cost normalization scales with cost heterogeneity: when costs vary by factors of 10x or more, cost-normalized methods achieve 2-20x improvements in sample efficiency; when costs are uniform or vary by less than 2x, the benefit is minimal. The principle extends beyond simple cost division to include: (1) objective-relevant information weighting (MOCU), (2) batch-level cost optimization with capacity constraints (MILP knapsack), (3) multi-step lookahead that accounts for future cost-information tradeoffs (MF-ENS), and (4) action-cost integration in physical exploration tasks.",
+    "supporting_evidence": [
+        {
+            "text": "MFMES divides information gain (entropy reduction about high-fidelity minimum) by cost λ(l), preferring low-cost fidelities for exploration and reserving high-fidelity for refinement; performed well in high-dimensional/multimodal problems when full fidelity library exists",
+            "uuids": [
+                "e2493.7"
+            ]
+        },
+        {
+            "text": "csKG (cost-sensitive Knowledge Gradient) with MGP/ICM/PCM surrogates shows variable performance improvements: mean costs reduced from 5-13 (MGP intersection training) in Rosenbrock scenarios; ICM and PCM more robust when hyperparameter training is difficult",
+            "uuids": [
+                "e2633.6"
+            ]
+        },
+        {
+            "text": "MOCU framework explicitly minimizes expected remaining objective-relevant uncertainty, achieving ~5x reduction in iterations (SMA example: optimum found in ~2 iterations vs &gt;10 for exploitation/random); emphasizes that objective-aware uncertainty reduction is more efficient than generic entropy reduction",
+            "uuids": [
+                "e2485.0"
+            ]
+        },
+        {
+            "text": "MF-ENS nonmyopic policy that marginalizes over cheap L query outcomes to inform expensive H queries outperforms myopic MF-UCB; shows linearly increasing advantage in cumulative discoveries",
+            "uuids": [
+                "e2498.3",
+                "e2498.2"
+            ]
+        },
+        {
+            "text": "Cost-aware query policies in robotic exploration achieve ~10x reduction in travel distance for similar RMSE by normalizing information gain by movement cost; horizon-based and normalized policies both effective",
+            "uuids": [
+                "e2494.2"
+            ]
+        },
+        {
+            "text": "Multi-oracle active learning literature emphasizes selecting (x, oracle) pairs to maximize accuracy per cost, with probabilistic models of oracle reliability enabling optimal cost-accuracy tradeoffs",
+            "uuids": [
+                "e2493.9"
+            ]
+        },
+        {
+            "text": "Review of autonomous chemistry highlights need for cost-sensitive acquisition but notes few implementations exist; advocates for rigorous cost-aware acquisition functions accounting for synthesis effort, failure rates, and batch economies",
+            "uuids": [
+                "e2440.2"
+            ]
+        },
+        {
+            "text": "MFEI (Multifidelity Expected Improvement) multiplies EI by correlation-based discount factors α₁(x,m) and noise factors α₂(x,m), downweighting lower-fidelity utility; used in RAAL MILP for cost-aware resource allocation",
+            "uuids": [
+                "e2464.1"
+            ]
+        },
+        {
+            "text": "RAAL MILP knapsack formulation explicitly optimizes batch selection under per-CPU capacity constraints, maximizing aggregate MFEI utility subject to per-fidelity costs λ(m) and capacity limits β_g; achieves 2-4x reductions in iterations-to-convergence",
+            "uuids": [
+                "e2464.3"
+            ]
+        },
+        {
+            "text": "Budgeted Batch BO composes batches under explicit budget constraints, selecting points to maximize expected return while respecting total cost/size limits; uses multi-step lookahead and heuristics for budget-aware selection",
+            "uuids": [
+                "e2635.6"
+            ]
+        },
+        {
+            "text": "BKG (Batch Knowledge Gradient) selects batches by greedy marginal KG maximization, always filling the batch (monotonic benefit); empirical results show larger batch sizes reduce opportunity cost for fixed number of batches K",
+            "uuids": [
+                "e2595.1"
+            ]
+        },
+        {
+            "text": "MLMC (Multilevel Monte Carlo) allocates samples per level to minimize total cost for target MSE using variance and cost decay rates; sample allocation derived from rate-based formulas achieves orders-of-magnitude cost reductions in favorable settings",
+            "uuids": [
+                "e2626.6"
+            ]
+        },
+        {
+            "text": "EGO with multifidelity extensions adaptively constructs surrogates using low- and high-fidelity data to reduce number of high-fidelity evaluations required; allocation via acquisition-driven selection on surrogate",
+            "uuids": [
+                "e2626.3"
+            ]
+        },
+        {
+            "text": "Pairwise Task Similarity Recommender uses transfer learning to recommend lower-cost methods for low-data tasks, reducing unnecessary high-cost simulations by leveraging related high-data tasks",
+            "uuids": [
+                "e2454.3"
+            ]
+        },
+        {
+            "text": "Williams et al. utility calculation for Eve provides heuristic ROI framework for active-learning screening; review notes this needs extension to handle variable experiment costs and batched synthesis tradeoffs",
+            "uuids": [
+                "e2440.4"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "When evaluation costs vary by more than 10x, cost-normalized information gain outperforms cost-agnostic selection by factors of 2-20x in sample efficiency (measured as iterations to convergence or total cost to reach target performance)",
+        "The optimal allocation follows: x* = argmax_x [I(x) / C(x)] where I(x) is expected information gain and C(x) is evaluation cost, with extensions for batch settings: B* = argmax_B [Σ I(x_i) / Σ C(x_i)] subject to capacity constraints",
+        "For multi-fidelity systems, cheap low-fidelity evaluations should be used extensively for exploration (high β on L in MF-UCB, or high allocation in MFMES), with expensive high-fidelity reserved for exploitation and final validation",
+        "Cost normalization benefit scales with cost heterogeneity: minimal benefit when costs vary &lt;2x, moderate benefit at 2-10x variation, substantial benefit (5-20x efficiency gains) at &gt;10x variation",
+        "Objective-relevant information (MOCU) provides better cost-normalized utility than generic uncertainty reduction by focusing on uncertainty that impacts the operational objective rather than global model uncertainty",
+        "In multi-oracle settings, probabilistic models of oracle reliability combined with per-oracle costs enable optimal cost-accuracy tradeoffs; prefer cheaper oracles for representativeness/diversity and reserve expensive reliable oracles for high-informativeness queries",
+        "Batch-level cost optimization (knapsack formulations) outperforms greedy per-point cost normalization when batch effects, capacity constraints, or parallel resource limits exist",
+        "Nonmyopic cost-aware policies (MF-ENS, multi-step KG) that account for future cost-information tradeoffs outperform myopic cost normalization when cheap evaluations can inform expensive ones",
+        "In physical exploration tasks, action costs (travel distance, time, energy) should be integrated into acquisition via normalization or horizon-based planning to achieve order-of-magnitude efficiency gains"
+    ],
+    "new_predictions_likely": [
+        "A unified cost-aware acquisition framework that works across single-fidelity, multi-fidelity, and multi-oracle settings would achieve 20-40% better efficiency than domain-specific methods by sharing learned cost models and allocation strategies",
+        "Adaptive cost estimation (learning cost models from observed evaluation times and resource usage) would improve allocation efficiency by 15-30% vs fixed cost assumptions, especially in heterogeneous computing environments",
+        "Batch selection with explicit cost constraints using mixed-integer programming (extending RAAL MILP to general BO) would outperform greedy cost-normalized selection by 10-25% in wall-clock time",
+        "Cost-aware diversity promotion (maximizing information per cost while maintaining diversity via DPP or qVS) would improve discovery of multiple high-quality solutions by 15-30% compared to cost-agnostic diversity methods",
+        "Hierarchical cost models that account for shared fixed costs in batch synthesis would enable 20-50% better resource utilization than per-molecule cost models in chemistry applications",
+        "Transfer learning of cost models across related discovery tasks would reduce initial exploration overhead by 30-50% compared to learning costs from scratch"
+    ],
+    "new_predictions_unknown": [
+        "Whether cost normalization remains optimal when costs are stochastic with high variance (coefficient of variation &gt; 1.0) and whether robust optimization or risk-sensitive formulations are needed",
+        "Whether there exist problem classes where ignoring cost and maximizing absolute information gain is superior to cost-normalized approaches (e.g., when high-cost evaluations are disproportionately more informative)",
+        "Whether cost-normalized allocation can be effectively combined with safety constraints in high-stakes domains without sacrificing either efficiency or safety guarantees",
+        "Whether learned cost models can be effectively transferred across different experimental platforms or laboratories with different resource constraints",
+        "Whether cost normalization principles extend to non-monetary costs like sample degradation, environmental impact, or ethical considerations in human-subjects research",
+        "Whether there are fundamental limits to the efficiency gains achievable through cost normalization as cost heterogeneity increases beyond 100x or 1000x",
+        "Whether cost-aware batch optimization can handle dynamic pricing or time-varying costs (e.g., cloud computing spot pricing) effectively"
+    ],
+    "negative_experiments": [
+        "Finding settings where cost-agnostic methods consistently outperform cost-normalized methods despite cost variation &gt;10x would challenge the principle's generality",
+        "Demonstrating that random selection with simple cost thresholding (reject if cost &gt; threshold) performs as well as optimized cost-normalized selection would undermine the need for sophisticated cost-aware acquisition",
+        "Showing that cost normalization leads to worse final solutions (not just slower convergence) in terms of objective value would be problematic for the theory",
+        "Finding that simple heuristics (always use cheapest option, or fixed allocation ratios) work as well as adaptive cost normalization would simplify the theory but challenge its necessity",
+        "Demonstrating that the computational overhead of cost-aware optimization exceeds the savings from reduced evaluations in practical settings would limit applicability",
+        "Finding cases where myopic cost normalization performs as well as nonmyopic lookahead despite significant cost differences would challenge the value of complex planning"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't fully address how to handle non-monetary costs like sample degradation, safety risks, opportunity costs, or environmental impact in a unified framework",
+            "uuids": [
+                "e2637.3",
+                "e2440.2"
+            ]
+        },
+        {
+            "text": "Optimal strategies when costs are positively correlated with information content (expensive experiments are systematically more informative) need more theoretical analysis beyond empirical observations",
+            "uuids": [
+                "e2626.6"
+            ]
+        },
+        {
+            "text": "The role of batch effects and economies of scale in cost calculations is mentioned but not fully formalized; shared fixed costs in synthesis batches complicate per-item cost normalization",
+            "uuids": [
+                "e2440.2",
+                "e2595.1"
+            ]
+        },
+        {
+            "text": "How to handle time-varying or stochastic costs (e.g., cloud computing spot pricing, equipment availability) is not addressed",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between cost normalization and other objectives (diversity, safety, interpretability) needs more systematic treatment",
+            "uuids": [
+                "e2422.2"
+            ]
+        },
+        {
+            "text": "Computational cost of cost-aware optimization itself (MILP solving, nonmyopic planning) is acknowledged but not systematically traded off against evaluation cost savings",
+            "uuids": [
+                "e2464.3",
+                "e2622.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some successful discovery campaigns (Eve, Robot Scientist) did not explicitly implement cost-normalized acquisition yet achieved significant automation benefits, suggesting cost normalization may not be necessary when costs are relatively uniform or when throughput is the primary constraint",
+            "uuids": [
+                "e2400.3"
+            ]
+        },
+        {
+            "text": "Pure uncertainty sampling without cost normalization can work well when costs are uniform or when the goal is comprehensive model learning rather than optimization",
+            "uuids": [
+                "e2412.3",
+                "e2456.2"
+            ]
+        },
+        {
+            "text": "Some studies show that simple exploration-exploitation schedules (ε-greedy, UCB) without explicit cost normalization can be effective, suggesting cost normalization may be less critical when other factors dominate",
+            "uuids": [
+                "e2630.7",
+                "e2506.6"
+            ]
+        },
+        {
+            "text": "TDUE-BO achieves good performance with threshold-based switching between exploration and exploitation without explicit cost normalization, suggesting alternative approaches may work in some settings",
+            "uuids": [
+                "e2410.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "When costs are uniform or vary by less than 2x, cost normalization provides minimal benefit (&lt;10% improvement) and simpler methods (standard BO, uncertainty sampling) suffice",
+        "In safety-critical domains, cost normalization must be constrained by safety requirements: minimum fidelity thresholds for certain decisions, maximum risk budgets, or lexicographic ordering (safety first, then cost-efficiency)",
+        "When batch effects dominate (synthesis of multiple molecules shares fixed costs, or parallel experiments have setup overhead), batch-level cost optimization (knapsack, MILP) is needed rather than per-item normalization",
+        "For human-in-the-loop systems, cognitive load and fatigue should be included in cost models; periodic human scoring (as in Dual-GP) trades annotation cost against improved allocation",
+        "When costs are highly stochastic or time-varying, robust optimization or risk-sensitive formulations may be needed instead of expected-cost normalization",
+        "In multi-objective settings with cost as one objective, Pareto optimization may be more appropriate than cost normalization of a single objective",
+        "When computational cost of cost-aware optimization (MILP solving, nonmyopic planning) exceeds evaluation cost savings, simpler heuristics or myopic methods are preferable",
+        "In extremely high-dimensional spaces (&gt;1000 dimensions), the overhead of maintaining multi-fidelity models may outweigh benefits, favoring single-fidelity with cost-aware acquisition",
+        "When information gains are highly correlated with costs (expensive evaluations are always more informative), cost normalization may reduce to simpler rules (fixed allocation ratios)"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Kandasamy et al. (2017) Multi-fidelity Bayesian Optimisation with Continuous Approximations [Multi-fidelity BO with cost considerations, continuous fidelity spaces]",
+            "Swersky et al. (2013) Multi-Task Bayesian Optimization [Cost-aware selection across multiple information sources]",
+            "Poloczek et al. (2017) Multi-information source optimization [Knowledge Gradient for multi-fidelity with costs]",
+            "Settles (2009) Active Learning Literature Survey [Discussion of cost-sensitive active learning, variable labeling costs]",
+            "Kapoor et al. (2007) Active Learning with Model Selection [Cost-aware oracle selection in active learning]",
+            "Lizotte et al. (2012) Practical Bayesian Optimization of Machine Learning Algorithms [GP EI with cost considerations]",
+            "Picheny et al. (2013) A benchmark of kriging-based infill criteria for noisy optimization [Cost-aware acquisition in noisy settings]",
+            "Huang et al. (2006) Global Optimization of Stochastic Black-Box Systems via Sequential Kriging Meta-Models [Knowledge Gradient with costs]",
+            "Giles (2008) Multilevel Monte Carlo Path Simulation [MLMC with optimal sample allocation based on cost-variance tradeoffs]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

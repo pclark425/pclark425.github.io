@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-243 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-243</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-243</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-14.html">extraction-schema-14</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic operations, including the types of arithmetic tasks, model properties, performance results, methods used, and any mechanistic insights about how the models solve arithmetic problems.</div>
+                <p><strong>Paper ID:</strong> paper-269149503</p>
+                <p><strong>Paper Title:</strong> <a href="https://export.arxiv.org/pdf/2404.09336v1.pdf" target="_blank">Self-Selected Attention Span for Accelerating Large Language Model Inference</a></p>
+                <p><strong>Paper Abstract:</strong> Large language models (LLMs) can solve challenging tasks. However, their inference computation on modern GPUs is highly inefficient due to the increasing number of tokens they must attend to as they generate new ones. To address this inefficiency, we capitalize on LLMs' problem-solving capabilities to optimize their own inference-time efficiency. We demonstrate with two specific tasks: (a) evaluating complex arithmetic expressions and (b) summarizing news articles. For both tasks, we create custom datasets to fine-tune an LLM. The goal of fine-tuning is twofold: first, to make the LLM learn to solve the evaluation or summarization task, and second, to train it to identify the minimal attention spans required for each step of the task. As a result, the fine-tuned model is able to convert these self-identified minimal attention spans into sparse attention masks on-the-fly during inference. We develop a custom CUDA kernel to take advantage of the reduced context to attend to. We demonstrate that using this custom CUDA kernel improves the throughput of LLM inference by 28%. Our work presents an end-to-end demonstration showing that training LLMs to self-select their attention spans speeds up autoregressive inference in solving real-world tasks.</p>
+                <p><strong>Cost:</strong> 0.012</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e243.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e243.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic operations, including the types of arithmetic tasks, model properties, performance results, methods used, and any mechanistic insights about how the models solve arithmetic problems.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Arithmetic eval (SASK)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Incremental arithmetic expression evaluation with self-selected attention span (this paper)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A task and experimental pipeline in which a LLaMA-7B-derived model is fine-tuned to produce stepwise (chain-of-thought) traces for evaluating complex arithmetic expressions while also emitting anchors/references that let the model predict a minimal subset of prior tokens to attend to during decoding, enabling sparse attention and faster inference.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>LLaMA-7B (base, fine-tuned)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_size</strong></td>
+                            <td>7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_architecture</strong></td>
+                            <td>decoder-only transformer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_operation_type</strong></td>
+                            <td>addition, subtraction, multiplication, integer division; multi-step (binary) arithmetic decomposed into incremental evaluation steps</td>
+                        </tr>
+                        <tr>
+                            <td><strong>number_range_or_complexity</strong></td>
+                            <td>Expressions with depth and digit count sampled ~N(μ=5,σ=2); maximum digit count per number capped at 10 digits; multi-digit multiplications/divisions are decomposed so each intermediate step contains at most one multi-digit number</td>
+                        </tr>
+                        <tr>
+                            <td><strong>method_or_intervention</strong></td>
+                            <td>Supervised fine-tuning (LoRA then merged into dense model) on a 60k-example dataset of randomly generated expressions with annotated stepwise traces and anchor/reference tokens; chain-of-thought style step decomposition; greedy decoding; KV-cache preallocated; model trained to (a) produce computation steps and anchors and (b) predict the minimal attention span (anchors) to use when generating subsequent tokens</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_result</strong></td>
+                            <td>For arithmetic evaluation, the sparse-attention (self-selected attention span) models match or slightly exceed dense-attention accuracy in most output-length ranges; the sparse approach's accuracy never drops more than 1% below dense attention except for outputs of length 256–512 tokens. Throughput (tokens/sec) improvements increase with generation length: up to 27.7% faster for output lengths between 1536–1792 tokens compared to the Huggingface Dense Attn + Dense Kernel baseline. The model achieves an average attention sparsity of 47.3% across tokens (can exceed 80% near the end of generation). Kernel benchmarking (simulated 50% sparsity) reports a geometric average speedup of 1.29× over Huggingface; block-size dependent geometric avg speedups reported as {32: 0.97×, 64: 1.2×, 128: 1.6×, 256: 1.6×}.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanistic_insight</strong></td>
+                            <td>High-level mechanistic insight: the model is fine-tuned to explicitly emit anchors/references that partition the context into semantically meaningful contiguous groups (calculation steps); at each generation step the model first (with full-context attention) selects which anchor(s) constitute the minimal attention span, then during token generation it attends only to those selected groups. This reduces memory reads and preserves correctness because arithmetic steps typically depend only on a small set of recent or referenced intermediate results. The paper does not provide low-level mechanistic claims (e.g., specific attention-head roles, carry-specific representations, or internal algorithmic circuits).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_scaling</strong></td>
+                            <td>Throughput gains scale positively with output length (longer sequences provide more opportunities to ignore irrelevant context) and with clustered/blocked sparsity (kernel gains when ignored tokens occur in clusters of >=64 tokens). No analysis of scaling with model parameter count is provided.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>failure_modes</strong></td>
+                            <td>Occasional small accuracy degradations (up to >1% in some mid-length ranges, notably 256–512 tokens); generating anchor/references requires full-context attention (sparsity dips to 0% when producing references); naive fixed recency windows are insufficient because arithmetic solutions may reference arbitrarily distant intermediate results unless explicitly anchored.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_baseline</strong></td>
+                            <td>Compared three configurations: Dense Attn + Dense Kernel (Huggingface implementation baseline), Sparse Attn + Sparse Kernel (this paper's self-selected attention + custom CUDA kernel), and Dense Attn + Sparse Kernel (dense attention executed on the custom kernel, to control for kernel implementation effects). Metrics compared: task accuracy (final integer match) and throughput (tokens/sec) across output-length ranges.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>key_finding</strong></td>
+                            <td>Fine-tuning a LLaMA-7B model to emit anchors and self-select minimal attention spans lets the model perform multi-step arithmetic correctly while substantially reducing attended context and accelerating autoregressive decoding (up to ~28% throughput gain) with negligible loss in accuracy.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Self-Selected Attention Span for Accelerating Large Language Model Inference', 'publication_date_yy_mm': '2024-04'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e243.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e243.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic operations, including the types of arithmetic tasks, model properties, performance results, methods used, and any mechanistic insights about how the models solve arithmetic problems.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>GOAT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>GOAT (Fine-tuned LLaMA for binary arithmetic evaluation)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A previously published LLaMA-7B variant fine-tuned for binary arithmetic evaluation (cited and used as the starting arithmetic-specialized model in this paper's experiments).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>Goat, Fine-tuned llama outperforms gpt-4 on arithmetic tasks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GOAT (LLaMA-7B fine-tuned)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_size</strong></td>
+                            <td>7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_architecture</strong></td>
+                            <td>decoder-only transformer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_operation_type</strong></td>
+                            <td>binary arithmetic evaluation (addition, subtraction, multiplication, division decomposed into binary steps)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>number_range_or_complexity</strong></td>
+                            <td>In the context of this paper: compatible with the paper's dataset (per-step decomposition; max 10 digits per number); GOAT itself (as cited) is specialized for binary arithmetic evaluation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>method_or_intervention</strong></td>
+                            <td>Prior fine-tuning for arithmetic tasks (Liu & Low, 2023); in this paper GOAT is further fine-tuned / used as the arithmetic-capable starting model and then fine-tuned with LoRA to emit anchors and predict attention spans</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_result</strong></td>
+                            <td><span class="empty-note">null</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanistic_insight</strong></td>
+                            <td>Described at a high level as a model trained to produce stepwise evaluation traces; no low-level mechanistic details provided in this paper about GOAT's internal arithmetic strategy (the present paper builds on GOAT's stepwise evaluation style but focuses on attention-span prediction rather than GOAT's internal mechanisms).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_scaling</strong></td>
+                            <td><span class="empty-note">null</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>failure_modes</strong></td>
+                            <td><span class="empty-note">null</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_baseline</strong></td>
+                            <td>Used as an arithmetic-specialized baseline / starting point (cited work) and as the family from which the paper's fine-tuned models are derived.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>key_finding</strong></td>
+                            <td>GOAT is an existing LLaMA-7B fine-tuned for arithmetic; this paper leverages that style of stepwise traces and augments it with self-selected attention-span annotations to reduce decoding costs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Self-Selected Attention Span for Accelerating Large Language Model Inference', 'publication_date_yy_mm': '2024-04'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Goat, Fine-tuned llama outperforms gpt-4 on arithmetic tasks. <em>(Rating: 2)</em></li>
+                <li>Chain of thought prompting elicits reasoning in large language models <em>(Rating: 2)</em></li>
+                <li>Emergent abilities of large language models <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-243",
+    "paper_id": "paper-269149503",
+    "extraction_schema_id": "extraction-schema-14",
+    "extracted_data": [
+        {
+            "name_short": "Arithmetic eval (SASK)",
+            "name_full": "Incremental arithmetic expression evaluation with self-selected attention span (this paper)",
+            "brief_description": "A task and experimental pipeline in which a LLaMA-7B-derived model is fine-tuned to produce stepwise (chain-of-thought) traces for evaluating complex arithmetic expressions while also emitting anchors/references that let the model predict a minimal subset of prior tokens to attend to during decoding, enabling sparse attention and faster inference.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "LLaMA-7B (base, fine-tuned)",
+            "model_size": "7B",
+            "model_architecture": "decoder-only transformer",
+            "arithmetic_operation_type": "addition, subtraction, multiplication, integer division; multi-step (binary) arithmetic decomposed into incremental evaluation steps",
+            "number_range_or_complexity": "Expressions with depth and digit count sampled ~N(μ=5,σ=2); maximum digit count per number capped at 10 digits; multi-digit multiplications/divisions are decomposed so each intermediate step contains at most one multi-digit number",
+            "method_or_intervention": "Supervised fine-tuning (LoRA then merged into dense model) on a 60k-example dataset of randomly generated expressions with annotated stepwise traces and anchor/reference tokens; chain-of-thought style step decomposition; greedy decoding; KV-cache preallocated; model trained to (a) produce computation steps and anchors and (b) predict the minimal attention span (anchors) to use when generating subsequent tokens",
+            "performance_result": "For arithmetic evaluation, the sparse-attention (self-selected attention span) models match or slightly exceed dense-attention accuracy in most output-length ranges; the sparse approach's accuracy never drops more than 1% below dense attention except for outputs of length 256–512 tokens. Throughput (tokens/sec) improvements increase with generation length: up to 27.7% faster for output lengths between 1536–1792 tokens compared to the Huggingface Dense Attn + Dense Kernel baseline. The model achieves an average attention sparsity of 47.3% across tokens (can exceed 80% near the end of generation). Kernel benchmarking (simulated 50% sparsity) reports a geometric average speedup of 1.29× over Huggingface; block-size dependent geometric avg speedups reported as {32: 0.97×, 64: 1.2×, 128: 1.6×, 256: 1.6×}.",
+            "mechanistic_insight": "High-level mechanistic insight: the model is fine-tuned to explicitly emit anchors/references that partition the context into semantically meaningful contiguous groups (calculation steps); at each generation step the model first (with full-context attention) selects which anchor(s) constitute the minimal attention span, then during token generation it attends only to those selected groups. This reduces memory reads and preserves correctness because arithmetic steps typically depend only on a small set of recent or referenced intermediate results. The paper does not provide low-level mechanistic claims (e.g., specific attention-head roles, carry-specific representations, or internal algorithmic circuits).",
+            "performance_scaling": "Throughput gains scale positively with output length (longer sequences provide more opportunities to ignore irrelevant context) and with clustered/blocked sparsity (kernel gains when ignored tokens occur in clusters of &gt;=64 tokens). No analysis of scaling with model parameter count is provided.",
+            "failure_modes": "Occasional small accuracy degradations (up to &gt;1% in some mid-length ranges, notably 256–512 tokens); generating anchor/references requires full-context attention (sparsity dips to 0% when producing references); naive fixed recency windows are insufficient because arithmetic solutions may reference arbitrarily distant intermediate results unless explicitly anchored.",
+            "comparison_baseline": "Compared three configurations: Dense Attn + Dense Kernel (Huggingface implementation baseline), Sparse Attn + Sparse Kernel (this paper's self-selected attention + custom CUDA kernel), and Dense Attn + Sparse Kernel (dense attention executed on the custom kernel, to control for kernel implementation effects). Metrics compared: task accuracy (final integer match) and throughput (tokens/sec) across output-length ranges.",
+            "key_finding": "Fine-tuning a LLaMA-7B model to emit anchors and self-select minimal attention spans lets the model perform multi-step arithmetic correctly while substantially reducing attended context and accelerating autoregressive decoding (up to ~28% throughput gain) with negligible loss in accuracy.",
+            "uuid": "e243.0",
+            "source_info": {
+                "paper_title": "Self-Selected Attention Span for Accelerating Large Language Model Inference",
+                "publication_date_yy_mm": "2024-04"
+            }
+        },
+        {
+            "name_short": "GOAT",
+            "name_full": "GOAT (Fine-tuned LLaMA for binary arithmetic evaluation)",
+            "brief_description": "A previously published LLaMA-7B variant fine-tuned for binary arithmetic evaluation (cited and used as the starting arithmetic-specialized model in this paper's experiments).",
+            "citation_title": "Goat, Fine-tuned llama outperforms gpt-4 on arithmetic tasks.",
+            "mention_or_use": "use",
+            "model_name": "GOAT (LLaMA-7B fine-tuned)",
+            "model_size": "7B",
+            "model_architecture": "decoder-only transformer",
+            "arithmetic_operation_type": "binary arithmetic evaluation (addition, subtraction, multiplication, division decomposed into binary steps)",
+            "number_range_or_complexity": "In the context of this paper: compatible with the paper's dataset (per-step decomposition; max 10 digits per number); GOAT itself (as cited) is specialized for binary arithmetic evaluation",
+            "method_or_intervention": "Prior fine-tuning for arithmetic tasks (Liu & Low, 2023); in this paper GOAT is further fine-tuned / used as the arithmetic-capable starting model and then fine-tuned with LoRA to emit anchors and predict attention spans",
+            "performance_result": null,
+            "mechanistic_insight": "Described at a high level as a model trained to produce stepwise evaluation traces; no low-level mechanistic details provided in this paper about GOAT's internal arithmetic strategy (the present paper builds on GOAT's stepwise evaluation style but focuses on attention-span prediction rather than GOAT's internal mechanisms).",
+            "performance_scaling": null,
+            "failure_modes": null,
+            "comparison_baseline": "Used as an arithmetic-specialized baseline / starting point (cited work) and as the family from which the paper's fine-tuned models are derived.",
+            "key_finding": "GOAT is an existing LLaMA-7B fine-tuned for arithmetic; this paper leverages that style of stepwise traces and augments it with self-selected attention-span annotations to reduce decoding costs.",
+            "uuid": "e243.1",
+            "source_info": {
+                "paper_title": "Self-Selected Attention Span for Accelerating Large Language Model Inference",
+                "publication_date_yy_mm": "2024-04"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Goat, Fine-tuned llama outperforms gpt-4 on arithmetic tasks.",
+            "rating": 2,
+            "sanitized_title": "goat_finetuned_llama_outperforms_gpt4_on_arithmetic_tasks"
+        },
+        {
+            "paper_title": "Chain of thought prompting elicits reasoning in large language models",
+            "rating": 2,
+            "sanitized_title": "chain_of_thought_prompting_elicits_reasoning_in_large_language_models"
+        },
+        {
+            "paper_title": "Emergent abilities of large language models",
+            "rating": 1,
+            "sanitized_title": "emergent_abilities_of_large_language_models"
+        }
+    ],
+    "cost": 0.01226175,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><p>SELF-SELECTED ATTENTION SPAN FOR ACCELERATING LARGE LANGUAGE MODEL INFERENCE
+14 Apr 2024</p>
+<p>Tian Jin 
+Wanzin Yazar 
+Zifei Xu 
+Sayeh Sharify 
+Xin Wang 
+SELF-SELECTED ATTENTION SPAN FOR ACCELERATING LARGE LANGUAGE MODEL INFERENCE
+14 Apr 2024CCB439EB83E8AA058C19DF3C6A435154arXiv:2404.09336v1[cs.CL]
+Large language models (LLMs) can solve challenging tasks.However, their inference computation on modern GPUs is highly inefficient due to the increasing number of tokens they must attend to as they generate new ones.To address this inefficiency, we capitalize on LLMs' problem-solving capabilities to optimize their own inference-time efficiency.We demonstrate with two specific tasks: (a) evaluating complex arithmetic expressions and (b) summarizing news articles.For both tasks, we create custom datasets to fine-tune an LLM.The goal of fine-tuning is twofold: first, to make the LLM learn to solve the evaluation or summarization task, and second, to train it to identify the minimal attention spans required for each step of the task.As a result, the fine-tuned model is able to convert these self-identified minimal attention spans into sparse attention masks on-the-fly during inference.We develop a custom CUDA kernel to take advantage of the reduced context to attend to.We demonstrate that using this custom CUDA kernel improves the throughput of LLM inference by 28%.Our work presents an end-to-end demonstration showing that training LLMs to self-select their attention spans speeds up autoregressive inference in solving real-world tasks.Preliminary work.Under review by the Machine Learning and Systems (MLSys) Conference.Do not distribute.Contributions:1. We propose using large language models to self-select important subsets of tokens (referred to as attention span) in its context to improve its own inference-time efficiency.2. We create two annotated datasets for complex arithmetic expression evaluation and for news article summarization to fine-tune large language models.These datasets include not only the solution to the task, but annotations</p>
+<p>INTRODUCTION</p>
+<p>Recent advances of large language models (LLMs) showed impressive capabilities (Devlin et al., 2019;Brown et al., 2020;Wei et al., 2022a;Chowdhery et al., 2022;Touvron et al., 2023;Zhang et al., 2022;Biderman et al., 2023a;Chen et al., 2021).However, the computation required to perform inference with LLMs is highly inefficient on state-of-the-art hardware.This inefficiency presents a pressing obstacle to sustainable and widespread deployment of LLMs.</p>
+<p>The autoregressive nature of LLM inference underpins the low arithmetic intensity during inference.Generating every new token depends on all preceding tokens as its context.This dependency necessitates storing and reading a growing size of contextual states, leading to suboptimal GPU utilization and memory-related performance bottlenecks.</p>
+<p>To speed up the attention mechanism, existing techniques either adopt a static sparsity patterns in the attention matrix (Beltagy et al., 2020;Zaheer et al., 2021) or introduce external mechanisms that dynamically induce attention sparsity (Tay et al., 2020;Wang et al., 2021;Rao et al., 2021).The latter methods all employ a context sparsifier, an add-on module external to the LLM, co-optimized to reduce the context that the attention mechanism attends to.The separation between this context sparsifier module from the LLM itself prevents them from capitalizing on the ever-growing capabilities of LLMs themselves to sparsify attention.</p>
+<p>Meanwhile, recent LLMs excel at zero-shot and few-shot learning tasks, showing generalization abilities across a wide variety of tasks, leading to the hypothesis of genuine reasoning ability and general intelligence.In this work, we hypothesize and validate that LLMs themselves possess the capability to serve as the aforementioned context sparsifier.</p>
+<p>To illustrate our approach, consider the chained syllogisms in Figure 1, an example of inherent sparsity in logical reasoning.Concluding that Socrates is Greek needs only the second and the third premise.Similarly, concluding that Socrates is mortal needs only the first premise and the first conclusion.Our work uses LLMs themselves to predict such natural, coarse-grained attention sparsity.We design custom CUDA kernels to speed up inference on GPUs. of the minimal attention span required to solve the task.</p>
+<ol>
+<li>
+<p>We analyze and benchmark key components of stateof-the-art LLMs, explaining how optimizing individual components affects full-model performance.</p>
+</li>
+<li>
+<p>We design a custom GPU kernel to accelerate autoregressive inference with self-selected attention spans and achieve up to 28% inference throughput increase without compromising accuracy on arithmetic evaluation task.</p>
+</li>
+<li>
+<p>We analyze how attention sparsity evolves over time in our approach, and document how LLMs make dynamic and context-dependent prediction of the required attention span for generating next tokens.</p>
+</li>
+</ol>
+<p>6.We benchmark our kernel implementations and identify conditions under which our custom CUDA kernels speed up LLM inference.</p>
+<p>Implications.Our work demonstrates the benefits of using insights from LLMs for improving thier own inference efficiency.Our work constitutes a preliminary step towards having LLMs autonomously and adaptively optimize their own computation at inference-time.</p>
+<p>BACKGROUND</p>
+<p>In this section, we describe important model architecture details (Section 2.1), explain their implications on model runtime (Section 2.2) and breakdown model runtime to individual components (Section 2.3).</p>
+<p>Model architecture</p>
+<p>We consider state-of-the-art decoder-only LLMs (Zhang et al., 2022;Touvron et al., 2023;Biderman et al., 2023b).The architecture of these models commonly features repeated instances of a building block called the decoder.In the range of models we consider, each decoder consists of a self-attention layer succeeded by a feedforward network.</p>
+<p>Additionally, the architecture includes normalization and positional embedding layers, which have inconsequential impact on overall system performance.</p>
+<p>Autoregressive inference</p>
+<p>To generate content using a LLM, one starts with a prompt, consisting of l initial tokens
+X = (p 0 , p 1 , • • • , p l−1 ) ∈ Z l .
+The model sequentially generates output tokens.At each step t, the model computes the probability of the next token o l+t conditioned on the concatenation of prompt tokens (p 0 , p 1 , • • • , p l−1 ) and previously generated output tokens
+(o l , • • • , o l+t−1 ): P (o l+t |p 0 , • • • , p l−1 , o l , • • • , o l+t−1 ).
+Next, we explain the computationally expensive steps involved in computing this conditional probability.</p>
+<p>Self-attention.Suppose the input to the decoder module consists of d-dimensional vectors corresponding to l tokens:
+X = (x 0 , x 1 , • • • , x l−1 ) ∈ R l×d .
+Self-attention computes matrices for queries Q, keys K, and values V as:
+Q = XW Q ∈ R l×d (1) K = XW K ∈ R l×d (2) V = XW V ∈ R l×d (3)
+Next, the attention score matrix S, is computed as:
+S = QK T √ d ∈ R l×l (4)
+An attention mask M is then added to S. An attention mask is a matrix that determines the data dependency between tokens -element at position [i, j] determines whether the generation of token at position i can attend to token at position j.A value of 0 in M permits attention, while a value of negative infinity prohibits it.We obtain the attention probability matrix A, by applying the softmax function row-wise to M ⊕ S. The softmax function ignores positions with large negative values in the mask, and focus only on those positions with zeros in the mask.
+A ij = Softmax j (M i,: ⊕ S i,: )(5)
+Finally, the output for each token after the self-attention operation is given by:
+O = AV ∈ R l×d (6)
+Each row O i of O correspond to an input token x i after the self-attention operation.</p>
+<p>Feedforward network.The feedforward network compute a series of linear projections for each output vector o i , interspersed with activation functions between them.</p>
+<p>KV-cache.Since autoregressive inference generates output tokens sequentially, at each token generation step, key and value vectors associated with prior tokens remain unchanged across generation steps.Specifically, for the t-th output token generation, the key and value vectors corresponding to tokens x i with i &lt; t remain unchanged from previous computations.</p>
+<p>This observation leads to the introduction of a key-value cache (KV-cache): once we compute the key and value vectors for a token, they are cached in memory.In subsequent generation steps, rather than recomputing these vectors, we retrieve them from the cache.KV-cache significantly reduces the computational cost of token generation steps.</p>
+<p>Token generation.We refer to the generation of the first token as the prefill phase of the inference.KV-cache does not change the computational complexity of prefill.This step computes queries, keys, values, and attention scores/outputs for all the prompt tokens in parallel using batched matrix multiplication.Optimized kernels exist to execute them efficiently on state-of-the-art hardwares (Chen et al., 2018;Tillet et al., 2019).</p>
+<p>We refer to the generation of subsequent tokens as the decoding phase of the inference.As LLM generates more tokens, decoding becomes increasingly memory-intensive.Generation of token o l+t only requires the computation of (l + t)-th row of O.This corresponds to calculating a single row of the attention score and the attention probability matrices, S l+t and A l+t , which necessitates reading just one row from the query matrix, Q.However, this is not the case with the key and value matrices.Since the self-attention mechanism considers the relationship of the current token with all the previously generated tokens, reading the complete matrices K and V is essential to computing the single row of attention score S l+t corresponding to the current token.</p>
+<p>Therefore, the calculations for subsequent token generations largely rely on matrix-vector operations.As these operations are inherently memory-bound, optimizing memory access-specifically by reducing memory reads-can speedup token generation.</p>
+<p>Performance characterization</p>
+<p>Runtime breakdown.</p>
+<p>We investigate language models consisting of repeated decoder blocks that possess identical architectures.Using LLaMA-7B (Touvron et al., 2023) as a representative model, we benchmark a single decoder layer.We analyze and break down the time required to produce a single output token using the Hugging Face transformers (Wolf et al., 2020) implementation of the LLaMA model.We experiment with a batch size of 64, the largest batch size to fit all sequence lengths we investigate, and vary the number of preceding tokens to attend to, which include both the prompt and previously generated tokens, on an A100 GPU, with KV-cache enabled and pre-allocated.</p>
+<p>Figure 2 shows that as the sequence length increases to  output generation step considers, thereby reducing memory reads during self-attention computation.</p>
+<p>Motivation</p>
+<p>Sequential arithmetic evaluation is a typical task where generation of current token does not depend on the entire context.Take the task of evaluating simple arithmetic expression "10 + 42 × 3" for example.Prompting the model with tokens "10+42×3 =" may result in the following sequence of reasoning steps and answer:
+10 + 42 × 3 = 10 + 126 = 136
+For a model trained to evaluate arithmetic expressions, each generation step attends to all preceding tokens, including the initial prompt and all earlier reasoning steps.However, by logic, to generate the final line, the model only needs the preceding reasoning step.Distant historical context like the initial prompt should not, in principle, influence the quality of the final answer.This illustrates potential for narrowing the model's attention span.Notably, similar patterns of redundancy exists broadly in tasks such as summarization, multi-round question-answering, and other tasks requiring chain-of-thought reasoning.</p>
+<p>Inference</p>
+<p>We introduce our approach for autoregressive inference with a reduced number of tokens to attend to.</p>
+<p>Challenges.Correctly identifying the necessary attention span to generate a token is challenging.In tasks that entail constructing reasoning steps with complex logical dependencies, identifying the minimal attention span equates to pinpointing the logical dependencies of the upcoming reasoning step.Due to its challenging nature, we hypothesize that the LLM itself is best suited to perform this step.To facilitate this process, we use the following design.</p>
+<p>Context partitioning.We partition the context of an LLM into semantically meaningful groups of contiguous tokens.This step can often benefit from human design -for arithmetic expression evaluation task, tokens corresponding to a single step of calculation can naturally be grouped together.</p>
+<p>For summarization task, tokens within the same sentence will be grouped together.</p>
+<p>Anchors.We introduce the concept of anchors to identify each group of tokens.An anchor consists of one or more tokens, and follows the group of tokens it identifies.We can manually insert these anchors into the input prompt or generate them alongside other output tokens by the LLM trained to auto-partition its output as discussed in the previous step.</p>
+<p>Determining attention span.Next, we use an LLM to determine the necessary attention span for the next token prediction.In this step, we allow LLMs to attend to all preceding context.Offline, we fine-tune the LLM with datasets designed to demonstrate attention span identification.Creating these datasets is task-specific, and we offer examples of how to make them in our experimental evaluations.</p>
+<p>Token generation.For output token generations, we restrict the LLMs to attend only to tokens corresponding to the attention span denoted by these anchors.</p>
+<p>Here, we use the same example as illustration in Figure 3.</p>
+<p>(a) We start with a prompt containing input tokens for the arithmetic expression 10 + 42 × 3. We manually add an anchor ( 1 ) to the prompt to mark the initial step.</p>
+<p>(b) The LLM identifies the smallest attention span necessary to correctly produce the next calculation step.The model chooses anchor 1 , signifying the need for the first calculation step to produce subsequent tokens.</p>
+<p>(c) The LLM accurately produces the second step of calculation, along with a new anchor 2 .</p>
+<p>(d) At this step, the model selects anchor 2 as its attention span.It ignores the tokens spanned by 1 as 2 encompasses the information of 1 .</p>
+<p>(e) Finally, the model generates the correct answer, attending solely on the preceding step.</p>
+<p>Overhead.Our proposed method, while enhancing inference efficiency, incurs a minor runtime overhead due to the generation of anchors and references.We emphasize that this overhead is minimal. 1 The LLM generates anchors and references for groups of tokens-for example, those associated with the same evaluation step-rather than on a per-token basis.Therefore, we can amortize this overhead across the generation of numerous tokens within each group, significantly mitigating its overall impact.</p>
+<p>CUDA Kernel Design</p>
+<p>The proposed approach reduces a LLM's context during token generation to decrease memory reads during inference.However, efficiently implementing this approach is challenging.Specifically, the identified attention span for the next token generation might consists of non-contiguous token spans.Optimized self-attention implementations typically assume contiguous input tokens (Dao et al., 2022).</p>
+<p>A straightforward solution is to repack these non-contiguous attention spans into a single contiguous segment, excluding the irrelevant context.This approach, however, faces two issues: Firstly, it necessitates copying the key and value matrices every time we switch between attention span determination and token generation.These repeated memory operations further stress the memory bandwidth during memory-bound computations, leading to slower inference speed.Secondly, the memory associated with the full context cannot be freed since subsequent token generations might reference previously unused contexts.This could require maintaining two context versions, straining the limited GPU memory capacity.</p>
+<p>Attention span encoding.We introduce a blocked attention span encoding method.First, we divide the context tokens into blocks of a fixed size, e.g.256 tokens each.Within each block, we record two metadata components: its block index, and a block mask recording which tokens in the block should be attended to.We omit recording metadata for blocks that do not contain any elements of the selected attention span.When encoding attention spans for multiple requests within a single batch, we maintain separate metadata for each request.We illustrate this scheme in Figure 4.</p>
+<p>Kernel algorithm.We modify the FlashAttention (Dao et al., 2022) kernel implemented in the OpenAI Triton project (Tillet et al., 2019).We show our modified algorithm in Algorithm 1.We dispatch an instance (CUDA block) of the algorithm for each attention head and batch of input.</p>
+<p>In L3-11 of Algorithm 1, we calculate qK T , i.e. the dot product of the query vector with each row of the key matrix, for every block specified in the metadata.L4 converts the block mask from a binary mask to a softmax mask.This mask ensures attention probabilities are non-zero only for positions corresponding to non-zero element in the block mask.L5 determines the block's starting offset, δ.L6 initialize bqK, the block-level representation of qK T , to zero.. L7-9 use parallel threads in a CUDA threadblock to compute the dot product for each token in the block.In L10, block mask bm ensures only tokens within the selected attention span influence the attention probabilities, A. Lastly, L13-18 calculate the attention output using attention probabilities A and the value matrix V , again using parallel threads in a CUDA threadblock.</p>
+<p>Overall, to produce each output token, we compute selfattention only over tokens inside the selected attention span.Blocks without tokens from the selected span are excluded from attention computation, thereby reducing memory reads and computation.For blocks partially intersecting the attention span, we mask out tokens that fall outside, ensuring they don't contribute to attention probabilities.Maximizing the number of blocks without attention span overlap is essential to accelerate inference.</p>
+<p>Auto-tuning.We use Triton autotuner to select optimal block size and thread count per CUDA block.</p>
+<p>Algorithm 1 Computing the self-attention during autoregressive generation for a single output token.1: function COMPUTE ATTN(q, K, V , metadata)
+2: qK, o ← fill(0, [n]), fill(0, [n]) 3:
+for each (block idx, bm) in metadata do parallel for i from 0 to bs
+8: bqK[i] ← dot(q, K[δ + i, :]) 9:
+end parallel for A ← softmax(qK/ √ d)</p>
+<p>13:</p>
+<p>for each (block idx, start, end) in metadata do 14:</p>
+<p>δ ← block idx × bs 15:</p>
+<p>parallel for i from 0 to bs
+16: o[δ + i] ← A[δ + i] × V [δ + i, :] 17:
+end parallel for</p>
+<p>EXPERIMENTAL RESULTS</p>
+<p>We present two case studies on our proposed technique.</p>
+<p>Hardware and software.We perform our evaluation on an A100 GPU with 80GB of HBM (High Bandwidth Memory).</p>
+<p>With the exception of custom CUDA kernels, we based our code on Hugging Face's implementation of LLaMA models.</p>
+<p>As outlined in Section 2, we develop custom kernels specifically for the decoding phase of inference, due to its unique performance bottlenecks.Our evaluation mainly targets this part of the model inference.We always generate tokens using greedy decoding, which picks the most probable next token at each step of generation.We always pre-allocate the KV-cache to eliminate runtime overhead due to memory allocation.</p>
+<p>LORA configuration.We fine-tune both sparse and dense attention models with LORA-finetuning using identical hyper-parameters adopted from Liu &amp; Low (2023) -we set LORA rank and alpha to 64, LORA dropout to 0.05, number of epochs to 1, learning rate to 3 × 10 −4 .We fine-tune with a causal language-modeling objective.All models in this section derive from the LLaMA-7B base model.We fine-tune the K/Q/V and output projection layers of the model.We always merge LORA weights back into the dense model for inference evaluation for efficiency.</p>
+<p>Comparison.We compare three combination of attention mechanism and kernel implementations.The first uses dense attention implemented with the standard Huggingface transformers (denoted Dense Attn + Dense Kernel).This combination represents standard off-the-shelf inference speed.The second employs sparse attention with a custom CUDA kernel (denoted Sparse Attn + Sparse Kernel) using our proposed technique of sparse attention and the custom CUDA kernel.The third combines dense attention with a custom CUDA kernel to verify that our efficiency gains are not primarily from optimized attention implementation (denoted as Dense Attn + Sparse Kernel) 2 .</p>
+<p>2 At the time of our writing, Huggingface implementation of LLaMA does not utilize flash attention.</p>
+<p>Arithmetic evaluation task</p>
+<p>We apply our proposed technique to evaluation of arithmetic expressions using incremental steps.This task requires Chain-of-Thought (Wei et al., 2022b) reasoning to achieve reasonable accuracy.Due to the lengthy intermediate thought processes involved, we examine the ability of LLMs to focus on relevant previous reasoning steps as they generate solutions in incremental steps.</p>
+<p>Dataset generation.We generate the task dataset using random arithmetic expressions that involve addition, subtraction, multiplication, and integer division.These expressions have a depth and digit count, both normally distributed with a mean of 5 and a standard deviation of 2.</p>
+<p>We begin with the complete arithmetic expression and identify all binary operations where both operands are literal numbers.We then evaluate these operations one by one, generating an evaluation trace for each of them.If an operation involves multiplication or division with two multi-digit numbers, we decompose the calculation so that each step includes at most one multi-digit number.This method of breaking down intermediate steps for binary arithmetic is adopted from Liu &amp; Low (2023).</p>
+<p>Throughout the generation process, we maintain a record of logical dependencies between computational steps.We include corresponding tokens for anchors and references.We cap the maximum digit count for any single number  in the dataset at 10 digits.The dataset consists of 60, 000 examples, evenly distributed across expression lengths.</p>
+<p>For example, an input instruction to solve (42×56)+(5×32) elicits model output in Figure 5: The model produces an anchor "[0]" at the end so that it can refer back to the task at hand.Note that two expressions, 42 × 56 and 5 × 32 are both ready to evaluate; L2 evaluate the first expression in steps, and L3 summarizes the result of evaluating this first expression.Both steps begins with special references "[-1]" to the previous line.The model finishes L3 with an anchor "[1]" for future reference.In L4, the model references the overall task through anchor "[0]" as well as the already completed sub-expression "[1]" and determines the next sub-expression to evaluate is 5 × 32.The model computes 5×32 in L4, along with anchor "[2]".Finally, with reference to the overall task "[0]" and two evaluated sub-expressions "[1,2]", the model generates the final answer.</p>
+<p>Challenges.This example illustrates that, to solve this task correctly, it is insufficient to simply maintain a constant number of most recent tokens, as the model may refer to tokens from the arbitrarily distant past.</p>
+<p>Fine-tuning.We fine-tune the GOAT model (Liu &amp; Low, 2023), which is a LLaMA-7B model fine-tuned to solve binary arithmetic evaluation.</p>
+<p>Evaluation metrics.We evaluate models using task accu-racy and token generation speed.To calculate task accuracy, we split the model output by space, parse the last term into an integer, and compare it to the ground truth output.For performance, we report tokens generated per second.</p>
+<p>Methods.We assess our technique by using fine-tuned LLMs to generate step-by-step solutions to evaluate arithmetic expression unseen during fine-tuning.We generate random arithmetic expressions whose ground truth solutions have up to N tokens.We divide N evenly into ranges of equal lengths L. For each range, we generate K random expressions for evaluation, and report the corresponding accuracy and throughput for our approach as well as baseline techniques.We take N = 1536 because it is reasonably close to the model's context length limit of 2048 while leaving room for instruction prompt as well as headroom for a slightly more verbose output.We take L = 256 and K = 384.We set batch size to 48 as it is the largest that avoids out-of-memory errors in all evaluation setups.</p>
+<p>Results. Figure 6 shows the accuracy and throughput for three combinations of attention mechanism and kernel implementation.Our proposed sparse attention with a custom CUDA kernel often matches or exceeds the accuracy of dense attention.Except for output lengths between 256 and 512 tokens, the accuracy of our sparse attention never drops more than 1% below that of dense attention.Moreover, our proposed technique sees larger speedup for generating longer sequences.This is expected, as for longer generations, more opportunities exist to ignore irrelevant tokens in the LLM's context.Specifically, for output lengths between 1536 and 1792 tokens, our implementation is 27.7% faster than the standard Huggingface transformer.</p>
+<p>Our custom CUDA kernel is based on FlashAttention (Dao et al., 2022), which may improve performance due to fused attention.We thus experiment with executing dense attention with our custom CUDA kernel (shown as "Dense Attn + Sparse Kernel" in Figure 6).We configure attention mask to retain all positions in the attention score matrix.Throughput of this configuration stays within 7% of the Huggingface transformer implementation in all cases.</p>
+<p>Conclusion.We fine-tune an LLM to evaluate complex arithmetic expressions while minimizing its attention span.</p>
+<p>We design and implement a CUDA kernel to take advantage of this reduced attention span and achieved a speedup of up to 28% without compromising task performance.</p>
+<p>News article summarization task</p>
+<p>We also studied the performance of applying our proposed technique on a summarization task, where the model needs to summarize an article in 3 sentences and only focus on a limited range of article sentences when generating each summarization sentence.</p>
+<p>Dataset generation.Our dataset is generated based on CNN/Daily Mail dataset (Hermann et al., 2015), which contains English journal articles from CNN and Daily Mail.</p>
+<p>For each article, we split it by sentence and prepend a line number to beginning of the sentence and a line break to the end of the sentence.We then pass the article to ChatGPT 3.5 asking it to summarize the article.</p>
+<p>The format of output summary consists of 3 sentences where each sentence is preceded with the range of line numbers from the article indicating its source.ChatGPT output is used as the ground truth label for fine-tuning.Appendix A shows how we structure input and output during fine-tuning.</p>
+<p>Figure 7 shows an example of the summarization task.The line numbers preceding the article sentences are anchors and the range of contiguous line numbers following the summarization sentences are the references to the anchors.</p>
+<p>During generation, we always attend to the instruction at L1.The generation of reference attends to all preceeding tokens, whereas the generation of summarization sentence only attends to the range of lines indicated by the line number references, plus the previous summarization sentence.</p>
+<p>Fine-tuning.We fine-tune both sparse attention and dense attention models using LORA-fine-tuning with a LLaMA Chat 7B model (Touvron et al., 2023).</p>
+<p>1 Summarize t h e f o l l o w i n g a r t i c l e . . . 2 0 : S e n t e n c e 0 o f a r t i c l e .3 1 : S e n t e n c e 1 o f a r t i c l e .4 . . . 5 30 : S e n t e n c e 30 o f a r t i c l e .6 (0-10) S u m m a r i z a t i o n s e n t e n c e 1 .</p>
+<p>7 (17-19) S u m m a r i z a t i o n s e n t e n c e 2 .</p>
+<p>8 (25) S u m m a r i z a t i o n s e n t e n c e 3 .Evaluation metrics.We evaluate output summary using ROUGE score (Lin, 2004).We also report number of tokens generated per second to evaluate model throughput.Methods.We generate summaries of 550 news articles in our test set.We divide the test set into two partitions: short and long.Articles in the long partition have a total number of tokens between 1536 and 2048, including the original article and generated summary, 121 articles in total.The rest belongs to the short partition, 408 articles in total.We use a batch size of 24, which is the largest batch size in multiple of 8, that fits in memory.</p>
+<p>Results.We summarize the accuracy and throughput for each combination of attention sparsity and kernel implementation in Table 1.For each configuration, we specify both the model and kernel configuration.We note that whether the dense attention model configuration utilizes the dense or the sparse kernel (with 0% sparsity) does not, in principle, change its output as these two kernel implementations are semantically equivalent with sparsity set to 0. Our approach (denoted as SASK) combines Sparse Attention with a custom Sparse CUDA Kernel.Our approach sees the highest throughput on the long partition, beating the Huggingface transformer implementation by 18.2% and the baseline dense attention with sparse CUDA kernel by 5.3%.</p>
+<p>Sparse attention models generally under-perform dense attention models, unlike in the previous case study.We hypothesize two possible reasons: (1) imprecision of ChatGPT annotation of attention span -as generated summaries often reference terms outside the annotated range;</p>
+<p>(2) models are under-fine-tuned on the annotated dataset, for sparse models to adapt to restricted attention span.While improving annotation quality is beyond our means, we tested hypothesis (2).We increased the fine-tuning epochs for the sparse attention model to 3.This reduced the ROUGE-1 score gap from 6.39 to 2.2.</p>
+<p>Conclusion.</p>
+<p>For summarization task, our proposed approach achieves the highest throughput when summarizing long articles, though at a noticeable cost to output quality.However, additional fine-tuning can narrow the output quality gap between sparse and dense models.</p>
+<p>ADDITIONAL STUDIES</p>
+<p>5.1 Achieved sparsity of self-selected attention</p>
+<p>Since we allow the LLM to dynamically select important tokens, the attention sparsity dynamically vary during autoregressive inference.In this section, we inspect the attention sparsity for each token during autoregressive generation for the arithmetic evaluation task.</p>
+<p>Method.We analyze evaluation data with ground truth output length between 768 and 1024.We select the first three runs and record the achieved attention sparsity for each output token.The attention sparsity is calculated as the number of ignored tokens divided by the total number of already generated tokens, including the prompt tokens.</p>
+<p>Results.We plot attention sparsity as a function of the position of the generated token during inference in Figure 8.We observe considerable attention sparsity during autoregressive generation.Specifically, the average attention sparsity over all token positions and across three runs is 47.3%.The attention sparsity generally increases with growing token positions, because the larger number of previously generated tokens, the more opportunities to selectively ignore irrelevant tokens.Occasional dips to 0% occur when generating references to anchors, which require full-context attention.</p>
+<p>Conclusions.We observe considerable attention sparsity on average and find that LLMs dynamically adjust the attention sparsity during autoregressive generation.</p>
+<p>Custom CUDA kernel benchmarking</p>
+<p>Our custom CUDA kernels are designed for unstructured sparse attention patterns.Nevertheless, performance only improves when the attention matrix has clustered nonzero elements.This is because our implementation computes attention probabilities in blocks: the implementation computes attention probabilities for blocks with nonzero elements and skips those with only zeros.Thus, block size matters: too small limits parallelism, too large increases computation.</p>
+<p>To understand this tradeoff quantitatively, we examine our custom CUDA kernels in this section, and investigate the speedup achievable under controlled conditions.</p>
+<p>Method.We simulate generating a new token with varying lengths of preceding tokens, among which 50% are selectively ignored.Specifically, we randomly generate binary attention masks with a 50% sparsity rate.Within these masks, a value of zero indicates a position in the attention matrix to skip and a value of one indicates a position in the attention matrix to compute.We fill the mask with blocks of 1s, and we refer to this block size as sparsity block size.We use sparsity block size to control the granularity of sparsity patterns.Importantly, this sparsity block size should not be confused with the block size used in our custom CUDA kernels.Regardless of its block size setting, our CUDA kernel can compute attention probabilities for masks generated with any sparsity block size; the distinction affects performance only.Specifically, a mismatch between these two block sizes can add computational overhead.We benchmark our CUDA kernel with a fixed batch size of 64,3 varying number of pre-existing tokens from 1024 to 8096 and varying sparsity block size among {64, 128, 256}.We show speedup against the standard Huggingface implementation of self-attention (with pre-allocated KV-cache).</p>
+<p>Results.As shown in Figure 9, at 50% sparsity, our custom CUDA kernel delivers a (geometric) average speedup of 1.29× over the standard Huggingface transformers implementation.The speedup generally increases with sparsity block sizes; the ability to skip over large blocks of zeros is critical for achieving speedup.The geometric average speedup for sparsity block size 32, 64, 128 and 256 are 0.97×, 1.2×, 1.6×, 1.6× respectively.However, our implementation also have small but noticeable overhead due to the additional overhead related with handling the attention mask.Specifically, with sequence length of 1024 and sparsity block size of 32, our implementation is slower than baseline by 7%.</p>
+<p>Conclusions.Our custom CUDA kernel is effective at accelerating autoregressive inference when the ignored context occur in blocks of 64 or more tokens.</p>
+<p>RELATED WORK</p>
+<p>Meta-learning.Meta-learning optimizes learning and prediction algorithms, often enhancing system efficiency. .Attention sparsity for generating each token to evaluate complex arithmetic expressions.We select expressions from the test dataset.The ground truth solution, including the intermediate steps, have length between 768 and 1024 tokens.Dips in the attention sparsity to 0 occurs when generating references, which require attention to full context.We observe that attention sparsity generally grows as the context length increase, and can reach to more than 80% near the end of solution generation.during prediction.Jaderberg et al. (2017); Czarnecki et al. (2017) used neural networks to predict future gradients, allowing layers to update independently and thus increasing parallelism.A substantial body of work (Almeida et al., 1999;Martínez-Rubio, 2018;Luketina et al., 2016;Chandra et al., 2022) optimizes hyperparameters, such as learning rate, using gradient-based techniques to minimize tuning.We also optimize, using LLMs themselves, hyperparameters controlling the attention span of large language models   Zhang et al. 2023;Ge et al. 2023;Xiao et al. 2023); in these techniques, specifically, a contextual attention sparsifier is responsible for administering an eviction policy of tokens from the context, which was specifically co-designed for the model and task based on statistics of the attention scores, empirically measured from BERTological introspections.In this work, we aim at the same upshot while attempting to use an LLM to determine the eviction policy implicitly and adaptively.</p>
+<p>CLOSING DISCUSSIONS</p>
+<p>Interpretability.Large language models can cost up to millions of dollars to train (Venigalla &amp; Li).This high cost makes developers of LLMs rightfully hesitant to use opaque model compression techniques that might compromise model quality.We believe that, in order for such techniques to gain widespread adoption, model developers must be able to see and understand how the model context is reduced and compressed.Our method meets this criterion by reducing the context size of these models in fully transparent ways.We train LLMs to produce easy-to-inspect attention span annotations that appear in the model output.These annotations help developers determine whether the context reduction is justified.</p>
+<p>Debugging and intervention.Interpretable attention sparsity facilitates debugging.If model quality falls below an acceptable threshold, model developers can assess the selected attention span by inspecting the anchors and references in the model's output.Finally, if developers determine that the selections are incorrect, they can correct the attention span annotations by creating a dataset with the correct annotations and subsequently fine-tuning the model.</p>
+<p>Conclusion.</p>
+<p>Our work shows that fine-tuning LLMs to predict and minimize its own attention spans can accelerate autoregressive inference by up to 28%.We label task datasets with attention span annotations, design custom CUDA kernels to improve inference efficiency.We believe our study is a step towards making LLMs autonomously optimize its own computations.</p>
+<p>Figure 1 .
+1
+Figure 1.Human thought process is inherently sparse, as shown by the minimal dependencies in the attention matrix below.</p>
+<p>Figure 3 .
+3
+Figure 3. Illustration of Autoregressive Inference with Reduced Attention Span.In step (b) and (d), the LLM attends to all tokens to select a subset of important tokens for next token prediction.We highlight the selected tokens in green.During generation step (c) and (e), the LLM attends only to the selected subset of tokens.</p>
+<p>Input: d (Hidden dimension size) Input: n (Number of tokens in current context) Input: bs (Block size) Input: q (Query vector of dimension d) Input: K (Key matrix of size [n × d]) Input: V (Value matrix of size [n × d]) Input: metadata (List of tuples containing block indices and start/end indices within blocks) Output: o (Output vector after attention computation)</p>
+<p>Figure 4 .
+4
+Figure 4. Illustration of attention span encoding.Numbers on a yellow background are block indices.Numbers on gray background represent the binary mask indicating whether each token within the block should be attended to.</p>
+<p>Figure 5 .
+5
+Figure 5. Example model output for complex arithmetics.Numbers on a blue background are anchors.Numbers on a green background reference these anchors.[-1] denotes a reference to the previous line.</p>
+<p>Figure 7 .
+7
+Figure 7. Example model generation for summarization tasks.Numbers on a blue background are anchors.Numbers on a green background reference these anchors.</p>
+<p>Figure8.Attention sparsity for generating each token to evaluate complex arithmetic expressions.We select expressions from the test dataset.The ground truth solution, including the intermediate steps, have length between 768 and 1024 tokens.Dips in the attention sparsity to 0 occurs when generating references, which require attention to full context.We observe that attention sparsity generally grows as the context length increase, and can reach to more than 80% near the end of solution generation.</p>
+<p>Figure 9 .
+9
+Figure 9. Speedup under controlled conditions.Our custom CUDA kernel speeds up inference when ignored context occur in clusters of 64 or more tokens.</p>
+<p>Table 1 .
+1
+Results of summarization task.DASK = Dense Attention, Sparse Kernel, etc. R. = ROUGE-.
+ConfigurationToks/sR.1R.2R.L R.LsumDADK Short751.8 58.6 36.5 45.946.8DASK Short789.2 58.5 36.3 45.846.6SASK (ours) Short788.8 52.2 28.0 38.539.9DADK Long652.9 54.1 29.3 38.640.1DASK Long732.5 54.0 29.2 38.640.0SASK (ours) Long771.2 47.5 21.6 32.234.1
+d-Matrix Corporation, Santa Clara, California, USA
+MIT, Cambridge, Massachusetts, USA. Correspondence to: Tian Jin <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#105;&#97;&#110;&#106;&#105;&#110;&#64;&#99;&#115;&#97;&#105;&#108;&#46;&#109;&#105;&#116;&#46;&#101;&#100;&#117;">&#116;&#105;&#97;&#110;&#106;&#105;&#110;&#64;&#99;&#115;&#97;&#105;&#108;&#46;&#109;&#105;&#116;&#46;&#101;&#100;&#117;</a>, Xin Wang <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#120;&#119;&#97;&#110;&#103;&#64;&#100;&#45;&#109;&#97;&#116;&#114;&#105;&#120;&#46;&#97;&#105;">&#120;&#119;&#97;&#110;&#103;&#64;&#100;&#45;&#109;&#97;&#116;&#114;&#105;&#120;&#46;&#97;&#105;</a>.
+In Section 5.2, we measure this overhead to be ≤ 7%.
+We searched for the maximum batch size with an increment of 16, this is the largest that does not result in compilation error or out-of-memory error.
+A EXAMPLE PROMPTS USED FOR GENERATING ANNOTATED SUMMARIZATION DATASETPrompt used for ChatGPT to generate summary: Provide a summary of the above article in no more than three sentences.For each sentence, precede it with the range of line numbers from the article that informed it, using the format (line numbers).For example: (1-3) This is the first sentence.Write each sentence as a separate sentence on a new line.Prompt attached to instructions in the new dataset:Summarize the following article in three sentences and precede it with the range of line numbers for each summarized sentence in the parenthese.
+Parameter adaptation in stochastic optimization. L B Almeida, T Langlois, J F M Amaral, A Plakhov, 199959633374</p>
+<p>Longformer: The long-document transformer. I Beltagy, M E Peters, A Cohan, 2020</p>
+<p>S Biderman, H Schoelkopf, Q Anthony, H Bradley, K O'brien, E Hallahan, M A Khan, S Purohit, U S Prashanth, E Raff, A Skowron, L Sutawika, A suite for analyzing large language models across training and scaling. 2023a</p>
+<p>Pythia: A suite for analyzing large language models across training and scaling. S Biderman, H Schoelkopf, Q G Anthony, H Bradley, K O'brien, E Hallahan, M A Khan, S Purohit, U S Prashanth, E Raff, A Skowron, L Sutawika, O Van Der Wal, Proceedings of the 40th International Conference on Machine Learning. Proceedings of Machine Learning Research. A Krause, E Brunskill, K Cho, B Engelhardt, S Sabato, J Scarlett, the 40th International Conference on Machine LearningPMLRJul 2023b202</p>
+<p>Language models are few-shot learners. T B Brown, B Mann, N Ryder, M Subbiah, J Kaplan, P Dhariwal, A Neelakantan, P Shyam, G Sastry, A Askell, S Agarwal, A Herbert-Voss, G Krueger, T Henighan, R Child, A Ramesh, D M Ziegler, J Wu, C Winter, C Hesse, M Chen, E Sigler, M Litwin, S Gray, B Chess, J Clark, C Berner, S Mccandlish, A Radford, I Sutskever, D Amodei, 2020</p>
+<p>Gradient descent: The ultimate optimizer. K Chandra, A Xie, J Ragan-Kelley, E Meijer, 2022</p>
+<p>. M Chen, J Tworek, H Jun, Q Yuan, H P De Oliveira Pinto, J Kaplan, H Edwards, Y Burda, N Joseph, G Brockman, A Ray, R Puri, G Krueger, M Petrov, H Khlaaf, G Sastry, P Mishkin, B Chan, S Gray, N Ryder, M Pavlov, A Power, L Kaiser, M Bavarian, C Winter, P Tillet, F P Such, D Cummings, M Plappert, F Chantzis, E Barnes, A Herbert-Voss, W H Guss, A Nichol, A Paino, N Tezak, J Tang, I Babuschkin, S Balaji, S Jain, W Saunders, C Hesse, A N Carr, J Leike, J Achiam, V Misra, E Morikawa, A Radford, M Knight, M Brundage, M Murati, K Mayer, P Welinder, B Mcgrew, D Amodei, S Mccandlish, I Sutskever, Zaremba , 2021Evaluating large language models trained on code</p>
+<p>Tvm: An automated end-to-end optimizing compiler for deep learning. T Chen, T Moreau, Z Jiang, L Zheng, E Yan, M Cowan, H Shen, L Wang, Y Hu, L Ceze, C Guestrin, A Krishnamurthy, 2018</p>
+<p>Generating long sequences with sparse transformers. R Child, S Gray, A Radford, I Sutskever, 2019</p>
+<p>A Chowdhery, S Narang, J Devlin, M Bosma, G Mishra, A Roberts, P Barham, H W Chung, C Sutton, S Gehrmann, P Schuh, K Shi, S Tsvyashchenko, J Maynez, A Rao, P Barnes, Y Tay, N Shazeer, V Prabhakaran, E Reif, N Du, B Hutchinson, R Pope, J Bradbury, J Austin, M Isard, G Gur-Ari, P Yin, T Duke, A Levskaya, S Ghemawat, S Dev, H Michalewski, X Garcia, V Misra, K Robinson, L Fedus, D Zhou, D Ippolito, D Luan, H Lim, B Zoph, A Spiridonov, R Sepassi, D Dohan, S Agrawal, M Omernick, A M Dai, T S Pillai, M Pellat, A Lewkowycz, E Moreira, R Child, O Polozov, K Lee, Z Zhou, X Wang, B Saeta, M Diaz, O Firat, M Catasta, J Wei, K Meier-Hellstern, D Eck, J Dean, S Petrov, N Fiedel, Palm, Scaling language modeling with pathways. 2022</p>
+<p>Understanding synthetic gradients and decoupled neural interfaces. W M Czarnecki, G Świrszcz, M Jaderberg, S Osindero, O Vinyals, K Kavukcuoglu, 2017</p>
+<p>FlashAttention: Fast and memory-efficient exact attention with IO-awareness. T Dao, D Y Fu, S Ermon, A Rudra, C Ré, Advances in Neural Information Processing Systems. 2022</p>
+<p>J Devlin, M.-W Chang, K Lee, K Toutanova, Bert, Pre-training of deep bidirectional transformers for language understanding. 2019</p>
+<p>Model tells you what to discard: Adaptive kv cache compression for llms. S Ge, Y Zhang, L Liu, M Zhang, J Han, J Gao, 2023</p>
+<p>Learning both weights and connections for efficient neural networks. S Han, J Pool, J Tran, W J Dally, 2015</p>
+<p>Teaching machines to read and comprehend. K M Hermann, T Kočiský, E Grefenstette, L Espeholt, W Kay, M Suleyman, P Blunsom, Advances in Neural Information Processing Systems (NIPS). 2015</p>
+<p>Decoupled neural interfaces using synthetic gradients. M Jaderberg, W M Czarnecki, S Osindero, O Vinyals, A Graves, D Silver, K Kavukcuoglu, 2017</p>
+<p>Y Li, S Gu, K Zhang, L V Gool, R Timofte, Dhp, Differentiable meta pruning via hypernetworks. 2020</p>
+<p>Rouge: A package for automatic evaluation of summaries. C.-Y Lin, 20040110</p>
+<p>T Liu, B K H Low, Goat, Fine-tuned llama outperforms gpt-4 on arithmetic tasks. 2023</p>
+<p>Scalable gradient-based tuning of continuous regularization hyperparameters. J Luketina, M Berglund, K Greff, T Raiko, 2016</p>
+<p>Convergence analysis of an adaptive method of gradient descent. D Martínez-Rubio, 2018. 198907431</p>
+<p>Landmark attention: Random-access infinite context length for transformers. A Mohtashami, M Jaggi, 2023</p>
+<p>Efficient vision transformers with dynamic token sparsification. Y Rao, W Zhao, B Liu, J Lu, J Zhou, C.-J Hsieh, Dynamicvit, 2021</p>
+<p>Y Tay, D Bahri, L Yang, D Metzler, D.-C Juan, Sparse sinkhorn attention. 2020</p>
+<p>Triton: An intermediate language and compiler for tiled neural network computations. P Tillet, H T Kung, D Cox, 10.1145/3315508.3329973Proceedings of the 3rd ACM SIGPLAN International Workshop on Machine Learning and Programming Languages. the 3rd ACM SIGPLAN International Workshop on Machine Learning and Programming LanguagesNew York, NY, USA2019Association for Computing Machinery. ISBN 9781450367196</p>
+<p>Llama: Open and efficient foundation language models. H Touvron, T Lavril, G Izacard, X Martinet, M.-A Lachaux, T Lacroix, B Rozière, N Goyal, E Hambro, F Azhar, A Rodriguez, A Joulin, E Grave, G Lample, 2023</p>
+<p>Mosaic llms (part 2): Gpt-3 quality for less than $500k. A Venigalla, L Li, </p>
+<p>Efficient sparse attention architecture with cascade token and head pruning. H Wang, Z Zhang, S Han, Spatten, 2021</p>
+<p>. J Wei, Y Tay, R Bommasani, C Raffel, B Zoph, S Borgeaud, D Yogatama, M Bosma, D Zhou, D Metzler, E H Chi, T Hashimoto, O Vinyals, P Liang, J Dean, W Fedus, 2022aEmergent abilities of large language models</p>
+<p>Chain of thought prompting elicits reasoning in large language models. J Wei, X Wang, D Schuurmans, M Bosma, E H Chi, Q Le, D Zhou, CoRR, abs/2201.119032022b</p>
+<p>Transformers: Stateof-the-art natural language processing. T Wolf, L Debut, V Sanh, J Chaumond, C Delangue, A Moi, P Cistac, T Rault, R Louf, M Funtowicz, J Davison, S Shleifer, P Von Platen, C Ma, Y Jernite, J Plu, C Xu, T L Scao, S Gugger, M Drame, Q Lhoest, A M Rush, Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations. the 2020 Conference on Empirical Methods in Natural Language Processing: System DemonstrationsAssociation for Computational LinguisticsOctober 2020</p>
+<p>Efficient streaming language models with attention sinks. G Xiao, Y Tian, B Chen, S Han, M Lewis, 2023</p>
+<p>Big bird: Transformers for longer sequences. M Zaheer, G Guruganesh, A Dubey, J Ainslie, C Alberti, S Ontanon, P Pham, A Ravula, Q Wang, L Yang, A Ahmed, 2021</p>
+<p>. S Zhang, S Roller, N Goyal, M Artetxe, M Chen, S Chen, C Dewan, M Diab, X Li, X V Lin, T Mihaylov, M Ott, S Shleifer, K Shuster, D Simig, P S Koura, A Sridhar, T Wang, L Zettlemoyer, 2022Opt: Open pre-trained transformer language models</p>
+<p>H 2 o: Heavy-hitter oracle for efficient generative inference of large language models. Z Zhang, Y Sheng, T Zhou, T Chen, L Zheng, R Cai, Z Song, Y Tian, C Ré, C Barrett, Z Wang, B Chen, 2023</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

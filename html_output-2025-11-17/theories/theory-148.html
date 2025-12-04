@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uncertainty-Fidelity-Efficiency Triangle - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-148</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-148</p>
+                <p><strong>Name:</strong> Uncertainty-Fidelity-Efficiency Triangle</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about what constitutes an optimal world model for AI systems, incorporating fidelity, interpretability, computational efficiency, and task-specific utility, based on the following results.</p>
+                <p><strong>Description:</strong> Optimal world models must balance three competing objectives: (1) capturing predictive uncertainty (stochastic vs deterministic), (2) maintaining high fidelity for planning horizons, and (3) computational efficiency. The optimal balance depends on environment characteristics (stochasticity, observability), task requirements (planning horizon, safety criticality), and computational constraints. Deterministic models are computationally efficient but fail in stochastic/partially-observable environments and are exploitable by policies. Fully stochastic models capture uncertainty but increase computational cost through sampling/integration and can suffer from compounding errors over long horizons. Optimal designs use hybrid approaches: (a) deterministic recurrence with stochastic latents (RSSM-style), (b) discrete stochastic models that enumerate plausible futures (VQ-based), (c) ensemble methods for epistemic uncertainty, or (d) diffusion-based models for high-fidelity stochastic generation. The choice among these depends on whether uncertainty is primarily aleatoric (inherent randomness) or epistemic (model uncertainty), the required planning horizon (short vs long), and whether real-time inference is needed.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Deterministic models are optimal only in fully deterministic, fully observable environments with short planning horizons (<5 steps)</li>
+                <li>Stochastic models are necessary but not sufficient for optimal performance in partially observable or stochastic environments; they must be combined with appropriate memory mechanisms</li>
+                <li>Hybrid deterministic-stochastic architectures (e.g., RSSM) provide better memory-uncertainty trade-offs than pure approaches, with deterministic components handling long-term dependencies and stochastic components capturing uncertainty</li>
+                <li>Discrete stochastic models (VQ-based) offer computational advantages over continuous stochastic models by enumerating plausible outcomes, particularly effective when the number of modes is tractable (<1000 codes typically)</li>
+                <li>Ensemble methods provide practical epistemic uncertainty quantification with linear computational scaling (B models → B× cost), achieving 8-125× sample efficiency gains in model-based RL</li>
+                <li>Diffusion-based stochastic models achieve highest visual fidelity but at significant computational cost (100-1000 network evaluations per sample), suitable when generation quality is paramount</li>
+                <li>The optimal uncertainty representation depends on planning horizon: short horizons (<5 steps) can tolerate deterministic models, medium horizons (5-20 steps) benefit from discrete/ensemble uncertainty, long horizons (>20 steps) require explicit stochastic modeling or diffusion</li>
+                <li>Epistemic uncertainty (model uncertainty) should be captured through ensembles or Bayesian approaches, while aleatoric uncertainty (inherent randomness) should be captured through stochastic latents or mixture models</li>
+                <li>Uncertainty modeling provides 10-20% performance gains in navigation tasks and 2-5× sample efficiency gains in model-based RL, but only when the environment has genuine stochasticity or partial observability</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>RSSM combines deterministic RNN state with stochastic latents, outperforming purely deterministic or purely stochastic models in planning tasks across multiple benchmarks <a href="../results/extraction-result-1218.html#e1218.0" class="evidence-link">[e1218.0]</a> <a href="../results/extraction-result-1218.html#e1218.1" class="evidence-link">[e1218.1]</a> <a href="../results/extraction-result-1218.html#e1218.2" class="evidence-link">[e1218.2]</a> </li>
+    <li>Probabilistic ensembles (PE) in PETS achieve 8x better sample efficiency than SAC and 125x better than PPO by capturing both aleatoric and epistemic uncertainty through bootstrap disagreement <a href="../results/extraction-result-1388.html#e1388.0" class="evidence-link">[e1388.0]</a> </li>
+    <li>Deterministic RNN ablation shows worse task returns than RSSM due to inability to represent multiple plausible futures under partial observability <a href="../results/extraction-result-1218.html#e1218.1" class="evidence-link">[e1218.1]</a> </li>
+    <li>Purely stochastic SSM struggles with long-term memory leading to inconsistent trajectories and worse planning returns compared to hybrid RSSM <a href="../results/extraction-result-1218.html#e1218.2" class="evidence-link">[e1218.2]</a> </li>
+    <li>VQM uses discrete stochastic codes to enable multimodal planning in stochastic environments (chess, DeepMind Lab), outperforming deterministic baselines and continuous VAEs in MBRE metrics <a href="../results/extraction-result-1411.html#e1411.0" class="evidence-link">[e1411.0]</a> <a href="../results/extraction-result-1411.html#e1411.1" class="evidence-link">[e1411.1]</a> <a href="../results/extraction-result-1411.html#e1411.2" class="evidence-link">[e1411.2]</a> <a href="../results/extraction-result-1411.html#e1411.3" class="evidence-link">[e1411.3]</a> <a href="../results/extraction-result-1411.html#e1411.5" class="evidence-link">[e1411.5]</a> </li>
+    <li>VRKN eliminates overestimation of aleatoric uncertainty present in RSSMs through principled Gaussian updating and Kalman corrections, improving uncertainty calibration <a href="../results/extraction-result-1223.html#e1223.5" class="evidence-link">[e1223.5]</a> </li>
+    <li>Ensemble of distributional Q-networks provides 10-20% increase in success rate for distant goals by reducing spurious distance predictions through uncertainty quantification <a href="../results/extraction-result-1410.html#e1410.3" class="evidence-link">[e1410.3]</a> </li>
+    <li>DNA transformation-based model fails catastrophically under occlusion due to deterministic warping (improvement 0.83±0.25 pixels), while SNA with skip connections handles occlusions better (10.6±0.82 pixels) <a href="../results/extraction-result-1419.html#e1419.1" class="evidence-link">[e1419.1]</a> <a href="../results/extraction-result-1419.html#e1419.0" class="evidence-link">[e1419.0]</a> </li>
+    <li>DIAMOND uses EDM diffusion formulation for stable stochastic rollouts with low NFE (n=3), achieving mean HNS=1.46 on Atari while maintaining visual fidelity <a href="../results/extraction-result-1259.html#e1259.0" class="evidence-link">[e1259.0]</a> <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> </li>
+    <li>EDM-based world model produces substantially more stable long-horizon autoregressive rollouts than DDPM, stable even with n=1 denoising steps in some games <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> </li>
+    <li>TSSM transformer-based stochastic model achieves better long-term fidelity (lower foreground MSE: 211.2 vs 281.9, better reward prediction: 46.9% vs 28.2%) than RSSM in memory-intensive tasks <a href="../results/extraction-result-1405.html#e1405.0" class="evidence-link">[e1405.0]</a> </li>
+    <li>PolyGRAD policy-guided diffusion achieves better short-horizon trajectory prediction than deterministic transformers by modeling uncertainty through iterative refinement <a href="../results/extraction-result-1195.html#e1195.4" class="evidence-link">[e1195.4]</a> </li>
+    <li>OSWM demonstrates that synthetic stochastic priors (NN prior + momentum prior) enable one-shot learning, with NN prior providing multimodal diversity but requiring momentum prior for physics-based tasks <a href="../results/extraction-result-1269.html#e1269.0" class="evidence-link">[e1269.0]</a> <a href="../results/extraction-result-1269.html#e1269.1" class="evidence-link">[e1269.1]</a> </li>
+    <li>Iso-Dream++ explicitly separates controllable (deterministic+stochastic) and noncontrollable (stochastic) dynamics, achieving better performance in CARLA (return ~60 vs ~10 for DreamerV2) by modeling uncertainty in each component appropriately <a href="../results/extraction-result-1225.html#e1225.0" class="evidence-link">[e1225.0]</a> </li>
+    <li>Denoising diffusion models achieve state-of-the-art sample quality (CIFAR10 FID=3.17) through stochastic generation but require T=1000 neural network evaluations, demonstrating the fidelity-efficiency tradeoff <a href="../results/extraction-result-1408.html#e1408.0" class="evidence-link">[e1408.0]</a> </li>
+    <li>SimPLe stochastic discrete model with 5 Gaussian mixtures enables multimodal prediction but requires careful tuning of mixture components and scheduled sampling to avoid mode collapse <a href="../results/extraction-result-1399.html#e1399.0" class="evidence-link">[e1399.0]</a> <a href="../results/extraction-result-1399.html#e1399.1" class="evidence-link">[e1399.1]</a> <a href="../results/extraction-result-1399.html#e1399.2" class="evidence-link">[e1399.2]</a> </li>
+    <li>MDN-RNN with mixture density network (5 Gaussians) captures stochastic dynamics in CarRacing, achieving 765±102 score with expert training vs 356±177 with random training <a href="../results/extraction-result-1274.html#e1274.0" class="evidence-link">[e1274.0]</a> <a href="../results/extraction-result-1274.html#e1274.3" class="evidence-link">[e1274.3]</a> </li>
+    <li>EPLS world model with MDN-RNN achieves 708±195 score through iterative refinement, demonstrating that stochastic models benefit from curriculum learning on uncertainty <a href="../results/extraction-result-1204.html#e1204.0" class="evidence-link">[e1204.0]</a> </li>
+    <li>NewtonianVAE with stochastic position latents and deterministic velocity enables P-controllability (perfect task reward 3.0±0.0) by appropriately separating stochastic and deterministic components <a href="../results/extraction-result-1424.html#e1424.0" class="evidence-link">[e1424.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In highly stochastic multi-agent environments, models with explicit epistemic uncertainty (ensembles) will achieve 2-5× better sample efficiency than single deterministic models, with larger gains (5-10×) in safety-critical scenarios</li>
+                <li>Hybrid models with deterministic recurrence and discrete stochastic latents (≤512 codes) will outperform continuous stochastic models by 20-40% in wall-clock training time while maintaining comparable planning quality</li>
+                <li>Ensemble-based uncertainty estimates with B=5-10 models will enable more robust long-horizon planning (>20 steps) than single-model approaches, with 15-30% higher success rates in novel environments</li>
+                <li>Diffusion-based world models will achieve 2-3× better visual fidelity (FID/FVD) than RSSM-based models but require 10-50× more inference compute, making them suitable for offline planning but not real-time control</li>
+                <li>In environments with mixed controllable/noncontrollable dynamics, explicitly separating these components (like Iso-Dream++) will improve performance by 20-50% compared to monolithic stochastic models</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether learned uncertainty estimates can match or exceed hand-crafted uncertainty quantification in safety-critical applications (autonomous driving, medical robotics) without orders of magnitude more data</li>
+                <li>If there exists an optimal ratio of deterministic to stochastic capacity that generalizes across domains, or if this ratio must be task-specific</li>
+                <li>Whether uncertainty-aware world models can enable safe exploration in high-risk environments (robotics, industrial control) without extensive real-world data, or if simulation-to-reality transfer remains a fundamental bottleneck</li>
+                <li>If discrete stochastic models can scale to high-dimensional continuous control domains (humanoid robotics, dexterous manipulation) as effectively as they work in discrete/low-dimensional domains</li>
+                <li>Whether diffusion-based uncertainty modeling can be made efficient enough (≤10 network evaluations) for real-time control while maintaining multimodal prediction quality</li>
+                <li>If transformer-based stochastic models (TSSM) can scale to very long horizons (>100 steps) without catastrophic error accumulation, or if recurrent architectures remain necessary</li>
+                <li>Whether ensemble uncertainty can be distilled into single models without significant performance loss, enabling deployment efficiency while maintaining uncertainty awareness</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding environments where deterministic models consistently outperform stochastic models in long-horizon planning (>20 steps) would challenge the necessity of uncertainty modeling for long horizons</li>
+                <li>Demonstrating that single-model approaches achieve comparable robustness to ensembles (within 5% performance) without increased capacity would question the value of ensemble uncertainty quantification</li>
+                <li>Showing that continuous stochastic models are always more sample-efficient than discrete alternatives across all domains would contradict the discrete enumeration advantage</li>
+                <li>Finding that uncertainty modeling provides no benefit (<5% improvement) in genuinely stochastic environments would challenge the fundamental premise of the theory</li>
+                <li>Demonstrating that purely deterministic models can achieve safe exploration in high-risk environments would question the necessity of uncertainty for safety</li>
+                <li>Showing that diffusion models can be made as efficient as deterministic models (≤2× cost) without quality loss would eliminate the efficiency tradeoff</li>
+                <li>Finding that hybrid models consistently underperform pure approaches would challenge the value of combining deterministic and stochastic components</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to optimally calibrate uncertainty estimates without extensive domain-specific tuning, particularly for epistemic uncertainty in novel environments </li>
+    <li>The relationship between model capacity and uncertainty quality - whether larger models produce better-calibrated uncertainty or just more confident predictions </li>
+    <li>How uncertainty representations should change with planning horizon - the theory suggests relationships but lacks precise functional forms </li>
+    <li>The interaction between uncertainty modeling and other world model properties (interpretability, compositional generalization, causal structure) </li>
+    <li>How to balance aleatoric and epistemic uncertainty when both are present - optimal mixing strategies are unclear </li>
+    <li>The role of architecture choice (RNN vs Transformer vs Diffusion) in determining the optimal uncertainty representation </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials [PETS and probabilistic ensembles for uncertainty-aware model-based RL]</li>
+    <li>Hafner et al. (2019) Learning Latent Dynamics for Planning from Pixels [RSSM architecture combining deterministic and stochastic components]</li>
+    <li>Gal & Ghahramani (2016) Dropout as a Bayesian Approximation [Uncertainty quantification in neural networks via dropout]</li>
+    <li>Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation [Deep ensembles for epistemic uncertainty]</li>
+    <li>Ho et al. (2020) Denoising Diffusion Probabilistic Models [Diffusion models for high-fidelity stochastic generation]</li>
+    <li>Buesing et al. (2018) Learning and Querying Fast Generative Models for Reinforcement Learning [Stochastic latent models for planning]</li>
+    <li>Schrittwieser et al. (2020) Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model [MuZero's deterministic approach to model-based RL]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Uncertainty-Fidelity-Efficiency Triangle",
+    "theory_description": "Optimal world models must balance three competing objectives: (1) capturing predictive uncertainty (stochastic vs deterministic), (2) maintaining high fidelity for planning horizons, and (3) computational efficiency. The optimal balance depends on environment characteristics (stochasticity, observability), task requirements (planning horizon, safety criticality), and computational constraints. Deterministic models are computationally efficient but fail in stochastic/partially-observable environments and are exploitable by policies. Fully stochastic models capture uncertainty but increase computational cost through sampling/integration and can suffer from compounding errors over long horizons. Optimal designs use hybrid approaches: (a) deterministic recurrence with stochastic latents (RSSM-style), (b) discrete stochastic models that enumerate plausible futures (VQ-based), (c) ensemble methods for epistemic uncertainty, or (d) diffusion-based models for high-fidelity stochastic generation. The choice among these depends on whether uncertainty is primarily aleatoric (inherent randomness) or epistemic (model uncertainty), the required planning horizon (short vs long), and whether real-time inference is needed.",
+    "supporting_evidence": [
+        {
+            "text": "RSSM combines deterministic RNN state with stochastic latents, outperforming purely deterministic or purely stochastic models in planning tasks across multiple benchmarks",
+            "uuids": [
+                "e1218.0",
+                "e1218.1",
+                "e1218.2"
+            ]
+        },
+        {
+            "text": "Probabilistic ensembles (PE) in PETS achieve 8x better sample efficiency than SAC and 125x better than PPO by capturing both aleatoric and epistemic uncertainty through bootstrap disagreement",
+            "uuids": [
+                "e1388.0"
+            ]
+        },
+        {
+            "text": "Deterministic RNN ablation shows worse task returns than RSSM due to inability to represent multiple plausible futures under partial observability",
+            "uuids": [
+                "e1218.1"
+            ]
+        },
+        {
+            "text": "Purely stochastic SSM struggles with long-term memory leading to inconsistent trajectories and worse planning returns compared to hybrid RSSM",
+            "uuids": [
+                "e1218.2"
+            ]
+        },
+        {
+            "text": "VQM uses discrete stochastic codes to enable multimodal planning in stochastic environments (chess, DeepMind Lab), outperforming deterministic baselines and continuous VAEs in MBRE metrics",
+            "uuids": [
+                "e1411.0",
+                "e1411.1",
+                "e1411.2",
+                "e1411.3",
+                "e1411.5"
+            ]
+        },
+        {
+            "text": "VRKN eliminates overestimation of aleatoric uncertainty present in RSSMs through principled Gaussian updating and Kalman corrections, improving uncertainty calibration",
+            "uuids": [
+                "e1223.5"
+            ]
+        },
+        {
+            "text": "Ensemble of distributional Q-networks provides 10-20% increase in success rate for distant goals by reducing spurious distance predictions through uncertainty quantification",
+            "uuids": [
+                "e1410.3"
+            ]
+        },
+        {
+            "text": "DNA transformation-based model fails catastrophically under occlusion due to deterministic warping (improvement 0.83±0.25 pixels), while SNA with skip connections handles occlusions better (10.6±0.82 pixels)",
+            "uuids": [
+                "e1419.1",
+                "e1419.0"
+            ]
+        },
+        {
+            "text": "DIAMOND uses EDM diffusion formulation for stable stochastic rollouts with low NFE (n=3), achieving mean HNS=1.46 on Atari while maintaining visual fidelity",
+            "uuids": [
+                "e1259.0",
+                "e1259.4"
+            ]
+        },
+        {
+            "text": "EDM-based world model produces substantially more stable long-horizon autoregressive rollouts than DDPM, stable even with n=1 denoising steps in some games",
+            "uuids": [
+                "e1259.4"
+            ]
+        },
+        {
+            "text": "TSSM transformer-based stochastic model achieves better long-term fidelity (lower foreground MSE: 211.2 vs 281.9, better reward prediction: 46.9% vs 28.2%) than RSSM in memory-intensive tasks",
+            "uuids": [
+                "e1405.0"
+            ]
+        },
+        {
+            "text": "PolyGRAD policy-guided diffusion achieves better short-horizon trajectory prediction than deterministic transformers by modeling uncertainty through iterative refinement",
+            "uuids": [
+                "e1195.4"
+            ]
+        },
+        {
+            "text": "OSWM demonstrates that synthetic stochastic priors (NN prior + momentum prior) enable one-shot learning, with NN prior providing multimodal diversity but requiring momentum prior for physics-based tasks",
+            "uuids": [
+                "e1269.0",
+                "e1269.1"
+            ]
+        },
+        {
+            "text": "Iso-Dream++ explicitly separates controllable (deterministic+stochastic) and noncontrollable (stochastic) dynamics, achieving better performance in CARLA (return ~60 vs ~10 for DreamerV2) by modeling uncertainty in each component appropriately",
+            "uuids": [
+                "e1225.0"
+            ]
+        },
+        {
+            "text": "Denoising diffusion models achieve state-of-the-art sample quality (CIFAR10 FID=3.17) through stochastic generation but require T=1000 neural network evaluations, demonstrating the fidelity-efficiency tradeoff",
+            "uuids": [
+                "e1408.0"
+            ]
+        },
+        {
+            "text": "SimPLe stochastic discrete model with 5 Gaussian mixtures enables multimodal prediction but requires careful tuning of mixture components and scheduled sampling to avoid mode collapse",
+            "uuids": [
+                "e1399.0",
+                "e1399.1",
+                "e1399.2"
+            ]
+        },
+        {
+            "text": "MDN-RNN with mixture density network (5 Gaussians) captures stochastic dynamics in CarRacing, achieving 765±102 score with expert training vs 356±177 with random training",
+            "uuids": [
+                "e1274.0",
+                "e1274.3"
+            ]
+        },
+        {
+            "text": "EPLS world model with MDN-RNN achieves 708±195 score through iterative refinement, demonstrating that stochastic models benefit from curriculum learning on uncertainty",
+            "uuids": [
+                "e1204.0"
+            ]
+        },
+        {
+            "text": "NewtonianVAE with stochastic position latents and deterministic velocity enables P-controllability (perfect task reward 3.0±0.0) by appropriately separating stochastic and deterministic components",
+            "uuids": [
+                "e1424.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Deterministic models are optimal only in fully deterministic, fully observable environments with short planning horizons (&lt;5 steps)",
+        "Stochastic models are necessary but not sufficient for optimal performance in partially observable or stochastic environments; they must be combined with appropriate memory mechanisms",
+        "Hybrid deterministic-stochastic architectures (e.g., RSSM) provide better memory-uncertainty trade-offs than pure approaches, with deterministic components handling long-term dependencies and stochastic components capturing uncertainty",
+        "Discrete stochastic models (VQ-based) offer computational advantages over continuous stochastic models by enumerating plausible outcomes, particularly effective when the number of modes is tractable (&lt;1000 codes typically)",
+        "Ensemble methods provide practical epistemic uncertainty quantification with linear computational scaling (B models → B× cost), achieving 8-125× sample efficiency gains in model-based RL",
+        "Diffusion-based stochastic models achieve highest visual fidelity but at significant computational cost (100-1000 network evaluations per sample), suitable when generation quality is paramount",
+        "The optimal uncertainty representation depends on planning horizon: short horizons (&lt;5 steps) can tolerate deterministic models, medium horizons (5-20 steps) benefit from discrete/ensemble uncertainty, long horizons (&gt;20 steps) require explicit stochastic modeling or diffusion",
+        "Epistemic uncertainty (model uncertainty) should be captured through ensembles or Bayesian approaches, while aleatoric uncertainty (inherent randomness) should be captured through stochastic latents or mixture models",
+        "Uncertainty modeling provides 10-20% performance gains in navigation tasks and 2-5× sample efficiency gains in model-based RL, but only when the environment has genuine stochasticity or partial observability"
+    ],
+    "new_predictions_likely": [
+        "In highly stochastic multi-agent environments, models with explicit epistemic uncertainty (ensembles) will achieve 2-5× better sample efficiency than single deterministic models, with larger gains (5-10×) in safety-critical scenarios",
+        "Hybrid models with deterministic recurrence and discrete stochastic latents (≤512 codes) will outperform continuous stochastic models by 20-40% in wall-clock training time while maintaining comparable planning quality",
+        "Ensemble-based uncertainty estimates with B=5-10 models will enable more robust long-horizon planning (&gt;20 steps) than single-model approaches, with 15-30% higher success rates in novel environments",
+        "Diffusion-based world models will achieve 2-3× better visual fidelity (FID/FVD) than RSSM-based models but require 10-50× more inference compute, making them suitable for offline planning but not real-time control",
+        "In environments with mixed controllable/noncontrollable dynamics, explicitly separating these components (like Iso-Dream++) will improve performance by 20-50% compared to monolithic stochastic models"
+    ],
+    "new_predictions_unknown": [
+        "Whether learned uncertainty estimates can match or exceed hand-crafted uncertainty quantification in safety-critical applications (autonomous driving, medical robotics) without orders of magnitude more data",
+        "If there exists an optimal ratio of deterministic to stochastic capacity that generalizes across domains, or if this ratio must be task-specific",
+        "Whether uncertainty-aware world models can enable safe exploration in high-risk environments (robotics, industrial control) without extensive real-world data, or if simulation-to-reality transfer remains a fundamental bottleneck",
+        "If discrete stochastic models can scale to high-dimensional continuous control domains (humanoid robotics, dexterous manipulation) as effectively as they work in discrete/low-dimensional domains",
+        "Whether diffusion-based uncertainty modeling can be made efficient enough (≤10 network evaluations) for real-time control while maintaining multimodal prediction quality",
+        "If transformer-based stochastic models (TSSM) can scale to very long horizons (&gt;100 steps) without catastrophic error accumulation, or if recurrent architectures remain necessary",
+        "Whether ensemble uncertainty can be distilled into single models without significant performance loss, enabling deployment efficiency while maintaining uncertainty awareness"
+    ],
+    "negative_experiments": [
+        "Finding environments where deterministic models consistently outperform stochastic models in long-horizon planning (&gt;20 steps) would challenge the necessity of uncertainty modeling for long horizons",
+        "Demonstrating that single-model approaches achieve comparable robustness to ensembles (within 5% performance) without increased capacity would question the value of ensemble uncertainty quantification",
+        "Showing that continuous stochastic models are always more sample-efficient than discrete alternatives across all domains would contradict the discrete enumeration advantage",
+        "Finding that uncertainty modeling provides no benefit (&lt;5% improvement) in genuinely stochastic environments would challenge the fundamental premise of the theory",
+        "Demonstrating that purely deterministic models can achieve safe exploration in high-risk environments would question the necessity of uncertainty for safety",
+        "Showing that diffusion models can be made as efficient as deterministic models (≤2× cost) without quality loss would eliminate the efficiency tradeoff",
+        "Finding that hybrid models consistently underperform pure approaches would challenge the value of combining deterministic and stochastic components"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to optimally calibrate uncertainty estimates without extensive domain-specific tuning, particularly for epistemic uncertainty in novel environments",
+            "uuids": []
+        },
+        {
+            "text": "The relationship between model capacity and uncertainty quality - whether larger models produce better-calibrated uncertainty or just more confident predictions",
+            "uuids": []
+        },
+        {
+            "text": "How uncertainty representations should change with planning horizon - the theory suggests relationships but lacks precise functional forms",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between uncertainty modeling and other world model properties (interpretability, compositional generalization, causal structure)",
+            "uuids": []
+        },
+        {
+            "text": "How to balance aleatoric and epistemic uncertainty when both are present - optimal mixing strategies are unclear",
+            "uuids": []
+        },
+        {
+            "text": "The role of architecture choice (RNN vs Transformer vs Diffusion) in determining the optimal uncertainty representation",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "MuZero achieves superhuman performance in Go/chess/shogi and state-of-the-art Atari results using deterministic dynamics, suggesting uncertainty modeling isn't always critical even in complex domains",
+            "uuids": [
+                "e1263.0"
+            ]
+        },
+        {
+            "text": "Fixed variance approaches in diffusion models (EDM) can work well with isotropic reverse variances, questioning the need for learned heteroskedastic uncertainty in some generative settings",
+            "uuids": [
+                "e1259.4",
+                "e1408.0"
+            ]
+        },
+        {
+            "text": "Simple deterministic feedforward models in SimPLe experiments were competitive in some Atari games, suggesting stochasticity isn't universally beneficial",
+            "uuids": [
+                "e1399.1"
+            ]
+        },
+        {
+            "text": "IRIS achieves state-of-the-art Atari 100k results (mean 1.046) using deterministic transformer dynamics over discrete tokens, outperforming many stochastic approaches",
+            "uuids": [
+                "e1255.0"
+            ]
+        },
+        {
+            "text": "TWM transformer world model uses deterministic aggregation with categorical latents and achieves strong performance without explicit stochastic dynamics modeling",
+            "uuids": [
+                "e1242.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In precision planning domains with perfect information (chess, Go), deterministic models may suffice because uncertainty is primarily epistemic (model error) rather than aleatoric (environment randomness), and MCTS can compensate for model errors",
+        "For very short planning horizons (&lt;5 steps), deterministic models may be adequate even in stochastic environments because error accumulation is limited and computational efficiency is paramount",
+        "In safety-critical applications (autonomous driving, medical robotics), conservative uncertainty estimates may be preferred even at 2-5× efficiency cost, favoring ensemble or Bayesian approaches over single models",
+        "For offline planning with unlimited compute budget, diffusion-based models may be optimal despite 100-1000× inference cost because visual fidelity and multimodal prediction quality are paramount",
+        "In environments with clear separation between controllable and noncontrollable dynamics (driving with other agents), explicitly modeling this separation may be more effective than monolithic uncertainty modeling",
+        "For discrete action spaces with tractable branching (&lt;100 actions), discrete stochastic models (VQ-based) may be optimal, while continuous action spaces may require continuous stochastic representations",
+        "In highly stochastic environments (multi-agent, weather-dependent), the benefit of uncertainty modeling increases from 10-20% to 50-100% performance improvement",
+        "For real-time control applications (&lt;100ms latency), ensemble size must be limited (B≤5) and diffusion models are impractical, favoring RSSM-style hybrid approaches"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials [PETS and probabilistic ensembles for uncertainty-aware model-based RL]",
+            "Hafner et al. (2019) Learning Latent Dynamics for Planning from Pixels [RSSM architecture combining deterministic and stochastic components]",
+            "Gal & Ghahramani (2016) Dropout as a Bayesian Approximation [Uncertainty quantification in neural networks via dropout]",
+            "Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation [Deep ensembles for epistemic uncertainty]",
+            "Ho et al. (2020) Denoising Diffusion Probabilistic Models [Diffusion models for high-fidelity stochastic generation]",
+            "Buesing et al. (2018) Learning and Querying Fast Generative Models for Reinforcement Learning [Stochastic latent models for planning]",
+            "Schrittwieser et al. (2020) Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model [MuZero's deterministic approach to model-based RL]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

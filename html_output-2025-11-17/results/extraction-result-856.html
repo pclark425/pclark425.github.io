@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-856 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-856</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-856</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-21.html">extraction-schema-21</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of agents that use external tools for planning in partially observable text environments, including how they maintain belief states, incorporate tool outputs, and perform navigation or path-finding tasks.</div>
+                <p><strong>Paper ID:</strong> paper-3171ec184b5fec0bc7b47356ad74d8598e858ddc</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/3171ec184b5fec0bc7b47356ad74d8598e858ddc" target="_blank">Leveraging Linguistic Structure For Open Domain Information Extraction</a></p>
+                <p><strong>Paper Venue:</strong> Annual Meeting of the Association for Computational Linguistics</p>
+                <p><strong>Paper TL;DR:</strong> This work replaces this large pattern set with a few patterns for canonically structured sentences, and shifts the focus to a classifier which learns to extract self-contained clauses from longer sentences to determine the maximally specific arguments for each candidate triple.</p>
+                <p><strong>Paper Abstract:</strong> Relation triples produced by open domain information extraction (open IE) systems are useful for question answering, inference, and other IE tasks. Traditionally these are extracted using a large set of patterns; however, this approach is brittle on out-of-domain text and long-range dependencies, and gives no insight into the substructure of the arguments. We replace this large pattern set with a few patterns for canonically structured sentences, and shift the focus to a classifier which learns to extract self-contained clauses from longer sentences. We then run natural logic inference over these short clauses to determine the maximally specific arguments for each candidate triple. We show that our approach outperforms a state-of-the-art open IE system on the end-to-end TAC-KBP 2013 Slot Filling task.</p>
+                <p><strong>Cost:</strong> 0.004</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-856",
+    "paper_id": "paper-3171ec184b5fec0bc7b47356ad74d8598e858ddc",
+    "extraction_schema_id": "extraction-schema-21",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00352075,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Leveraging Linguistic Structure For Open Domain Information Extraction</h1>
+<p>Gabor Angeli Melvin Johnson Premkumar Christopher D. Manning<br>Department of Computer Science<br>Stanford University<br>{angeli, melvinj, manning}@cs.stanford.edu</p>
+<h4>Abstract</h4>
+<p>Relation triples produced by open domain information extraction (open IE) systems are useful for question answering, inference, and other IE tasks. Traditionally these are extracted using a large set of patterns; however, this approach is brittle on out-of-domain text and long-range dependencies, and gives no insight into the substructure of the arguments. We replace this large pattern set with a few patterns for canonically structured sentences, and shift the focus to a classifier which learns to extract self-contained clauses from longer sentences. We then run natural logic inference over these short clauses to determine the maximally specific arguments for each candidate triple. We show that our approach outperforms a state-of-the-art open IE system on the end-to-end TAC-KBP 2013 Slot Filling task.</p>
+<h2>1 Introduction</h2>
+<p>Open information extraction (open IE) has been shown to be useful in a number of NLP tasks, such as question answering (Fader et al., 2014), relation extraction (Soderland et al., 2010), and information retrieval (Etzioni, 2011). Conventionally, open IE systems search a collection of patterns over either the surface form or dependency tree of a sentence. Although a small set of patterns covers most simple sentences (e.g., subject verb object constructions), relevant relations are often spread across clauses (see Figure 1) or presented in a non-canonical form.</p>
+<p>Systems like Ollie (Mausam et al., 2012) approach this problem by using a bootstrapping method to create a large corpus of broad-coverage partially lexicalized patterns. Although this is effective at capturing many of these patterns, it</p>
+<p>Born in Honolulu, Hawaii, Obama is a US Citizen.
+Our System
+Ollie
+(Obama; is; US citizen)
+(Obama; born in;
+(Obama; be born in; Honolulu)
+Honolulu, Hawaii)
+(Honolulu, be born in; Hawaii)
+(Obama; is citizen of; US)
+Friends give true praise.
+Enemies give fake praise.
+Our System
+(friends; give; true praise)
+(friends; give; praise)
+(enemies; give; fake praise)
+Heinz Fischer of Austria visits the US
+Our System
+(Ollie
+(Heinz Fischer; visits; US)
+(Heinz Fischer of Austria;
+visits; the US)
+Figure 1: Open IE extractions produced by the system, alongside extractions from the state-of-the-art Ollie system. Generating coherent clauses before applying patterns helps reduce false matches such as (Honolulu; be born in; Hawaii). Inference over the sub-structure of arguments, in turn, allows us to drop unnecessary information (e.g., of Austria), but only when it is warranted (e.g., keep fake in fake praise).
+can lead to unintuitive behavior on out-of-domain text. For instance, while Obama is president is extracted correctly by Ollie as (Obama; is; president), replacing is with are in cats are felines produces no extractions. Furthermore, existing systems struggle at producing canonical argument forms - for example, in Figure 1 the argument Heinz Fischer of Austria is likely less useful for downstream applications than Heinz Fischer.</p>
+<p>In this paper, we shift the burden of extracting informative and broad coverage triples away from this large pattern set. Rather, we first pre-process the sentence in linguistically motivated ways to produce coherent clauses which are (1) logically</p>
+<p>entailed by the original sentence, and (2) easy to segment into open IE triples. Our approach consists of two stages: we first learn a classifier for splitting a sentence into shorter utterances (Section 3), and then appeal to natural logic (Sánchez Valencia, 1991) to maximally shorten these utterances while maintaining necessary context (Section 4.1). A small set of 14 hand-crafted patterns can then be used to segment an utterance into an open IE triple.</p>
+<p>We treat the first stage as a greedy search problem: we traverse a dependency parse tree recursively, at each step predicting whether an edge should yield an independent clause. Importantly, in many cases naïvely yielding a clause on a dependency edge produces an incomplete utterance (e.g., Born in Honolulu, Hawaii, from Figure 1). These are often attributable to control relationships, where either the subject or object of the governing clause controls the subject of the subordinate clause. We therefore allow the produced clause to sometimes inherit the subject or object of its governor. This allows us to capture a large variety of long range dependencies with a concise classifier.</p>
+<p>From these independent clauses, we then extract shorter sentences, which will produce shorter arguments more likely to be useful for downstream applications. A natural framework for solving this problem is natural logic - a proof system built on the syntax of human language (see Section 4.1). We can then observe that Heinz Fischer of Austria visits China entails that Heinz Fischer visits China. On the other hand, we respect situations where it is incorrect to shorten an argument. For example, No house cats have rabies should not entail that cats have rabies, or even that house cats have rabies.</p>
+<p>When careful attention to logical validity is necessary - such as textual entailment - this approach captures even more subtle phenomena. For example, whereas all rabbits eat fresh vegetables yields (rabbits; eat; vegetables), the apparently similar sentence all young rabbits drink milk does not yield (rabbits; drink; milk).</p>
+<p>We show that our new system performs well on a real world evaluation - the TAC KBP Slot Filling challenge (Surdeanu, 2013). We outperform both an official submission on open IE, and a baseline of replacing our extractor with Ollie, a state-of-the-art open IE systems.</p>
+<h2>2 Related Work</h2>
+<p>There is a large body of work on open information extraction. One line of work begins with TextRunner (Yates et al., 2007) and ReVerb (Fader et al., 2011), which make use of computationally efficient surface patterns over tokens. With the introduction of fast dependency parsers, Ollie (Mausam et al., 2012) continues in the same spirit but with learned dependency patterns, improving on the earlier WOE system (Wu and Weld, 2010). The Never Ending Language Learning project (Carlson et al., 2010) has a similar aim, iteratively learning more facts from the internet from a seed set of examples. Exemplar (Mesquita et al., 2013) adapts the open IE framework to $n$ ary relationships similar to semantic role labeling, but without the expensive machinery.</p>
+<p>Open IE triples have been used in a number of applications - for example, learning entailment graphs for new triples (Berant et al., 2011), and matrix factorization for unifying open IE and structured relations (Yao et al., 2012; Riedel et al., 2013). In each of these cases, the concise extractions provided by open IE allow for efficient symbolic methods for entailment, such as Markov logic networks or matrix factorization.</p>
+<p>Prior work on the KBP challenge can be categorized into a number of approaches. The most common of these are distantly supervised relation extractors (Craven and Kumlien, 1999; Wu and Weld, 2007; Mintz et al., 2009; Sun et al., 2011), and rule based systems (Soderland, 1997; Grishman and Min, 2010; Chen et al., 2010). However, both of these approaches require careful tuning to the task, and need to be trained explicitly on the KBP relation schema. Soderland et al. (2013) submitted a system to KBP making use of open IE relations and an easily constructed mapping to KBP relations; we use this as a baseline for our empirical evaluation.</p>
+<p>Prior work has used natural logic for RTE-style textual entailment, as a formalism well-suited for formal semantics in neural networks, and as a framework for common-sense reasoning (MacCartney and Manning, 2009; Watanabe et al., 2012; Bowman et al., 2014; Angeli and Manning, 2013). We adopt the precise semantics of Icard and Moss (2014). Our approach of finding short entailments from a longer utterance is similar in spirit to work on textual entailment for information extraction (Romano et al., 2006).</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 2: An illustration of our approach. From left to right, a sentence yields a number of independent clauses (e.g., she Born in a small town - see Section 3). From top to bottom, each clause produces a set of entailed shorter utterances, and segments the ones which match an atomic pattern into a relation triple (see Section 4.1).</p>
+<h2>3 Inter-Clause Open IE</h2>
+<p>In the first stage of our method, we produce a set of self-contained clauses from a longer utterance. Our objective is to produce a set of clauses which can stand on their own syntactically and semantically, and are entailed by the original sentence (see Figure 2). Note that this task is not specific to extracting open IE triples. Conventional relation extractors, entailment systems, and other NLP applications may also benefit from such a system.</p>
+<p>We frame this task as a search problem. At a given node in the parse tree, we classify each outgoing arc $e=p \xrightarrow{l} c$, from the governor $p$ to a dependent $c$ with [collapsed] Stanford Dependency label $l$, into an action to perform on that arc. Once we have chosen an action to take on that arc, we can recurse on the dependent node. We decompose the action into two parts: (1) the action to take on the outgoing edge $e$, and (2) the action to take on the governor $p$. For example, in our motivating example, we are considering the arc: $e=$ took $\xrightarrow{\text { vmod }}$ born. In this case, the correct action is to (1) yield a new clause rooted at born, and (2) interpret the subject of born as the subject of took.</p>
+<p>We proceed to describe this action space in more detail, followed by an explanation of our training data, and finally our classifier.</p>
+<h3>3.1 Action Space</h3>
+<p>The three actions we can perform on a dependency edge are:</p>
+<p>Yield Yields a new clause on this dependency arc. A canonical case of this action is the arc suggest $\xrightarrow{\text { ceomp }}$ brush in Dentists suggest that you should brush your teeth, yielding you should brush your teeth.</p>
+<p>Recurse Recurse on this dependency arc, but do not yield it as a new clause. For example, in the sentence faeries are dancing in the field where I lost my bike, we must recurse through the intermediate constituent the field where I lost my bike - which itself is not relevant - to get to the clause of interest: I lost my bike.</p>
+<p>Stop Do not recurse on this arc, as the subtree under this arc is not entailed by the parent sentence. This is the case, for example, for most leaf nodes (furry cats are cute should not entail the clause furry), and is an important action for the efficiency of the algorithm.</p>
+<p>With these three actions, a search path through the tree becomes a sequence of Recurse and Yield actions, terminated by a Stop action (or leaf node). For example, a search sequence $A \xrightarrow{\text { Recurse }}$ $B \xrightarrow{\text { Yield }} C \xrightarrow{\text { Stop }} D$ would yield a clause rooted at $C$. A sequence $A \xrightarrow{\text { Yield }} B \xrightarrow{\text { Yield }} C \xrightarrow{\text { Stop }} D$ would yield clauses rooted at both $B$ and $C$. Finding all such sequences is in general exponential in the size of the tree. In practice, during training we run breadth first search to collect the first 10000 sequences. During inference we run uniform cost search until our classifier predictions fall below a</p>
+<p>given threshold.
+For the Stop action, we do not need to further specify an action to take on the parent node. However, for both of the other actions, it is often the case that we would like to capture a controller in the higher clause. We define three such common actions:</p>
+<p>Subject Controller If the arc we are considering is not already a subject arc, we can copy the subject of the parent node and attach it as a subject of the child node. This is the action taken in the example Born in a small town, she took the midnight train.</p>
+<p>Object Controller Analogous to the subject controller action above, but taking the object instead. This is the intended action for examples like I persuaded Fred to leave the room. ${ }^{1}$</p>
+<p>Parent Subject If the arc we are taking is the only outgoing arc from a node, we take the parent node as the (passive) subject of the child. This is the action taken in the example Obama, our $44^{\text {th }}$ president to yield a clause with the semantics of Obama [is] our $44^{\text {th }}$ president.</p>
+<p>Although additional actions are easy to imagine, we found empirically that these cover a wide range of applicable cases. We turn our attention to the training data for learning these actions.</p>
+<h3>3.2 Training</h3>
+<p>We collect a noisy dataset to train our clause generation model. We leverage the distant supervision assumption for relation extraction, which creates a noisy corpus of sentences annotated with relation mentions (subject and object spans in the sentence with a known relation). Then, we take this annotation as itself distant supervision for a correct sequence of actions to take: any sequence which recovers the known relation is correct.</p>
+<p>We use a small subset of the KBP source documents for 2010 (Ji et al., 2010) and 2013 (Surdeanu, 2013) as our distantly supervised corpus. To try to maximize the density of known relations in the training sentences, we take all sentences which have at least one known relation for every 10 tokens in the sentence, resulting in 43155 sentences. In addition, we incorporate the 23725 manually annotated examples from Angeli et al. (2014).</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Once we are given a collection of labeled sentences, we assume that a sequence of actions which leads to a correct extraction of a known relation is a positive sequence. A correct extraction is any extraction we produce from our model (see Section 4) which has the same arguments as the known relation. For instance, if we know that Obama was born in Hawaii from the sentence Born in Hawaii, Obama ..., and an action sequence produces the triple (Obama, born in, Hawaii), then we take that action sequence as a positive sequence.</p>
+<p>Any sequence of actions which results in a clause which produces no relations is in turn considered a negative sequence. The third case to consider is a sequence of actions which produces a relation, but it is not one of the annotated relations. This arises from the incomplete negatives problem in distantly supervised relation extraction (Min et al., 2013): since our knowledge base is not exhaustive, we cannot be sure if an extracted relation is incorrect or correct but previously unknown. Although many of these unmatched relations are indeed incorrect, the dataset is sufficiently biased towards the STOP action that the occasional false negative hurts end-to-end performance. Therefore, we simply discard such sequences.</p>
+<p>Given a set of noisy positive and negative sequences, we construct training data for our action classifier. All but the last action in a positive sequence are added to the training set with the label Recurse; the last action is added with the label Split. Only the last action in a negative sequence is added with the label Stop. We partition the feature space of our dataset according to the action applied to the parent node.</p>
+<h3>3.3 Inference</h3>
+<p>We train a multinomial logistic regression classifier on our noisy training data, using the features in Table 1. The most salient features are the label of the edge being taken, the incoming edge to the parent of the edge being taken, neighboring edges for both the parent and child of the edge, and the part of speech tag of the endpoints of the edge. The dataset is weighted to give $3 \times$ weight to examples in the Recurse class, as precision errors in this class are relatively harmless for accuracy, while recall errors are directly harmful to recall.</p>
+<p>Inference now reduces to a search problem. Be-</p>
+<table>
+<thead>
+<tr>
+<th>Feature Class</th>
+<th>Feature Templates</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Edge taken</td>
+<td>${l$, short_name $(l)}$</td>
+</tr>
+<tr>
+<td>Last edge taken</td>
+<td>${$ incoming_edge $(p)}$</td>
+</tr>
+<tr>
+<td>Neighbors of parent</td>
+<td>${\mathrm{nbr}(p),(p, \mathrm{nbr}(p))}$</td>
+</tr>
+<tr>
+<td>Grandchild edges</td>
+<td>${$ out_edge $(c)$,</td>
+</tr>
+<tr>
+<td></td>
+<td>$(e$, out_edge $(c))}$</td>
+</tr>
+<tr>
+<td>Grandchild count</td>
+<td>${$ count $\left(\right.$ nbr $\left(e_{\text {child }}\right)$ )</td>
+</tr>
+<tr>
+<td></td>
+<td>$\left(e, \operatorname{count}\left(\operatorname{nbr}\left(e_{\text {child }}\right)\right)\right)}$</td>
+</tr>
+<tr>
+<td>Has subject/object</td>
+<td>$\forall_{e \in\left{e, e_{\text {child }}\right} \forall_{l \in{s u b j, o b j}}$</td>
+</tr>
+<tr>
+<td></td>
+<td>$\mathbb{1}(l \in \operatorname{nbr}(e))$</td>
+</tr>
+<tr>
+<td>POS tag signature</td>
+<td>${\operatorname{pos}(p), \operatorname{pos}(c)$,</td>
+</tr>
+<tr>
+<td></td>
+<td>$(\operatorname{pos}(p), \operatorname{pos}(c))}$</td>
+</tr>
+<tr>
+<td>Features at root</td>
+<td>${\mathbb{1}(p=$ root $), \operatorname{POS}(p)}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Features for the clause splitter model, deciding to split on the arc $e=p \xrightarrow{l} c$. The feature class is a high level description of features; the feature templates are the particular templates used. For instance, the POS signature contains the tag of the parent, the tag of the child, and both tags joined in a single feature. Note that all features are joined with the action to be taken on the parent.
+ginning at the root of the tree, we consider every outgoing edge. For every possible action to be performed on the parent (i.e., clone subject, clone root, no action), we apply our trained classifier to determine whether we (1) split the edge off as a clause, and recurse; (2) do not split the edge, and recurse; or (3) do not recurse. In the first two cases, we recurse on the child of the arc, and continue until either all arcs have been exhausted, or all remaining candidate arcs have been marked as not recursable.</p>
+<p>We will use the scores from this classifier to inform the score assigned to our generated open IE extractions (Section 4). The score of a clause is the product of the scores of actions taken to reach the clause. The score of an extraction will be this score multiplied by the score of the extraction given the clause.</p>
+<h2>4 Intra-Clause Open IE</h2>
+<p>We now turn to the task of generating a maximally compact sentence which retains the core semantics of the original utterance, and parsing the sentence into a conventional open IE subject verb object triple. This is often a key component in downstream applications, where extractions need to be not only correct, but also informative. Whereas an argument like Heinz Fischer of Austria is often correct, a downstream application must apply further processing to recover information about either Heinz Fischer, or Austria. Moreover, it must do so without the ability to appeal to the larger context of the sentence.</p>
+<h3>4.1 Validating Deletions with Natural Logic</h3>
+<p>We adopt a subset of natural logic semantics dictating contexts in which lexical items can be removed. Natural logic as a formalism captures common logical inferences appealing directly to the form of language, rather than parsing to a specialized logical syntax. It provides a proof theory for lexical mutations to a sentence which either preserve or negate the truth of the premise.</p>
+<p>For instance, if all rabbits eat vegetables then all cute rabbits eat vegetables, since we are allowed to mutate the lexical item rabbit to cute rabbit. This is done by observing that rabbit is in scope of the first argument to the operator all. Since all induces a downward polarity environment for its first argument, we are allowed to replace rabbit with an item which is more specific in this case cute rabbit. To contrast, the operator some induces an upward polarity environment for its first argument, and therefore we may derive the inference from cute rabbit to rabbit in: some cute rabbits are small therefore some rabbits are small. For a more comprehensive introduction to natural logic, see van Benthem (2008).</p>
+<p>We mark the scopes of all operators (all, no, many, etc.) in a sentence, and from this determine whether every lexical item can be replaced by something more general (has upward polarity), more specific (downward polarity), or neither. In the absence of operators, all items have upwards polarity.</p>
+<p>Each dependency arc is then classified into whether deleting the dependent of that arc makes the governing constituent at that node more general, more specific (a rare case), or neither. ${ }^{2}$ For example, removing the amod edge in cute $\stackrel{\text { amod }}{\longleftrightarrow}$ rabbit yields the more general lexical item rabbit. However, removing the nsubj edge in Fido $\stackrel{\text { nsubj }}{\longleftrightarrow}$ runs would yield the unentailed (and nonsensical) phrase runs. The last, rare, case is an edge that causes the resulting item to be more specific - e.g., quantmod: about $\stackrel{\text { quantmod }}{=} 200$ is more general than 200.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>For most dependencies, this semantics can be hard-coded with high accuracy. However, there are at least two cases where more attention is warranted. The first of these concerns non-subsective adjectives: for example a fake gun is not a gun. For this case, we make use of the list of non-subsective adjectives collected in Nayak et al. (2014), and prohibit their deletion as a hard constraint.</p>
+<p>The second concern is with prepositional attachment, and direct object edges. For example, whereas Alice went to the playground $\xrightarrow{\text { prep.with }}$ Bob entails that Alice went to the playground, it is not meaningful to infer that Alice is friends $\xrightarrow{\text { prep.with }}$ Bob entails Alice is friends. Analogously, Alice played $\xrightarrow{\text { dobj }}$ baseball on Sunday entails that Alice played on Sunday; but, Obama signed $\xrightarrow{\text { dobj }}$ the bill on Sunday should not entail the awkward phrase *Obama signed on Sunday.</p>
+<p>We learn these attachment affinities empirically from the syntactic n-grams corpus of Goldberg and Orwant (2013). This gives us counts for how often object and preposition edges occur in the context of the governing verb and relevant neighboring edges. We hypothesize that edges which are frequently seen to co-occur are likely to be essential to the meaning of the sentence. To this end, we compute the probability of seeing an arc of a given type, conditioned on the most specific context we have statistics for. These contexts, and the order we back off to more general contexts, is given in Figure 3.</p>
+<p>To compute a score $s$ of deleting the edge from the affinity probability $p$ collected from the syntactic n-grams, we simply cap the affinity and subtract it from 1:</p>
+<p>$$
+s=1-\min \left(1, \frac{p}{K}\right)
+$$</p>
+<p>where $K$ is a hyperparameter denoting the minimum fraction of the time an edge should occur in a context to be considered entirely unremovable. In our experiments, we set $K=\frac{1}{3}$.</p>
+<p>The score of an extraction, then, is the product of the scores of each deletion multiplied by the score from the clause splitting step in Section 3.</p>
+<h3>4.2 Atomic Patterns</h3>
+<p>Once a set of short entailed sentences is produced, it becomes straightforward to segment them into conventional open IE triples. We employ 6 simple dependency patterns, given in Table 2, which
+<img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Obama signed the bill into law on Friday
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: The ordered list of backoff probabilities when deciding to drop a prepositional phrase or direct object. The most specific context is chosen for which an empirical probability exists; if no context is found then we allow dropping prepositional phrases and disallow dropping direct objects. Note that this backoff arbitrarily orders contexts of the same size.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Input</th>
+<th style="text-align: left;">Extraction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">cats play with yarn</td>
+<td style="text-align: left;">(cats; play with; yarn)</td>
+</tr>
+<tr>
+<td style="text-align: left;">fish like to swim</td>
+<td style="text-align: left;">(fish; like to; swim)</td>
+</tr>
+<tr>
+<td style="text-align: left;">cats have tails</td>
+<td style="text-align: left;">(cats; have; tails)</td>
+</tr>
+<tr>
+<td style="text-align: left;">cats are cute</td>
+<td style="text-align: left;">(cats; are; cute)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tom and Jerry are fighting</td>
+<td style="text-align: left;">(Tom; fighting; Jerry)</td>
+</tr>
+<tr>
+<td style="text-align: left;">There are cats with tails</td>
+<td style="text-align: left;">(cats; have; tails)</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: The six dependency patterns used to segment an atomic sentence into an open IE triple.
+cover the majority of atomic relations we are interested in.</p>
+<p>When information is available to disambiguate the substructure of compound nouns (e.g., named entity segmentation), we extract additional relations with 5 dependency and 3 TokensRegex (Chang and Manning, 2014) surface form patterns. These are given in Table 3; we refer to these as nominal relations. Note that the constraint of named entity information is by no means required for the system. In other applications - for example, applications in vision - the otherwise trivial nominal relations could be quite useful.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">KBP Relation</th>
+<th style="text-align: center;">Open IE Relation</th>
+<th style="text-align: center;">$\mathbf{P M I}^{2}$</th>
+<th style="text-align: center;">KBP Relation</th>
+<th style="text-align: center;">Open IE Relation</th>
+<th style="text-align: center;">$\mathbf{P M I}^{2}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Org:Founded</td>
+<td style="text-align: center;">found in</td>
+<td style="text-align: center;">1.17</td>
+<td style="text-align: center;">Per:Date_Of_Birth</td>
+<td style="text-align: center;">be bear on</td>
+<td style="text-align: center;">1.83</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">be found in</td>
+<td style="text-align: center;">1.15</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">bear on</td>
+<td style="text-align: center;">1.28</td>
+</tr>
+<tr>
+<td style="text-align: center;">Org:Dissolved</td>
+<td style="text-align: center;">*buy Chrysler in</td>
+<td style="text-align: center;">0.95</td>
+<td style="text-align: center;">Per:Date_Of_Death</td>
+<td style="text-align: center;">die on</td>
+<td style="text-align: center;">0.70</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">*membership in</td>
+<td style="text-align: center;">0.60</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">be assassinate on</td>
+<td style="text-align: center;">0.65</td>
+</tr>
+<tr>
+<td style="text-align: center;">Org:LOC_Of_HQ</td>
+<td style="text-align: center;">in</td>
+<td style="text-align: center;">2.12</td>
+<td style="text-align: center;">Per:LOC_Of_Birth</td>
+<td style="text-align: center;">be bear in</td>
+<td style="text-align: center;">1.21</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">base in</td>
+<td style="text-align: center;">1.82</td>
+<td style="text-align: center;">Per:LOC_Of_Death</td>
+<td style="text-align: center;">*elect president of</td>
+<td style="text-align: center;">2.89</td>
+</tr>
+<tr>
+<td style="text-align: center;">Org:Member_Of</td>
+<td style="text-align: center;">*tough away game in</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;">Per:Religion</td>
+<td style="text-align: center;">speak about</td>
+<td style="text-align: center;">0.67</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">*away game in</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">popular for</td>
+<td style="text-align: center;">0.60</td>
+</tr>
+<tr>
+<td style="text-align: center;">Org:Parents</td>
+<td style="text-align: center;">'s bank</td>
+<td style="text-align: center;">1.65</td>
+<td style="text-align: center;">Per:Parents</td>
+<td style="text-align: center;">daughter of</td>
+<td style="text-align: center;">0.54</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">*also add to</td>
+<td style="text-align: center;">1.52</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">son of</td>
+<td style="text-align: center;">1.52</td>
+</tr>
+<tr>
+<td style="text-align: center;">Org:Founded_By</td>
+<td style="text-align: center;">invest fund of</td>
+<td style="text-align: center;">1.48</td>
+<td style="text-align: center;">Per:LOC_Residence</td>
+<td style="text-align: center;">of</td>
+<td style="text-align: center;">1.48</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">own stake besides</td>
+<td style="text-align: center;">1.18</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">independent from</td>
+<td style="text-align: center;">1.18</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: A selection of the mapping from KBP to lemmatized open IE relations, conditioned on the types of the arguments being correct. The top one or two relations are shown for 7 person and 6 organization relations. Incorrect or dubious mappings are marked with an asterisk.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Input</th>
+<th style="text-align: left;">Extraction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Durin, son of Thorin</td>
+<td style="text-align: left;">(Durin; is son of; Thorin)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thorin's son, Durin</td>
+<td style="text-align: left;">(Thorin; 's son; Durin)</td>
+</tr>
+<tr>
+<td style="text-align: left;">IBM CEO Rometty</td>
+<td style="text-align: left;">(Rometty; is CEO of; IBM)</td>
+</tr>
+<tr>
+<td style="text-align: left;">President Obama</td>
+<td style="text-align: left;">(Obama; is; President)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fischer of Austria</td>
+<td style="text-align: left;">(Fischer; is of; Austria)</td>
+</tr>
+<tr>
+<td style="text-align: left;">IBM's research group</td>
+<td style="text-align: left;">(IBM; 's; research group)</td>
+</tr>
+<tr>
+<td style="text-align: left;">US president Obama</td>
+<td style="text-align: left;">(Obama; president of; US)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our president, Obama,</td>
+<td style="text-align: left;">(Our president; be; Obama)</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: The eight patterns used to segment a noun phrase into an open IE triple. The first five are dependency patterns; the last three are surface patterns.</p>
+<h2>5 Mapping OpenIE to a Known Relation Schema</h2>
+<p>A common use case for open IE systems is to map them to a known relation schema. This can either be done manually with minimal annotation effort, or automatically from available training data. We use both methods in our TAC-KBP evaluation. A collection of relation mappings was constructed by a single annotator in approximately a day, ${ }^{3}$ and a relation mapping was learned using the procedure described in this section.</p>
+<p>We map open IE relations to the KBP schema by searching for co-occurring relations in a large distantly-labeled corpus, and marking open IE and</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup>KBP relation pairs which have a high $\mathrm{PMI}^{2}$ value (Béatrice, 1994; Evert, 2005) conditioned on their type signatures matching. To compute $\mathrm{PMI}^{2}$, we collect probabilities for the open IE and KBP relation co-occurring, the probability of the open IE relation occurring, and the probability of the KBP relation occurring. Each of these probabilities is conditioned on the type signature of the relation. For example, the joint probability of KBP relation $r_{k}$ and open IE relation $r_{o}$, given a type signature of $t_{1}, t_{2}$, would be</p>
+<p>$$
+p\left(r_{k}, r_{o} \mid t_{1}, t_{2}\right)=\frac{\operatorname{count}\left(r_{k}, r_{o}, t_{1}, t_{2}\right)}{\sum_{r_{k}^{\prime}, r_{o}^{\prime}} \operatorname{count}\left(r_{k}^{\prime}, r_{o}^{\prime}, t_{1}, t_{2}\right)}
+$$</p>
+<p>Omitting the conditioning on the type signature for notational convenience, and defining $p\left(r_{k}\right)$ and $p\left(r_{o}\right)$ analogously, we can then compute The $\mathrm{PMI}^{2}$ value between the two relations:</p>
+<p>$$
+\mathrm{PMI}^{2}\left(r_{k}, r_{o}\right)=\log \left(\frac{p\left(r_{k}, r_{o}\right)^{2}}{p\left(r_{k}\right) \cdot p\left(r_{o}\right)}\right)
+$$</p>
+<p>Note that in addition to being a measure related to PMI, this captures a notion similar to alignment by agreement (Liang et al., 2006); the formula can be equivalently written as $\log \left[p\left(r_{k} \mid r_{o}\right) p\left(r_{o} \mid r_{k}\right)\right]$. It is also functionally the same as the JC WordNet distance measure (Jiang and Conrath, 1997).</p>
+<p>Some sample type checked relation mappings are given in Table 4. In addition to intuitive mappings (e.g., found in $\rightarrow$ Org:Founded), we can note some rare, but high precision pairs (e.g., invest fund of $\rightarrow$ Org:Founded_By). We can also see</p>
+<p>the noise in distant supervision occasionally permeate the mapping, e.g., with elect president of $\rightarrow$ Per:LOC_Of_Death - a president is likely to die in his own country.</p>
+<h2>6 Evaluation</h2>
+<p>We evaluate our approach in the context of a realworld end-to-end relation extraction task - the TAC KBP Slot Filling challenge. In Slot Filling, we are given a large unlabeled corpus of text, a fixed schema of relations (see Section 5), and a set of query entities. The task is to find all relation triples in the corpus that have as a subject the query entity, and as a relation one of the defined relations. This can be viewed intuitively as populating Wikipedia Infoboxes from a large unstructured corpus of text.</p>
+<p>We compare our approach to the University of Washington submission to TAC-KBP 2013 (Soderland et al., 2013). Their system used OpenIE v4.0 (a successor to Ollie) run over the KBP corpus and then they generated a mapping from the extracted relations to the fixed schema. Unlike our system, Open IE v4.0 employs a semantic role component extracting structured SRL frames, alongside a conventional open IE system. Furthermore, the UW submission allows for extracting relations and entities from substrings of an open IE triple argument. For example, from the triple (Smith; was appointed; acting director of Acme Corporation), they extract that Smith is employed by Acme Corporation. We disallow such extractions, passing the burden of finding correct precise extractions to the open IE system itself (see Section 4).</p>
+<p>For entity linking, the UW submission uses Tom Lin's entity linker (Lin et al., 2012); our submission uses the Illinois Wikifier (Ratinov et al., 2011) without the relational inference component, for efficiency. For coreference, UW uses the Stanford coreference system (Lee et al., 2011); we employ a variant of the simple coref system described in (Pink et al., 2014).</p>
+<p>We report our results in Table 5. ${ }^{4}$ UW Official refers to the official submission in the 2013 challenge; we show a $3.1 \mathrm{~F}_{1}$ improvement (to 22.7</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 5: A summary of our results on the end-to-end KBP Slot Filling task. UW official is the submission made to the 2013 challenge. The second row is the accuracy of Ollie embedded in our framework, and of Ollie evaluated with nominal relations from our system. Lastly, we report our system, our system with nominal relations removed, and our system combined with an alternate names detector and rule-based website detector. Comparable systems are marked with a dagger ${ }^{\dagger}$ or asterisk*.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">System</th>
+<th style="text-align: right;">$\mathbf{P}$</th>
+<th style="text-align: right;">$\mathbf{R}$</th>
+<th style="text-align: right;">$\mathbf{F}_{1}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">UW Official*</td>
+<td style="text-align: right;">$\mathbf{6 9 . 8}$</td>
+<td style="text-align: right;">11.4</td>
+<td style="text-align: right;">19.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ollie ${ }^{\dagger}$</td>
+<td style="text-align: right;">57.4</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">8.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Nominal Rels*</td>
+<td style="text-align: right;">57.7</td>
+<td style="text-align: right;">11.8</td>
+<td style="text-align: right;">19.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our System</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">- Nominal Rels ${ }^{\dagger}$</td>
+<td style="text-align: right;">64.3</td>
+<td style="text-align: right;">8.6</td>
+<td style="text-align: right;">15.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Nominal Rels*</td>
+<td style="text-align: right;">61.9</td>
+<td style="text-align: right;">13.9</td>
+<td style="text-align: right;">22.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Alt. Name</td>
+<td style="text-align: right;">57.8</td>
+<td style="text-align: right;">17.8</td>
+<td style="text-align: right;">27.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Alt. Name + Website</td>
+<td style="text-align: right;">58.6</td>
+<td style="text-align: right;">$\mathbf{1 8 . 6}$</td>
+<td style="text-align: right;">$\mathbf{2 8 . 3}$</td>
+</tr>
+</tbody>
+</table>
+<p>F $<em 1="1">{1}$ ) over this submission, evaluated using a comparable approach. A common technique in KBP systems but not employed by the official UW submission in 2013 is to add alternate names based on entity linking and coreference. Additionally, websites are often extracted using heuristic namematching as they are hard to capture with traditional relation extraction techniques. If we make use of both of these, our end-to-end accuracy becomes $28.2 \mathrm{~F}</em>$.</p>
+<p>We attempt to remove the variance in scores from the influence of other components in an end-to-end KBP system. We ran the Ollie open IE system (Mausam et al., 2012) in an identical framework to ours, and report accuracy in Table 5. Note that when an argument to an Ollie extraction contains a named entity, we take the argument to be that named entity. The low performance of this system can be partially attributed to its inability to extract nominal relations. To normalize for this, we report results when the Ollie extractions are supplemented with the nominal relations produced by our system (Ollie + Nominal Rels in Table 5). Conversely, we can remove the nominal relation extractions from our system; in both cases we outperform Ollie on the task.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: A precision/recall curve for Ollie and our system (without nominals). For clarity, recall is plotted on a range from 0 to 0.15 .</p>
+<h3>6.1 Discussion</h3>
+<p>We plot a precision/recall curve of our extractions in Figure 4 in order to get an informal sense of the calibration of our confidence estimates. Since confidences only apply to standard extractions, we plot the curves without including any of the nominal relations. The confidence of a KBP extraction in our system is calculated as the sum of the confidences of the open IE extractions that support it. So, for instance, if we find (Obama; be bear in; Hawaii) $n$ times with confidences $c_{1} \ldots c_{n}$, the confidence of the KBP extraction would be $\sum_{i=0}^{n} c_{i}$. It is therefore important to note that the curve in Figure 4 necessarily conflates the confidences of individual extractions, and the frequency of an extraction.</p>
+<p>With this in mind, the curves lend some interesting insights. Although our system is very high precision on the most confident extractions, it has a large dip in precision early in the curve. This suggests that the model is extracting multiple instances of a bad relation. Systematic errors in the clause splitter are the likely cause of these errors. While the approach of splitting sentences into clauses generalizes better to out-of-domain text, it is reasonable that the errors made in the clause splitter manifest across a range of sentences more often than the fine-grained patterns of Ollie would.</p>
+<p>On the right half of the PR curve, however, our system achieves both higher precision and extends to a higher recall than Ollie. Furthermore, the curve is relatively smooth near the tail, suggesting
+that indeed we are learning a reasonable estimate of confidence for extractions that have only one supporting instance in the text - empirically, $46 \%$ of our extractions.</p>
+<p>In total, we extract 42662862 open IE triples which link to a pair of entities in the corpus (i.e., are candidate KBP extractions), covering 1180770 relation types. 202797 of these relation types appear in more than 10 extraction instances; 28782 in more than 100 instances, and 4079 in more than 1000 instances. 308293 relation types appear only once. Note that our system over-produces extractions when both a general and specific extraction are warranted; therefore these numbers are an overestimate of the number of semantically meaningful facts.</p>
+<p>For comparison, Ollie extracted 12274319 triples, covering 2873239 relation types. 1983300 of these appeared only once; 69010 appeared in more than 10 instances, 7951 in more than 100 instances, and 870 in more than 1000 instances.</p>
+<h2>7 Conclusion</h2>
+<p>We have presented a system for extracting open domain relation triples by breaking a long sentence into short, coherent clauses, and then finding the maximally simple relation triples which are warranted given each of these clauses. This allows the system to have a greater awareness of the context of each extraction, and to provide informative triples to downstream applications. We show that our approach performs well on one such downstream application: the KBP Slot Filling task.</p>
+<h2>Acknowledgments</h2>
+<p>We thank the anonymous reviewers for their thoughtful feedback. Stanford University gratefully acknowledges the support of a Natural Language Understanding-focused gift from Google Inc. and the Defense Advanced Research Projects Agency (DARPA) Deep Exploration and Filtering of Text (DEFT) Program under Air Force Research Laboratory (AFRL) contract no. FA8750-13-2-0040. Any opinions, findings, and conclusion or recommendations expressed in this material are those of the authors and do not necessarily reflect the view of the DARPA, AFRL, or the US government.</p>
+<h2>References</h2>
+<p>Gabor Angeli and Christopher D. Manning. 2013. Philosophers are mortal: Inferring the truth of unseen facts. In CoNLL.</p>
+<p>Gabor Angeli, Julie Tibshirani, Jean Y. Wu, and Christopher D. Manning. 2014. Combining distant and partial supervision for relation extraction. In EMNLP.</p>
+<p>DAILLE Béatrice. 1994. Approche mixte pour l'extraction automatique de terminologie: statistique lexicale et filtres linguistiques. Ph.D. thesis, Thèse de Doctorat. Université de Paris VII.</p>
+<p>Jonathan Berant, Ido Dagan, and Jacob Goldberger. 2011. Global learning of typed entailment rules. In Proceedings of ACL, Portland, OR.</p>
+<p>Samuel R. Bowman, Christopher Potts, and Christopher D. Manning. 2014. Recursive neural networks can learn logical semantics. CoRR, (arXiv:1406.1827).</p>
+<p>Andrew Carlson, Justin Betteridge, Bryan Kisiel, Burr Settles, Estevam R Hruschka Jr, and Tom M Mitchell. 2010. Toward an architecture for neverending language learning. In AAAI.</p>
+<p>Angel X. Chang and Christopher D. Manning. 2014. TokensRegex: Defining cascaded regular expressions over tokens. Technical Report CSTR 2014-02, Department of Computer Science, Stanford University.</p>
+<p>Zheng Chen, Suzanne Tamang, Adam Lee, Xiang Li, Wen-Pin Lin, Matthew Snover, Javier Artiles, Marissa Passantino, and Heng Ji. 2010. CUNYBLENDER. In TAC-KBP.</p>
+<p>Mark Craven and Johan Kumlien. 1999. Constructing biological knowledge bases by extracting information from text sources. In AAAI.</p>
+<p>Marie-Catherine de Marneffe and Christopher D. Manning. 2008. The Stanford typed dependencies representation. In Coling 2008: Proceedings of the workshop on Cross-Framework and Cross-Domain Parser Evaluation.</p>
+<p>Oren Etzioni. 2011. Search needs a shake-up. Nature, 476(7358):25-26.</p>
+<p>Stefan Evert. 2005. The statistics of word cooccurrences: word pairs and collocations. Ph.D. thesis, Universit at Stuttgart.</p>
+<p>Anthony Fader, Stephen Soderland, and Oren Etzioni. 2011. Identifying relations for open information extraction. In EMNLP.</p>
+<p>Anthony Fader, Luke Zettlemoyer, and Oren Etzioni. 2014. Open question answering over curated and extracted knowledge bases. In $K D D$.</p>
+<p>Yoav Goldberg and Jon Orwant. 2013. A dataset of syntactic-ngrams over time from a very large corpus of english books. In *SEM.</p>
+<p>Ralph Grishman and Bonan Min. 2010. New York University KBP 2010 slot-filling system. In Proc. TAC 2010 Workshop.</p>
+<p>Thomas Icard, III and Lawrence Moss. 2014. Recent progress on monotonicity. Linguistic Issues in Language Technology.</p>
+<p>Heng Ji, Ralph Grishman, Hoa Trang Dang, Kira Griffitt, and Joe Ellis. 2010. Overview of the tac 2010 knowledge base population track. In Third Text Analysis Conference.</p>
+<p>Jay J Jiang and David W Conrath. 1997. Semantic similarity based on corpus statistics and lexical taxonomy. Proceedings of the 10th International Conference on Research on Computational Linguistics.</p>
+<p>Heeyoung Lee, Yves Peirsman, Angel Chang, Nathanael Chambers, Mihai Surdeanu, and Dan Jurafsky. 2011. Stanford's multi-pass sieve coreference resolution system at the conll-2011 shared task. In CoNLL Shared Task.</p>
+<p>Percy Liang, Ben Taskar, and Dan Klein. 2006. Alignment by agreement. In NAACL-HLT.</p>
+<p>Thomas Lin, Mausam, and Oren Etzioni. 2012. No noun phrase left behind: detecting and typing unlinkable entities. In EMNLP-CoNLL.</p>
+<p>Bill MacCartney and Christopher D Manning. 2009. An extended model of natural logic. In Proceedings of the eighth international conference on computational semantics.</p>
+<p>Mausam, Michael Schmitz, Robert Bart, Stephen Soderland, and Oren Etzioni. 2012. Open language learning for information extraction. In EMNLP.</p>
+<p>Filipe Mesquita, Jordan Schmidek, and Denilson Barbosa. 2013. Effectiveness and efficiency of open relation extraction. In EMNLP.</p>
+<p>Bonan Min, Ralph Grishman, Li Wan, Chang Wang, and David Gondek. 2013. Distant supervision for relation extraction with an incomplete knowledge base. In NAACL-HLT.</p>
+<p>Mike Mintz, Steven Bills, Rion Snow, and Dan Jurafsky. 2009. Distant supervision for relation extraction without labeled data. In $A C L$.</p>
+<p>Neha Nayak, Mark Kowarsky, Gabor Angeli, and Christopher D. Manning. 2014. A dictionary of nonsubsective adjectives. Technical Report CSTR 2014-04, Department of Computer Science, Stanford University, October.</p>
+<p>Glen Pink, Joel Nothman, and R. James Curran. 2014. Analysing recall loss in named entity slot filling. In EMNLP.</p>
+<p>Lev Ratinov, Dan Roth, Doug Downey, and Mike Anderson. 2011. Local and global algorithms for disambiguation to wikipedia. In $A C L$.</p>
+<p>Sebastian Riedel, Limin Yao, Andrew McCallum, and Benjamin M Marlin. 2013. Relation extraction with matrix factorization and universal schemas. In NAACL-HLT.</p>
+<p>Lorenza Romano, Milen Kouylekov, Idan Szpektor, Ido Dagan, and Alberto Lavelli. 2006. Investigating a generic paraphrase-based approach for relation extraction. EACL.</p>
+<p>Víctor Manuel Sánchez Sánchez Valencia. 1991. Studies on natural logic and categorial grammar. Ph.D. thesis, University of Amsterdam.</p>
+<p>Stephen Soderland, Brendan Roof, Bo Qin, Shi Xu, Mausam, and Oren Etzioni. 2010. Adapting open information extraction to domain-specific relations. AI Magazine, 31(3):93-102.</p>
+<p>Stephen Soderland, John Gilmer, Robert Bart, Oren Etzioni, and Daniel S. Weld. 2013. Open information extraction to KBP relations in 3 hours. In Text Analysis Conference.</p>
+<p>Stephen G Soderland. 1997. Learning text analysis rules for domain-specific natural language processing. Ph.D. thesis, University of Massachusetts.</p>
+<p>Ang Sun, Ralph Grishman, Wei Xu, and Bonan Min. 2011. New York University 2011 system for KBP slot filling. In Proceedings of the Text Analytics Conference.</p>
+<p>Mihai Surdeanu. 2013. Overview of the tac2013 knowledge base population evaluation: English slot filling and temporal slot filling. In Sixth Text Analysis Conference.</p>
+<p>Johan van Benthem. 2008. A brief history of natural logic. Technical Report PP-2008-05, University of Amsterdam.</p>
+<p>Yotaro Watanabe, Junta Mizuno, Eric Nichols, Naoaki Okazaki, and Kentaro Inui. 2012. A latent discriminative model for compositional entailment relation recognition using natural logic. In COLING.</p>
+<p>Fei Wu and Daniel S Weld. 2007. Autonomously semantifying wikipedia. In Proceedings of the sixteenth ACM conference on information and knowledge management. ACM.</p>
+<p>Fei Wu and Daniel S Weld. 2010. Open information extraction using wikipedia. In ACL. Association for Computational Linguistics.</p>
+<p>Limin Yao, Sebastian Riedel, and Andrew McCallum. 2012. Probabilistic databases of universal schema. In Proceedings of the Joint Workshop on Automatic Knowledge Base Construction and Webscale Knowledge Extraction.</p>
+<p>Alexander Yates, Michael Cafarella, Michele Banko, Oren Etzioni, Matthew Broadhead, and Stephen Soderland. 2007. TextRunner: Open information extraction on the web. In ACL-HLT.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{4}$ All results are reported with the anydoc flag set to true in the evaluation script, meaning that only the truth of the extracted knowledge base entry and not the associated provenance is scored. In absence of human evaluators, this is in order to not penalize our system unfairly for extracting a new correct provenance.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

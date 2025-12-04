@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Feature Arithmetic Encoding Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-57</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-57</p>
+                <p><strong>Name:</strong> Fourier Feature Arithmetic Encoding Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how language models perform arithmetic, based on the following results.</p>
+                <p><strong>Description:</strong> Pretrained language models represent numbers and perform arithmetic by encoding numerical values as sparse Fourier features—superpositions of sinusoidal components with specific periods (notably 2, 2.5, 5, 10). The model decomposes arithmetic into two complementary subtasks: (1) low-frequency Fourier components (large periods ~10, 50, 100) implemented primarily by MLP layers provide coarse magnitude approximation, and (2) high-frequency Fourier components (small periods ~2, 2.5, 5) implemented primarily by attention layers provide modular/unit-digit classification. Pretrained token embeddings supply these Fourier basis features as a result of language pretraining, which are then combined through the forward pass via phase-shifting of sin/cos coefficients to align peaks with correct numeric values. Models trained from scratch without pretraining fail to develop these sparse high-frequency features and consequently show characteristic off-by-one errors and poor modular arithmetic, achieving only ~94% accuracy compared to ~99.7% for pretrained models on addition tasks.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Numerical values in pretrained language models are represented as sparse superpositions of Fourier basis functions with specific characteristic periods (approximately 2, 2.5, 5, and 10 for base-10 arithmetic).</li>
+                <li>MLP layers primarily manipulate low-frequency (large-period ~10, 50, 100) Fourier components to perform magnitude approximation and coarse arithmetic.</li>
+                <li>Attention layers primarily manipulate high-frequency (small-period ~2, 2.5, 5) Fourier components to perform modular classification and unit-digit computation.</li>
+                <li>Pretrained token embeddings contain these Fourier features as a result of language pretraining, providing an inductive bias for arithmetic that enables near-perfect performance (~99.7% vs ~94% for scratch-trained models).</li>
+                <li>Models trained from scratch on arithmetic tasks alone do not spontaneously develop the sparse high-frequency Fourier features necessary for precise modular arithmetic.</li>
+                <li>The absence of high-frequency Fourier features leads to characteristic failure modes: off-by-one errors for unit digits (when high-frequency components are missing) and off-by-10/50/100 errors for magnitude (when low-frequency components are removed).</li>
+                <li>Arithmetic computation involves phase-shifting sin/cos coefficients to align Fourier wave peaks with the correct numeric value in the output space.</li>
+                <li>The Fourier feature mechanism enables decomposition of arithmetic accuracy into magnitude accuracy (low-frequency, MLP-mediated) and modular accuracy (high-frequency, attention-mediated), with different neural substrates responsible for each.</li>
+                <li>Injecting pretrained embeddings into randomly initialized networks is sufficient to enable perfect arithmetic learning, demonstrating the causal role of Fourier features in the embeddings.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>GPT-2-XL fine-tuned on addition shows sparse Fourier components in token embeddings and intermediate logits with periods T≈2, 2.5, 5, 10, with no outlier high-frequency components in scratch-trained models. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> <a href="../results/extraction-result-315.html#e315.1" class="evidence-link">[e315.1]</a> </li>
+    <li>MLP modules primarily implement low-frequency approximation using large-period Fourier components, while attention modules implement high-frequency modular classification using sparse high-frequency Fourier components. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>Causal ablations removing MLP low-frequency components cause off-by-10/50/100 magnitude errors, while removing attention high-frequency components causes small unit-digit errors (<6). <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>GPT-2-XL trained from scratch achieves only 94.44% test accuracy and lacks high-frequency Fourier components, producing characteristic off-by-one errors, compared to 99.74% for pretrained fine-tuned models. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> <a href="../results/extraction-result-315.html#e315.1" class="evidence-link">[e315.1]</a> </li>
+    <li>Freezing pretrained token embeddings in a randomly initialized GPT-2-small enables 100% test accuracy on addition across 5 seeds with significantly faster convergence, demonstrating embeddings supply necessary Fourier features. <a href="../results/extraction-result-315.html#e315.3" class="evidence-link">[e315.3]</a> </li>
+    <li>The final logits are a superposition of a few dominant Fourier waves where low-frequency components set coarse magnitude and high-frequency components resolve modular/unit digits, with phase-shifting of sin/cos coefficients aligning peaks with correct numeric values. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>Pretrained token embeddings contain sparse Fourier features (periods around 2, 2.5, 5, 10) which act as an inductive bias, and with those embeddings available, randomly initialized networks can learn to combine Fourier features into exact addition. <a href="../results/extraction-result-315.html#e315.3" class="evidence-link">[e315.3]</a> </li>
+    <li>Models trained from scratch primarily use low-frequency approximation features and fail to perform accurate modular classification, producing characteristic off-by-one errors and lacking modular (high-frequency) classification. <a href="../results/extraction-result-315.html#e315.1" class="evidence-link">[e315.1]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Injecting artificial Fourier features with periods 2, 2.5, 5, 10 into token embeddings of a scratch-trained model should improve its arithmetic accuracy from ~94% toward ~99.7% to match pretrained models.</li>
+                <li>Filtering out specific Fourier frequencies from embeddings should cause predictable error patterns: removing period-10 components should cause errors in tens place, removing period-2 components should cause errors in unit digits.</li>
+                <li>Models should show better arithmetic performance on number systems whose modular structure aligns with the Fourier periods present in embeddings (e.g., base-10 vs. base-7 or base-13).</li>
+                <li>Fine-tuning that preserves Fourier structure in embeddings should maintain arithmetic capability better than fine-tuning that distorts it.</li>
+                <li>Analyzing intermediate layer representations should show progressive refinement of Fourier components, with early layers maintaining raw Fourier features and later layers combining them via phase-shifting.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether Fourier feature encoding generalizes to other number representations (fractions, scientific notation, irrational numbers) is unclear, as the theory has only been demonstrated on integer addition.</li>
+                <li>It's unknown whether explicitly training models to use Fourier features (e.g., through Fourier-based loss functions or architectural constraints) would improve arithmetic beyond current methods or enable better generalization.</li>
+                <li>Whether the same Fourier periods are optimal for arithmetic in different bases (binary, hexadecimal) is uncertain, though the theory predicts different characteristic periods should emerge.</li>
+                <li>The extent to which Fourier features contribute to more complex mathematical operations (multiplication, division, calculus, matrix operations) is unknown, as evidence is primarily from addition.</li>
+                <li>Whether Fourier features play a role in multi-step arithmetic reasoning or only in single-operation computation is unclear.</li>
+                <li>It's unknown whether the Fourier feature mechanism is specific to transformer architectures or would apply to other neural architectures performing arithmetic.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that models with artificially injected Fourier features (with the correct periods) do not improve in arithmetic would challenge the causal role of these features.</li>
+                <li>Discovering that scratch-trained models can achieve perfect arithmetic (>99.7%) without developing Fourier features would contradict the necessity claim.</li>
+                <li>Observing that removing Fourier components does not produce the predicted error patterns (off-by-10/50/100 for low-frequency, off-by-one for high-frequency) would challenge the mechanistic account.</li>
+                <li>Finding that Fourier features are equally present in models that cannot do arithmetic would challenge their specificity to arithmetic computation.</li>
+                <li>Demonstrating that the same Fourier periods appear in models trained on non-arithmetic tasks would challenge the claim that these features are specifically acquired for arithmetic.</li>
+                <li>Finding that models can perform arithmetic accurately using completely different representational schemes (e.g., purely symbolic or algorithmic) would challenge the generality of the Fourier feature theory.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How Fourier features are initially acquired during language pretraining is not explained—the theory does not specify what aspects of natural language text lead to the emergence of these specific periods. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>The mechanism by which attention and MLP layers selectively manipulate different frequency bands is not fully specified at the level of individual attention heads or MLP neurons. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>Why these specific periods (2, 2.5, 5, 10) emerge rather than others is not theoretically derived from first principles, though they correspond to factors of 10. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>How the Fourier feature mechanism interacts with different tokenization schemes is not addressed, though tokenization is known to affect arithmetic performance. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> </li>
+    <li>The role of fine-tuning in learning to utilize pretrained Fourier features is not fully explained—why random networks with frozen pretrained embeddings can learn arithmetic but scratch-trained networks cannot. <a href="../results/extraction-result-315.html#e315.3" class="evidence-link">[e315.3]</a> </li>
+    <li>Whether the Fourier feature mechanism applies to operations beyond addition (multiplication, division, subtraction) is not demonstrated in the evidence. <a href="../results/extraction-result-315.html#e315.0" class="evidence-link">[e315.0]</a> <a href="../results/extraction-result-315.html#e315.1" class="evidence-link">[e315.1]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Rahaman et al. (2019) On the Spectral Bias of Neural Networks [General theory about neural networks learning low-frequency functions first, but not specific to Fourier features in transformers for arithmetic]</li>
+    <li>Tancik et al. (2020) Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains [Related work on Fourier features improving neural network performance, but not applied to language models or arithmetic]</li>
+    <li>Nanda et al. (2023) Progress measures for grokking via mechanistic interpretability [Related work on understanding how neural networks learn algorithmic tasks, but does not propose Fourier feature mechanism for arithmetic]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Fourier Feature Arithmetic Encoding Theory",
+    "theory_description": "Pretrained language models represent numbers and perform arithmetic by encoding numerical values as sparse Fourier features—superpositions of sinusoidal components with specific periods (notably 2, 2.5, 5, 10). The model decomposes arithmetic into two complementary subtasks: (1) low-frequency Fourier components (large periods ~10, 50, 100) implemented primarily by MLP layers provide coarse magnitude approximation, and (2) high-frequency Fourier components (small periods ~2, 2.5, 5) implemented primarily by attention layers provide modular/unit-digit classification. Pretrained token embeddings supply these Fourier basis features as a result of language pretraining, which are then combined through the forward pass via phase-shifting of sin/cos coefficients to align peaks with correct numeric values. Models trained from scratch without pretraining fail to develop these sparse high-frequency features and consequently show characteristic off-by-one errors and poor modular arithmetic, achieving only ~94% accuracy compared to ~99.7% for pretrained models on addition tasks.",
+    "supporting_evidence": [
+        {
+            "text": "GPT-2-XL fine-tuned on addition shows sparse Fourier components in token embeddings and intermediate logits with periods T≈2, 2.5, 5, 10, with no outlier high-frequency components in scratch-trained models.",
+            "uuids": [
+                "e315.0",
+                "e315.1"
+            ]
+        },
+        {
+            "text": "MLP modules primarily implement low-frequency approximation using large-period Fourier components, while attention modules implement high-frequency modular classification using sparse high-frequency Fourier components.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "Causal ablations removing MLP low-frequency components cause off-by-10/50/100 magnitude errors, while removing attention high-frequency components causes small unit-digit errors (&lt;6).",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "GPT-2-XL trained from scratch achieves only 94.44% test accuracy and lacks high-frequency Fourier components, producing characteristic off-by-one errors, compared to 99.74% for pretrained fine-tuned models.",
+            "uuids": [
+                "e315.0",
+                "e315.1"
+            ]
+        },
+        {
+            "text": "Freezing pretrained token embeddings in a randomly initialized GPT-2-small enables 100% test accuracy on addition across 5 seeds with significantly faster convergence, demonstrating embeddings supply necessary Fourier features.",
+            "uuids": [
+                "e315.3"
+            ]
+        },
+        {
+            "text": "The final logits are a superposition of a few dominant Fourier waves where low-frequency components set coarse magnitude and high-frequency components resolve modular/unit digits, with phase-shifting of sin/cos coefficients aligning peaks with correct numeric values.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "Pretrained token embeddings contain sparse Fourier features (periods around 2, 2.5, 5, 10) which act as an inductive bias, and with those embeddings available, randomly initialized networks can learn to combine Fourier features into exact addition.",
+            "uuids": [
+                "e315.3"
+            ]
+        },
+        {
+            "text": "Models trained from scratch primarily use low-frequency approximation features and fail to perform accurate modular classification, producing characteristic off-by-one errors and lacking modular (high-frequency) classification.",
+            "uuids": [
+                "e315.1"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Numerical values in pretrained language models are represented as sparse superpositions of Fourier basis functions with specific characteristic periods (approximately 2, 2.5, 5, and 10 for base-10 arithmetic).",
+        "MLP layers primarily manipulate low-frequency (large-period ~10, 50, 100) Fourier components to perform magnitude approximation and coarse arithmetic.",
+        "Attention layers primarily manipulate high-frequency (small-period ~2, 2.5, 5) Fourier components to perform modular classification and unit-digit computation.",
+        "Pretrained token embeddings contain these Fourier features as a result of language pretraining, providing an inductive bias for arithmetic that enables near-perfect performance (~99.7% vs ~94% for scratch-trained models).",
+        "Models trained from scratch on arithmetic tasks alone do not spontaneously develop the sparse high-frequency Fourier features necessary for precise modular arithmetic.",
+        "The absence of high-frequency Fourier features leads to characteristic failure modes: off-by-one errors for unit digits (when high-frequency components are missing) and off-by-10/50/100 errors for magnitude (when low-frequency components are removed).",
+        "Arithmetic computation involves phase-shifting sin/cos coefficients to align Fourier wave peaks with the correct numeric value in the output space.",
+        "The Fourier feature mechanism enables decomposition of arithmetic accuracy into magnitude accuracy (low-frequency, MLP-mediated) and modular accuracy (high-frequency, attention-mediated), with different neural substrates responsible for each.",
+        "Injecting pretrained embeddings into randomly initialized networks is sufficient to enable perfect arithmetic learning, demonstrating the causal role of Fourier features in the embeddings."
+    ],
+    "new_predictions_likely": [
+        "Injecting artificial Fourier features with periods 2, 2.5, 5, 10 into token embeddings of a scratch-trained model should improve its arithmetic accuracy from ~94% toward ~99.7% to match pretrained models.",
+        "Filtering out specific Fourier frequencies from embeddings should cause predictable error patterns: removing period-10 components should cause errors in tens place, removing period-2 components should cause errors in unit digits.",
+        "Models should show better arithmetic performance on number systems whose modular structure aligns with the Fourier periods present in embeddings (e.g., base-10 vs. base-7 or base-13).",
+        "Fine-tuning that preserves Fourier structure in embeddings should maintain arithmetic capability better than fine-tuning that distorts it.",
+        "Analyzing intermediate layer representations should show progressive refinement of Fourier components, with early layers maintaining raw Fourier features and later layers combining them via phase-shifting."
+    ],
+    "new_predictions_unknown": [
+        "Whether Fourier feature encoding generalizes to other number representations (fractions, scientific notation, irrational numbers) is unclear, as the theory has only been demonstrated on integer addition.",
+        "It's unknown whether explicitly training models to use Fourier features (e.g., through Fourier-based loss functions or architectural constraints) would improve arithmetic beyond current methods or enable better generalization.",
+        "Whether the same Fourier periods are optimal for arithmetic in different bases (binary, hexadecimal) is uncertain, though the theory predicts different characteristic periods should emerge.",
+        "The extent to which Fourier features contribute to more complex mathematical operations (multiplication, division, calculus, matrix operations) is unknown, as evidence is primarily from addition.",
+        "Whether Fourier features play a role in multi-step arithmetic reasoning or only in single-operation computation is unclear.",
+        "It's unknown whether the Fourier feature mechanism is specific to transformer architectures or would apply to other neural architectures performing arithmetic."
+    ],
+    "negative_experiments": [
+        "Finding that models with artificially injected Fourier features (with the correct periods) do not improve in arithmetic would challenge the causal role of these features.",
+        "Discovering that scratch-trained models can achieve perfect arithmetic (&gt;99.7%) without developing Fourier features would contradict the necessity claim.",
+        "Observing that removing Fourier components does not produce the predicted error patterns (off-by-10/50/100 for low-frequency, off-by-one for high-frequency) would challenge the mechanistic account.",
+        "Finding that Fourier features are equally present in models that cannot do arithmetic would challenge their specificity to arithmetic computation.",
+        "Demonstrating that the same Fourier periods appear in models trained on non-arithmetic tasks would challenge the claim that these features are specifically acquired for arithmetic.",
+        "Finding that models can perform arithmetic accurately using completely different representational schemes (e.g., purely symbolic or algorithmic) would challenge the generality of the Fourier feature theory."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How Fourier features are initially acquired during language pretraining is not explained—the theory does not specify what aspects of natural language text lead to the emergence of these specific periods.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "The mechanism by which attention and MLP layers selectively manipulate different frequency bands is not fully specified at the level of individual attention heads or MLP neurons.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "Why these specific periods (2, 2.5, 5, 10) emerge rather than others is not theoretically derived from first principles, though they correspond to factors of 10.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "How the Fourier feature mechanism interacts with different tokenization schemes is not addressed, though tokenization is known to affect arithmetic performance.",
+            "uuids": [
+                "e315.0"
+            ]
+        },
+        {
+            "text": "The role of fine-tuning in learning to utilize pretrained Fourier features is not fully explained—why random networks with frozen pretrained embeddings can learn arithmetic but scratch-trained networks cannot.",
+            "uuids": [
+                "e315.3"
+            ]
+        },
+        {
+            "text": "Whether the Fourier feature mechanism applies to operations beyond addition (multiplication, division, subtraction) is not demonstrated in the evidence.",
+            "uuids": [
+                "e315.0",
+                "e315.1"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Small models trained from scratch can achieve high arithmetic accuracy (essentially 100% up to 12 digits) with appropriate data formatting (e.g., reversed digits with padding), suggesting Fourier features may not be strictly necessary for all arithmetic approaches.",
+            "uuids": [
+                "e262.0"
+            ]
+        },
+        {
+            "text": "Models using explicit compiled algorithms (CoNN) achieve perfect arithmetic without relying on Fourier feature representations, demonstrating alternative mechanisms exist.",
+            "uuids": [
+                "e275.1"
+            ]
+        },
+        {
+            "text": "Various prompting and fine-tuning strategies can enable arithmetic without explicit Fourier features, including chain-of-thought, scratchpad methods, and program generation.",
+            "uuids": [
+                "e329.6",
+                "e266.0"
+            ]
+        },
+        {
+            "text": "The theory is primarily demonstrated on GPT-2 family models fine-tuned on addition; generalization to other architectures, operations, and training regimes is not established.",
+            "uuids": [
+                "e315.0",
+                "e315.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Fourier feature encoding is specific to models pretrained on natural language text containing numerical expressions; models trained only on arithmetic from scratch do not develop these features.",
+        "The specific Fourier periods observed (2, 2.5, 5, 10) are likely specific to base-10 arithmetic and may differ for other number systems or bases.",
+        "Very small models may not have sufficient capacity to maintain distinct Fourier components across multiple frequency bands.",
+        "The theory is primarily demonstrated and validated for addition; other arithmetic operations may use different or additional representational schemes.",
+        "The Fourier feature mechanism may be specific to the GPT-2 architecture family; other transformer architectures may implement arithmetic differently.",
+        "The theory applies to models using standard tokenization; alternative tokenization schemes (e.g., character-level, reversed digits) may interact differently with Fourier features.",
+        "Fine-tuning is necessary to utilize pretrained Fourier features for arithmetic; pretrained models without fine-tuning show poor arithmetic performance despite having Fourier features in embeddings."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Rahaman et al. (2019) On the Spectral Bias of Neural Networks [General theory about neural networks learning low-frequency functions first, but not specific to Fourier features in transformers for arithmetic]",
+            "Tancik et al. (2020) Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains [Related work on Fourier features improving neural network performance, but not applied to language models or arithmetic]",
+            "Nanda et al. (2023) Progress measures for grokking via mechanistic interpretability [Related work on understanding how neural networks learn algorithmic tasks, but does not propose Fourier feature mechanism for arithmetic]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 1,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

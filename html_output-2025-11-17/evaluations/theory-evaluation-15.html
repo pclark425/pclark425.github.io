@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Evaluation theory-evaluation-15 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Evaluation Details for theory-evaluation-15</h1>
+
+        <div class="section">
+            <h2>Theory Evaluation (General Information)</h2>
+            <div class="info-section">
+                <p><strong>Evaluation ID:</strong> theory-evaluation-15</p>
+                <p><strong>This evaluation is for theory ID:</strong> <a href="../theories/theory-190.html">theory-190</a></p>
+                <p><strong>This evaluation resulted in these revised theories:</strong> <a href="../theories/theory-375.html">theory-375</a></p>
+                <p><strong>Overall Support or Contradict:</strong> support</p>
+                <p><strong>Overall Support or Contradict Explanation:</strong> The new evidence strongly supports the theory's core claims about the necessity of actuator modeling for dynamic tasks, the importance of modeling latencies and torque limits, and the sufficiency of system identification from limited data. The only partial contradiction concerns randomization, where accurate identification can eliminate its necessity, suggesting it's a workaround rather than a fundamental requirement.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory Evaluation (Components)</h2>
+
+            <h3>Fully Supporting Evidence</h3>
+<ol>
+    <li>URDF-only simulation (no actuator modeling) caused complete transfer failure for quadrupedal locomotion at control frequency 400Hz, with policies diverging within seconds and requiring safety crane intervention, while PACE with actuator modeling achieved zero-shot transfer at ~0.85 m/s, strongly supporting the theory's claim that omission of actuator dynamics causes transfer failure for locomotion <a href="../results/extraction-result-1969.html#e1969.2" class="evidence-link">[e1969.2]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>System identification of 5 key actuator parameters (I_a, d, τ_f, q_b, T_d) from ~20 seconds of encoder-only in-air trajectory data was sufficient to enable zero-shot locomotion transfer, supporting the theory's claim that identification of 3-5 parameters from 10-20 trajectories is sufficient for dynamic tasks <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Critical actuator properties modeled included torque limits/saturation, motor constants (k_i), gear ratios (r), transmission efficiency, viscous damping (d), Coulomb friction (τ_f), armature inertia (I_a), and back-EMF effects, all of which are listed in the theory as critical properties for dynamic tasks <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Soft pneumatic actuators required modeling of second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics (ṗ = B·ω), hysteresis via different damping constants for loading/unloading, and speed-dependent uncertainty, with failure to model these causing >10° finger mismatches and grasping failures, supporting the theory's special case that pneumatic actuators require pressure dynamics and compliance modeling <a href="../results/extraction-result-1932.html#e1932.0" class="evidence-link">[e1932.0]</a> </li>
+    <li>Motor electrical dynamics including back-EMF constant k_ω, voltage-limited torque bandwidth, DC-bus voltage headroom, and battery voltage effects were shown to be important for high-speed performance, with inner current loop bandwidth measured at ~346 Hz, supporting the theory's requirement to model electrical/mechanical dynamics for precise torque control <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Gear transmission efficiency and backdrivability effects were modeled through armature inertia and damping parameters, with accurate identification enabling stable locomotion, supporting the theory's requirement to model transmission efficiency for compliant locomotion <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+</ol>            <h3>Partially Supporting Evidence</h3>
+<ol>
+    <li>Control latency of ~7.5ms was explicitly identified and modeled as a global command delay T_d parameter and was critical for transfer success, partially supporting the theory's statement that latencies >10ms must be modeled (the actual critical latency was slightly below the 10ms threshold stated in the theory) <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Inner current loop acting as near-unit-gain torque source up to ~25 Hz policy bandwidth enabled reactive control, partially supporting the theory's claim that high inference frequency (>50Hz) can compensate for simplified actuator models, though the mechanism is through the low-level controller rather than policy frequency per se <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> </li>
+    <li>Learned actuator network (LSTM-based) achieved successful transfer for locomotion, partially supporting that learned models can work, but required torque-instrumented data (~4 min) and showed larger sim-real deltas compared to physics-based PACE, suggesting learned models are less efficient than physics-based approaches <a href="../results/extraction-result-1969.html#e1969.1" class="evidence-link">[e1969.1]</a> </li>
+</ol>            <h3>Fully Contradicting Evidence</h3>
+<p class="empty-note">No evidence provided.</p>            <h3>Partially Contradicting Evidence</h3>
+<ol>
+    <li>PACE achieved zero-shot transfer WITHOUT actuator parameter randomization by using accurate system identification from in-air data, contradicting the theory's statement that 'actuator parameter randomization improves robustness' - this suggests randomization may be a workaround for poor modeling rather than a fundamental requirement when accurate identification is available <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+</ol>            <h3>Potentially Modifying Evidence</h3>
+<ol>
+    <li>Physics-based actuator models with only 5 parameters (I_a, d, τ_f, q_b, T_d) fitted from ~20s encoder-only data outperformed learned actuator networks that required torque sensors and ~4 min of data, achieving better generalization across PD gains and trajectories. This moves the 'unknown' question about learned vs physics-based models toward 'answered': physics-based models appear superior for transfer <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.1" class="evidence-link">[e1969.1]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>In-air trajectory identification (no ground contact) was sufficient for successful contact locomotion transfer, suggesting that actuator modeling can be decoupled from contact modeling and may be more critical than contact modeling for locomotion tasks - this extends the theory's understanding of the interaction between actuator and contact modeling <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>The theory mentions '10-20 trajectories' but PACE used ~20 seconds of continuous chirp excitation data (1-1250 Hz bandwidth) rather than discrete task trajectories, suggesting the sample size requirement should be specified in terms of data duration and excitation bandwidth rather than trajectory count <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Inner current loop can be treated as near-unit-gain torque source within policy-relevant bandwidth (<25 Hz) with <5° phase lag, but voltage/back-EMF limits become critical at higher speeds (voltage-limited torque bandwidth ~310 Hz), suggesting the theory should distinguish between low-level electrical dynamics (can be abstracted at low speeds) and voltage/current limits (must always be modeled) <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> </li>
+    <li>CMA-ES with massively parallel simulation (N=4096 environments) enabled reliable fitting of physically-interpretable parameters in 10-24 hours from encoder-only data, suggesting the theory should mention evolutionary/gradient-free optimization as an effective system identification method alongside existing methods <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Soft pneumatic actuators showed speed-dependent uncertainty with quantified standard deviations (σ_ζ ranging 0.05-0.12, σ_ωn ranging 0.055-0.1 across speeds π/3 to 2π rad/s), requiring Monte Carlo randomization of damping ratio and natural frequency, extending the theory's special case for pneumatic actuators with quantitative guidance <a href="../results/extraction-result-1932.html#e1932.0" class="evidence-link">[e1932.0]</a> </li>
+    <li>Encoder-only data (joint positions and velocities) was sufficient for system identification without torque sensors, achieving successful transfer where torque-instrumented learned models required more data, suggesting the theory should explicitly state that torque sensors are not necessary for effective actuator identification <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> <a href="../results/extraction-result-1969.html#e1969.1" class="evidence-link">[e1969.1]</a> </li>
+    <li>Energy-aware policies trained with accurate actuator models (including Joule heating R·i² and mechanical dissipation) achieved 32% reduction in Cost-of-Transport (CoT from 1.86 to 1.27 on ANYmal), suggesting the theory should include energy efficiency as a benefit of accurate actuator modeling beyond just transfer success <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+</ol>            <h3>Suggested Revisions</h3>
+            <ol>
+                <li>Revise the statement on actuator parameter randomization to clarify that it improves robustness when accurate system identification is not feasible, but accurate physics-based identification can eliminate the need for randomization and achieve superior transfer performance</li>
+                <li>Add a theory statement that physics-based actuator models with compact parameterizations (5-10 parameters) can outperform learned neural network models, requiring less data (encoder-only vs torque-instrumented), no torque sensors, and providing better generalization across control gains and trajectories</li>
+                <li>Modify the sample size requirement from '10-20 trajectories' to specify data duration and excitation bandwidth (e.g., '20-40 seconds of chirp excitation covering the control bandwidth up to Nyquist frequency') to better reflect identification requirements for continuous system identification methods</li>
+                <li>Add a statement that in-air actuator identification (without contact) can be sufficient for contact-rich locomotion tasks, suggesting actuator modeling can be decoupled from contact modeling and may be the more critical factor for locomotion transfer</li>
+                <li>Clarify that inner current/torque loops can be treated as unit-gain within policy bandwidth (<25 Hz) but voltage/current limits and back-EMF effects must still be modeled for high-speed performance and energy-aware policies</li>
+                <li>Add CMA-ES and massively-parallel evolutionary optimization (with thousands of parallel environments) as effective system identification methods for actuator parameters, alongside existing methods like trajectory optimization and gradient-based approaches</li>
+                <li>Expand the special case for pneumatic actuators to include quantitative guidance on speed-dependent uncertainty modeling (σ_ζ ~ 0.05-0.12, σ_ωn ~ 0.055-0.1) and Monte Carlo parameter sampling across actuation speeds</li>
+                <li>Move the question 'Whether learned actuator models can replace physics-based models' from 'unknown' to answered: physics-based models appear superior for transfer with less data, no torque sensors, and better generalization</li>
+                <li>Add guidance that encoder-only data (joint positions/velocities) is sufficient for system identification in many cases, eliminating the need for torque sensors which are required by some learned model approaches</li>
+                <li>Lower the control latency threshold from '>10ms' to '>5-10ms' based on evidence that ~7.5ms delays must be modeled for successful transfer</li>
+                <li>Add energy efficiency (Cost-of-Transport reduction) as an additional benefit of accurate actuator modeling beyond transfer success, with quantitative guidance that accurate electrical/mechanical loss modeling can reduce CoT by ~30%</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Theory Evaluation (Debug)</h2>
+            <pre><code>{
+    "id": "theory-evaluation-15",
+    "theory_id": "theory-190",
+    "fully_supporting_evidence": [
+        {
+            "text": "URDF-only simulation (no actuator modeling) caused complete transfer failure for quadrupedal locomotion at control frequency 400Hz, with policies diverging within seconds and requiring safety crane intervention, while PACE with actuator modeling achieved zero-shot transfer at ~0.85 m/s, strongly supporting the theory's claim that omission of actuator dynamics causes transfer failure for locomotion",
+            "uuids": [
+                "e1969.2",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "System identification of 5 key actuator parameters (I_a, d, τ_f, q_b, T_d) from ~20 seconds of encoder-only in-air trajectory data was sufficient to enable zero-shot locomotion transfer, supporting the theory's claim that identification of 3-5 parameters from 10-20 trajectories is sufficient for dynamic tasks",
+            "uuids": [
+                "e1969.4",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Critical actuator properties modeled included torque limits/saturation, motor constants (k_i), gear ratios (r), transmission efficiency, viscous damping (d), Coulomb friction (τ_f), armature inertia (I_a), and back-EMF effects, all of which are listed in the theory as critical properties for dynamic tasks",
+            "uuids": [
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Soft pneumatic actuators required modeling of second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics (ṗ = B·ω), hysteresis via different damping constants for loading/unloading, and speed-dependent uncertainty, with failure to model these causing &gt;10° finger mismatches and grasping failures, supporting the theory's special case that pneumatic actuators require pressure dynamics and compliance modeling",
+            "uuids": [
+                "e1932.0"
+            ]
+        },
+        {
+            "text": "Motor electrical dynamics including back-EMF constant k_ω, voltage-limited torque bandwidth, DC-bus voltage headroom, and battery voltage effects were shown to be important for high-speed performance, with inner current loop bandwidth measured at ~346 Hz, supporting the theory's requirement to model electrical/mechanical dynamics for precise torque control",
+            "uuids": [
+                "e1969.3",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Gear transmission efficiency and backdrivability effects were modeled through armature inertia and damping parameters, with accurate identification enabling stable locomotion, supporting the theory's requirement to model transmission efficiency for compliant locomotion",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        }
+    ],
+    "partially_supporting_evidence": [
+        {
+            "text": "Control latency of ~7.5ms was explicitly identified and modeled as a global command delay T_d parameter and was critical for transfer success, partially supporting the theory's statement that latencies &gt;10ms must be modeled (the actual critical latency was slightly below the 10ms threshold stated in the theory)",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Inner current loop acting as near-unit-gain torque source up to ~25 Hz policy bandwidth enabled reactive control, partially supporting the theory's claim that high inference frequency (&gt;50Hz) can compensate for simplified actuator models, though the mechanism is through the low-level controller rather than policy frequency per se",
+            "uuids": [
+                "e1969.3"
+            ]
+        },
+        {
+            "text": "Learned actuator network (LSTM-based) achieved successful transfer for locomotion, partially supporting that learned models can work, but required torque-instrumented data (~4 min) and showed larger sim-real deltas compared to physics-based PACE, suggesting learned models are less efficient than physics-based approaches",
+            "uuids": [
+                "e1969.1"
+            ]
+        }
+    ],
+    "fully_contradicting_evidence": [],
+    "partially_contradicting_evidence": [
+        {
+            "text": "PACE achieved zero-shot transfer WITHOUT actuator parameter randomization by using accurate system identification from in-air data, contradicting the theory's statement that 'actuator parameter randomization improves robustness' - this suggests randomization may be a workaround for poor modeling rather than a fundamental requirement when accurate identification is available",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        }
+    ],
+    "potentially_modifying_evidence": [
+        {
+            "text": "Physics-based actuator models with only 5 parameters (I_a, d, τ_f, q_b, T_d) fitted from ~20s encoder-only data outperformed learned actuator networks that required torque sensors and ~4 min of data, achieving better generalization across PD gains and trajectories. This moves the 'unknown' question about learned vs physics-based models toward 'answered': physics-based models appear superior for transfer",
+            "uuids": [
+                "e1969.0",
+                "e1969.1",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "In-air trajectory identification (no ground contact) was sufficient for successful contact locomotion transfer, suggesting that actuator modeling can be decoupled from contact modeling and may be more critical than contact modeling for locomotion tasks - this extends the theory's understanding of the interaction between actuator and contact modeling",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "The theory mentions '10-20 trajectories' but PACE used ~20 seconds of continuous chirp excitation data (1-1250 Hz bandwidth) rather than discrete task trajectories, suggesting the sample size requirement should be specified in terms of data duration and excitation bandwidth rather than trajectory count",
+            "uuids": [
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Inner current loop can be treated as near-unit-gain torque source within policy-relevant bandwidth (&lt;25 Hz) with &lt;5° phase lag, but voltage/back-EMF limits become critical at higher speeds (voltage-limited torque bandwidth ~310 Hz), suggesting the theory should distinguish between low-level electrical dynamics (can be abstracted at low speeds) and voltage/current limits (must always be modeled)",
+            "uuids": [
+                "e1969.3"
+            ]
+        },
+        {
+            "text": "CMA-ES with massively parallel simulation (N=4096 environments) enabled reliable fitting of physically-interpretable parameters in 10-24 hours from encoder-only data, suggesting the theory should mention evolutionary/gradient-free optimization as an effective system identification method alongside existing methods",
+            "uuids": [
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Soft pneumatic actuators showed speed-dependent uncertainty with quantified standard deviations (σ_ζ ranging 0.05-0.12, σ_ωn ranging 0.055-0.1 across speeds π/3 to 2π rad/s), requiring Monte Carlo randomization of damping ratio and natural frequency, extending the theory's special case for pneumatic actuators with quantitative guidance",
+            "uuids": [
+                "e1932.0"
+            ]
+        },
+        {
+            "text": "Encoder-only data (joint positions and velocities) was sufficient for system identification without torque sensors, achieving successful transfer where torque-instrumented learned models required more data, suggesting the theory should explicitly state that torque sensors are not necessary for effective actuator identification",
+            "uuids": [
+                "e1969.0",
+                "e1969.4",
+                "e1969.1"
+            ]
+        },
+        {
+            "text": "Energy-aware policies trained with accurate actuator models (including Joule heating R·i² and mechanical dissipation) achieved 32% reduction in Cost-of-Transport (CoT from 1.86 to 1.27 on ANYmal), suggesting the theory should include energy efficiency as a benefit of accurate actuator modeling beyond just transfer success",
+            "uuids": [
+                "e1969.0"
+            ]
+        }
+    ],
+    "suggested_revisions": [
+        "Revise the statement on actuator parameter randomization to clarify that it improves robustness when accurate system identification is not feasible, but accurate physics-based identification can eliminate the need for randomization and achieve superior transfer performance",
+        "Add a theory statement that physics-based actuator models with compact parameterizations (5-10 parameters) can outperform learned neural network models, requiring less data (encoder-only vs torque-instrumented), no torque sensors, and providing better generalization across control gains and trajectories",
+        "Modify the sample size requirement from '10-20 trajectories' to specify data duration and excitation bandwidth (e.g., '20-40 seconds of chirp excitation covering the control bandwidth up to Nyquist frequency') to better reflect identification requirements for continuous system identification methods",
+        "Add a statement that in-air actuator identification (without contact) can be sufficient for contact-rich locomotion tasks, suggesting actuator modeling can be decoupled from contact modeling and may be the more critical factor for locomotion transfer",
+        "Clarify that inner current/torque loops can be treated as unit-gain within policy bandwidth (&lt;25 Hz) but voltage/current limits and back-EMF effects must still be modeled for high-speed performance and energy-aware policies",
+        "Add CMA-ES and massively-parallel evolutionary optimization (with thousands of parallel environments) as effective system identification methods for actuator parameters, alongside existing methods like trajectory optimization and gradient-based approaches",
+        "Expand the special case for pneumatic actuators to include quantitative guidance on speed-dependent uncertainty modeling (σ_ζ ~ 0.05-0.12, σ_ωn ~ 0.055-0.1) and Monte Carlo parameter sampling across actuation speeds",
+        "Move the question 'Whether learned actuator models can replace physics-based models' from 'unknown' to answered: physics-based models appear superior for transfer with less data, no torque sensors, and better generalization",
+        "Add guidance that encoder-only data (joint positions/velocities) is sufficient for system identification in many cases, eliminating the need for torque sensors which are required by some learned model approaches",
+        "Lower the control latency threshold from '&gt;10ms' to '&gt;5-10ms' based on evidence that ~7.5ms delays must be modeled for successful transfer",
+        "Add energy efficiency (Cost-of-Transport reduction) as an additional benefit of accurate actuator modeling beyond transfer success, with quantitative guidance that accurate electrical/mechanical loss modeling can reduce CoT by ~30%"
+    ],
+    "overall_support_or_contradict": "support",
+    "overall_support_or_contradict_explanation": "The new evidence strongly supports the theory's core claims about the necessity of actuator modeling for dynamic tasks, the importance of modeling latencies and torque limits, and the sufficiency of system identification from limited data. The only partial contradiction concerns randomization, where accurate identification can eliminate its necessity, suggesting it's a workaround rather than a fundamental requirement.",
+    "revised_theory_ids": [
+        "theory-375"
+    ],
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

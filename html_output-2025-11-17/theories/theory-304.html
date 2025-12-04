@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensemble Disagreement as Epistemic Uncertainty Proxy Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-304</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-304</p>
+                <p><strong>Name:</strong> Ensemble Disagreement as Epistemic Uncertainty Proxy Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how adaptive experimental design works for AI agents operating in unknown environments.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> This theory proposes that the variance or disagreement among predictions from an ensemble of models trained on the same data serves as a reliable proxy for epistemic (reducible) uncertainty in unknown environments. The core mechanism is that when ensemble members disagree about predictions in a region of state-action space, this disagreement reflects the insufficiency of training data in that region rather than inherent environmental stochasticity. The theory posits that this proxy relationship holds because: (1) ensemble members trained on identical data will converge to similar predictions in well-sampled regions due to shared evidence, (2) in under-sampled regions, different random initializations, training orders, or bootstrap samples lead to divergent extrapolations, and (3) this divergence magnitude correlates with the potential information gain from sampling that region. This enables adaptive experimental design by allowing agents to identify and prioritize exploration of regions where model uncertainty (rather than environmental noise) is high, without requiring explicit Bayesian inference or uncertainty quantification.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Ensemble disagreement D(s,a) = Var[{f_i(s,a)}_{i=1}^N] where f_i are ensemble members, serves as a proxy for epistemic uncertainty that decreases with additional training data in region (s,a).</li>
+                <li>In regions where training data is abundant, ensemble members will exhibit low disagreement regardless of environmental stochasticity, because they have converged on the true data distribution.</li>
+                <li>In regions where training data is sparse or absent, ensemble members will exhibit high disagreement due to divergent extrapolations from different random factors (initialization, training order, bootstrap samples).</li>
+                <li>The magnitude of ensemble disagreement correlates with the expected information gain from sampling a given state-action pair, making it suitable for acquisition function design in adaptive experimental design.</li>
+                <li>Ensemble disagreement can distinguish epistemic from aleatoric uncertainty: aleatoric uncertainty affects all ensemble members similarly (low disagreement, high individual prediction variance), while epistemic uncertainty causes divergent predictions (high disagreement).</li>
+                <li>The proxy relationship strengthens with ensemble size N, with disagreement estimates becoming more stable and reliable as N increases, though with diminishing returns beyond N≈5-10 for practical applications.</li>
+                <li>Ensemble disagreement provides computational advantages over full Bayesian inference by avoiding expensive posterior sampling or variational inference while maintaining similar uncertainty quantification quality.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Ensemble disagreement has been empirically shown to correlate with model uncertainty and out-of-distribution detection in deep learning systems. </li>
+    <li>Disagreement-based exploration methods have demonstrated improved sample efficiency in reinforcement learning tasks with unknown dynamics. </li>
+    <li>Bootstrap aggregating (bagging) and ensemble methods naturally capture epistemic uncertainty through variation in training data subsets. </li>
+    <li>Ensemble variance has been used successfully as an acquisition function in Bayesian optimization and active learning. </li>
+    <li>Theoretical analysis shows that ensemble disagreement can approximate Bayesian posterior variance under certain conditions. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In robotic manipulation tasks with unknown object dynamics, an agent using ensemble disagreement to select exploratory actions will achieve accurate dynamics models with fewer interactions than agents using random exploration or uncertainty methods that don't distinguish epistemic from aleatoric uncertainty.</li>
+                <li>For scientific experimental design problems (e.g., materials discovery, drug design), acquisition functions based on ensemble disagreement will identify informative experiments more efficiently than uncertainty sampling based on single-model confidence intervals.</li>
+                <li>In multi-task learning scenarios, ensemble disagreement will be higher for novel tasks than for previously encountered tasks, enabling automatic detection of task novelty and adaptive allocation of exploration resources.</li>
+                <li>When an agent trained in one environment is transferred to a similar but distinct environment, ensemble disagreement will spike in regions where the environments differ, providing an automatic mechanism for detecting distribution shift.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether ensemble disagreement remains a reliable epistemic uncertainty proxy in extremely high-dimensional spaces (>10,000 dimensions) where ensemble members might disagree due to curse of dimensionality rather than true epistemic uncertainty is unclear and could fundamentally limit the approach's scalability.</li>
+                <li>The relationship between optimal ensemble size and environment complexity is not well characterized - it's unknown whether complex environments with intricate dynamics require proportionally larger ensembles or whether a fixed ensemble size suffices across complexity levels.</li>
+                <li>Whether ensemble disagreement can effectively capture epistemic uncertainty in environments with non-stationary dynamics where the true model is changing over time is uncertain, as disagreement might reflect either insufficient data or genuine temporal shifts.</li>
+                <li>The interaction between ensemble disagreement and safety-critical decision making is not fully understood - it's unclear whether high disagreement regions should always be explored or whether some high-disagreement regions represent genuinely dangerous states that should be avoided.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If ensemble disagreement remains high in regions even after extensive sampling and training, failing to decrease with additional data, this would contradict the theory's claim that disagreement proxies reducible epistemic uncertainty.</li>
+                <li>If regions with high ensemble disagreement consistently yield low information gain when sampled (i.e., new samples don't significantly improve model accuracy), this would challenge the theory's utility for adaptive experimental design.</li>
+                <li>If a single well-calibrated model with explicit uncertainty estimates (e.g., Gaussian process, Bayesian neural network) consistently outperforms ensemble disagreement for identifying informative samples, this would suggest the proxy is inferior to direct uncertainty quantification.</li>
+                <li>If ensemble disagreement fails to distinguish between epistemic and aleatoric uncertainty in practice (e.g., shows high disagreement in regions with high environmental noise but sufficient data), this would undermine a core theoretical claim.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not fully specify how to handle cases where ensemble members are too similar (e.g., due to insufficient diversity in initialization or training), leading to artificially low disagreement even in under-sampled regions. </li>
+    <li>The relationship between ensemble disagreement and the true Bayesian epistemic uncertainty is not quantitatively characterized - the conditions under which disagreement is a good vs. poor approximation are not fully specified. </li>
+    <li>The theory does not address how ensemble disagreement behaves in the presence of model misspecification, where all ensemble members might confidently agree on incorrect predictions due to shared architectural or inductive biases. </li>
+    <li>The computational-statistical tradeoff between ensemble size and uncertainty estimation quality is not fully characterized by the theory. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles, NeurIPS [Proposes using ensemble disagreement for uncertainty estimation but doesn't explicitly frame it as epistemic uncertainty proxy theory]</li>
+    <li>Pathak et al. (2019) Self-Supervised Exploration via Disagreement, ICML [Uses disagreement for exploration but focuses on the algorithmic application rather than theoretical foundations of why disagreement proxies epistemic uncertainty]</li>
+    <li>Osband et al. (2016) Deep Exploration via Bootstrapped DQN, NeurIPS [Uses bootstrap ensembles for exploration but doesn't explicitly theorize the disagreement-epistemic uncertainty relationship]</li>
+    <li>Gal (2016) Uncertainty in Deep Learning, PhD Thesis [Discusses epistemic vs aleatoric uncertainty and ensemble methods but focuses more on dropout as Bayesian approximation]</li>
+    <li>Depeweg et al. (2018) Decomposition of Uncertainty in Bayesian Deep Learning for Efficient and Risk-sensitive Learning, ICML [Addresses epistemic vs aleatoric decomposition but uses different uncertainty quantification methods]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Ensemble Disagreement as Epistemic Uncertainty Proxy Theory",
+    "theory_description": "This theory proposes that the variance or disagreement among predictions from an ensemble of models trained on the same data serves as a reliable proxy for epistemic (reducible) uncertainty in unknown environments. The core mechanism is that when ensemble members disagree about predictions in a region of state-action space, this disagreement reflects the insufficiency of training data in that region rather than inherent environmental stochasticity. The theory posits that this proxy relationship holds because: (1) ensemble members trained on identical data will converge to similar predictions in well-sampled regions due to shared evidence, (2) in under-sampled regions, different random initializations, training orders, or bootstrap samples lead to divergent extrapolations, and (3) this divergence magnitude correlates with the potential information gain from sampling that region. This enables adaptive experimental design by allowing agents to identify and prioritize exploration of regions where model uncertainty (rather than environmental noise) is high, without requiring explicit Bayesian inference or uncertainty quantification.",
+    "supporting_evidence": [
+        {
+            "text": "Ensemble disagreement has been empirically shown to correlate with model uncertainty and out-of-distribution detection in deep learning systems.",
+            "citations": [
+                "Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles, NeurIPS",
+                "Ovadia et al. (2019) Can You Trust Your Model's Uncertainty? Evaluating Predictive Uncertainty Under Dataset Shift, NeurIPS"
+            ]
+        },
+        {
+            "text": "Disagreement-based exploration methods have demonstrated improved sample efficiency in reinforcement learning tasks with unknown dynamics.",
+            "citations": [
+                "Pathak et al. (2019) Self-Supervised Exploration via Disagreement, ICML",
+                "Sekar et al. (2020) Planning to Explore via Self-Supervised World Models, ICML"
+            ]
+        },
+        {
+            "text": "Bootstrap aggregating (bagging) and ensemble methods naturally capture epistemic uncertainty through variation in training data subsets.",
+            "citations": [
+                "Breiman (1996) Bagging Predictors, Machine Learning",
+                "Osband et al. (2016) Deep Exploration via Bootstrapped DQN, NeurIPS"
+            ]
+        },
+        {
+            "text": "Ensemble variance has been used successfully as an acquisition function in Bayesian optimization and active learning.",
+            "citations": [
+                "Snoek et al. (2012) Practical Bayesian Optimization of Machine Learning Algorithms, NeurIPS",
+                "Gal et al. (2017) Deep Bayesian Active Learning with Image Data, ICML"
+            ]
+        },
+        {
+            "text": "Theoretical analysis shows that ensemble disagreement can approximate Bayesian posterior variance under certain conditions.",
+            "citations": [
+                "Fort et al. (2019) Deep Ensembles: A Loss Landscape Perspective, arXiv",
+                "Wilson & Izmailov (2020) Bayesian Deep Learning and a Probabilistic Perspective of Generalization, NeurIPS"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Ensemble disagreement D(s,a) = Var[{f_i(s,a)}_{i=1}^N] where f_i are ensemble members, serves as a proxy for epistemic uncertainty that decreases with additional training data in region (s,a).",
+        "In regions where training data is abundant, ensemble members will exhibit low disagreement regardless of environmental stochasticity, because they have converged on the true data distribution.",
+        "In regions where training data is sparse or absent, ensemble members will exhibit high disagreement due to divergent extrapolations from different random factors (initialization, training order, bootstrap samples).",
+        "The magnitude of ensemble disagreement correlates with the expected information gain from sampling a given state-action pair, making it suitable for acquisition function design in adaptive experimental design.",
+        "Ensemble disagreement can distinguish epistemic from aleatoric uncertainty: aleatoric uncertainty affects all ensemble members similarly (low disagreement, high individual prediction variance), while epistemic uncertainty causes divergent predictions (high disagreement).",
+        "The proxy relationship strengthens with ensemble size N, with disagreement estimates becoming more stable and reliable as N increases, though with diminishing returns beyond N≈5-10 for practical applications.",
+        "Ensemble disagreement provides computational advantages over full Bayesian inference by avoiding expensive posterior sampling or variational inference while maintaining similar uncertainty quantification quality."
+    ],
+    "new_predictions_likely": [
+        "In robotic manipulation tasks with unknown object dynamics, an agent using ensemble disagreement to select exploratory actions will achieve accurate dynamics models with fewer interactions than agents using random exploration or uncertainty methods that don't distinguish epistemic from aleatoric uncertainty.",
+        "For scientific experimental design problems (e.g., materials discovery, drug design), acquisition functions based on ensemble disagreement will identify informative experiments more efficiently than uncertainty sampling based on single-model confidence intervals.",
+        "In multi-task learning scenarios, ensemble disagreement will be higher for novel tasks than for previously encountered tasks, enabling automatic detection of task novelty and adaptive allocation of exploration resources.",
+        "When an agent trained in one environment is transferred to a similar but distinct environment, ensemble disagreement will spike in regions where the environments differ, providing an automatic mechanism for detecting distribution shift."
+    ],
+    "new_predictions_unknown": [
+        "Whether ensemble disagreement remains a reliable epistemic uncertainty proxy in extremely high-dimensional spaces (&gt;10,000 dimensions) where ensemble members might disagree due to curse of dimensionality rather than true epistemic uncertainty is unclear and could fundamentally limit the approach's scalability.",
+        "The relationship between optimal ensemble size and environment complexity is not well characterized - it's unknown whether complex environments with intricate dynamics require proportionally larger ensembles or whether a fixed ensemble size suffices across complexity levels.",
+        "Whether ensemble disagreement can effectively capture epistemic uncertainty in environments with non-stationary dynamics where the true model is changing over time is uncertain, as disagreement might reflect either insufficient data or genuine temporal shifts.",
+        "The interaction between ensemble disagreement and safety-critical decision making is not fully understood - it's unclear whether high disagreement regions should always be explored or whether some high-disagreement regions represent genuinely dangerous states that should be avoided."
+    ],
+    "negative_experiments": [
+        "If ensemble disagreement remains high in regions even after extensive sampling and training, failing to decrease with additional data, this would contradict the theory's claim that disagreement proxies reducible epistemic uncertainty.",
+        "If regions with high ensemble disagreement consistently yield low information gain when sampled (i.e., new samples don't significantly improve model accuracy), this would challenge the theory's utility for adaptive experimental design.",
+        "If a single well-calibrated model with explicit uncertainty estimates (e.g., Gaussian process, Bayesian neural network) consistently outperforms ensemble disagreement for identifying informative samples, this would suggest the proxy is inferior to direct uncertainty quantification.",
+        "If ensemble disagreement fails to distinguish between epistemic and aleatoric uncertainty in practice (e.g., shows high disagreement in regions with high environmental noise but sufficient data), this would undermine a core theoretical claim."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not fully specify how to handle cases where ensemble members are too similar (e.g., due to insufficient diversity in initialization or training), leading to artificially low disagreement even in under-sampled regions.",
+            "citations": []
+        },
+        {
+            "text": "The relationship between ensemble disagreement and the true Bayesian epistemic uncertainty is not quantitatively characterized - the conditions under which disagreement is a good vs. poor approximation are not fully specified.",
+            "citations": []
+        },
+        {
+            "text": "The theory does not address how ensemble disagreement behaves in the presence of model misspecification, where all ensemble members might confidently agree on incorrect predictions due to shared architectural or inductive biases.",
+            "citations": [
+                "Foong et al. (2019) 'In-Between' Uncertainty in Bayesian Neural Networks, arXiv"
+            ]
+        },
+        {
+            "text": "The computational-statistical tradeoff between ensemble size and uncertainty estimation quality is not fully characterized by the theory.",
+            "citations": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some research suggests that deep ensembles can be overconfident in certain out-of-distribution scenarios, showing low disagreement despite high epistemic uncertainty.",
+            "citations": [
+                "Ovadia et al. (2019) Can You Trust Your Model's Uncertainty? Evaluating Predictive Uncertainty Under Dataset Shift, NeurIPS",
+                "Minderer et al. (2021) Revisiting the Calibration of Modern Neural Networks, NeurIPS"
+            ]
+        },
+        {
+            "text": "Studies have shown that ensemble disagreement can be sensitive to the specific diversity-inducing mechanism used (random initialization vs. bootstrap vs. different architectures), suggesting the proxy relationship is not universal.",
+            "citations": [
+                "Fort et al. (2019) Deep Ensembles: A Loss Landscape Perspective, arXiv",
+                "Wen et al. (2020) BatchEnsemble: An Alternative Approach to Efficient Ensemble and Lifelong Learning, ICLR"
+            ]
+        },
+        {
+            "text": "Research on neural network loss landscapes suggests that in some cases, different local minima can produce similar predictions despite different parameters, leading to low disagreement that doesn't reflect epistemic uncertainty.",
+            "citations": [
+                "Garipov et al. (2018) Loss Surfaces, Mode Connectivity, and Fast Ensembling of DNNs, NeurIPS"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In environments with deterministic dynamics and no observation noise, ensemble disagreement purely reflects epistemic uncertainty, making the proxy relationship strongest.",
+        "In highly stochastic environments with large aleatoric uncertainty, ensemble disagreement must be carefully separated from individual model prediction variance to isolate epistemic components.",
+        "For discrete action spaces, disagreement can be measured through prediction entropy or vote entropy rather than variance, requiring different mathematical formulations.",
+        "When using function approximators with limited capacity (e.g., linear models), ensemble disagreement may be artificially constrained by model expressiveness rather than reflecting true epistemic uncertainty.",
+        "In online learning settings where ensemble members are updated asynchronously, temporary disagreement may reflect different training states rather than epistemic uncertainty about the environment.",
+        "For very small ensembles (N&lt;3), disagreement estimates become unreliable due to high variance in the variance estimator itself."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles, NeurIPS [Proposes using ensemble disagreement for uncertainty estimation but doesn't explicitly frame it as epistemic uncertainty proxy theory]",
+            "Pathak et al. (2019) Self-Supervised Exploration via Disagreement, ICML [Uses disagreement for exploration but focuses on the algorithmic application rather than theoretical foundations of why disagreement proxies epistemic uncertainty]",
+            "Osband et al. (2016) Deep Exploration via Bootstrapped DQN, NeurIPS [Uses bootstrap ensembles for exploration but doesn't explicitly theorize the disagreement-epistemic uncertainty relationship]",
+            "Gal (2016) Uncertainty in Deep Learning, PhD Thesis [Discusses epistemic vs aleatoric uncertainty and ensemble methods but focuses more on dropout as Bayesian approximation]",
+            "Depeweg et al. (2018) Decomposition of Uncertainty in Bayesian Deep Learning for Efficient and Risk-sensitive Learning, ICML [Addresses epistemic vs aleatoric decomposition but uses different uncertainty quantification methods]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 1,
+    "theory_query": "Build a theory of how adaptive experimental design works for AI agents operating in unknown environments.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-137",
+    "original_theory_name": "Ensemble Disagreement as Epistemic Uncertainty Proxy Theory",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

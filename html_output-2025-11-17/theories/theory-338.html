@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact and Friction Fidelity Requirements for Manipulation Transfer - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-338</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-338</p>
+                <p><strong>Name:</strong> Contact and Friction Fidelity Requirements for Manipulation Transfer</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about minimal simulator fidelity requirements for training transferable scientific reasoning in domains such as thermodynamics, circuits, and biology.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> There exists a task-dependent minimum threshold of contact and friction modeling fidelity below which manipulation skills fail to transfer reliably from simulation to reality, but above which additional fidelity improvements yield diminishing returns for transfer success. This threshold is determined by the manipulation task's sensitivity to contact dynamics, including the number and nature of contact transitions, required precision in force transmission, slip prediction accuracy, and contact state estimation. Tasks can be classified along a spectrum from contact-critical (requiring high-fidelity contact modeling including accurate friction coefficients, contact geometry, and compliance) to contact-robust (tolerating simplified contact models). The required fidelity depends on whether the task relies on open-loop trajectory execution versus closed-loop force feedback, the contact regime (sliding vs rolling vs impact), and whether domain randomization or rich sensory feedback can compensate for model inadequacies.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For each manipulation task, there exists a critical contact fidelity threshold such that transfer success probability increases substantially when simulator contact modeling exceeds this threshold, and improvements beyond the threshold yield diminishing returns.</li>
+                <li>The critical fidelity threshold is determined by the task's contact sensitivity profile, which includes: (a) the number and frequency of contact mode transitions, (b) the precision required in force transmission and slip prediction, (c) the importance of accurate contact state estimation, and (d) the contact regime (quasi-static vs dynamic, sliding vs rolling vs impact).</li>
+                <li>Tasks requiring closed-loop force feedback or precise contact state estimation have higher fidelity requirements than open-loop trajectory-following tasks that minimize contact interactions.</li>
+                <li>Contact-critical tasks (high sensitivity to contact dynamics) require accurate modeling of friction coefficients, contact geometry, surface compliance, and contact solver fidelity, while contact-robust tasks (low sensitivity) can succeed with simplified penalty-based or kinematic contact models.</li>
+                <li>Domain randomization can reduce the effective fidelity requirements for tasks where contact parameter uncertainty (rather than structural model inadequacy) is the primary transfer challenge, but cannot compensate for fundamental limitations in contact model structure (e.g., using kinematic models for force-critical tasks).</li>
+                <li>Rich sensory feedback (particularly tactile and force sensing) can partially compensate for contact model inadequacies by enabling reactive control policies that adapt to real-world contact dynamics during execution.</li>
+                <li>The interaction between control frequency, contact stiffness, and time step size creates coupled fidelity requirements: higher frequency control of stiff contacts requires smaller time steps and more accurate contact solvers to maintain stability and accuracy.</li>
+                <li>Different contact regimes have distinct fidelity requirements: rolling contact tasks are sensitive to rolling friction and contact geometry; sliding contact tasks are sensitive to Coulomb friction coefficients; impact-dominated tasks require accurate coefficient of restitution and contact damping models.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Simple pick-and-place tasks with parallel jaw grippers successfully transfer from simulation to reality using basic rigid body contact models, demonstrating that contact-robust tasks can succeed with lower fidelity simulation. </li>
+    <li>In-hand manipulation and dexterous tasks such as solving a Rubik's cube with a robot hand require sophisticated contact modeling and extensive domain randomization to achieve successful sim-to-real transfer, demonstrating high fidelity requirements for contact-critical tasks. </li>
+    <li>Contact-rich tasks like peg-in-hole insertion and pusher-slider systems are highly sensitive to friction coefficient accuracy and contact model fidelity, with planning and control performance degrading significantly when contact parameters are inaccurate. </li>
+    <li>Domain randomization of friction and contact parameters can compensate for moderate fidelity gaps and parameter uncertainty in simulation, enabling successful transfer for some tasks. </li>
+    <li>Domain randomization has fundamental limitations and cannot overcome structural inadequacies in contact mechanics models, particularly for tasks requiring precise contact state estimation. </li>
+    <li>Multimodal sensing including vision and touch can compensate for contact model inadequacies by providing rich feedback during task execution. </li>
+    <li>Physics engine design choices including contact solver algorithms, time step size, and contact stiffness parameters significantly affect simulation fidelity and the ability to model contact-rich manipulation. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>A manipulation task involving sliding a rigid object across a flat surface with minimal precision requirements (e.g., pushing a box across a table to a general region) will transfer successfully even with friction coefficient errors of ±30-50% and simplified penalty-based contact models, while a task requiring precise force control to prevent object damage (e.g., grasping fragile objects) will fail with friction errors exceeding ±15-20%.</li>
+                <li>Training a policy to stack rigid blocks using primarily top-down grasps will succeed with basic rigid body contact simulation and achieve reasonable sim-to-real transfer (>70% success rate), while training for in-hand reorientation of similar blocks will show poor transfer (<40% success) without higher-fidelity contact modeling including accurate friction and contact geometry.</li>
+                <li>For a given contact-critical manipulation task, once the critical fidelity threshold is exceeded, further doubling of contact solver accuracy or halving of simulation time step will improve transfer success by less than 10%, while reducing fidelity below the threshold will cause transfer success to drop by more than 30%.</li>
+                <li>Manipulation tasks that rely primarily on visual servoing with minimal contact forces (e.g., hovering a gripper and using suction) will show successful transfer even with very low contact fidelity, while tasks requiring sustained contact and force control (e.g., wiping, polishing) will require high contact fidelity.</li>
+                <li>Adding realistic tactile sensing to a simulated manipulation task will reduce the required contact model fidelity, allowing successful transfer with less accurate friction models compared to vision-only policies for the same task.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exists a universal, quantifiable contact fidelity metric that can predict transfer success across diverse manipulation domains (rigid objects, deformable objects, granular materials, fluids) or whether each domain requires fundamentally different fidelity measures and thresholds.</li>
+                <li>Whether learned world models or meta-learning approaches can implicitly compensate for systematic contact modeling errors during deployment through online adaptation, effectively lowering the required simulator fidelity for initial training.</li>
+                <li>Whether the critical fidelity threshold exhibits asymmetric effects where policies trained with high-fidelity simulation can tolerate deployment in lower-fidelity conditions (or real-world parameter variations) better than policies trained directly in low-fidelity simulation, suggesting a form of 'fidelity robustness'.</li>
+                <li>Whether hybrid approaches that combine high-fidelity simulation for critical contact phases with lower-fidelity simulation for non-contact phases can achieve the same transfer success as uniformly high-fidelity simulation while reducing computational cost.</li>
+                <li>Whether the fidelity requirements scale with task horizon and complexity in a predictable way, or whether long-horizon tasks have fundamentally different fidelity requirements due to error accumulation and compounding effects.</li>
+                <li>Whether quantum mechanical effects in contact mechanics at microscopic scales (relevant for nanoscale manipulation or precision assembly) create a fundamental lower bound on achievable simulation fidelity that cannot be overcome with classical contact models.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding manipulation tasks where transfer success does not improve monotonically with increased contact fidelity, or where intermediate fidelity performs worse than low fidelity, would challenge the threshold model and suggest more complex relationships.</li>
+                <li>Demonstrating successful transfer of highly contact-sensitive tasks (like dexterous in-hand manipulation or Rubik's cube solving) using only kinematic simulation without any contact dynamics or force modeling would invalidate the necessity of contact fidelity for contact-critical tasks.</li>
+                <li>Showing that domain randomization alone, without any base level of contact model fidelity, can achieve high transfer success (>80%) for all manipulation tasks including contact-critical ones would contradict the structural accuracy requirements.</li>
+                <li>Discovering manipulation tasks where increasing contact fidelity actually decreases transfer success would suggest that overfitting to simulation artifacts or excessive model complexity can be detrimental.</li>
+                <li>Finding that the same task has dramatically different fidelity requirements depending on the learning algorithm used (e.g., RL vs imitation learning vs trajectory optimization) in ways not explained by the theory would challenge the task-centric view of fidelity requirements.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The precise quantitative relationship between visual/tactile sensing fidelity and the ability to compensate for contact model inadequacies is not fully characterized, including which types of contact errors can be compensated by sensing versus which require accurate simulation. </li>
+    <li>The interaction between control frequency, contact stiffness, simulation time step, and required fidelity is mentioned but not explicitly modeled in terms of quantitative relationships or thresholds. </li>
+    <li>The theory does not fully account for how different learning algorithms (reinforcement learning, imitation learning, trajectory optimization) may have different fidelity requirements for the same task due to their different sensitivities to model errors. </li>
+    <li>The role of sim-to-real adaptation techniques that use limited real-world data to fine-tune or correct simulation-trained policies is not incorporated into the fidelity requirement framework. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Tobin et al. (2017) Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World [Foundational work on sim-to-real transfer using domain randomization, but does not propose a theory of minimum fidelity thresholds or task-dependent fidelity requirements]</li>
+    <li>Collins et al. (2021) A Review of Physics Simulators for Robotic Applications [Comprehensive survey of physics simulators and their capabilities, but does not propose a theory of minimal fidelity requirements for transfer]</li>
+    <li>Muratore et al. (2022) Robot Learning with Crash Constraints [Addresses simulation fidelity and safety constraints but focuses on constraint satisfaction rather than proposing a threshold theory of contact fidelity]</li>
+    <li>Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Demonstrates domain randomization for transfer but does not propose a theory of fidelity thresholds]</li>
+    <li>Akkaya et al. (2019) Solving Rubik's Cube with a Robot Hand [Demonstrates successful transfer of complex manipulation but does not propose a general theory of fidelity requirements]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Contact and Friction Fidelity Requirements for Manipulation Transfer",
+    "theory_description": "There exists a task-dependent minimum threshold of contact and friction modeling fidelity below which manipulation skills fail to transfer reliably from simulation to reality, but above which additional fidelity improvements yield diminishing returns for transfer success. This threshold is determined by the manipulation task's sensitivity to contact dynamics, including the number and nature of contact transitions, required precision in force transmission, slip prediction accuracy, and contact state estimation. Tasks can be classified along a spectrum from contact-critical (requiring high-fidelity contact modeling including accurate friction coefficients, contact geometry, and compliance) to contact-robust (tolerating simplified contact models). The required fidelity depends on whether the task relies on open-loop trajectory execution versus closed-loop force feedback, the contact regime (sliding vs rolling vs impact), and whether domain randomization or rich sensory feedback can compensate for model inadequacies.",
+    "supporting_evidence": [
+        {
+            "text": "Simple pick-and-place tasks with parallel jaw grippers successfully transfer from simulation to reality using basic rigid body contact models, demonstrating that contact-robust tasks can succeed with lower fidelity simulation.",
+            "citations": [
+                "Tobin et al. (2017) Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World"
+            ]
+        },
+        {
+            "text": "In-hand manipulation and dexterous tasks such as solving a Rubik's cube with a robot hand require sophisticated contact modeling and extensive domain randomization to achieve successful sim-to-real transfer, demonstrating high fidelity requirements for contact-critical tasks.",
+            "citations": [
+                "OpenAI et al. (2019) Solving Rubik's Cube with a Robot Hand",
+                "Akkaya et al. (2019) Solving Rubik's Cube with a Robot Hand"
+            ]
+        },
+        {
+            "text": "Contact-rich tasks like peg-in-hole insertion and pusher-slider systems are highly sensitive to friction coefficient accuracy and contact model fidelity, with planning and control performance degrading significantly when contact parameters are inaccurate.",
+            "citations": [
+                "Hogan & Rodriguez (2020) Feedback Control of the Pusher-Slider System: A Story of Hybrid and Underactuated Contact Dynamics",
+                "Pang et al. (2021) Global Planning for Contact-Rich Manipulation via Local Smoothing of Quasi-dynamic Contact Models"
+            ]
+        },
+        {
+            "text": "Domain randomization of friction and contact parameters can compensate for moderate fidelity gaps and parameter uncertainty in simulation, enabling successful transfer for some tasks.",
+            "citations": [
+                "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization",
+                "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience"
+            ]
+        },
+        {
+            "text": "Domain randomization has fundamental limitations and cannot overcome structural inadequacies in contact mechanics models, particularly for tasks requiring precise contact state estimation.",
+            "citations": [
+                "Muratore et al. (2022) Robot Learning with Crash Constraints",
+                "Muratore et al. (2021) Robot Learning with Crash Constraints"
+            ]
+        },
+        {
+            "text": "Multimodal sensing including vision and touch can compensate for contact model inadequacies by providing rich feedback during task execution.",
+            "citations": [
+                "Lee et al. (2019) Making Sense of Vision and Touch: Self-Supervised Learning of Multimodal Representations for Contact-Rich Tasks",
+                "Calandra et al. (2018) More Than a Feeling: Learning to Grasp and Regrasp using Vision and Touch"
+            ]
+        },
+        {
+            "text": "Physics engine design choices including contact solver algorithms, time step size, and contact stiffness parameters significantly affect simulation fidelity and the ability to model contact-rich manipulation.",
+            "citations": [
+                "Todorov et al. (2012) MuJoCo: A Physics Engine for Model-Based Control",
+                "Collins et al. (2021) A Review of Physics Simulators for Robotic Applications"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For each manipulation task, there exists a critical contact fidelity threshold such that transfer success probability increases substantially when simulator contact modeling exceeds this threshold, and improvements beyond the threshold yield diminishing returns.",
+        "The critical fidelity threshold is determined by the task's contact sensitivity profile, which includes: (a) the number and frequency of contact mode transitions, (b) the precision required in force transmission and slip prediction, (c) the importance of accurate contact state estimation, and (d) the contact regime (quasi-static vs dynamic, sliding vs rolling vs impact).",
+        "Tasks requiring closed-loop force feedback or precise contact state estimation have higher fidelity requirements than open-loop trajectory-following tasks that minimize contact interactions.",
+        "Contact-critical tasks (high sensitivity to contact dynamics) require accurate modeling of friction coefficients, contact geometry, surface compliance, and contact solver fidelity, while contact-robust tasks (low sensitivity) can succeed with simplified penalty-based or kinematic contact models.",
+        "Domain randomization can reduce the effective fidelity requirements for tasks where contact parameter uncertainty (rather than structural model inadequacy) is the primary transfer challenge, but cannot compensate for fundamental limitations in contact model structure (e.g., using kinematic models for force-critical tasks).",
+        "Rich sensory feedback (particularly tactile and force sensing) can partially compensate for contact model inadequacies by enabling reactive control policies that adapt to real-world contact dynamics during execution.",
+        "The interaction between control frequency, contact stiffness, and time step size creates coupled fidelity requirements: higher frequency control of stiff contacts requires smaller time steps and more accurate contact solvers to maintain stability and accuracy.",
+        "Different contact regimes have distinct fidelity requirements: rolling contact tasks are sensitive to rolling friction and contact geometry; sliding contact tasks are sensitive to Coulomb friction coefficients; impact-dominated tasks require accurate coefficient of restitution and contact damping models."
+    ],
+    "new_predictions_likely": [
+        "A manipulation task involving sliding a rigid object across a flat surface with minimal precision requirements (e.g., pushing a box across a table to a general region) will transfer successfully even with friction coefficient errors of ±30-50% and simplified penalty-based contact models, while a task requiring precise force control to prevent object damage (e.g., grasping fragile objects) will fail with friction errors exceeding ±15-20%.",
+        "Training a policy to stack rigid blocks using primarily top-down grasps will succeed with basic rigid body contact simulation and achieve reasonable sim-to-real transfer (&gt;70% success rate), while training for in-hand reorientation of similar blocks will show poor transfer (&lt;40% success) without higher-fidelity contact modeling including accurate friction and contact geometry.",
+        "For a given contact-critical manipulation task, once the critical fidelity threshold is exceeded, further doubling of contact solver accuracy or halving of simulation time step will improve transfer success by less than 10%, while reducing fidelity below the threshold will cause transfer success to drop by more than 30%.",
+        "Manipulation tasks that rely primarily on visual servoing with minimal contact forces (e.g., hovering a gripper and using suction) will show successful transfer even with very low contact fidelity, while tasks requiring sustained contact and force control (e.g., wiping, polishing) will require high contact fidelity.",
+        "Adding realistic tactile sensing to a simulated manipulation task will reduce the required contact model fidelity, allowing successful transfer with less accurate friction models compared to vision-only policies for the same task."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exists a universal, quantifiable contact fidelity metric that can predict transfer success across diverse manipulation domains (rigid objects, deformable objects, granular materials, fluids) or whether each domain requires fundamentally different fidelity measures and thresholds.",
+        "Whether learned world models or meta-learning approaches can implicitly compensate for systematic contact modeling errors during deployment through online adaptation, effectively lowering the required simulator fidelity for initial training.",
+        "Whether the critical fidelity threshold exhibits asymmetric effects where policies trained with high-fidelity simulation can tolerate deployment in lower-fidelity conditions (or real-world parameter variations) better than policies trained directly in low-fidelity simulation, suggesting a form of 'fidelity robustness'.",
+        "Whether hybrid approaches that combine high-fidelity simulation for critical contact phases with lower-fidelity simulation for non-contact phases can achieve the same transfer success as uniformly high-fidelity simulation while reducing computational cost.",
+        "Whether the fidelity requirements scale with task horizon and complexity in a predictable way, or whether long-horizon tasks have fundamentally different fidelity requirements due to error accumulation and compounding effects.",
+        "Whether quantum mechanical effects in contact mechanics at microscopic scales (relevant for nanoscale manipulation or precision assembly) create a fundamental lower bound on achievable simulation fidelity that cannot be overcome with classical contact models."
+    ],
+    "negative_experiments": [
+        "Finding manipulation tasks where transfer success does not improve monotonically with increased contact fidelity, or where intermediate fidelity performs worse than low fidelity, would challenge the threshold model and suggest more complex relationships.",
+        "Demonstrating successful transfer of highly contact-sensitive tasks (like dexterous in-hand manipulation or Rubik's cube solving) using only kinematic simulation without any contact dynamics or force modeling would invalidate the necessity of contact fidelity for contact-critical tasks.",
+        "Showing that domain randomization alone, without any base level of contact model fidelity, can achieve high transfer success (&gt;80%) for all manipulation tasks including contact-critical ones would contradict the structural accuracy requirements.",
+        "Discovering manipulation tasks where increasing contact fidelity actually decreases transfer success would suggest that overfitting to simulation artifacts or excessive model complexity can be detrimental.",
+        "Finding that the same task has dramatically different fidelity requirements depending on the learning algorithm used (e.g., RL vs imitation learning vs trajectory optimization) in ways not explained by the theory would challenge the task-centric view of fidelity requirements."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The precise quantitative relationship between visual/tactile sensing fidelity and the ability to compensate for contact model inadequacies is not fully characterized, including which types of contact errors can be compensated by sensing versus which require accurate simulation.",
+            "citations": [
+                "Lee et al. (2019) Making Sense of Vision and Touch: Self-Supervised Learning of Multimodal Representations for Contact-Rich Tasks",
+                "Calandra et al. (2018) More Than a Feeling: Learning to Grasp and Regrasp using Vision and Touch"
+            ]
+        },
+        {
+            "text": "The interaction between control frequency, contact stiffness, simulation time step, and required fidelity is mentioned but not explicitly modeled in terms of quantitative relationships or thresholds.",
+            "citations": [
+                "Todorov et al. (2012) MuJoCo: A Physics Engine for Model-Based Control"
+            ]
+        },
+        {
+            "text": "The theory does not fully account for how different learning algorithms (reinforcement learning, imitation learning, trajectory optimization) may have different fidelity requirements for the same task due to their different sensitivities to model errors.",
+            "citations": [
+                "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization"
+            ]
+        },
+        {
+            "text": "The role of sim-to-real adaptation techniques that use limited real-world data to fine-tune or correct simulation-trained policies is not incorporated into the fidelity requirement framework.",
+            "citations": [
+                "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some studies report successful transfer of contact-rich manipulation tasks using surprisingly low-fidelity simulators when combined with extensive domain randomization and rich sensory feedback, which appears to contradict strict minimum fidelity requirements. This suggests that the fidelity threshold may be more flexible than a hard boundary, or that domain randomization and sensing can compensate more than the theory currently accounts for.",
+            "citations": [
+                "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience",
+                "Muratore et al. (2021) Robot Learning with Crash Constraints"
+            ]
+        },
+        {
+            "text": "The theory suggests contact-critical tasks require high fidelity, but some contact-rich tasks have been successfully transferred with relatively simple contact models, suggesting the boundary between contact-critical and contact-robust may be less clear or more dependent on other factors like the learning approach.",
+            "citations": [
+                "Tobin et al. (2017) Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Tasks involving primarily rolling contact (like ball manipulation or wheeled locomotion) may have different fidelity requirements than sliding contact tasks, with rolling friction, contact geometry, and rotational dynamics being more critical than Coulomb friction coefficients.",
+        "Manipulation of highly deformable objects (soft materials, cloth, rope) may require volumetric contact modeling, finite element methods, or specialized deformable body simulators rather than surface-based rigid body contact approaches, fundamentally changing the nature and requirements of contact fidelity.",
+        "Underwater or space manipulation tasks operate in different dynamic regimes where contact fidelity requirements may be dominated by fluid dynamics, buoyancy effects, or microgravity conditions rather than terrestrial contact mechanics.",
+        "High-speed manipulation tasks where impact dynamics dominate (throwing, catching, hitting) require explicit modeling of coefficient of restitution, contact damping, and potentially elastic wave propagation that are less critical for quasi-static manipulation tasks.",
+        "Manipulation involving granular materials (sand, grains, powders) requires specialized contact models or continuum approaches that differ fundamentally from rigid body contact, with fidelity requirements related to flow behavior and collective particle dynamics.",
+        "Tasks that involve intermittent contact or contact-free phases may have lower overall fidelity requirements if the contact-free phases dominate the task, or may require high fidelity only during critical contact phases.",
+        "Precision assembly tasks at small scales (micro-assembly) may be affected by surface forces (van der Waals, electrostatic) that are not typically modeled in standard contact simulators, requiring specialized physics models."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Tobin et al. (2017) Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World [Foundational work on sim-to-real transfer using domain randomization, but does not propose a theory of minimum fidelity thresholds or task-dependent fidelity requirements]",
+            "Collins et al. (2021) A Review of Physics Simulators for Robotic Applications [Comprehensive survey of physics simulators and their capabilities, but does not propose a theory of minimal fidelity requirements for transfer]",
+            "Muratore et al. (2022) Robot Learning with Crash Constraints [Addresses simulation fidelity and safety constraints but focuses on constraint satisfaction rather than proposing a threshold theory of contact fidelity]",
+            "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Demonstrates domain randomization for transfer but does not propose a theory of fidelity thresholds]",
+            "Akkaya et al. (2019) Solving Rubik's Cube with a Robot Hand [Demonstrates successful transfer of complex manipulation but does not propose a general theory of fidelity requirements]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 0,
+    "theory_query": "Build a theory about minimal simulator fidelity requirements for training transferable scientific reasoning in domains such as thermodynamics, circuits, and biology.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-170",
+    "original_theory_name": "Contact and Friction Fidelity Requirements for Manipulation Transfer",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

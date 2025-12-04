@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surrogate Fidelity-Budget Scaling Law - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-428</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-428</p>
+                <p><strong>Name:</strong> Surrogate Fidelity-Budget Scaling Law</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of optimal resource allocation in automated scientific discovery systems, balancing computational cost of evaluation against expected information gain, probability of breakthrough discoveries, and diversity of explored hypotheses under budget constraints, based on the following results.</p>
+                <p><strong>Description:</strong> The optimal surrogate model complexity and computational cost should be matched to available experimental budget, problem dimensionality, and evaluation frequency requirements. For small budgets (<50 samples), computationally cheap surrogates (RF, linear models) with fast retraining (O(n log n) to O(n^2)) outperform expensive surrogates (full GP with ARD, O(n^3)) by enabling more frequent model updates and faster acquisition optimization. For larger budgets (>100 samples), more sophisticated surrogates with better asymptotic accuracy become superior despite higher per-update costs. The crossover point depends on problem dimensionality, smoothness, and the cost ratio between surrogate training and experimental evaluation. Memory management techniques (pruning, windowing) can maintain bounded complexity while preserving performance. Multi-fidelity and hierarchical surrogate approaches can achieve better complexity-accuracy tradeoffs than single-fidelity models of equivalent total cost.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For budgets B < 50 samples, surrogates with training complexity O(n log n) to O(n^2) (e.g., RF, K-means-based methods) outperform surrogates with O(n^3) complexity (e.g., full GP with ARD) in wall-clock efficiency and sample efficiency</li>
+                <li>For budgets B > 100 samples, surrogates with better asymptotic accuracy (GP with ARD, deep ensembles with proper regularization) achieve superior final performance despite higher per-update training cost</li>
+                <li>The crossover budget B* where complex surrogates become preferable depends on: (1) problem dimensionality d, (2) evaluation cost ratio (surrogate training time / experimental evaluation time), (3) problem smoothness and multimodality</li>
+                <li>Surrogate update frequency should be inversely proportional to training cost: fast surrogates (O(n log n)) can be updated every iteration, while expensive surrogates (O(n^3)) should be updated every k iterations where k balances staleness vs computational overhead</li>
+                <li>Memory management techniques (pruning to retain only m best or recent samples, windowing) can maintain bounded O(m^3) complexity for GP-based surrogates while preserving discovery performance when m is chosen appropriately (typically m = 50-200)</li>
+                <li>Multi-fidelity surrogates with simple coregionalization (ICM, PCM) provide better complexity-accuracy tradeoffs than full multivariate models (MGP) when inter-fidelity correlations can be approximated with low-rank or separable structures</li>
+                <li>Batch construction methods that avoid repeated surrogate refitting (e.g., local penalization, fantasy-based selection) can achieve 100-400x speedup in per-iteration wall-clock time compared to methods requiring retraining per batch member</li>
+                <li>Hyperparameter marginalization (e.g., MCMC over GP hyperparameters) increases per-decision computational cost but can improve sample efficiency by 20-50% when evaluations are very expensive, making the tradeoff favorable</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Benchmarking across multiple materials datasets shows RF:LCB_1 effective early (reaching Top%=0.8 in ~30 samples) while GP+ARD:LCB_1 optimal for larger budgets (~90 samples for GP isotropic), with crossover around 30-90 samples depending on problem <a href="../results/extraction-result-2479.html#e2479.1" class="evidence-link">[e2479.1]</a> <a href="../results/extraction-result-2479.html#e2479.2" class="evidence-link">[e2479.2]</a> </li>
+    <li>ZoMBI's memory pruning bounds GP training to O((i+phi)^3) per activation, achieving ~400x wall-clock speedup at n=1000 compared to standard cumulative GP while maintaining discovery success rates <a href="../results/extraction-result-2629.html#e2629.3" class="evidence-link">[e2629.3]</a> </li>
+    <li>Sparse GP methods reduce complexity from O(n^3) to O(m^2 n) but may smooth over narrow optima, demonstrating fidelity-efficiency tradeoff where approximation can harm needle-in-haystack discovery <a href="../results/extraction-result-2629.html#e2629.7" class="evidence-link">[e2629.7]</a> </li>
+    <li>LA-MCTS uses simple node models (KMeans + SVM) for hierarchical partitioning, achieving competitive performance with lower per-node complexity than full GP, with UCB-based allocation across regions <a href="../results/extraction-result-2608.html#e2608.0" class="evidence-link">[e2608.0]</a> </li>
+    <li>RAAL's MILP-based selection with MFEI acquisition enables resource-aware multi-fidelity allocation with bounded per-iteration complexity O((i+phi)^3) for GP training <a href="../results/extraction-result-2464.html#e2464.3" class="evidence-link">[e2464.3]</a> <a href="../results/extraction-result-2464.html#e2464.1" class="evidence-link">[e2464.1]</a> </li>
+    <li>Mixture-of-Gaussians active learning achieves lower per-query computational cost than neural network OED (which requires expensive matrix inversions and retraining) while maintaining good predictive performance <a href="../results/extraction-result-2590.html#e2590.1" class="evidence-link">[e2590.1]</a> <a href="../results/extraction-result-2590.html#e2590.2" class="evidence-link">[e2590.2]</a> </li>
+    <li>MGP (multivariate GP) increases hyperparameter space and training difficulty, making simpler coregionalization approaches (ICM, PCM) preferable in multi-fidelity settings when inter-source correlations are not too complex <a href="../results/extraction-result-2633.html#e2633.6" class="evidence-link">[e2633.6]</a> </li>
+    <li>BBO-LP achieves ~400x reduction in wall-clock time per experiment at n=1000 by avoiding repeated GP refitting within batch construction, using local penalization instead <a href="../results/extraction-result-2622.html#e2622.0" class="evidence-link">[e2622.0]</a> </li>
+    <li>GP EI MCMC marginalizes hyperparameters via slice sampling, adding computational cost but improving robustness and sample efficiency, showing tradeoff between per-decision computation and overall sample efficiency <a href="../results/extraction-result-2597.html#e2597.2" class="evidence-link">[e2597.2]</a> </li>
+    <li>TDUE-BO switches from UCB (exploration) to EI (exploitation) based on average GP uncertainty threshold, achieving 21-32% RMSE reduction and faster convergence than fixed acquisition strategies <a href="../results/extraction-result-2410.html#e2410.0" class="evidence-link">[e2410.0]</a> </li>
+    <li>Benchmarking shows computational cost of GP training scales with dataset size, with training-time ratios varying across surrogate types, affecting real-time allocation feasibility <a href="../results/extraction-result-2479.html#e2479.2" class="evidence-link">[e2479.2]</a> </li>
+    <li>KMBBO uses K-means clustering for batch diversity with O(n^2) complexity, more scalable than B3O's IGMM approach which becomes intractable in high dimensions <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Adaptive surrogate selection that switches from RF to GP+ARD at a budget-dependent threshold (e.g., B=50-100) would outperform fixed surrogate choice by 15-30% in sample efficiency across diverse problems</li>
+                <li>Hybrid surrogates combining RF for global structure with local GP refinement in promising regions would achieve better complexity-accuracy tradeoffs than either alone, reducing total wall-clock time by 30-50%</li>
+                <li>Incremental GP updates using rank-one updates or online learning would reduce amortized training cost by 50-80% compared to full retraining while maintaining >95% of full-retrain performance</li>
+                <li>Surrogate ensembles with mixed complexity (e.g., 3 RF + 1 GP) would achieve better robustness than single surrogates of equivalent total computational cost, improving worst-case performance by 20-40%</li>
+                <li>Memory pruning with adaptive retention (keeping samples based on both recency and information content) would outperform fixed-size or recency-only pruning by 10-20% in discovery rate</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether modern neural network surrogates (transformers, graph networks) with amortized inference can achieve better scaling laws than GPs for problems with >20 dimensions and >1000 samples</li>
+                <li>Whether the crossover budget B* can be accurately predicted from problem features (dimensionality, smoothness estimates, noise level) before running experiments, enabling automatic surrogate selection</li>
+                <li>Whether active learning of surrogate hyperparameters (e.g., selecting which kernel parameters to refine based on expected impact) can reduce the effective crossover budget by 30-50%</li>
+                <li>Whether hierarchical surrogates (coarse global model + fine local models) can achieve O(log n) effective complexity for certain problem classes while maintaining high accuracy</li>
+                <li>Whether learned surrogate complexity schedules from meta-learning across problem families would improve efficiency by 20-40% compared to fixed schedules</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding problems where complex surrogates (GP+ARD) consistently outperform simple surrogates (RF) even at very small budgets (<10 samples) across multiple runs would challenge the small-budget advantage of simple surrogates</li>
+                <li>Demonstrating that surrogate choice has no significant impact on final performance (only convergence speed) across a broad range of problems would weaken the practical importance of the scaling law</li>
+                <li>Showing that the crossover budget is independent of problem dimensionality (i.e., B* is constant across d=2 to d=100) would contradict the dimensionality-dependence claim</li>
+                <li>Finding that full retraining always outperforms incremental updates or memory pruning (by >20% in sample efficiency) would challenge the bounded-complexity recommendations</li>
+                <li>Demonstrating that multi-fidelity surrogates provide no advantage over single-fidelity surrogates of equivalent total cost would challenge the multi-fidelity complexity-accuracy tradeoff claim</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't fully specify how surrogate choice interacts with acquisition function choice (e.g., whether EI vs UCB vs entropy-based acquisitions have different optimal surrogate complexities) <a href="../results/extraction-result-2479.html#e2479.1" class="evidence-link">[e2479.1]</a> <a href="../results/extraction-result-2493.html#e2493.0" class="evidence-link">[e2493.0]</a> </li>
+    <li>Optimal surrogate complexity for multi-objective problems with varying numbers of objectives (2 vs 5 vs 10) needs characterization, as EHVI computational cost scales with objectives <a href="../results/extraction-result-2423.html#e2423.0" class="evidence-link">[e2423.0]</a> <a href="../results/extraction-result-2636.html#e2636.3" class="evidence-link">[e2636.3]</a> </li>
+    <li>The role of problem smoothness, multimodality, and noise level in determining optimal surrogate complexity is mentioned but not quantitatively specified <a href="../results/extraction-result-2608.html#e2608.0" class="evidence-link">[e2608.0]</a> <a href="../results/extraction-result-2629.html#e2629.7" class="evidence-link">[e2629.7]</a> </li>
+    <li>How surrogate complexity should scale with batch size in parallel evaluation settings is not addressed <a href="../results/extraction-result-2622.html#e2622.0" class="evidence-link">[e2622.0]</a> <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+    <li>The impact of categorical and mixed-variable spaces on optimal surrogate choice is not fully characterized <a href="../results/extraction-result-2477.html#e2477.1" class="evidence-link">[e2477.1]</a> <a href="../results/extraction-result-2608.html#e2608.0" class="evidence-link">[e2608.0]</a> </li>
+    <li>How human-in-the-loop feedback and interpretability requirements affect optimal surrogate complexity is not addressed <a href="../results/extraction-result-2405.html#e2405.0" class="evidence-link">[e2405.0]</a> <a href="../results/extraction-result-2405.html#e2405.1" class="evidence-link">[e2405.1]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Rasmussen & Williams (2006) Gaussian Processes for Machine Learning [Foundational GP theory including computational complexity O(n^3) and approximation methods]</li>
+    <li>Breiman (2001) Random Forests [RF complexity O(n log n) and performance characteristics]</li>
+    <li>Hensman et al. (2013) Gaussian Processes for Big Data [Sparse GP methods and complexity reduction to O(m^2 n)]</li>
+    <li>Snoek et al. (2015) Scalable Bayesian Optimization Using Deep Neural Networks [Neural network surrogates for BO and scaling considerations]</li>
+    <li>Eriksson et al. (2019) Scalable Global Optimization via Local Bayesian Optimization [TuRBO trust-region approach and local surrogate complexity]</li>
+    <li>Kandasamy et al. (2017) Multi-fidelity Bayesian Optimisation with Continuous Approximations [Multi-fidelity surrogate modeling and cost-accuracy tradeoffs]</li>
+    <li>Frazier (2018) A Tutorial on Bayesian Optimization [General BO theory including acquisition functions and computational considerations]</li>
+    <li>Wilson et al. (2018) Maximizing acquisition functions for Bayesian optimization [Acquisition optimization cost and surrogate complexity interactions]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Surrogate Fidelity-Budget Scaling Law",
+    "theory_description": "The optimal surrogate model complexity and computational cost should be matched to available experimental budget, problem dimensionality, and evaluation frequency requirements. For small budgets (&lt;50 samples), computationally cheap surrogates (RF, linear models) with fast retraining (O(n log n) to O(n^2)) outperform expensive surrogates (full GP with ARD, O(n^3)) by enabling more frequent model updates and faster acquisition optimization. For larger budgets (&gt;100 samples), more sophisticated surrogates with better asymptotic accuracy become superior despite higher per-update costs. The crossover point depends on problem dimensionality, smoothness, and the cost ratio between surrogate training and experimental evaluation. Memory management techniques (pruning, windowing) can maintain bounded complexity while preserving performance. Multi-fidelity and hierarchical surrogate approaches can achieve better complexity-accuracy tradeoffs than single-fidelity models of equivalent total cost.",
+    "supporting_evidence": [
+        {
+            "text": "Benchmarking across multiple materials datasets shows RF:LCB_1 effective early (reaching Top%=0.8 in ~30 samples) while GP+ARD:LCB_1 optimal for larger budgets (~90 samples for GP isotropic), with crossover around 30-90 samples depending on problem",
+            "uuids": [
+                "e2479.1",
+                "e2479.2"
+            ]
+        },
+        {
+            "text": "ZoMBI's memory pruning bounds GP training to O((i+phi)^3) per activation, achieving ~400x wall-clock speedup at n=1000 compared to standard cumulative GP while maintaining discovery success rates",
+            "uuids": [
+                "e2629.3"
+            ]
+        },
+        {
+            "text": "Sparse GP methods reduce complexity from O(n^3) to O(m^2 n) but may smooth over narrow optima, demonstrating fidelity-efficiency tradeoff where approximation can harm needle-in-haystack discovery",
+            "uuids": [
+                "e2629.7"
+            ]
+        },
+        {
+            "text": "LA-MCTS uses simple node models (KMeans + SVM) for hierarchical partitioning, achieving competitive performance with lower per-node complexity than full GP, with UCB-based allocation across regions",
+            "uuids": [
+                "e2608.0"
+            ]
+        },
+        {
+            "text": "RAAL's MILP-based selection with MFEI acquisition enables resource-aware multi-fidelity allocation with bounded per-iteration complexity O((i+phi)^3) for GP training",
+            "uuids": [
+                "e2464.3",
+                "e2464.1"
+            ]
+        },
+        {
+            "text": "Mixture-of-Gaussians active learning achieves lower per-query computational cost than neural network OED (which requires expensive matrix inversions and retraining) while maintaining good predictive performance",
+            "uuids": [
+                "e2590.1",
+                "e2590.2"
+            ]
+        },
+        {
+            "text": "MGP (multivariate GP) increases hyperparameter space and training difficulty, making simpler coregionalization approaches (ICM, PCM) preferable in multi-fidelity settings when inter-source correlations are not too complex",
+            "uuids": [
+                "e2633.6"
+            ]
+        },
+        {
+            "text": "BBO-LP achieves ~400x reduction in wall-clock time per experiment at n=1000 by avoiding repeated GP refitting within batch construction, using local penalization instead",
+            "uuids": [
+                "e2622.0"
+            ]
+        },
+        {
+            "text": "GP EI MCMC marginalizes hyperparameters via slice sampling, adding computational cost but improving robustness and sample efficiency, showing tradeoff between per-decision computation and overall sample efficiency",
+            "uuids": [
+                "e2597.2"
+            ]
+        },
+        {
+            "text": "TDUE-BO switches from UCB (exploration) to EI (exploitation) based on average GP uncertainty threshold, achieving 21-32% RMSE reduction and faster convergence than fixed acquisition strategies",
+            "uuids": [
+                "e2410.0"
+            ]
+        },
+        {
+            "text": "Benchmarking shows computational cost of GP training scales with dataset size, with training-time ratios varying across surrogate types, affecting real-time allocation feasibility",
+            "uuids": [
+                "e2479.2"
+            ]
+        },
+        {
+            "text": "KMBBO uses K-means clustering for batch diversity with O(n^2) complexity, more scalable than B3O's IGMM approach which becomes intractable in high dimensions",
+            "uuids": [
+                "e2627.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For budgets B &lt; 50 samples, surrogates with training complexity O(n log n) to O(n^2) (e.g., RF, K-means-based methods) outperform surrogates with O(n^3) complexity (e.g., full GP with ARD) in wall-clock efficiency and sample efficiency",
+        "For budgets B &gt; 100 samples, surrogates with better asymptotic accuracy (GP with ARD, deep ensembles with proper regularization) achieve superior final performance despite higher per-update training cost",
+        "The crossover budget B* where complex surrogates become preferable depends on: (1) problem dimensionality d, (2) evaluation cost ratio (surrogate training time / experimental evaluation time), (3) problem smoothness and multimodality",
+        "Surrogate update frequency should be inversely proportional to training cost: fast surrogates (O(n log n)) can be updated every iteration, while expensive surrogates (O(n^3)) should be updated every k iterations where k balances staleness vs computational overhead",
+        "Memory management techniques (pruning to retain only m best or recent samples, windowing) can maintain bounded O(m^3) complexity for GP-based surrogates while preserving discovery performance when m is chosen appropriately (typically m = 50-200)",
+        "Multi-fidelity surrogates with simple coregionalization (ICM, PCM) provide better complexity-accuracy tradeoffs than full multivariate models (MGP) when inter-fidelity correlations can be approximated with low-rank or separable structures",
+        "Batch construction methods that avoid repeated surrogate refitting (e.g., local penalization, fantasy-based selection) can achieve 100-400x speedup in per-iteration wall-clock time compared to methods requiring retraining per batch member",
+        "Hyperparameter marginalization (e.g., MCMC over GP hyperparameters) increases per-decision computational cost but can improve sample efficiency by 20-50% when evaluations are very expensive, making the tradeoff favorable"
+    ],
+    "new_predictions_likely": [
+        "Adaptive surrogate selection that switches from RF to GP+ARD at a budget-dependent threshold (e.g., B=50-100) would outperform fixed surrogate choice by 15-30% in sample efficiency across diverse problems",
+        "Hybrid surrogates combining RF for global structure with local GP refinement in promising regions would achieve better complexity-accuracy tradeoffs than either alone, reducing total wall-clock time by 30-50%",
+        "Incremental GP updates using rank-one updates or online learning would reduce amortized training cost by 50-80% compared to full retraining while maintaining &gt;95% of full-retrain performance",
+        "Surrogate ensembles with mixed complexity (e.g., 3 RF + 1 GP) would achieve better robustness than single surrogates of equivalent total computational cost, improving worst-case performance by 20-40%",
+        "Memory pruning with adaptive retention (keeping samples based on both recency and information content) would outperform fixed-size or recency-only pruning by 10-20% in discovery rate"
+    ],
+    "new_predictions_unknown": [
+        "Whether modern neural network surrogates (transformers, graph networks) with amortized inference can achieve better scaling laws than GPs for problems with &gt;20 dimensions and &gt;1000 samples",
+        "Whether the crossover budget B* can be accurately predicted from problem features (dimensionality, smoothness estimates, noise level) before running experiments, enabling automatic surrogate selection",
+        "Whether active learning of surrogate hyperparameters (e.g., selecting which kernel parameters to refine based on expected impact) can reduce the effective crossover budget by 30-50%",
+        "Whether hierarchical surrogates (coarse global model + fine local models) can achieve O(log n) effective complexity for certain problem classes while maintaining high accuracy",
+        "Whether learned surrogate complexity schedules from meta-learning across problem families would improve efficiency by 20-40% compared to fixed schedules"
+    ],
+    "negative_experiments": [
+        "Finding problems where complex surrogates (GP+ARD) consistently outperform simple surrogates (RF) even at very small budgets (&lt;10 samples) across multiple runs would challenge the small-budget advantage of simple surrogates",
+        "Demonstrating that surrogate choice has no significant impact on final performance (only convergence speed) across a broad range of problems would weaken the practical importance of the scaling law",
+        "Showing that the crossover budget is independent of problem dimensionality (i.e., B* is constant across d=2 to d=100) would contradict the dimensionality-dependence claim",
+        "Finding that full retraining always outperforms incremental updates or memory pruning (by &gt;20% in sample efficiency) would challenge the bounded-complexity recommendations",
+        "Demonstrating that multi-fidelity surrogates provide no advantage over single-fidelity surrogates of equivalent total cost would challenge the multi-fidelity complexity-accuracy tradeoff claim"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't fully specify how surrogate choice interacts with acquisition function choice (e.g., whether EI vs UCB vs entropy-based acquisitions have different optimal surrogate complexities)",
+            "uuids": [
+                "e2479.1",
+                "e2493.0"
+            ]
+        },
+        {
+            "text": "Optimal surrogate complexity for multi-objective problems with varying numbers of objectives (2 vs 5 vs 10) needs characterization, as EHVI computational cost scales with objectives",
+            "uuids": [
+                "e2423.0",
+                "e2636.3"
+            ]
+        },
+        {
+            "text": "The role of problem smoothness, multimodality, and noise level in determining optimal surrogate complexity is mentioned but not quantitatively specified",
+            "uuids": [
+                "e2608.0",
+                "e2629.7"
+            ]
+        },
+        {
+            "text": "How surrogate complexity should scale with batch size in parallel evaluation settings is not addressed",
+            "uuids": [
+                "e2622.0",
+                "e2627.2"
+            ]
+        },
+        {
+            "text": "The impact of categorical and mixed-variable spaces on optimal surrogate choice is not fully characterized",
+            "uuids": [
+                "e2477.1",
+                "e2608.0"
+            ]
+        },
+        {
+            "text": "How human-in-the-loop feedback and interpretability requirements affect optimal surrogate complexity is not addressed",
+            "uuids": [
+                "e2405.0",
+                "e2405.1"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some studies show GP+ARD working well even with small initial budgets (5-10 samples) when properly initialized with LHS or domain knowledge, suggesting initialization quality may be as important as surrogate complexity",
+            "uuids": [
+                "e2427.1",
+                "e2427.4"
+            ]
+        },
+        {
+            "text": "Neural network surrogates in some high-dimensional settings (&gt;50D) can work well despite high training cost, particularly when using transfer learning or pre-training",
+            "uuids": [
+                "e2590.2"
+            ]
+        },
+        {
+            "text": "Structured GP (sGP) with physics-informed mean functions can outperform both simple and complex black-box surrogates even at small budgets by incorporating domain knowledge",
+            "uuids": [
+                "e2482.1"
+            ]
+        },
+        {
+            "text": "BMA (Bayesian Model Averaging) over multiple surrogate types can be more robust than selecting a single surrogate based on budget, suggesting ensemble approaches may dominate single-surrogate selection",
+            "uuids": [
+                "e2485.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For needle-in-haystack problems with extremely narrow optima (hypervolume &lt;0.05%), high-fidelity surrogates are necessary even at small budgets to avoid smoothing over critical features, overriding the general budget-complexity tradeoff",
+        "When using human-in-the-loop feedback or requiring model interpretability, simpler surrogates (linear models, decision trees) may be preferred regardless of budget due to explainability requirements",
+        "For safety-critical applications, surrogate uncertainty quantification quality (calibration, coverage) may be more important than training speed or asymptotic accuracy, favoring well-calibrated GPs over faster alternatives",
+        "In online/streaming settings with continuous data arrival, incremental surrogates with O(1) or O(log n) update complexity are necessary regardless of total budget size",
+        "For multi-fidelity problems with cheap low-fidelity evaluations, simple surrogates on low-fidelity data combined with sparse high-fidelity corrections can outperform complex single-fidelity surrogates",
+        "When experimental evaluation cost varies by orders of magnitude across the design space, adaptive surrogate complexity (higher fidelity in expensive regions) may be optimal",
+        "For problems with strong prior knowledge or physics constraints, structured surrogates (sGP, physics-informed neural networks) can achieve better sample efficiency than black-box surrogates regardless of complexity",
+        "In batch parallel settings with large batch sizes (&gt;10), the computational cost of batch construction may dominate surrogate training cost, favoring methods that avoid repeated surrogate updates within batch selection"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Rasmussen & Williams (2006) Gaussian Processes for Machine Learning [Foundational GP theory including computational complexity O(n^3) and approximation methods]",
+            "Breiman (2001) Random Forests [RF complexity O(n log n) and performance characteristics]",
+            "Hensman et al. (2013) Gaussian Processes for Big Data [Sparse GP methods and complexity reduction to O(m^2 n)]",
+            "Snoek et al. (2015) Scalable Bayesian Optimization Using Deep Neural Networks [Neural network surrogates for BO and scaling considerations]",
+            "Eriksson et al. (2019) Scalable Global Optimization via Local Bayesian Optimization [TuRBO trust-region approach and local surrogate complexity]",
+            "Kandasamy et al. (2017) Multi-fidelity Bayesian Optimisation with Continuous Approximations [Multi-fidelity surrogate modeling and cost-accuracy tradeoffs]",
+            "Frazier (2018) A Tutorial on Bayesian Optimization [General BO theory including acquisition functions and computational considerations]",
+            "Wilson et al. (2018) Maximizing acquisition functions for Bayesian optimization [Acquisition optimization cost and surrogate complexity interactions]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 3,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

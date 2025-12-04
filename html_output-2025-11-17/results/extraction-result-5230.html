@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-5230 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-5230</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-5230</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-111.html">extraction-schema-111</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <p><strong>Paper ID:</strong> paper-271212334</p>
+                <p><strong>Paper Title:</strong> <a href="https://export.arxiv.org/pdf/2407.09506v1.pdf" target="_blank">Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering</a></p>
+                <p><strong>Paper Abstract:</strong> We focus on a conversational question answering task which combines the challenges of understanding questions in context and reasoning over evidence gathered from heterogeneous sources like text, knowledge graphs, tables, and infoboxes. Our method utilizes a graph structured representation to aggregate information about a question and its context (i.e., the conversation so far and evidence retrieved to find an answer), while also harnessing the reasoning and text generation capabilities of large language models (LLMs). Graph embeddings are directly injected into the LLM, bypassing the token embedding layers, and learned end-to-end by minimizing cross-entropy. Our model maintains a memory module to track and update past evidence, thus influencing the graph's structure, as the conversation evolves. Experimental results on the ConvMix benchmark(Christmann et al., 2022a) show that graph embeddings enhance the LLM's ability to reason, while the memory module provides robustness against noise and retrieval errors.</p>
+                <p><strong>Cost:</strong> 0.015</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e5230.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e5230.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>GAT-token-linearization + embedding-injection</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Token-level linearized evidence graphs encoded with Graph Attention Networks and injected graph embeddings into LLM input</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>This paper's primary method converts each retrieved evidence instance (sentence, table row, infobox key-value, or KB triple) into a local linear token chain, links entity spans across instances to form a global heterogeneous graph, encodes the graph with a GAT initialized from LLM token embeddings, and injects the learned node embeddings directly into the LLM input (bypassing token embedding layers) for end-to-end fine-tuning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_name</strong></td>
+                            <td>local token-chain linearization with entity linking + GAT embeddings injected as LLM input</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_description</strong></td>
+                            <td>Each evidence instance w is tokenized and represented as a directed local chain of token nodes w1 -> w2 -> ... -> w|w|. Tables are linearized by converting each row to text and prepending column headers; infoboxes are linearized by concatenating key-value pairs (with header info when available); KB triples are linearized by concatenating subject, predicate, object. Entity spans (from KG items or text spans) are identified by string matching and wrapped/marked (the paper uses <n> tags in examples) and then merged across local subgraphs into a global graph by adding edges between nodes that refer to the same entity. Initial node features are set to token embeddings from a base LLM to align modalities; a Graph Attention Network (GAT) refines node representations. The final graph node embeddings (H_g) are concatenated with a prompt prefix embedding (H_prefix) and a prompt suffix embedding (H_suffix) to form the LLM input H = H_prefix ⊕ H_g ⊕ H_suffix, thus bypassing the LLM's token embedding layer. The whole system is trained end-to-end with token-level cross-entropy while adapting the base LLM via LoRA.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>graph_type</strong></td>
+                            <td>Heterogeneous evidence graph containing: token-level nodes from Wikipedia text, linearized table rows, linearized infobox key-value pairs, and knowledge-graph triples; directed graph where nodes are tokens and edges are local token-next relations plus cross-instance entity-link edges</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_properties</strong></td>
+                            <td>Dynamic per-turn graph whose size varies with retrieved evidence; token-level granularity (preserves original token sequence within an instance); explicit entity linking produces global connections across local chains; feature alignment is achieved by initializing node embeddings with LLM token embeddings; learned end-to-end (task-specific) via GAT rather than hand-crafted text conversion; parameter-efficient adaptation of LLM (LoRA used for LLM, GAT trained from scratch); supports memory augmentation (evidence memory that re-inserts past high-ranked instances). Trade-offs: potentially large graphs if many instances retrieved (mitigated by BM25 ranking and memory sampling); depends on string-matching entity linking.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evaluation_task</strong></td>
+                            <td>Conversational question answering over heterogeneous sources (ConvMix dataset) requiring reasoning across Wikipedia text, tables, infoboxes, and Wikidata KG; generation-style QA (model generates answers rather than classifying nodes).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Metrics used: H@1 (precision@1) and H@5 (presence within top-5 matched entities). Reported numerical values are not present in the provided text (paper states qualitative and comparative improvements: 'Mistral-7B + Graph is superior to ... +FT by a large margin' and that adding memory (+Memory) further improves precision; exact numbers referenced in Table 2 which is not included here: reported numerical results: null).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_representations</strong></td>
+                            <td>Compared experimentally (same retrieval) to: Mistral-7B zero-shot (prompted with top-k evidence), Mistral-7B fine-tuned (+FT) on ConvMix, T5-FiD variants (including question rewriting / resolution), EXPLAIGNN, and Convinse T5-FiD. Summary from paper text: the graph-augmented generative LLM (Mistral-7B + Graph) outperforms a plain fine-tuned Mistral (+FT) by a substantial margin; T5-FiD systems are comparable to zero-shot Mistral-7B; adding a memory module (+Memory) to the graph model yields further gains, whereas randomly sampling memory (+Rand Memory) provides no benefit (i.e., randomness ~= no memory). Exact numeric comparisons are referenced but not included in the provided excerpt.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_challenges</strong></td>
+                            <td>Scaling and graph size: retrieval can produce thousands of instances and very large graphs (mitigated here by BM25 ranking and memory sampling but still a limitation). Table linearization: tabular information often has hierarchical complexity and linearization may lose structure and hurt performance. Numerical answers are hard: model struggles on numeric answers partly due to tokenization and numeric representation choices of base LLMs. Entity linking via string matching is brittle and may miss or falsely link spans. The paper notes that some answers simply are not retrievable (retrieval quality strongly affects performance). Exact numeric performance values and ablation details are not present in the excerpt (Table 2 referenced but absent).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering', 'publication_date_yy_mm': '2024-06'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e5230.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e5230.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Natural-language graph serialization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Describing graphs in natural language (graph→text serialization / hand-crafted linearization)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A widely used approach to encode graphs for LLMs is to convert the graph into natural-language-like text using hand-crafted serialization rules so the graph 'looks like' text for the LLM to consume (e.g., converting triples or edges into short fact-like strings).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>Natural language is all a graph needs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>mention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_name</strong></td>
+                            <td>graph-to-natural-language serialization (hand-crafted)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_description</strong></td>
+                            <td>Convert graph edges/tuples into text strings or short sentences (e.g., 'Subject -- predicate --> Object' or concatenated key-value pairs), possibly with delimiters/tags, so that a standard LLM prompt can attend to the serialized facts; typically done via deterministic rules rather than learned encoders.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>graph_type</strong></td>
+                            <td>Knowledge graphs / general graph structures (as serialized text)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_properties</strong></td>
+                            <td>Simple and direct (no extra model components), easily interpretable, requires no graph encoder; however, typically hand-crafted and not standardized, can be brittle, task-dependent, and may lose structural cues that are difficult to convey in linear text. Reported in the literature (and noted by the paper) to be challenging for LLMs to reason over robustly.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evaluation_task</strong></td>
+                            <td>Mentioned in the context of LLMs consuming graph structure for downstream reasoning tasks (graph reasoning, question answering); referenced works evaluate graph problem-solving and graph reasoning benchmarks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Metrics used in referenced literature vary (graph reasoning benchmarks, QA accuracy); this paper does not provide numeric results for this method. Reported numerical results: null.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_representations</strong></td>
+                            <td>The paper contrasts this manual serialization approach with its learned graph-embedding injection: it notes no consensus exists for graph→text conversion, many methods rely on hand-crafted rules, and prior work shows LLM reasoning on serialized graph text is brittle and task-dependent (citing Fatemi et al., Huang et al.). The authors favor a learned, alignment-aware graph encoding over pure hand-crafted serialization.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_challenges</strong></td>
+                            <td>No agreed standard conversion; hand-crafted rules often insufficient; LLMs' ability to reason from serialized graphs is brittle and highly task-dependent; structural information can be lost or become hard to exploit when flattened to text.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering', 'publication_date_yy_mm': '2024-06'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e5230.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e5230.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Graph embeddings as soft-prompts (Perozzi et al.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Using learned graph embeddings as soft prompts to represent structured data for LLMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A related approach encodes graph structure into continuous embeddings that act as soft-prompts when prepended to LLM inputs, allowing the model to condition on structured data without explicit tokenized serialization.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>Let your graph do the talking: Encoding structured data for llms.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>mention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_name</strong></td>
+                            <td>graph-embeddings-as-soft-prompts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_description</strong></td>
+                            <td>Learn embeddings that summarize graph structure and use them as continuous prompt vectors (soft prompts) to steer LLM behavior; the soft prompts are appended/prepended to LLM input rather than converting graphs to discrete text.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>graph_type</strong></td>
+                            <td>Structured graphs (general), used to represent structured data as continuous prompts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_properties</strong></td>
+                            <td>Parameter-efficient; avoids brittle hand-crafted textual serialization; allows learning task-specific representations; alignment with LLM may require initialization or tuning; described as 'closest' to the paper's approach but not identical (this paper injects graph embeddings directly into input bypassing token embeddings).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evaluation_task</strong></td>
+                            <td>Referenced in context of encoding structured data for LLMs; specific evaluations appear in the cited work but are not detailed in this paper excerpt.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>This paper does not report numeric evaluation of the referenced method; reported numerical results: null.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_representations</strong></td>
+                            <td>Paper positions its method as similar in spirit (both learn continuous representations) but highlights differences: their approach initializes graph node features with LLM token embeddings and injects node embeddings into the LLM input as part of the prompt concatenation; the referenced soft-prompt approach is noted as a close prior.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_challenges</strong></td>
+                            <td>The excerpt does not provide detailed limitations for Perozzi et al., but implies that architecture compatibility and how to align learned embeddings with frozen/fine-tuned LLMs are practical considerations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering', 'publication_date_yy_mm': '2024-06'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e5230.3">
+                <h3 class="extraction-instance">Extracted Data Instance 3 (e5230.3)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Prefix-tuning integration (Chai et al.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Prefix-tuning / attention-level integration of graph embeddings with LLMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>An approach that uses prefix-tuning to inject graph embeddings into the LLM's attention mechanism, showing promising results on small graphs (~20 nodes) but relying on LLM architectural specifics.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>Graphllm: Boosting graph reasoning ability of large language model.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>mention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_name</strong></td>
+                            <td>prefix-tuning of graph embeddings into LLM attention layers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_description</strong></td>
+                            <td>Learn a set of prefix vectors (continuous parameters) derived from graph encodings and insert them into the LLM's attention layers (as keys/values) via prefix-tuning, so the LLM's internal attention can attend to graph-derived signals during generation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>graph_type</strong></td>
+                            <td>Small graphs (example in related work: graphs with ~20 nodes); general structured graphs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_properties</strong></td>
+                            <td>Can be effective on small, low-variability graphs; integrates with attention internals rather than token input; however, it depends on LLM architecture and may not seamlessly port to models with different internal designs (e.g., Mixture-of-Experts).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evaluation_task</strong></td>
+                            <td>Graph reasoning tasks and boosting LLM graph reasoning capability (as reported in the referenced work); in this paper it's cited as prior art for integrating graph structure with LLMs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Not provided in this paper's excerpt; reported numerical results: null.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_representations</strong></td>
+                            <td>Paper notes prefix-tuning approaches are promising but are demonstrated on small graphs and tied closely to specific LLM architectures; the authors present their injection-of-graph-node-embeddings approach as more architecture-agnostic and scalable.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_challenges</strong></td>
+                            <td>Relies on LLM architecture details (limits portability), evaluated on small graphs so scalability/generalization to larger, variable graphs unclear.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering', 'publication_date_yy_mm': '2024-06'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e5230.4">
+                <h3 class="extraction-instance">Extracted Data Instance 4 (e5230.4)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods for converting graphs into text for language model training, including details of the representation, properties, evaluation tasks, performance, and comparisons to other methods.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Prompted graph-description prompting (Fatemi/Huang/Wang refs)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Prompting LLMs with natural-language descriptions of graph structure (explicit prompts describing graph)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Prior work attempts to give LLMs explicit natural-language prompts that describe graph structure; the cited literature reports that even with such explicit prompts, LLMs often struggle to perform robust graph reasoning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>Talk like a graph: Encoding graphs for large language models.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>mention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_name</strong></td>
+                            <td>explicit natural-language graph-description prompts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_description</strong></td>
+                            <td>Describe the graph or graph substructures in text (e.g., sentences describing edges, neighborhood relations, or graph statistics) and prepend/insert that text into the LLM prompt so the model can reason over the graph using its standard text processing abilities.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>graph_type</strong></td>
+                            <td>General graphs / knowledge graphs described in text</td>
+                        </tr>
+                        <tr>
+                            <td><strong>representation_properties</strong></td>
+                            <td>Human-readable and interpretable, but often brittle; the literature notes task-dependent performance and difficulty in eliciting robust reasoning from LLMs even when structure is described explicitly.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evaluation_task</strong></td>
+                            <td>Graph reasoning and question answering over graph-structured inputs; referenced works evaluate various graph tasks and show LLM brittleness.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Not provided here; the paper cites works showing that LLM performance is brittle and task-dependent when using these strategies. Reported numerical results: null.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_representations</strong></td>
+                            <td>Paper contrasts these explicit-prompt approaches with learned embedding-based methods (like their GAT-injection and soft-prompts), suggesting learned, aligned representations are more robust than hand-crafted textual descriptions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_challenges</strong></td>
+                            <td>Brittle performance, task dependence, lack of consensus on optimal conversion rules, and evidence that explicit natural-language prompts do not reliably enable graph reasoning in LLMs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering', 'publication_date_yy_mm': '2024-06'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Let your graph do the talking: Encoding structured data for llms. <em>(Rating: 2)</em></li>
+                <li>Natural language is all a graph needs <em>(Rating: 2)</em></li>
+                <li>Talk like a graph: Encoding graphs for large language models <em>(Rating: 2)</em></li>
+                <li>Graphllm: Boosting graph reasoning ability of large language model. <em>(Rating: 1)</em></li>
+                <li>Can llms effectively leverage graph structural information through prompts <em>(Rating: 1)</em></li>
+                <li>Can language models solve graph problems in natural language? <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-5230",
+    "paper_id": "paper-271212334",
+    "extraction_schema_id": "extraction-schema-111",
+    "extracted_data": [
+        {
+            "name_short": "GAT-token-linearization + embedding-injection",
+            "name_full": "Token-level linearized evidence graphs encoded with Graph Attention Networks and injected graph embeddings into LLM input",
+            "brief_description": "This paper's primary method converts each retrieved evidence instance (sentence, table row, infobox key-value, or KB triple) into a local linear token chain, links entity spans across instances to form a global heterogeneous graph, encodes the graph with a GAT initialized from LLM token embeddings, and injects the learned node embeddings directly into the LLM input (bypassing token embedding layers) for end-to-end fine-tuning.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "representation_name": "local token-chain linearization with entity linking + GAT embeddings injected as LLM input",
+            "representation_description": "Each evidence instance w is tokenized and represented as a directed local chain of token nodes w1 -&gt; w2 -&gt; ... -&gt; w|w|. Tables are linearized by converting each row to text and prepending column headers; infoboxes are linearized by concatenating key-value pairs (with header info when available); KB triples are linearized by concatenating subject, predicate, object. Entity spans (from KG items or text spans) are identified by string matching and wrapped/marked (the paper uses &lt;n&gt; tags in examples) and then merged across local subgraphs into a global graph by adding edges between nodes that refer to the same entity. Initial node features are set to token embeddings from a base LLM to align modalities; a Graph Attention Network (GAT) refines node representations. The final graph node embeddings (H_g) are concatenated with a prompt prefix embedding (H_prefix) and a prompt suffix embedding (H_suffix) to form the LLM input H = H_prefix ⊕ H_g ⊕ H_suffix, thus bypassing the LLM's token embedding layer. The whole system is trained end-to-end with token-level cross-entropy while adapting the base LLM via LoRA.",
+            "graph_type": "Heterogeneous evidence graph containing: token-level nodes from Wikipedia text, linearized table rows, linearized infobox key-value pairs, and knowledge-graph triples; directed graph where nodes are tokens and edges are local token-next relations plus cross-instance entity-link edges",
+            "representation_properties": "Dynamic per-turn graph whose size varies with retrieved evidence; token-level granularity (preserves original token sequence within an instance); explicit entity linking produces global connections across local chains; feature alignment is achieved by initializing node embeddings with LLM token embeddings; learned end-to-end (task-specific) via GAT rather than hand-crafted text conversion; parameter-efficient adaptation of LLM (LoRA used for LLM, GAT trained from scratch); supports memory augmentation (evidence memory that re-inserts past high-ranked instances). Trade-offs: potentially large graphs if many instances retrieved (mitigated by BM25 ranking and memory sampling); depends on string-matching entity linking.",
+            "evaluation_task": "Conversational question answering over heterogeneous sources (ConvMix dataset) requiring reasoning across Wikipedia text, tables, infoboxes, and Wikidata KG; generation-style QA (model generates answers rather than classifying nodes).",
+            "performance_metrics": "Metrics used: H@1 (precision@1) and H@5 (presence within top-5 matched entities). Reported numerical values are not present in the provided text (paper states qualitative and comparative improvements: 'Mistral-7B + Graph is superior to ... +FT by a large margin' and that adding memory (+Memory) further improves precision; exact numbers referenced in Table 2 which is not included here: reported numerical results: null).",
+            "comparison_to_other_representations": "Compared experimentally (same retrieval) to: Mistral-7B zero-shot (prompted with top-k evidence), Mistral-7B fine-tuned (+FT) on ConvMix, T5-FiD variants (including question rewriting / resolution), EXPLAIGNN, and Convinse T5-FiD. Summary from paper text: the graph-augmented generative LLM (Mistral-7B + Graph) outperforms a plain fine-tuned Mistral (+FT) by a substantial margin; T5-FiD systems are comparable to zero-shot Mistral-7B; adding a memory module (+Memory) to the graph model yields further gains, whereas randomly sampling memory (+Rand Memory) provides no benefit (i.e., randomness ~= no memory). Exact numeric comparisons are referenced but not included in the provided excerpt.",
+            "limitations_or_challenges": "Scaling and graph size: retrieval can produce thousands of instances and very large graphs (mitigated here by BM25 ranking and memory sampling but still a limitation). Table linearization: tabular information often has hierarchical complexity and linearization may lose structure and hurt performance. Numerical answers are hard: model struggles on numeric answers partly due to tokenization and numeric representation choices of base LLMs. Entity linking via string matching is brittle and may miss or falsely link spans. The paper notes that some answers simply are not retrievable (retrieval quality strongly affects performance). Exact numeric performance values and ablation details are not present in the excerpt (Table 2 referenced but absent).",
+            "uuid": "e5230.0",
+            "source_info": {
+                "paper_title": "Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering",
+                "publication_date_yy_mm": "2024-06"
+            }
+        },
+        {
+            "name_short": "Natural-language graph serialization",
+            "name_full": "Describing graphs in natural language (graph→text serialization / hand-crafted linearization)",
+            "brief_description": "A widely used approach to encode graphs for LLMs is to convert the graph into natural-language-like text using hand-crafted serialization rules so the graph 'looks like' text for the LLM to consume (e.g., converting triples or edges into short fact-like strings).",
+            "citation_title": "Natural language is all a graph needs",
+            "mention_or_use": "mention",
+            "representation_name": "graph-to-natural-language serialization (hand-crafted)",
+            "representation_description": "Convert graph edges/tuples into text strings or short sentences (e.g., 'Subject -- predicate --&gt; Object' or concatenated key-value pairs), possibly with delimiters/tags, so that a standard LLM prompt can attend to the serialized facts; typically done via deterministic rules rather than learned encoders.",
+            "graph_type": "Knowledge graphs / general graph structures (as serialized text)",
+            "representation_properties": "Simple and direct (no extra model components), easily interpretable, requires no graph encoder; however, typically hand-crafted and not standardized, can be brittle, task-dependent, and may lose structural cues that are difficult to convey in linear text. Reported in the literature (and noted by the paper) to be challenging for LLMs to reason over robustly.",
+            "evaluation_task": "Mentioned in the context of LLMs consuming graph structure for downstream reasoning tasks (graph reasoning, question answering); referenced works evaluate graph problem-solving and graph reasoning benchmarks.",
+            "performance_metrics": "Metrics used in referenced literature vary (graph reasoning benchmarks, QA accuracy); this paper does not provide numeric results for this method. Reported numerical results: null.",
+            "comparison_to_other_representations": "The paper contrasts this manual serialization approach with its learned graph-embedding injection: it notes no consensus exists for graph→text conversion, many methods rely on hand-crafted rules, and prior work shows LLM reasoning on serialized graph text is brittle and task-dependent (citing Fatemi et al., Huang et al.). The authors favor a learned, alignment-aware graph encoding over pure hand-crafted serialization.",
+            "limitations_or_challenges": "No agreed standard conversion; hand-crafted rules often insufficient; LLMs' ability to reason from serialized graphs is brittle and highly task-dependent; structural information can be lost or become hard to exploit when flattened to text.",
+            "uuid": "e5230.1",
+            "source_info": {
+                "paper_title": "Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering",
+                "publication_date_yy_mm": "2024-06"
+            }
+        },
+        {
+            "name_short": "Graph embeddings as soft-prompts (Perozzi et al.)",
+            "name_full": "Using learned graph embeddings as soft prompts to represent structured data for LLMs",
+            "brief_description": "A related approach encodes graph structure into continuous embeddings that act as soft-prompts when prepended to LLM inputs, allowing the model to condition on structured data without explicit tokenized serialization.",
+            "citation_title": "Let your graph do the talking: Encoding structured data for llms.",
+            "mention_or_use": "mention",
+            "representation_name": "graph-embeddings-as-soft-prompts",
+            "representation_description": "Learn embeddings that summarize graph structure and use them as continuous prompt vectors (soft prompts) to steer LLM behavior; the soft prompts are appended/prepended to LLM input rather than converting graphs to discrete text.",
+            "graph_type": "Structured graphs (general), used to represent structured data as continuous prompts",
+            "representation_properties": "Parameter-efficient; avoids brittle hand-crafted textual serialization; allows learning task-specific representations; alignment with LLM may require initialization or tuning; described as 'closest' to the paper's approach but not identical (this paper injects graph embeddings directly into input bypassing token embeddings).",
+            "evaluation_task": "Referenced in context of encoding structured data for LLMs; specific evaluations appear in the cited work but are not detailed in this paper excerpt.",
+            "performance_metrics": "This paper does not report numeric evaluation of the referenced method; reported numerical results: null.",
+            "comparison_to_other_representations": "Paper positions its method as similar in spirit (both learn continuous representations) but highlights differences: their approach initializes graph node features with LLM token embeddings and injects node embeddings into the LLM input as part of the prompt concatenation; the referenced soft-prompt approach is noted as a close prior.",
+            "limitations_or_challenges": "The excerpt does not provide detailed limitations for Perozzi et al., but implies that architecture compatibility and how to align learned embeddings with frozen/fine-tuned LLMs are practical considerations.",
+            "uuid": "e5230.2",
+            "source_info": {
+                "paper_title": "Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering",
+                "publication_date_yy_mm": "2024-06"
+            }
+        },
+        {
+            "name_short": "Prefix-tuning integration (Chai et al.)",
+            "name_full": "Prefix-tuning / attention-level integration of graph embeddings with LLMs",
+            "brief_description": "An approach that uses prefix-tuning to inject graph embeddings into the LLM's attention mechanism, showing promising results on small graphs (~20 nodes) but relying on LLM architectural specifics.",
+            "citation_title": "Graphllm: Boosting graph reasoning ability of large language model.",
+            "mention_or_use": "mention",
+            "representation_name": "prefix-tuning of graph embeddings into LLM attention layers",
+            "representation_description": "Learn a set of prefix vectors (continuous parameters) derived from graph encodings and insert them into the LLM's attention layers (as keys/values) via prefix-tuning, so the LLM's internal attention can attend to graph-derived signals during generation.",
+            "graph_type": "Small graphs (example in related work: graphs with ~20 nodes); general structured graphs",
+            "representation_properties": "Can be effective on small, low-variability graphs; integrates with attention internals rather than token input; however, it depends on LLM architecture and may not seamlessly port to models with different internal designs (e.g., Mixture-of-Experts).",
+            "evaluation_task": "Graph reasoning tasks and boosting LLM graph reasoning capability (as reported in the referenced work); in this paper it's cited as prior art for integrating graph structure with LLMs.",
+            "performance_metrics": "Not provided in this paper's excerpt; reported numerical results: null.",
+            "comparison_to_other_representations": "Paper notes prefix-tuning approaches are promising but are demonstrated on small graphs and tied closely to specific LLM architectures; the authors present their injection-of-graph-node-embeddings approach as more architecture-agnostic and scalable.",
+            "limitations_or_challenges": "Relies on LLM architecture details (limits portability), evaluated on small graphs so scalability/generalization to larger, variable graphs unclear.",
+            "uuid": "e5230.3",
+            "source_info": {
+                "paper_title": "Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering",
+                "publication_date_yy_mm": "2024-06"
+            }
+        },
+        {
+            "name_short": "Prompted graph-description prompting (Fatemi/Huang/Wang refs)",
+            "name_full": "Prompting LLMs with natural-language descriptions of graph structure (explicit prompts describing graph)",
+            "brief_description": "Prior work attempts to give LLMs explicit natural-language prompts that describe graph structure; the cited literature reports that even with such explicit prompts, LLMs often struggle to perform robust graph reasoning.",
+            "citation_title": "Talk like a graph: Encoding graphs for large language models.",
+            "mention_or_use": "mention",
+            "representation_name": "explicit natural-language graph-description prompts",
+            "representation_description": "Describe the graph or graph substructures in text (e.g., sentences describing edges, neighborhood relations, or graph statistics) and prepend/insert that text into the LLM prompt so the model can reason over the graph using its standard text processing abilities.",
+            "graph_type": "General graphs / knowledge graphs described in text",
+            "representation_properties": "Human-readable and interpretable, but often brittle; the literature notes task-dependent performance and difficulty in eliciting robust reasoning from LLMs even when structure is described explicitly.",
+            "evaluation_task": "Graph reasoning and question answering over graph-structured inputs; referenced works evaluate various graph tasks and show LLM brittleness.",
+            "performance_metrics": "Not provided here; the paper cites works showing that LLM performance is brittle and task-dependent when using these strategies. Reported numerical results: null.",
+            "comparison_to_other_representations": "Paper contrasts these explicit-prompt approaches with learned embedding-based methods (like their GAT-injection and soft-prompts), suggesting learned, aligned representations are more robust than hand-crafted textual descriptions.",
+            "limitations_or_challenges": "Brittle performance, task dependence, lack of consensus on optimal conversion rules, and evidence that explicit natural-language prompts do not reliably enable graph reasoning in LLMs.",
+            "uuid": "e5230.4",
+            "source_info": {
+                "paper_title": "Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering",
+                "publication_date_yy_mm": "2024-06"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Let your graph do the talking: Encoding structured data for llms.",
+            "rating": 2,
+            "sanitized_title": "let_your_graph_do_the_talking_encoding_structured_data_for_llms"
+        },
+        {
+            "paper_title": "Natural language is all a graph needs",
+            "rating": 2,
+            "sanitized_title": "natural_language_is_all_a_graph_needs"
+        },
+        {
+            "paper_title": "Talk like a graph: Encoding graphs for large language models",
+            "rating": 2,
+            "sanitized_title": "talk_like_a_graph_encoding_graphs_for_large_language_models"
+        },
+        {
+            "paper_title": "Graphllm: Boosting graph reasoning ability of large language model.",
+            "rating": 1,
+            "sanitized_title": "graphllm_boosting_graph_reasoning_ability_of_large_language_model"
+        },
+        {
+            "paper_title": "Can llms effectively leverage graph structural information through prompts",
+            "rating": 1,
+            "sanitized_title": "can_llms_effectively_leverage_graph_structural_information_through_prompts"
+        },
+        {
+            "paper_title": "Can language models solve graph problems in natural language?",
+            "rating": 1,
+            "sanitized_title": "can_language_models_solve_graph_problems_in_natural_language"
+        }
+    ],
+    "cost": 0.0147625,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><p>Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering</p>
+<p>Parag Jain parag.jain@ed.ac.uk 
+Institute for Language, Cognition and Computation School of Informatics
+University of Edinburgh</p>
+<p>Mirella Lapata 
+Institute for Language, Cognition and Computation School of Informatics
+University of Edinburgh</p>
+<p>Integrating Large Language Models with Graph-based Reasoning for Conversational Question Answering
+AC8AF0A03F5863DC42FDF4F7655044DF
+We focus on a conversational question answering task which combines the challenges of understanding questions in context and reasoning over evidence gathered from heterogeneous sources like text, knowledge graphs, tables, and infoboxes.Our method utilizes a graph structured representation to aggregate information about a question and its context (i.e., the conversation so far and evidence retrieved to find an answer), while also harnessing the reasoning and text generation capabilities of large language models (LLMs).Graph embeddings are directly injected into the LLM, bypassing the token embedding layers, and learned end-toend by minimizing cross-entropy.Our model maintains a memory module to track and update past evidence, thus influencing the graph's structure, as the conversation evolves.Experimental results on the ConvMix benchmark(Christmann et al., 2022a)show that graph embeddings enhance the LLM's ability to reason, while the memory module provides robustness against noise and retrieval errors.</p>
+<p>Introduction</p>
+<p>Conversational question answering is an information seeking task where users engage in interactive conversations with AI systems (Choi et al., 2018;Reddy et al., 2019;Dalton et al., 2022).Unlike traditional question answering applications (Rajpurkar et al., 2016), conversational systems are expected to track the context of a conversation, i.e., remember previous questions and answers to provide relevant responses in an ongoing dialogue.The majority of prior work has studied different instantiations of conversational question answering, based on the simplifying assumption that answers can be found in a single information source.Examples include querying knowledge graphs such as Wikidata (Perez-Beltrachini et al., 2023;Christmann et al., 2022a;Saha et al., 2018), identifying answer spans in Wikipedia articles (Reddy et al., 2019;Choi et al., 2018), and searching for answers in table cells (Iyyer et al., 2017).</p>
+<p>In this paper we focus on conversational question answering over multiple and heterogeneous information sources.Figure 1 shows an example interaction from ConvMix (Christmann et al., 2022b), a recently curated dataset, which combines the challenges of understanding questions in context, and retrieving their answers from multiple sources.As can be seen, answers are located in knowledge base triples (response to Q1), infoboxes (responses to Q4 and Q5), and tables (responses to Q2 and Q3).It is also possible for an answer to be found in different sources which may in turn disagree.Moreover, the interaction in Figure 1 displays the hallmarks of naturalistic dialogue.The second question (Fact Rank? ) can only be interpreted by taking into account the topic of the conversation (i.e., the album Kid A ) mentioned in the previous utterance.Follow-on questions are short and may seem ungrammatical taken out of context.As the conversation unfolds, the topic shifts from the album Kid A to the Rolling Stone magazine; Q4 in Figure 1 has no dependencies on previous utterances and a hypothetical system would have to recognize that a new topic is being introduced.</p>
+<p>We propose a modeling approach to conversational question answering which integrates large language models (LLMs) with graph-based reasoning.The core idea is to represent information about a question and its context -such as the conversation so far and sources retrieved to find an answer -through a dynamically generated graph and size varies with each utterance.Our method utilizes a graph structured representation (Gori et al., 2005;Scarselli et al., 2009) to aggregate information (and resolve conflicts) from multiple sources, while also harnessing the reasoning and text generation capabilties of LLMs.Our graph network is efficiently trained using gradients from the LLM.Graph embeddings are directly injected into the   LLM, bypassing the token embedding layers, and learned end-to-end by minimizing cross-entropy loss.To manage topic shifts and keep track of the conversation flow, we introduce a memory module that stores evidence used to answer previous questions, thus allowing to re-use past information for answering future questions.Our contributions are:</p>
+<p>• A method to aggregate evidence from multiple sources into a dynamic graph representation for conversational question answering.</p>
+<p>• We efficiently integrate the evidence-based graph with LLMs for end-to-end training.</p>
+<p>• We keep track of past evidence in a memory module which is updated as the conversation evolves and influences the graph structure and its representation.</p>
+<p>• Extensive experiments on the ConvMix dataset (Christmann et al., 2022b), demonstrate that graph structure enhances the LLM's ability to reason over multiple sources, while the memory module affords robustness to noise and retrieval errors.</p>
+<p>Related Work</p>
+<p>Conversational Question Answering Most previous work on conversational question answering operates over a single infromation source such as a knowledge graph, text passage, or table (Choi et al., 2018;Reddy et al., 2019;Perez-Beltrachini et al., 2023;Iyyer et al., 2017).Existing models tend to be specialized, catering to isolated modalities (e.g., text or tables), while a few approaches adopt graph-based representations to organize the conversation and available information (Shen et al., 2019;Jain and Lapata, 2023;Kacupaj et al., 2021;Mueller et al., 2019).A notable exception are Christmann et al. (2023) who propose an end-toend model for multiple information sources.Specifically, their method constructs a heterogeneous graph based on evidence retrieved from tables, infoboxes, text snippets, and Wikidata triples.This graph is iteratively pruned at inference time to a smaller subgraph containing the answer (i.e., an entity node) to the question.Our work also integrates information from multiple sources into a graph.However, we do not model question answering as a classification task, but instead propose a generative model.We leverage graph representations and the reasoning capabilities of language models, without relying on specialized inference procedures.</p>
+<p>LLMs with Graphs A common approach to encoding graph structure for LLMs involves describing the graph in natural language so that it resembles text (Ye et al., 2023;Wang et al., 2024).There is no agreed consensus on how to convert graphs to text, and most methods rely on hand-crafted rules.Previous efforts have shown it is challenging for LLMs to reason over graph representations (Fatemi et al., 2024;Huang et al., 2024), even when explicit prompts are given that describe the structure of the graph in natural language (Huang et al., 2024).Performance tends to be brittle and task dependent (Wang et al., 2024;Fatemi et al., 2024).</p>
+<p>Our work proposes a parameter-efficient method for learning task-specific graph representations.It is closest to Perozzi et al. (2024), who use graph embeddings as soft-prompts to represent structured data for LLMs.In a similar vein, Chai et al. (2023) use prefix-tuning to integrate graph embeddings with LLM attention layers.Their approach shows promising results on small graphs with a few nodes (∼20) and limited variability.It also relies on the architecture of the LLM and may not seamlessly integrate with other models, e.g., Mixture-of-Experts (MoE; Shazeer et al. 2017;Jacobs et al. 1991).</p>
+<p>Retrieval-augmented Generation Our work integrates LLMs with graph structural information based on evidence retrieved from the Wikidata knowledge graph (Vrandečić and Krötzsch, 2014), Wikipedia text, tables, and infoboxes.Although we do not focus on retrieval as such, it plays a key role in identifying information for building the graph.Our approach can thus be viewed as a variant of retrieval augmented generation (RAG), since it conditions generation on freshly retrieved evidence based on user queries (Izacard et al., 2024;Khandelwal et al., 2020;Guu et al., 2020).</p>
+<p>Overview</p>
+<p>We assume a conversational question answering setting (Christmann et al., 2022b) that requires resoning over Wikipedia facts attested in multiple sources such as text, tables, infoboxes, and the Wikidata knowledge graph (KG).Given interaction I, our task is to answer question q t at turn t, taking into account retrieved evidence r t and previous turns I[: t − 1] which consist of questions and their answers ⟨q t , a t ⟩ (see Figure 1).To accomodate information from the conversation so far, we concatenate question q t at turn t with previous questionanswer pairs, i.e., Q t = [q 1 , a 1 . . .q t−1 , a t−1 , q t ], and use this to retrieve evidence.</p>
+<p>As depicted in Figure 3, we adopt a modular approach.Given query Q t , we retrieve and rank relevant evidence (Section 4.1).We next organize retrieved information into a graph (Section 4.3) and learn graph embeddings using Graph Attention Networks (GAT; Velickovic et al. 2018;Brody et al. 2022).Finally, graph embeddings are injected in a LLM by skipping the token embeddings layer (Section 4.5).Unlike Christmann et al. (2023) who extract answers from retrieved evidence, we generate them.Our model M is thus formulated as:
+a t = M (I[: t − 1], q t , r t ; Θ) (1)
+where q t is the current question, r t is the graph representing retrieved evidence, I[: t − 1] are previous turns, and Θ the parameters of our model which are fine-tuned on task-specific data (Section 4.6).</p>
+<p>Model</p>
+<p>Evidence Retrieval</p>
+<p>We adopt the retrieval pipeline outlined in Christmann et al. (2022b).As mentioned earlier, information is obtained from Wikipedia pages and the Wikidata KG using a query based on the current question concatenated with previous question-answer pairs.Retrieval takes place in two stages.Initially, evidence is retrieved from the Wikidata KG, and then followed by retrieval from Wikipedia.We extract Wikidata triples (see 2 in Figure 3) using CLOCQ (Christmann et al., 2022a), a retrieval engine specifically tailored to question answering over knowledge bases.It preprocesses the knowledge graph in a memory efficient manner and returns the top-k triples based on query terms.Figure 3, shows a subset of relevant triples retrieved for Q3 along with the KG entities E E .</p>
+<p>We next obtain evidence pertaining to additional Wikipedia sources by retrieving articles corresponding to the entities in E E .These pages are subsequently processed to extract text, tables, and infoboxes (see 3 in Figure 3).Tables are linearized by individually transforming each row into text and concatenating it with corresponding column headers.Infoboxes are linearized in a similar fashion  The evidence collected at this stage can be extensive, potentially comprising of several thousand instances, which would in turn lead to a very large graph (see Section 4.3).To manage this, we employ BM25 (Robertson and Zaragoza, 2009) to rank the evidence against the query and retain only the best scoring instances (see 4 in Figure 3).Let E t denote the set of top-k retrieved instances at turn t.</p>
+<p>Evidence Memory</p>
+<p>By design, we retrieve new evidence at every turn t, which may suggest that every question introduces a new topic.However, a well-known property of conversational dialogue is topic inertia (Chai and Jin, 2004), i.e., users tend to explore the same topic for a while before switching to a new topic (see the interaction in Figure 1).We propose to keep track of past topics through a memory module which stores previously retrieved pieces of evidence to be re-utilized and re-ranked against Q t .Specifically, at each turn t we define evidence memory M t as,
+M t = ⊕ {E j | j ∈ [1 . . . t − 1]} (2)
+where ⊕ denotes concatenation.We replace a proportion (e.g., one third) of low-ranked instances from E t with the top-ranking ones from M t .We employ the Sentence-BERT model (Reimers and Gurevych, 2019) to re-rank the evidence stored in M t , using Q t as a query.</p>
+<p>Graph Construction</p>
+<p>Retrieved information is organized into a graph (see 6 , Figure 3) by first converting individual pieces of evidence into a linear chain.Local subgraphs are then merged into a global graph by linking common entities between them.Figure 2 shows example graphs with local and global connections.</p>
+<p>To construct a local graph, evidence from different sources is linearized (as discussed in Section 4.1) and tokenized using a base LLM tokenizer.Tokens within each instance are treated as graph nodes connected in a linear chain.In other words, evidence w with tokens w 1 . . .w |w| is represented by local sub-graph
+w 1 → w 2 → . . . → w |w| .
+Connecting different pieces of evidence together is critical for enabling more global reasoning.We create a global graph by linking similar entities across local subgraphs.In this context, entities are KG items but also text spans in Wikipedia text, infoboxes, and tables gathered during retrieval.We identify entity spans by performing string matching against KG entities.In Figure 2, such entities are encircled by <n> node </n> tags.Finally, entity spans referring to same entity are linked, thus creating a more globally connected graph.</p>
+<p>Graph Encoder</p>
+<p>Our model generates an answer at each turn t given query Q t and graph G t representing relevant evidence (see Figure 3).More formally, G t = (V, E) is a directed graph with nodes V = {v 1 , v 2 , . . ., v n } and edges E ⊆ V × V.</p>
+<p>We do not learn graph node embeddings from scratch.Instead, we initialize them using token embeddings from a large language model (see 7 , Figure 3).This step is crucial for achieving feature alignment between the evidence graph and the downstream LLM.Generally, integrating LLMs with information from a different modality necessitates aligning features between them.For example, vision-language models like BLIP-2 (Li et al., 2023) and LLaVA (Liu et al., 2023) perform feature alignment by heavily pretraining a network whose goal is to act as a bridge between a frozen image encoder and a frozen LLM.This approach requires large amounts of pretraining data (as well as computational resources) which are not readily available for our task.We found that simply initializing graph node embeddings with token embeddings from a base LLM is effective and crucial for achieving good performance.</p>
+<p>Let
+{x i | i ∈ [1, n]
+} denote the set of initial node embeddings.We learn graph structure representations with the Graph Attention Network (GAT; Velickovic et al. 2018;Brody et al. 2022), a neural network architecture designed for handling graphstructured data.It is computationally efficient, it requires less memory and storage compared to other deep learning models, and is applicable to inductive problems.GAT uses the attention mechanism to weigh the importance of neighboring nodes when aggregating information in a graph.Attention between two nodes is calculated as:
+α ij = exp ψ x i , x j k∈N i exp ψ x i , x k(3)
+where N i = {v j ∈ V | j, i ∈ E} are the neighbors of node v i , and α ij is the attention score between node embeddings x i and x j .Following Brody et al. (2022), we compute the scoring function ψ as:
+ψ x i , x j = a T LeakyReLU W • [x i ⊕ x j ] (4)
+where • T represents transposition and ⊕ is the concatenation operation.Attention coefficients corresponding to each node i are then used to compute a linear combination of the features corresponding to neighboring nodes as:
+x i = σ   j∈N i α ij W x j   (5)</p>
+<p>Integration with LLMs</p>
+<p>The LLM takes as input a composite embdedding consisting of the graph embeddings discussed above, and embeddings corresponing to a prompt prefix P prefix , and a prompt suffix P suffix (see 5 in Figure 3).P prefix is an initial instruction prompt and P suffix represents the conversational query at turn t to be answered.See Appendix A(Figure 6) for an example prompt.More formally, LLM input embeddings are obtained as:
+H = H prefix ⊕ H g ⊕ H suffix (6)
+where H g is the list of embeddings of all graph nodes and H prefix is the text embedding of P prefix :
+H prefix = Embed(Tok(P prefix ))(7)
+where Tok and Embed are the base LLM tokenizer and embedding layer, respectively.P suffix is encoded in a similar manner using Equation ( 7) to obtain H suffix .We use the embeddings obtained with Equation (6) as the initial token embeddings for the pretrained LLM.</p>
+<p>Training</p>
+<p>Our model is trained end-to-end by optimizing cross-entropy loss.For all variants (with and without graph structure), the loss is calculated on completion tokens only, i.e., prompt tokens do not observe any loss.This is similar to setting the prompt loss weight to 0 (Wang et al., 2023).</p>
+<p>Given training instance ⟨I[: t − 1], q t , r t ; Θ⟩, and sequence of gold output tokens ⟨a 1 t , a 2 t , . . ., a |at| t ⟩, we minimize token-level cross-entropy as:
+L âi t = − log p a i t | I[: t − 1], q t , r t ; Θ (8)
+where âi t denotes the predicted output token at decoder step i.We use a mixed approach for training the whole network.Our graph network is trained from scratch, however, the base LLM is updated using LoRA (Hu et al., 2022)</p>
+<p>Experimental Setup</p>
+<p>We use Mistral-7B-Instruct-v0.2 (Jiang et al., 2023) as our base model, given its good performance across complex reasoning tasks, and wider context window of 32K tokens.Recall that we retrieve and encode a large number of instances as evidence for a question.Our implementation predominantly relies on PyTorch (Paszke et al., 2019).We adapt the Mistral implementation available at the HuggingFace Transformers library (Wolf et al., 2020).For developing the graph neural network, we utilize PyTorch Geometric (PyG; Fey and Lenssen 2019).We use Hugging Face's TRL (Transformer Reinforcement Learning) library (von Werra et al., 2020) for fine-tuning model without graph.Additional training parameters and prompts can be found in Appendices B and A, respectively.</p>
+<p>Dataset</p>
+<p>We evaluate our work on ConvMix (Christmann et al., 2022b), a conversational question answering dataset that requires reasoning over heterogeneous sources, specifically Wikipedia text, infoboxes, tables, and the Wikidata KG.Aside from reasoning, the conversational nature of ConvMix requires handling discourse phenomena, such as coreference, ellipsis, and topic-shift (Sun and Chai, 2007;Jain and Lapata, 2021).1).We follow the splits provided in Christmann et al. (2022b) and report results on both test sets combined.</p>
+<p>Evaluation Metrics</p>
+<p>Our model generates answers which may be valid but not identical to the gold standard (e.g., United States, United States of America, and USA are all paraphrases of the same concept).When there is no exact match, we follow previous work (Christmann et al., 2022b) and try to normalize the answer to its canonical form.We use the Levenshtein distance (Levenshtein, 1965) to measure the similarity of the generated answer with entities in our retrieved evidence set.The entity with the smallest distance is used as the answer in such cases.</p>
+<p>We report H@1 (i.e., precision at 1) and H@5 (i.e., whether an answer match is found within the top 5 matching entities).</p>
+<p>Results</p>
+<p>Our experiments were designed to assess whether graph structure enhances LLM performance for our conversational question-answering task.Our results are summarized in Table 2.</p>
+<p>We evaluate our approach against Mistral-7B variants without graph structure.Specifically, we compare against (a) Mistral-7B zero-shot prompted with top-k retrieved instances and the conversational history, i.e., the current query concatenated with previous QA pairs (see Appendix A for the prompt); and (b) Mistral-7B fine-tuned on the Con-vMix training set using LoRA (Mistral-7B + FT) and top-k retrieved instances.We present three variants of our model, fine-tined with graph embeddings (Mistral-7B + Graph) and additionally with a memory management component (+Memory, +Rand Memory).</p>
+<p>We also compare with several state-of-the-art systems built on top of T5 (Raffel et al., 2020).T5-FiD (Christmann et al., 2022b) is a fusion-indecoder model which acts as a "generative reader" and is trained on (top-k) retrieved instances and gold answers.Specifically, query-evidence pairs are encoded independently, and passed on to the decoder to generate an answer.We also report results with a T5-based model (T5-FiD + Question rewriting) which rewrites the question based on the conversational history context (Raposo et al., 2022;Elgohary et al., 2019) and a related approach (T5-FiD + Question resolution) which performs query resolution, i.e., by appending relevant terms from previous question-answer pairs to the current question (Voskarides et al., 2020).1 Finally, although not directly comparable, we report the performance of EXPLAIGNN (Christmann et al., 2023) and Convinse T5-FiD (Christmann et al., 2022b).EXPLAIGNN is a classification model that identifies entity nodes in a graph as answer predictions.It learns a task specific structured representation optimized for better retrieval and query understanding.The learned representation is used to train a classification model based on graph neural networks tying both of them together.Convinse T5-FiD is similar in that it also learns a task-specific structured representation for retrieval and query understanding, without, however, creating a graph.</p>
+<p>All models in Table 2 use the same retrieval engine (i.e., CLOCQ; Christmann et al. 2022a) which allows us to focus on architectural differences and compare models on equal footing.</p>
+<p>Integrating LLMs with graph-based reasoning boosts conversational QA performance.As shown in Table 2, Mistral-7B + Graph is superior to a plain fine-tuned version of Mistral-7B (+ FT) by a large margin.This suggests that organizing and representing retrieved evidence as a graph improves reasoning compared to processing pieces of evidence independently.Perhaps unsurprisingly, finetuning generally improves Mistral's performance on the conversational QA task over a zero-shot model.This is due to an improved understanding of task requirements, like regular shift in focus and answer format.For example, the model learns to avoid verbosity in answers and respond using dataset-specific conventions such as spelling out the month in dates (e.g., 2 October 2002 instead of 2/10/2002 ).The performance of the T5-FiD systems is comparable to zero-shot Mistral-7B.In general, we observe that performance improvements are not simply due to increased model size.Rather, it is important to model the conversational nature of the task and interpret the retrieved information more globally.</p>
+<p>Adding a memory module improves QA precision.Table 2 shows that results further improve when a memory module is added to our model (+Graph +Memory).Recall that previously retrieved instances are kept in memory and rereranked against the current query.To further assess the usefulness of re-ranking, we conducted a controlled experiment where evidence was selected randomly from the memory.We observe that random selection (+Rand Memory) amounts to not having a memory component at all.</p>
+<p>It is challenging to provide accurate answers to questions that require numerical responses.Figure 4a shows model performance broken down by question domain.Overall, we observe similar trends across domains, with TV Series and Soccer being most challenging.Performance for these domains decreases by ∼10 percentage points, e.g., in comparison to Books.To uncover the reason for this gap, we further investigate whether there is an effect of answer type.We automatically annotate2 the ConvMix development set with the following answer categories: strings, dates, and numbers.The results in Table 3 (top) show average H@1 stratified by different answer types.</p>
+<p>We observe that questions with numeric answers are harder compared to other categories.There are several reasons for this, including variability in numerical reasoning performance due to the choice of numeric data tokenization by the base model (Singh and Strouse, 2024;Sun et al., 2023).As well as the effect of pre-training data on the output predictions and their probability (McCoy et al., 2023).Table 3b (bottom) reveals that the proportion of instances with numeric answers is highest for the TV Series and Soccer domains, thus explaining why performance drops for these domains.It is challenging to extract accurate information from tables.Figure 4b, shows how performance varies depending on the source of the answer.Across models, we observe that performance deteriorates when the answers are located in tables.</p>
+<p>On the contrary, performance is generally better when answers are found in the knowledge graph.We believe this performance gap is due to how tabular information is linearized.In contrast to the knowledge graph from which facts can be easily extracted, Wikipedia tables often have complex hierarchical structure (Parikh et al., 2020) making it challenging to achieve clean and robust linearization (Alonso et al., 2023).</p>
+<p>It is more difficult to answer questions occurring later in the conversation.In Figure 4c we examine how performance varies with conversation length.Ideally, a model should be able to answer questions irrespective of where these occur (e.g., beginning or end).As mentioned in Section 5.1, ConvMix contains conversations with a maximum length of 10 turns.The results in Figure 4c show a general decrease in performance as the dialogue progresses.Initial questions tend to be more complex while follow-on questions often extend or elaborate upon the initial topic (Chai and Jin, 2004;Jain and Lapata, 2021).Our results show that graph enhanced models generally outperform LLM variants which do not organize the retrieved information in any way.Furthermore, we observe that having a memory (of previously retrieved instances) is particularly helpful in longer interactions.Keeping track of past evidence helps ameliorate retrieval errors which might erroneously steer the model towards new topics.Aside from contextual factors, the quality of retrieval largely influences model precision, as approximately half of the answers cannot be found even at the beginning of the dialogue (see turn 1 in Figure 4c).</p>
+<p>Conclusion</p>
+<p>In this paper we propose a method to aggregate evidence from multiple sources into a dynamic graph representation for conversational question answering.We demonstrate how this graph can be efficiently integrated with large language models (LLMs) for end-to-end training, enhancing the model's ability to handle evolving conversational contexts.Our approach maintains a memory module to track and update past evidence, thus influencing the graph's structure and representation, as the conversation evolves.Experiments on the ConvMix dataset show that the graph enhances the LLM's ability to reason over multiple modalities, while the memory module provides robustness against noise and retrieval errors.In the future, we would like to improve information retrieval for our task, through using pretrained embeddings for better entity linking.We could also adopt a structured memory module for more complex reasoning.In this work, we do not study the effect of various prompting techniques on our task.In experiments, we found Mistral-7B's performance superior to Llama2-7B (Touvron et al., 2023), however, we did not perform an in-depth study on prompts and models.Measuring the effect of these factors on our task and model performance is non-trivial and a topic for future work.</p>
+<p>A Prompt Description</p>
+<p>Figure 5 shows an example prompt for the Mistral-7B model without graph embeddings (see Mistral-7B zero-shot in Table 2).The prompt includes a sequence of retrieved and ranked pieces of evidence, each encapsulated within <evidence>-</evidence> tags.We represent the past interaction I[: t − 1] as a series of question and answer pairs.The same prompt is used for fine-tuning (see Mistral-7B + FT in Table 2) with the subsequent response as the gold output tokens (see Section 4.6 for details).</p>
+<p>Figure 6 shows an example prompt for the graphbased model (all model variants with +Graph in Table 2).The prompt consists of three parts, the initial instructions which we refer to as P prefix , a sequence of graph node embeddings represented as graph_node_embedding, and the conversational query which we denote as P suffix .Figure 6: Example prompt for graph-based models.We use P prefix and P suffix to denote the instruction before and after the graph_node_embeddings respectively.The umber of graph node embeddings is dynamic and varies based on evidence that has been retrieved.</p>
+<p>B Training Details</p>
+<p>Figure 1: Example interaction (left) from the ConvMix development set (Christmann et al., 2022b) and relevant evidence at query Q3 (right).Utterances Q1-Q3 explore the topic of album Kid A. Q4 transitions to the topic of Rolling Stone magazine.The evidence is retrieved from diverse sources highlighted in red.Wikipedia text and tables are prepended with their respective article title.Known entities are shown in blue.Underlined entities are identified through string matching.</p>
+<p>Figure 2 :
+2
+Figure 2: Graph for retrieved evidence (subset) from Figure 1.Tokens within each instance create local subgraphs in the form of a linear chain.Local subgraphs are connected through common entities (within <n> -</n>) to build a global graph.Same color highlights connections between similar entities (some edges are omitted for clarity).</p>
+<p>Query:</p>
+<p>What is the release date of album Kid A? 2 October 2000 Fact Rank? 7 Ranking on Rolling Stone in 2009?Kid A is the fourth studio album... released on 2 October 2000 by Parlophone Wiki Text</p>
+<p>Figure 5 :
+5
+Figure 5: Example prompt for models which do not employ graph embeddings.Only a few relevant pieces of evidence are shown, for the sake of brevity.</p>
+<p>Table Triples
+Triples
+Figure3: Sketch of proposed architecture.1 shows query Q3 from the interaction in Figure1. 2 shows KG triples retrieved with CLOCQ and their entities ( 3 ).Wikipedia articles for 3 are parsed to extract sentences, infoboxes and tables.In 4 , retrieved evidence is ranked based on the current query using BM25.5 creates an instruction prompt based on the input query (see Appendix A for the prompt template).In 6 , a graph is constructed based on top ranked instances.7 depicts the learned graph neural network.Graph node embeddings are initialized using LLM token embeddings that are separate from the base model.8 shows the final embeddings which are passed to the LLM and are obtained by concatenating prompt (prefix, suffix) and graph embeddings (shown in different colors).9 is the LLM without the token embedding layer.
+8Rolling Stone, inception, 19675Kid A, publication, 2 October 200067Kid A, Publication Rolling Stone, Country US,Accolade ..., Year 2009, Rank 1
+by concatenating key-value pairs with header information (if available).KB triples are linearized by a simple concatenation of individual elements.Wikipedia text is split into sentences, each of which serves as a separate piece of evidence.</p>
+<p>Table 1 :
+1
+in a parameter efficient manner.We perform inference based on the conversation context (i.e., I[: t − 1]) and current query q t .ConvMix dataset statistics.Long tail entities are those attested in less than 50 KG facts.
+ConvMix-5TEntities covered5,418Long-tail entities2,511conversations2,800Number of turns5Split ratio60:20:20ConvMix-10T test setConversations200Number of turns10Domains: Books, Movies, Music, TV series, SoccerAnswer Source: Text, Tables, Infobox Wikidata</p>
+<p>Table 1
+1summarizes variousdataset statistics. As can be seen (first block), themain dataset (CovMix-5T) contains 2,800 conver-sations, each with five turns (i.e., question-answerpairs), split into training, development, and test set.In addition, ConvMix-10T is a separate test setused to measure generalization on longer interac-tions. It contains 200 conversations, each 10 turnslong (see last block in Table</p>
+<p>Table 4 :
+4
+Table 4 list the hyper-parameters employed to train our model.Implementation details are discussed in Section 5.During the fine-tuning of the base language model, only the query, key, and value projection parameters are updated.Hyperparameter values used for our model.Prompt: Mistral-7B zero shot and fine-tuned without graph embeddings [INST] You are a helpful assistant.Using the following facts: <evidence>Kid A, publication, 2 October 2000</evidence> <evidence>Rolling Stone, Editor, Noah Shachtman</evidence> <evidence>Rolling Stone, Catgories, Popular culture</evidence> <evidence>Publication Fact, Country UK, Accolade The 100 Best Albums of the 2000s, Year 2010, Rank 7</evidence> <evidence>Publication Rolling Stone, Country US, Accolade The 100 Best Albums of the decade, Year 2009, Rank 1</evidence> <evidence>Rolling Stone was founded in San Francisco in 1967 by Jann Wenner and Ralph J. Gleason.</evidence>Answer the following conversational query as a simple key fact without description:
+ParameterValueGraph layers2Graph heads2Lora rank128Lora α32Lora dropout0.05GAT Dropout0.5OptimizerAdam (Kingma and Ba,2015)Learning rate5e-5Batch size1Gradient accumulation 4
+All FiD models are based on T5-base(Christmann et al., <br />
+2022b).
+We use regex and python-dateutil to automatically categorize the answers.</p>
+<p>Iñigo Alonso, Eneko Agirre, Mirella Lapata, arXiv:2311.09808Pixt3: Pixel-based table to text generation. 2023arXiv preprint</p>
+<p>How attentive are graph attention networks?. Shaked Brody, Uri Alon, Eran Yahav, The Tenth International Conference on Learning Representations, ICLR 2022, Virtual Event. 2022. April 25-29, 2022OpenReview.net</p>
+<p>Discourse structure for context question answering. Joyce Y Chai, Rong Jin, Proceedings of the Workshop on Pragmatics of Question Answering at HLT-NAACL 2004. the Workshop on Pragmatics of Question Answering at HLT-NAACL 2004Boston, Massachusetts, USA2004Association for Computational Linguistics</p>
+<p>Ziwei Chai, Tianjie Zhang, Liang Wu, Kaiqiao Han, Xiaohai Hu, Xuanwen Huang, Yang Yang, arXiv:2310.05845Graphllm: Boosting graph reasoning ability of large language model. 2023arXiv preprint</p>
+<p>QuAC: Question answering in context. Eunsol Choi, He He, Mohit Iyyer, Mark Yatskar, Wentau Yih, Yejin Choi, Percy Liang, Luke Zettlemoyer, 10.18653/v1/D18-1241Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing. the 2018 Conference on Empirical Methods in Natural Language ProcessingBrussels, BelgiumAssociation for Computational Linguistics2018</p>
+<p>Beyond ned: Fast and effective search space reduction for complex question answering over knowledge bases. Philipp Christmann, Rishiraj Saha Roy, Gerhard Weikum, 10.1145/3488560.3498488Proceedings of the Fifteenth ACM International Conference on Web Search and Data Mining, WSDM '22. the Fifteenth ACM International Conference on Web Search and Data Mining, WSDM '22ACM2022a</p>
+<p>Conversational question answering on heterogeneous sources. Philipp Christmann, Rishiraj Saha Roy, Gerhard Weikum, 10.1145/3477495.3531815Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '22. the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '22New York, NY, USAAssociation for Computing Machinery2022b</p>
+<p>Explainable conversational question answering over heterogeneous sources via iterative graph neural networks. Philipp Christmann, Rishiraj Saha Roy, Gerhard Weikum, 10.1145/3539618.3591682Proceedings of the 46th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '23. the 46th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '23New York, NY, USAAssociation for Computing Machinery2023</p>
+<p>Conversational information seeking: Theory and application. Jeffrey Dalton, Sophie Fischer, Paul Owoicho, Filip Radlinski, Federico Rossetto, Johanne R Trippas, Hamed Zamani, 10.1145/3477495.3532678Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '22. the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR '22New York, NY, USAAssociation for Computing Machinery2022</p>
+<p>Can you unpack that? learning to rewrite questions-in-context. Ahmed Elgohary, Denis Peskov, Jordan Boyd-Graber, 10.18653/v1/D19-1605Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP). the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)Hong Kong, ChinaAssociation for Computational Linguistics2019</p>
+<p>Talk like a graph: Encoding graphs for large language models. Bahare Fatemi, Jonathan Halcrow, Bryan Perozzi, The Twelfth International Conference on Learning Representations. 2024</p>
+<p>Fast graph representation learning with PyTorch Geometric. Matthias Fey, Jan E Lenssen, ICLR Workshop on Representation Learning on Graphs and Manifolds. 2019</p>
+<p>A new model for learning in graph domains. M Gori, G Monfardini, F Scarselli, 10.1109/IJCNN.2005.1555942Proceedings. 2005 IEEE International Joint Conference on Neural Networks. 2005 IEEE International Joint Conference on Neural Networks2005. 20052</p>
+<p>Retrieval augmented language model pre-training. Kelvin Guu, Kenton Lee, Zora Tung, International conference on machine learning. PMLR2020Panupong Pasupat, and Mingwei Chang</p>
+<p>LoRA: Low-rank adaptation of large language models. J Edward, Phillip Hu, Zeyuan Wallis, Yuanzhi Allen-Zhu, Shean Li, Lu Wang, Weizhu Wang, Chen, International Conference on Learning Representations. 2022</p>
+<p>Can llms effectively leverage graph structural information through prompts. Jin Huang, Xingjian Zhang, Qiaozhu Mei, Jiaqi Ma, arXiv:2309.165952024Preprint</p>
+<p>Search-based neural structured learning for sequential question answering. Mohit Iyyer, Wen-Tau Yih, Ming-Wei Chang, 10.18653/v1/P17-1167Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics. Long Papers. the 55th Annual Meeting of the Association for Computational LinguisticsVancouver, CanadaAssociation for Computational Linguistics20171</p>
+<p>Atlas: few-shot learning with retrieval augmented language models. Gautier Izacard, Patrick Lewis, Maria Lomeli, Lucas Hosseini, Fabio Petroni, Timo Schick, Jane Dwivedi-Yu, Armand Joulin, Sebastian Riedel, Edouard Grave, J. Mach. Learn. Res. 1242024</p>
+<p>Adaptive mixtures of local experts. Robert A Jacobs, Michael I Jordan, Steven J Nowlan, Geoffrey E Hinton, Neural computation. 311991</p>
+<p>Memory-Based Semantic Parsing. Parag Jain, Mirella Lapata, 10.1162/tacl_a_00422Transactions of the Association for Computational Linguistics. 92021</p>
+<p>Conversational semantic parsing using dynamic context graphs. Parag Jain, Mirella Lapata, 10.18653/v1/2023.emnlp-main.535Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing. the 2023 Conference on Empirical Methods in Natural Language ProcessingSingapore2023Association for Computational Linguistics</p>
+<p>Alexandre Albert Q Jiang, Arthur Sablayrolles, Chris Mensch, Devendra Bamford, Diego Singh Chaplot, Florian De Las Casas, Gianna Bressand, Guillaume Lengyel, Lucile Lample, Saulnier, arXiv:2310.06825Mistral 7b. 2023arXiv preprint</p>
+<p>Conversational question answering over knowledge graphs with transformer and graph attention networks. Endri Kacupaj, Joan Plepi, Kuldeep Singh, Harsh Thakkar, Jens Lehmann, Maria Maleshkova, 10.18653/v1/2021.eacl-main.72Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume. the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main VolumeOnline. Association for Computational Linguistics2021</p>
+<p>Generalization through memorization: Nearest neighbor language models. Urvashi Khandelwal, Omer Levy, Dan Jurafsky, Luke Zettlemoyer, Mike Lewis, International Conference on Learning Representations. 2020</p>
+<p>Adam: A method for stochastic optimization. P Diederik, Jimmy Kingma, Ba, 3rd International Conference on Learning Representations, ICLR 2015. San Diego, CA, USA2015. May 7-9, 2015Conference Track Proceedings</p>
+<p>Binary codes capable of correcting deletions, insertions, and reversals. Soviet physics. I Vladimir, Levenshtein, Doklady. 101965</p>
+<p>Blip-2: Bootstrapping language-image pretraining with frozen image encoders and large language models. Junnan Li, Dongxu Li, Silvio Savarese, Steven Hoi, International conference on machine learning. PMLR2023</p>
+<p>Visual instruction tuning. Haotian Liu, Chunyuan Li, Qingyang Wu, Yong Jae Lee, Advances in Neural Information Processing Systems. Curran Associates, Inc202336</p>
+<p>Embers of autoregression: Understanding large language models through the problem they are trained to solve. R Thomas Mccoy, Shunyu Yao, Dan Friedman, Matthew Hardy, Thomas L Griffiths, arXiv:2309.136382023Preprint</p>
+<p>Answering conversational questions on structured data without logical forms. Thomas Mueller, Francesco Piccinno, Peter Shaw, Massimo Nicosia, Yasemin Altun, 10.18653/v1/D19-1603Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP). the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)Hong Kong, ChinaAssociation for Computational Linguistics2019</p>
+<p>ToTTo: A controlled table-to-text generation dataset. Ankur Parikh, Xuezhi Wang, Sebastian Gehrmann, Manaal Faruqui, Bhuwan Dhingra, Diyi Yang, Dipanjan Das, 10.18653/v1/2020.emnlp-main.89Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP). the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)Online. Association for Computational Linguistics2020</p>
+<p>Pytorch: An imperative style, high-performance deep learning library. Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Advances in neural information processing systems. 201932</p>
+<p>Semantic parsing for conversational question answering over knowledge graphs. Laura Perez-Beltrachini, Parag Jain, Emilio Monti, Mirella Lapata, 10.18653/v1/2023.eacl-main.184Proceedings of the 17th Conference of the European Chapter. the 17th Conference of the European ChapterDubrovnik, CroatiaAssociation for Computational Linguistics2023</p>
+<p>Let your graph do the talking: Encoding structured data for llms. Bryan Perozzi, Bahare Fatemi, Dustin Zelle, Anton Tsitsulin, Mehran Kazemi, Rami Al-Rfou, Jonathan Halcrow, arXiv:2402.058622024arXiv preprint</p>
+<p>Exploring the limits of transfer learning with a unified text-to-text transformer. Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, Peter J Liu, Journal of Machine Learning Research. 211402020</p>
+<p>SQuAD: 100,000+ questions for machine comprehension of text. Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, Percy Liang, 10.18653/v1/D16-1264Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing. the 2016 Conference on Empirical Methods in Natural Language ProcessingAustin, TexasAssociation for Computational Linguistics2016</p>
+<p>Question rewriting? assessing its importance for conversational question answering. Gonçalo Raposo, Rui Ribeiro, Bruno Martins, Luísa Coheur, European Conference on Information Retrieval. Springer2022</p>
+<p>CoQA: A conversational question answering challenge. Siva Reddy, Danqi Chen, Christopher D Manning, 10.1162/tacl_a_00266Transactions of the Association for Computational Linguistics. 72019</p>
+<p>Sentence-BERT: Sentence embeddings using Siamese BERTnetworks. Nils Reimers, Iryna Gurevych, 10.18653/v1/D19-1410Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP). the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)Hong Kong, ChinaAssociation for Computational Linguistics2019</p>
+<p>The probabilistic relevance framework: Bm25 and beyond. Stephen Robertson, Hugo Zaragoza, 10.1561/1500000019Found. Trends Inf. Retr. 342009</p>
+<p>Complex sequential question answering: towards learning to converse over linked question answer pairs with a knowledge graph. Amrita Saha, Vardaan Pahuja, M Mitesh, Karthik Khapra, Sarath Sankaranarayanan, Chandar, Proceedings of the Thirty-Second AAAI Conference on Artificial Intelligence and Thirtieth Innovative Applications of Artificial Intelligence Conference and Eighth AAAI Symposium on Educational Advances in Artificial Intelligence, AAAI'18/IAAI'18/EAAI'18. the Thirty-Second AAAI Conference on Artificial Intelligence and Thirtieth Innovative Applications of Artificial Intelligence Conference and Eighth AAAI Symposium on Educational Advances in Artificial Intelligence, AAAI'18/IAAI'18/EAAI'18AAAI Press2018</p>
+<p>The graph neural network model. Franco Scarselli, Marco Gori, Chung Ah, Markus Tsoi, Gabriele Hagenbuchner, Monfardini, 10.1109/TNN.2008.2005605IEEE Transactions on Neural Networks. 2012009</p>
+<p>Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, Jeff Dean, arXiv:1701.06538Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. 2017arXiv preprint</p>
+<p>Multi-task learning for conversational question answering over a large-scale knowledge base. Tao Shen, Xiubo Geng, Tao Qin, Daya Guo, Duyu Tang, Nan Duan, Guodong Long, Daxin Jiang, 10.18653/v1/D19-1248Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP). the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)Hong Kong, ChinaAssociation for Computational Linguistics2019</p>
+<p>Tokenization counts: the impact of tokenization on arithmetic in frontier llms. K Aaditya, Singh, Strouse, arXiv:2402.149032024Preprint</p>
+<p>Tokenization consistency matters for generative models on extractive NLP tasks. Kaiser Sun, Peng Qi, Yuhao Zhang, Lan Liu, William Wang, Zhiheng Huang, 10.18653/v1/2023.findings-emnlp.887Findings of the Association for Computational Linguistics: EMNLP 2023. SingaporeAssociation for Computational Linguistics2023</p>
+<p>Discourse processing for context question answering based on linguistic knowledge. Knowledge-Based Systems. Mingyu Sun, Joyce Y Chai, 200720</p>
+<p>Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, arXiv:2307.09288Llama 2: Open foundation and fine-tuned chat models. 2023arXiv preprint</p>
+<p>Graph attention networks. Petar Velickovic, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Liò, Yoshua Bengio, 6th International Conference on Learning Representations, ICLR 2018. Conference Track Proceedings. OpenReview.net. Vancouver, BC, Canada2018. April 30 -May 3, 2018</p>
+<p>Younes Leandro Von Werra, Lewis Belkada, Edward Tunstall, Tristan Beeching, Nathan Thrush, Shengyi Lambert, Huang, Trl: Transformer reinforcement learning. 2020</p>
+<p>Query resolution for conversational search with limited supervision. Nikos Voskarides, Dan Li, Pengjie Ren, Proceedings of the 43rd International ACM SIGIR conference on research and development in Information Retrieval. the 43rd International ACM SIGIR conference on research and development in Information Retrieval2020Evangelos Kanoulas, and Maarten de Rijke</p>
+<p>Wikidata: a free collaborative knowledgebase. Denny Vrandečić, Markus Krötzsch, 10.1145/2629489Commun. ACM. 57102014</p>
+<p>Can language models solve graph problems in natural language?. Heng Wang, Shangbin Feng, Tianxing He, Zhaoxuan Tan, Xiaochuang Han, Yulia Tsvetkov, Advances in Neural Information Processing Systems. 202436</p>
+<p>Self-instruct: Aligning language models with self-generated instructions. Yizhong Wang, Yeganeh Kordi, Swaroop Mishra, Alisa Liu, Noah A Smith, Daniel Khashabi, Hannaneh Hajishirzi, 10.18653/v1/2023.acl-long.754Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics. Long Papers. the 61st Annual Meeting of the Association for Computational LinguisticsToronto, CanadaAssociation for Computational Linguistics20231</p>
+<p>Transformers: State-of-the-art natural language processing. Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, Remi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, Clara Patrick Von Platen, Yacine Ma, Julien Jernite, Canwen Plu, Teven Xu, Sylvain Le Scao, Mariama Gugger, Quentin Drame, Alexander Lhoest, Rush, 10.18653/v1/2020.emnlp-demos.6Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations. the 2020 Conference on Empirical Methods in Natural Language Processing: System DemonstrationsOnline. Association for Computational Linguistics2020</p>
+<p>Ruosong Ye, Caiqi Zhang, Runhui Wang, Shuyuan Xu, Yongfeng Zhang, arXiv:2308.07134Natural language is all a graph needs. 2023arXiv preprint</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

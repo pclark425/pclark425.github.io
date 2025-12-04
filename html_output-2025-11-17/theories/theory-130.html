@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Modality Generalization Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-130</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-130</p>
+                <p><strong>Name:</strong> Sensor Modality Generalization Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of the fundamental trade-off between environment complexity and environment variation in embodied learning systems, based on the following results.</p>
+                <p><strong>Description:</strong> In embodied navigation and manipulation, the choice of sensor modality fundamentally determines generalization across visual variation. Depth sensors provide geometric information that is invariant to appearance variation (texture, color, lighting), enabling better generalization across visually diverse environments than RGB sensors at equivalent training scales. RGB sensors can achieve comparable generalization but require substantially larger and more diverse training sets because they must learn to extract geometric structure while ignoring appearance variation. The benefit of depth over RGB increases with: (1) the amount of visual variation in the environment, (2) the complexity of the navigation task, and (3) constraints on training data availability. However, RGB sensors are necessary for tasks requiring appearance-based reasoning (e.g., identifying objects by color or texture). The depth advantage is robust to moderate sensor noise but can be compromised by extreme noise or failure modes specific to depth sensors (transparent/reflective surfaces). At very large training scales (billions of frames across thousands of diverse environments), RGB agents can approach depth-level generalization, but at 10-100x higher data requirements.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Depth sensors enable better generalization across visual variation than RGB sensors at equivalent training scales because depth provides appearance-invariant geometric information (free-space structure)</li>
+                <li>The benefit of depth over RGB increases with: (1) the amount of visual variation (appearance diversity) in training and test environments, (2) the geometric complexity of navigation (path length, obstacles), and (3) constraints on training data availability</li>
+                <li>RGB-based agents require 10-100x more diverse training data (in terms of scene variety and appearance variation) to match depth-based generalization, as evidenced by the need for both Gibson-2+ and Matterport3D to reach high RGB performance</li>
+                <li>Depth sensors are robust to moderate sensor noise but can fail catastrophically under extreme noise or in environments with transparent/reflective surfaces where depth sensing fails</li>
+                <li>For tasks requiring appearance-based reasoning (object identification by color/texture), RGB sensors are necessary despite their generalization challenges</li>
+                <li>At very large training scales (billions of frames, thousands of environments), RGB agents can approach depth-level generalization but at substantially higher data cost</li>
+                <li>The depth advantage is most pronounced for long-range navigation tasks where geometric reasoning is critical</li>
+                <li>Hybrid RGB-D sensors can provide complementary information but require careful architecture design to exploit both modalities effectively</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Depth-based RL agents achieved SPL=0.79 on Gibson (lower complexity) and SPL=0.54 on Matterport3D (higher complexity), outperforming RGB, RGBD, Blind, and classic SLAM agents across datasets <a href="../results/extraction-result-1083.html#e1083.0" class="evidence-link">[e1083.0]</a> </li>
+    <li>Depth agents generalized best across datasets: when trained on one dataset and tested on another, depth-equipped agents degraded less than RGB/RGBD agents <a href="../results/extraction-result-1083.html#e1083.0" class="evidence-link">[e1083.0]</a> </li>
+    <li>RGB-only PointNav agents required both layout diversity (Gibson-2+) and appearance diversity (Matterport3D) to reach high performance (Validation SPL=0.929, Success=0.991), whereas prior lower-variation RGB training gave much lower SPL (0.57 val, 0.47 test) <a href="../results/extraction-result-1082.html#e1082.1" class="evidence-link">[e1082.1]</a> </li>
+    <li>Adding lower-quality reconstructions and MP3D (increasing variation) improved robustness and final SPL for RGB agents, showing they need diverse appearance exposure <a href="../results/extraction-result-1082.html#e1082.0" class="evidence-link">[e1082.0]</a> </li>
+    <li>RGB agents achieved high success rates (0.977) but lower SPL (0.920) than depth agents, especially for long-range navigation where depth cues are critical <a href="../results/extraction-result-1082.html#e1082.1" class="evidence-link">[e1082.1]</a> </li>
+    <li>Classic SLAM (using depth via ORB-SLAM2) maintained steady performance across datasets without training (Gibson test: SPL=0.51, Success=0.62; Matterport3D test: SPL=0.39, Success=0.47), demonstrating depth's inherent generalization <a href="../results/extraction-result-1083.html#e1083.4" class="evidence-link">[e1083.4]</a> </li>
+    <li>SLAM is robust to modest sensor noise but susceptible to catastrophic failure with large sensor noise; depth-RL agents can be retrained with noise to handle it <a href="../results/extraction-result-1083.html#e1083.4" class="evidence-link">[e1083.4]</a> </li>
+    <li>Depth provides direct information about free space, reducing overfitting to visual appearance; variation in RGB appearance hurts RGB-equipped agents but affects Depth agents less <a href="../results/extraction-result-1083.html#e1083.0" class="evidence-link">[e1083.0]</a> </li>
+    <li>Higher environment complexity (larger GDSP in Matterport3D) reduces absolute performance for all modalities, but depth maintains better relative performance (Depth: 0.79 SPL on Gibson vs 0.54 on Matterport3D) <a href="../results/extraction-result-1083.html#e1083.0" class="evidence-link">[e1083.0]</a> </li>
+    <li>Training used ~90% of peak performance reached by ~100M steps for depth agents, with power-law learning curves <a href="../results/extraction-result-1082.html#e1082.0" class="evidence-link">[e1082.0]</a> </li>
+    <li>Depth+GPS+Compass yields near-oracle navigation efficiency across distances, while RGB-only achieves high success but lower SPL, and Blind agents fail on long-range tasks <a href="../results/extraction-result-1082.html#e1082.0" class="evidence-link">[e1082.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In environments with high visual variation but consistent geometry (e.g., same building with different lighting/textures), depth-based agents will outperform RGB-based agents by 30-50% in SPL when both are trained on equivalent data</li>
+                <li>RGB-based agents trained on a single visually-consistent environment will show >50% performance drop when tested in visually-different environments, while depth-based agents will show <20% drop</li>
+                <li>For navigation tasks in outdoor environments with consistent geometry but varying weather/lighting, depth sensors will maintain 2-3x better generalization than RGB at moderate training scales</li>
+                <li>Training RGB agents to match depth generalization will require 10-100x more environment instances (scenes) when visual variation is high</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether learned depth prediction from RGB (monocular depth estimation) can provide the same generalization benefits as true depth sensors, or whether the learned depth inherits RGB's sensitivity to appearance variation</li>
+                <li>Whether depth sensors provide similar generalization benefits in outdoor environments with extreme lighting variation, fog, rain, or other weather conditions that may affect depth sensor reliability</li>
+                <li>Whether there exist navigation tasks where RGB generalizes better than depth despite higher visual variation (e.g., tasks requiring recognition of visual landmarks that are geometrically similar but visually distinct)</li>
+                <li>Whether the depth advantage persists with extremely large-scale RGB training (e.g., 10+ billion frames across 10,000+ diverse environments), or whether RGB can fully close the gap given sufficient data</li>
+                <li>How the depth advantage scales with different depth sensor technologies (stereo, structured light, ToF, LiDAR) and their respective failure modes</li>
+                <li>Whether hybrid RGB-D architectures with proper fusion can achieve super-additive benefits (better than either modality alone by a large margin) or merely additive benefits</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding navigation tasks where RGB generalizes better than depth across visual variation (controlling for training data quantity) would challenge the core theory</li>
+                <li>Demonstrating that RGB agents can match depth generalization with the same amount of training data (same number of scenes/episodes) would falsify the data requirement claim</li>
+                <li>Showing that depth does not help in environments with high visual variation would contradict the appearance-invariance claim</li>
+                <li>Finding that hybrid RGB-D does not outperform depth-only (or performs worse) would challenge the complementarity claim</li>
+                <li>Demonstrating that learned monocular depth provides the same generalization as true depth would challenge the claim that depth's advantage comes from direct geometric measurement</li>
+                <li>Finding environments where depth sensor noise causes worse generalization than RGB appearance variation would challenge the robustness claim</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Whether the depth advantage persists in environments with transparent or reflective surfaces where depth sensors fail but RGB can still provide useful information </li>
+    <li>How the depth advantage scales with sensor resolution, field of view, and range (e.g., does low-resolution depth still outperform high-resolution RGB?) </li>
+    <li>The exact mechanism by which depth information enables better generalization at the neural network level (e.g., what representations are learned differently?) </li>
+    <li>Whether the depth advantage holds for manipulation tasks (not just navigation) where fine-grained geometric reasoning is required </li>
+    <li>How the depth advantage interacts with different network architectures (e.g., transformers vs CNNs, different encoder designs) </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Savva et al. (2019) Habitat: A Platform for Embodied AI Research [Compared sensor modalities empirically but did not formalize a generalization theory or quantify data requirements]</li>
+    <li>Wijmans et al. (2019) DD-PPO: Learning Near-Perfect PointGoal Navigators from 2.5 Billion Frames [Demonstrated depth superiority and RGB data requirements but did not formalize theory]</li>
+    <li>Zhu et al. (2017) Target-driven visual navigation in indoor scenes using deep reinforcement learning [Early work on visual navigation with different sensors, no generalization theory]</li>
+    <li>Mishkin et al. (2019) Benchmarking classic and learned navigation in complex 3D environments [Compared SLAM (depth-based) to learned methods but focused on sample efficiency not generalization theory]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Sensor Modality Generalization Theory",
+    "theory_description": "In embodied navigation and manipulation, the choice of sensor modality fundamentally determines generalization across visual variation. Depth sensors provide geometric information that is invariant to appearance variation (texture, color, lighting), enabling better generalization across visually diverse environments than RGB sensors at equivalent training scales. RGB sensors can achieve comparable generalization but require substantially larger and more diverse training sets because they must learn to extract geometric structure while ignoring appearance variation. The benefit of depth over RGB increases with: (1) the amount of visual variation in the environment, (2) the complexity of the navigation task, and (3) constraints on training data availability. However, RGB sensors are necessary for tasks requiring appearance-based reasoning (e.g., identifying objects by color or texture). The depth advantage is robust to moderate sensor noise but can be compromised by extreme noise or failure modes specific to depth sensors (transparent/reflective surfaces). At very large training scales (billions of frames across thousands of diverse environments), RGB agents can approach depth-level generalization, but at 10-100x higher data requirements.",
+    "supporting_evidence": [
+        {
+            "text": "Depth-based RL agents achieved SPL=0.79 on Gibson (lower complexity) and SPL=0.54 on Matterport3D (higher complexity), outperforming RGB, RGBD, Blind, and classic SLAM agents across datasets",
+            "uuids": [
+                "e1083.0"
+            ]
+        },
+        {
+            "text": "Depth agents generalized best across datasets: when trained on one dataset and tested on another, depth-equipped agents degraded less than RGB/RGBD agents",
+            "uuids": [
+                "e1083.0"
+            ]
+        },
+        {
+            "text": "RGB-only PointNav agents required both layout diversity (Gibson-2+) and appearance diversity (Matterport3D) to reach high performance (Validation SPL=0.929, Success=0.991), whereas prior lower-variation RGB training gave much lower SPL (0.57 val, 0.47 test)",
+            "uuids": [
+                "e1082.1"
+            ]
+        },
+        {
+            "text": "Adding lower-quality reconstructions and MP3D (increasing variation) improved robustness and final SPL for RGB agents, showing they need diverse appearance exposure",
+            "uuids": [
+                "e1082.0"
+            ]
+        },
+        {
+            "text": "RGB agents achieved high success rates (0.977) but lower SPL (0.920) than depth agents, especially for long-range navigation where depth cues are critical",
+            "uuids": [
+                "e1082.1"
+            ]
+        },
+        {
+            "text": "Classic SLAM (using depth via ORB-SLAM2) maintained steady performance across datasets without training (Gibson test: SPL=0.51, Success=0.62; Matterport3D test: SPL=0.39, Success=0.47), demonstrating depth's inherent generalization",
+            "uuids": [
+                "e1083.4"
+            ]
+        },
+        {
+            "text": "SLAM is robust to modest sensor noise but susceptible to catastrophic failure with large sensor noise; depth-RL agents can be retrained with noise to handle it",
+            "uuids": [
+                "e1083.4"
+            ]
+        },
+        {
+            "text": "Depth provides direct information about free space, reducing overfitting to visual appearance; variation in RGB appearance hurts RGB-equipped agents but affects Depth agents less",
+            "uuids": [
+                "e1083.0"
+            ]
+        },
+        {
+            "text": "Higher environment complexity (larger GDSP in Matterport3D) reduces absolute performance for all modalities, but depth maintains better relative performance (Depth: 0.79 SPL on Gibson vs 0.54 on Matterport3D)",
+            "uuids": [
+                "e1083.0"
+            ]
+        },
+        {
+            "text": "Training used ~90% of peak performance reached by ~100M steps for depth agents, with power-law learning curves",
+            "uuids": [
+                "e1082.0"
+            ]
+        },
+        {
+            "text": "Depth+GPS+Compass yields near-oracle navigation efficiency across distances, while RGB-only achieves high success but lower SPL, and Blind agents fail on long-range tasks",
+            "uuids": [
+                "e1082.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Depth sensors enable better generalization across visual variation than RGB sensors at equivalent training scales because depth provides appearance-invariant geometric information (free-space structure)",
+        "The benefit of depth over RGB increases with: (1) the amount of visual variation (appearance diversity) in training and test environments, (2) the geometric complexity of navigation (path length, obstacles), and (3) constraints on training data availability",
+        "RGB-based agents require 10-100x more diverse training data (in terms of scene variety and appearance variation) to match depth-based generalization, as evidenced by the need for both Gibson-2+ and Matterport3D to reach high RGB performance",
+        "Depth sensors are robust to moderate sensor noise but can fail catastrophically under extreme noise or in environments with transparent/reflective surfaces where depth sensing fails",
+        "For tasks requiring appearance-based reasoning (object identification by color/texture), RGB sensors are necessary despite their generalization challenges",
+        "At very large training scales (billions of frames, thousands of environments), RGB agents can approach depth-level generalization but at substantially higher data cost",
+        "The depth advantage is most pronounced for long-range navigation tasks where geometric reasoning is critical",
+        "Hybrid RGB-D sensors can provide complementary information but require careful architecture design to exploit both modalities effectively"
+    ],
+    "new_predictions_likely": [
+        "In environments with high visual variation but consistent geometry (e.g., same building with different lighting/textures), depth-based agents will outperform RGB-based agents by 30-50% in SPL when both are trained on equivalent data",
+        "RGB-based agents trained on a single visually-consistent environment will show &gt;50% performance drop when tested in visually-different environments, while depth-based agents will show &lt;20% drop",
+        "For navigation tasks in outdoor environments with consistent geometry but varying weather/lighting, depth sensors will maintain 2-3x better generalization than RGB at moderate training scales",
+        "Training RGB agents to match depth generalization will require 10-100x more environment instances (scenes) when visual variation is high"
+    ],
+    "new_predictions_unknown": [
+        "Whether learned depth prediction from RGB (monocular depth estimation) can provide the same generalization benefits as true depth sensors, or whether the learned depth inherits RGB's sensitivity to appearance variation",
+        "Whether depth sensors provide similar generalization benefits in outdoor environments with extreme lighting variation, fog, rain, or other weather conditions that may affect depth sensor reliability",
+        "Whether there exist navigation tasks where RGB generalizes better than depth despite higher visual variation (e.g., tasks requiring recognition of visual landmarks that are geometrically similar but visually distinct)",
+        "Whether the depth advantage persists with extremely large-scale RGB training (e.g., 10+ billion frames across 10,000+ diverse environments), or whether RGB can fully close the gap given sufficient data",
+        "How the depth advantage scales with different depth sensor technologies (stereo, structured light, ToF, LiDAR) and their respective failure modes",
+        "Whether hybrid RGB-D architectures with proper fusion can achieve super-additive benefits (better than either modality alone by a large margin) or merely additive benefits"
+    ],
+    "negative_experiments": [
+        "Finding navigation tasks where RGB generalizes better than depth across visual variation (controlling for training data quantity) would challenge the core theory",
+        "Demonstrating that RGB agents can match depth generalization with the same amount of training data (same number of scenes/episodes) would falsify the data requirement claim",
+        "Showing that depth does not help in environments with high visual variation would contradict the appearance-invariance claim",
+        "Finding that hybrid RGB-D does not outperform depth-only (or performs worse) would challenge the complementarity claim",
+        "Demonstrating that learned monocular depth provides the same generalization as true depth would challenge the claim that depth's advantage comes from direct geometric measurement",
+        "Finding environments where depth sensor noise causes worse generalization than RGB appearance variation would challenge the robustness claim"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Whether the depth advantage persists in environments with transparent or reflective surfaces where depth sensors fail but RGB can still provide useful information",
+            "uuids": []
+        },
+        {
+            "text": "How the depth advantage scales with sensor resolution, field of view, and range (e.g., does low-resolution depth still outperform high-resolution RGB?)",
+            "uuids": []
+        },
+        {
+            "text": "The exact mechanism by which depth information enables better generalization at the neural network level (e.g., what representations are learned differently?)",
+            "uuids": []
+        },
+        {
+            "text": "Whether the depth advantage holds for manipulation tasks (not just navigation) where fine-grained geometric reasoning is required",
+            "uuids": []
+        },
+        {
+            "text": "How the depth advantage interacts with different network architectures (e.g., transformers vs CNNs, different encoder designs)",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "RGB-based agents achieved very high success rates (0.977) with sufficient training diversity (Gibson-2+ + Matterport3D), suggesting the gap may be closable with enough data, though at much higher cost",
+            "uuids": [
+                "e1082.1"
+            ]
+        },
+        {
+            "text": "At very large scales (2.5B frames), RGB agents can achieve strong performance, suggesting the depth advantage may diminish with extreme training scales",
+            "uuids": [
+                "e1082.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Tasks requiring color or texture discrimination (e.g., 'go to the red door') require RGB regardless of generalization challenges",
+        "Environments with transparent or reflective surfaces (glass, mirrors, water) may favor RGB over depth due to depth sensor failure modes",
+        "Very simple environments with low visual variation and simple geometry may not show significant differences between modalities",
+        "Outdoor environments with extreme weather (heavy rain, fog, snow) may challenge both modalities differently, potentially favoring RGB in some conditions",
+        "At extreme training scales (billions of frames, thousands of environments), the depth advantage may diminish as RGB agents learn robust geometric representations",
+        "Tasks requiring long-range navigation (&gt;10m) show larger depth advantages than short-range tasks",
+        "Under moderate sensor noise, depth maintains advantages, but extreme noise can cause catastrophic failures that RGB may avoid"
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Savva et al. (2019) Habitat: A Platform for Embodied AI Research [Compared sensor modalities empirically but did not formalize a generalization theory or quantify data requirements]",
+            "Wijmans et al. (2019) DD-PPO: Learning Near-Perfect PointGoal Navigators from 2.5 Billion Frames [Demonstrated depth superiority and RGB data requirements but did not formalize theory]",
+            "Zhu et al. (2017) Target-driven visual navigation in indoor scenes using deep reinforcement learning [Early work on visual navigation with different sensors, no generalization theory]",
+            "Mishkin et al. (2019) Benchmarking classic and learned navigation in complex 3D environments [Compared SLAM (depth-based) to learned methods but focused on sample efficiency not generalization theory]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 3,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

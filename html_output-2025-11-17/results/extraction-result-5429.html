@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-5429 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-5429</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-5429</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-110.html">extraction-schema-110</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models using self-reflection, self-critique, or iterative generate-then-reflect methods to improve answer quality, including details of the methods, tasks, performance with and without reflection, and any evidence of answer quality improvement or limitations.</div>
+                <p><strong>Paper ID:</strong> paper-cdecefa737544971b72c5b5ef60f9eb9772fa051</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/cdecefa737544971b72c5b5ef60f9eb9772fa051" target="_blank">Re3: Generating Longer Stories With Recursive Reprompting and Revision</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> The Recursive Reprompting and Revision framework (Re3) is proposed to address the problem of automatically generating longer stories of over two thousand words by prompting a general-purpose language model to construct a structured overarching plan, and generating story passages by repeatedly injecting contextual information from both the plan and current story state into a language model prompt.</p>
+                <p><strong>Paper Abstract:</strong> We consider the problem of automatically generating longer stories of over two thousand words. Compared to prior work on shorter stories, long-range plot coherence and relevance are more central challenges here. We propose the Recursive Reprompting and Revision framework (Re3) to address these challenges by (a) prompting a general-purpose language model to construct a structured overarching plan, and (b) generating story passages by repeatedly injecting contextual information from both the plan and current story state into a language model prompt. We then revise by (c) reranking different continuations for plot coherence and premise relevance, and finally (d) editing the best continuation for factual consistency. Compared to similar-length stories generated directly from the same base model, human evaluators judged substantially more of Re3’s stories as having a coherent overarching plot (by 14% absolute increase), and relevant to the given initial premise (by 20%).</p>
+                <p><strong>Cost:</strong> 0.013</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e5429.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e5429.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models using self-reflection, self-critique, or iterative generate-then-reflect methods to improve answer quality, including details of the methods, tasks, performance with and without reflection, and any evidence of answer quality improvement or limitations.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Re3</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Recursive Reprompting and Revision</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A multi-stage, iterative generation-and-refinement framework for long-form story generation that (1) prompts a large LLM to produce a structured plan, (2) recursively reprompts the generator with dynamically selected context to produce multiple candidate continuations, (3) reranks candidates for coherence and relevance, and (4) applies local edits to repair factual inconsistencies.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT-3 family (GPT3-175B primary generator; also GPT3-Instruct variants and GPT3 Edit API)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Primary generator: GPT3-175B (davinci, ~175B parameters). Auxiliary models: GPT3-Instruct-175B (text-davinci-002, instruction-tuned 175B variant) for planning and fact-list generation, GPT3-Instruct-13B (text-curie-001 / ~13B) for summaries and some auxiliary tasks, GPT3 Edit API (text-davinci-edit-001) for controlled editing. Discriminative/reranker models: Longformer-Base finetuned for coherence and relevance; BART-Large based MNLI entailment model used for agreement checks; DPR used for retrieval.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>reflection_method_name</strong></td>
+                            <td>Recursive Reprompting and Revision (Plan → Draft (recursive reprompting) → Rewrite (rerank) → Edit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>reflection_method_description</strong></td>
+                            <td>Pipeline details: (1) Plan: zero-shot prompt GPT-3 to produce setting, characters, and a numbered outline from the premise. (2) Draft (recursive reprompting): for each outline point, compose a structured prompt that dynamically selects relevant parts of the plan and story-so-far (using DPR and NER pipelines) and feed to GPT3-175B to autoregressively generate fixed-length continuations; generate multiple candidate continuations per step. (3) Rewrite (generate-then-reflect): obtain several candidate continuations (exactly four 256-token continuations per outline point in the main instantiation), then use discriminative rerankers (Longformer-Base models finetuned on WritingPrompts) to score coherence w.r.t. prior passage and relevance to the outline point; apply rule-based heuristics to filter obvious failures and select the best candidate. (4) Edit: extract structured character attribute-value facts (via GPT prompts + extraction + entailment checks) into per-character dictionaries (STRUCTURED-DETECT), detect contradictions using an entailment model, and apply controlled edits using the GPT3 Edit API to correct flagged factual errors.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>num_iterations</strong></td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td><strong>task_name</strong></td>
+                            <td>Long-form story generation (2000-2500 words)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>task_description</strong></td>
+                            <td>Given a short premise, generate a multi-thousand-word short story that maintains an overarching coherent plot, remains relevant to the premise, preserves narration style, and avoids long-range factual contradictions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_with_reflection</strong></td>
+                            <td>RE3 (full pipeline) — Table 1: Interesting 54.3% (vs Rolling 45.0%), Coherent 60.0% (vs Rolling 45.7%), Relevant 64.0% (vs Rolling 44.0%), Humanlike 83.3% (vs Rolling 74.0%), Misc. Problems 1.07 (lower is better; Rolling 1.20). Against ROLLING-FT baseline RE3: Coherent 60.0% (ROLLING-FT 48.7%), Relevant 65.3% (ROLLING-FT 49.3%). Ablation comparisons (Table 4) show RE3: e.g., vs DRAFT-REWRITE-EDIT (no Plan) RE3: Interesting 59.7 vs 50.3, Coherent 63.3 vs 46.7, Relevant 63.7 vs 50.7, Humanlike 80.0 vs 70.0.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_without_reflection</strong></td>
+                            <td>ROLLING baseline (no plan, rolling-window autoregressive generation): Interesting 45.0%, Coherent 45.7%, Relevant 44.0%, Humanlike 74.0%. Ablations: DRAFT-REWRITE-EDIT (no Plan / effectively rolling) — Interesting 50.3%, Coherent 46.7%, Relevant 50.7%; PLAN-DRAFT-EDIT (no Rewrite reranking) — Interesting 46.3%, Coherent 42.3%, Relevant 42.7%; PLAN-DRAFT-REWRITE (no Edit) — Interesting 55.0%, Coherent 60.3%, Relevant 59.3%. (See paper Tables 1 and 4 for full numbers.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>has_performance_comparison</strong></td>
+                            <td>True</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_of_improvement</strong></td>
+                            <td>Quantitative human evaluation: RE3 stories are judged substantially more coherent and more relevant to the premise than rolling-window baselines and finetuned rolling baseline (absolute improvements reported up to +14 percentage points coherence and +20 percentage points relevance vs the un-finetuned rolling baseline). Ablation studies show the Plan and Rewrite modules are critical: removing Plan or Rewrite substantially reduces coherence and relevance metrics (e.g., coherence drops from 63.3% to 46.7% when Plan is ablated in one comparison). Qualitative examples show RE3 can self-correct back to the high-level plan after early-generation errors.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_or_failure_cases</strong></td>
+                            <td>The paper emphasizes several limitations: (1) The Edit module (structured detection + GPT3 Edit) provides little benefit on main metrics and struggles to fix large or non-character-centric inconsistencies; ablation shows Edit contributes little to coherence/relevance (Table 4). (2) STRUCTURED-DETECT (character contradiction detector) achieves ROC-AUC = 0.684 on a controlled contradiction detection task — better than simple entailment baselines but still low in absolute terms, indicating unreliable contradiction detection. (3) The correction step (GPT3 Edit API) can sometimes introduce undesired edits or fail on larger changes. (4) Iteration is implemented via separate discriminative rerankers and external detectors (not a pure self-critique by the generator model itself); the framework relies on several auxiliary models (Longformer rerankers, entailment models, DPR) rather than only the generator reflecting on its own outputs. (5) Human evaluation is noisy (low annotator agreement) and evaluation costs constrained experiments and hyperparameter tuning. (6) RE3 can still omit parts of the premise or fail to follow some outline points; long-range factual continuity across axes other than character attributes remains problematic.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>notes</strong></td>
+                            <td>Re3 is an explicit generate-then-reflect style pipeline: multiple generation candidates are produced and then analyzed/filtered/reranked by separate models and heuristics; the authors relate Draft's recursive reprompting to chain-of-thought prompting but the main reflection is external (rerankers/entailment/edit) rather than an introspective natural-language self-critique from the same generator.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Re3: Generating Longer Stories With Recursive Reprompting and Revision', 'publication_date_yy_mm': '2022-10'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Large language models are zero-shot reasoners <em>(Rating: 2)</em></li>
+                <li>Draft and edit: Automatic storytelling through multipass hierarchical conditional variational autoencoder <em>(Rating: 2)</em></li>
+                <li>A knowledge-enhanced pretraining model for commonsense story generation <em>(Rating: 1)</em></li>
+                <li>Plan, write, and revise: an interactive system for open-domain story generation <em>(Rating: 1)</em></li>
+                <li>A knowledge-enhanced pretraining model for commonsense story generation <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-5429",
+    "paper_id": "paper-cdecefa737544971b72c5b5ef60f9eb9772fa051",
+    "extraction_schema_id": "extraction-schema-110",
+    "extracted_data": [
+        {
+            "name_short": "Re3",
+            "name_full": "Recursive Reprompting and Revision",
+            "brief_description": "A multi-stage, iterative generation-and-refinement framework for long-form story generation that (1) prompts a large LLM to produce a structured plan, (2) recursively reprompts the generator with dynamically selected context to produce multiple candidate continuations, (3) reranks candidates for coherence and relevance, and (4) applies local edits to repair factual inconsistencies.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT-3 family (GPT3-175B primary generator; also GPT3-Instruct variants and GPT3 Edit API)",
+            "model_description": "Primary generator: GPT3-175B (davinci, ~175B parameters). Auxiliary models: GPT3-Instruct-175B (text-davinci-002, instruction-tuned 175B variant) for planning and fact-list generation, GPT3-Instruct-13B (text-curie-001 / ~13B) for summaries and some auxiliary tasks, GPT3 Edit API (text-davinci-edit-001) for controlled editing. Discriminative/reranker models: Longformer-Base finetuned for coherence and relevance; BART-Large based MNLI entailment model used for agreement checks; DPR used for retrieval.",
+            "reflection_method_name": "Recursive Reprompting and Revision (Plan → Draft (recursive reprompting) → Rewrite (rerank) → Edit)",
+            "reflection_method_description": "Pipeline details: (1) Plan: zero-shot prompt GPT-3 to produce setting, characters, and a numbered outline from the premise. (2) Draft (recursive reprompting): for each outline point, compose a structured prompt that dynamically selects relevant parts of the plan and story-so-far (using DPR and NER pipelines) and feed to GPT3-175B to autoregressively generate fixed-length continuations; generate multiple candidate continuations per step. (3) Rewrite (generate-then-reflect): obtain several candidate continuations (exactly four 256-token continuations per outline point in the main instantiation), then use discriminative rerankers (Longformer-Base models finetuned on WritingPrompts) to score coherence w.r.t. prior passage and relevance to the outline point; apply rule-based heuristics to filter obvious failures and select the best candidate. (4) Edit: extract structured character attribute-value facts (via GPT prompts + extraction + entailment checks) into per-character dictionaries (STRUCTURED-DETECT), detect contradictions using an entailment model, and apply controlled edits using the GPT3 Edit API to correct flagged factual errors.",
+            "num_iterations": 4,
+            "task_name": "Long-form story generation (2000-2500 words)",
+            "task_description": "Given a short premise, generate a multi-thousand-word short story that maintains an overarching coherent plot, remains relevant to the premise, preserves narration style, and avoids long-range factual contradictions.",
+            "performance_with_reflection": "RE3 (full pipeline) — Table 1: Interesting 54.3% (vs Rolling 45.0%), Coherent 60.0% (vs Rolling 45.7%), Relevant 64.0% (vs Rolling 44.0%), Humanlike 83.3% (vs Rolling 74.0%), Misc. Problems 1.07 (lower is better; Rolling 1.20). Against ROLLING-FT baseline RE3: Coherent 60.0% (ROLLING-FT 48.7%), Relevant 65.3% (ROLLING-FT 49.3%). Ablation comparisons (Table 4) show RE3: e.g., vs DRAFT-REWRITE-EDIT (no Plan) RE3: Interesting 59.7 vs 50.3, Coherent 63.3 vs 46.7, Relevant 63.7 vs 50.7, Humanlike 80.0 vs 70.0.",
+            "performance_without_reflection": "ROLLING baseline (no plan, rolling-window autoregressive generation): Interesting 45.0%, Coherent 45.7%, Relevant 44.0%, Humanlike 74.0%. Ablations: DRAFT-REWRITE-EDIT (no Plan / effectively rolling) — Interesting 50.3%, Coherent 46.7%, Relevant 50.7%; PLAN-DRAFT-EDIT (no Rewrite reranking) — Interesting 46.3%, Coherent 42.3%, Relevant 42.7%; PLAN-DRAFT-REWRITE (no Edit) — Interesting 55.0%, Coherent 60.3%, Relevant 59.3%. (See paper Tables 1 and 4 for full numbers.)",
+            "has_performance_comparison": true,
+            "evidence_of_improvement": "Quantitative human evaluation: RE3 stories are judged substantially more coherent and more relevant to the premise than rolling-window baselines and finetuned rolling baseline (absolute improvements reported up to +14 percentage points coherence and +20 percentage points relevance vs the un-finetuned rolling baseline). Ablation studies show the Plan and Rewrite modules are critical: removing Plan or Rewrite substantially reduces coherence and relevance metrics (e.g., coherence drops from 63.3% to 46.7% when Plan is ablated in one comparison). Qualitative examples show RE3 can self-correct back to the high-level plan after early-generation errors.",
+            "limitations_or_failure_cases": "The paper emphasizes several limitations: (1) The Edit module (structured detection + GPT3 Edit) provides little benefit on main metrics and struggles to fix large or non-character-centric inconsistencies; ablation shows Edit contributes little to coherence/relevance (Table 4). (2) STRUCTURED-DETECT (character contradiction detector) achieves ROC-AUC = 0.684 on a controlled contradiction detection task — better than simple entailment baselines but still low in absolute terms, indicating unreliable contradiction detection. (3) The correction step (GPT3 Edit API) can sometimes introduce undesired edits or fail on larger changes. (4) Iteration is implemented via separate discriminative rerankers and external detectors (not a pure self-critique by the generator model itself); the framework relies on several auxiliary models (Longformer rerankers, entailment models, DPR) rather than only the generator reflecting on its own outputs. (5) Human evaluation is noisy (low annotator agreement) and evaluation costs constrained experiments and hyperparameter tuning. (6) RE3 can still omit parts of the premise or fail to follow some outline points; long-range factual continuity across axes other than character attributes remains problematic.",
+            "notes": "Re3 is an explicit generate-then-reflect style pipeline: multiple generation candidates are produced and then analyzed/filtered/reranked by separate models and heuristics; the authors relate Draft's recursive reprompting to chain-of-thought prompting but the main reflection is external (rerankers/entailment/edit) rather than an introspective natural-language self-critique from the same generator.",
+            "uuid": "e5429.0",
+            "source_info": {
+                "paper_title": "Re3: Generating Longer Stories With Recursive Reprompting and Revision",
+                "publication_date_yy_mm": "2022-10"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Large language models are zero-shot reasoners",
+            "rating": 2
+        },
+        {
+            "paper_title": "Draft and edit: Automatic storytelling through multipass hierarchical conditional variational autoencoder",
+            "rating": 2
+        },
+        {
+            "paper_title": "A knowledge-enhanced pretraining model for commonsense story generation",
+            "rating": 1
+        },
+        {
+            "paper_title": "Plan, write, and revise: an interactive system for open-domain story generation",
+            "rating": 1
+        },
+        {
+            "paper_title": "A knowledge-enhanced pretraining model for commonsense story generation",
+            "rating": 1
+        }
+    ],
+    "cost": 0.013297,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>$\mathrm{Re}^{3}$ : Generating Longer Stories With Recursive Reprompting and Revision</h1>
+<p>Kevin Yang ${ }^{1}$ Yuandong Tian ${ }^{2}$ Nanyun Peng ${ }^{3}$ Dan Klein ${ }^{1}$<br>${ }^{1}$ UC Berkeley, ${ }^{2}$ Meta AI, ${ }^{3}$ UCLA<br>{yangk, klein}@berkeley.edu, yuandong@meta.com, violetpeng@cs.ucla.edu</p>
+<h4>Abstract</h4>
+<p>We consider the problem of automatically generating longer stories of over two thousand words. Compared to prior work on shorter stories, long-range plot coherence and relevance are more central challenges here. We propose the Recursive Reprompting and Revision framework $\left(\mathrm{Re}^{3}\right)$ to address these challenges by (a) prompting a general-purpose language model to construct a structured overarching plan, and (b) generating story passages by repeatedly injecting contextual information from both the plan and current story state into a language model prompt. We then revise by (c) reranking different continuations for plot coherence and premise relevance, and finally (d) editing the best continuation for factual consistency. Compared to similar-length stories generated directly from the same base model, human evaluators judged substantially more of $\mathrm{Re}^{3}$ 's stories as having a coherent overarching plot (by $14 \%$ absolute increase), and relevant to the given initial premise (by $20 \%$ ).</p>
+<h2>1 Introduction</h2>
+<p>Generating long-term coherent stories is a longstanding challenge for artificial intelligence, requiring a comprehensive grasp of linguistic, world, and commonsense knowledge (Charniak, 1972; Turner, 1994). Recently, many works have automatically generated short stories ranging in length from five sentences to one or two paragraphs (Fan et al., 2018; Yao et al., 2019; Goldfarb-Tarrant et al., 2020; Rashkin et al., 2020; Han et al., 2022). While stories of such length serve as a good test bed for text generation, they are much shorter than typical short stories meant for human consumption, which are often several pages in length.</p>
+<p>In this work, we aim to bridge some of this gap by generating much longer "short" stories: the final generated stories in our experiments are 2000-2500 words. We are the first to automatically generate plot-coherent stories of such length, with further
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: High-level overview of $\mathrm{Re}^{3}$.
+length increases limited primarily by evaluation rather than technical issues. ${ }^{1}$ Generating stories of such length faces qualitatively new challenges compared to prior work on shorter stories. First, the system must maintain a coherent overarching plot over thousands of words. Given an initial premise, it should maintain relevance to this premise over thousands of words as well. Additional challenges include preservation of narration style and avoiding factual contradictions over a very long horizon.</p>
+<p>Of course, recent years have also witnessed a dramatic rise in the capabilities of general-purpose (non-finetuned) large pretrained language models. Of particular note are their strong zero-shot capabilities, especially when given clever prompts (Brown et al., 2020; Kojima et al., 2022). Yet despite recent improvements, even the best models to date may still struggle with complex long-form generation, such as in our story generation task (Section 4).</p>
+<p>In contrast, human writers successfully navigate the myriad challenges of long-form generation on a regular basis. We observe that a human writer does not simply write a long document in one shot.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Rather, he or she may (a) create a detailed plan, then (b) draft each next passage of the document according to that plan. He or she may then revise by (c) rewriting passages entirely, and/or (d) postediting for finer details.</p>
+<p>Motivated by this observation, we propose the Recursive Reprompting and Revision framework ( $\mathrm{Re}^{3}$, Figure 1) to generate longer stories. While based on the human writing process, $\mathrm{Re}^{3}$ is a fully automatic system with no human intervention, unlike prior approaches which model the human writing process with a human in the loop (GoldfarbTarrant et al., 2019; Coenen et al., 2021; Lee et al., 2022). First, (a) $\mathrm{Re}^{3}$ 's Plan module generates a plan by prompting GPT3 (Brown et al., 2020) to augment a given premise with a setting, characters, and outline. (b) $\mathrm{Re}^{3}$ 's Draft module then generates each next story continuation by recursively reprompting GPT3 using a strategically crafted prompt, in a procedure which can be viewed as a generalization of chain-of-thought prompting (Kojima et al., 2022). Specifically, our prompt is dynamically reconstructed at each step by selectively manifesting contextually relevant information from the initial plan-itself generated by prompting-and the story thus far. We then divide the revision process into (c) a Rewrite module which emulates a full rewrite by reranking alternate continuations, and (d) an Edit module which makes smaller local edits to improve factual consistency with previous passages.</p>
+<p>As an additional contribution, our Plan and Draft modules are fully zero-shot rather than trained on existing story datasets. Thus not only does $\mathrm{Re}^{3}$ generate stories an order of magnitude longer than those of prior work, but it is not limited to any particular training domain.</p>
+<p>To evaluate $\mathrm{Re}^{3}$ for longer story generation, we compare its generated stories to similar-length stories from two GPT3-based "rolling-window" baselines (Section 4). In pairwise comparisons, human evaluators rated stories from $\mathrm{Re}^{3}$ as significantly and substantially more coherent in overarching plot (up to $14 \%$ absolute increase in the fraction deemed coherent), as well as relevant to the initial premise (up to $20 \%$ ). In fact, evaluators predicted up to $83 \%$ of stories written by $\mathrm{Re}^{3}$ to be written by humans. The results indicate that $\mathrm{Re}^{3}$ can be highly effective at improving long-range coherence and premise relevance in longer story generation. ${ }^{2}$</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>2 Related Work</h2>
+<p>Automatic Story Generation. Several previous works have modeled parts of our proposed writing process, usually one part at a time.</p>
+<p>Most similar to our Plan module are approaches using an outline or structured schema to maintain plot coherence (Li et al., 2013; Fan et al., 2018; Yao et al., 2019; Goldfarb-Tarrant et al., 2020; Rashkin et al., 2020; Tian and Peng, 2022). Other methods for high-level planning include latent variables (Miao and Blunsom, 2016; Wang and Wan, 2019; Wang et al., 2022), coarse-to-fine slot-filling (Fan et al., 2019), and keywords and/or control codes (Peng et al., 2018; Ippolito et al., 2019; Xu et al., 2020; Lin and Riedl, 2021).</p>
+<p>Meanwhile, our Rewrite module uses rerankers similar to Guan et al. (2020) and Wang et al. (2020), although we model both coherence and premise relevance. Yu et al. (2020) iteratively edits and improves the output like our Edit module, but we additionally detect when edits are required.</p>
+<p>We emphasize again the length of stories we aim to generate. In prior studies, out-of-the-box language models struggled to generate even very short stories (Holtzman et al., 2019; See et al., 2019). Although there exist datasets of relatively longer stories, such as WritingPrompts (Fan et al., 2018) and STORIUM (Akoury et al., 2020), many works still only focus on stories of about five sentences (Wang and Wan, 2019; Yao et al., 2019; Qin et al., 2019; Wang et al., 2022), even when using language models with hundreds of billions of parameters (Xu et al., 2020). Some challenges of generating longer stories are apparent in Wang et al. (2022): their method generates high-quality few-sentence stories, but their forced long text generations, while judged better than baselines', remain confusing and repetitive. Moreover, maintaining long-range plot coherence, premise relevance, and factual consistency is substantially harder over multiple-thousand-word horizons.</p>
+<p>Human-In-The-Loop Story Generation. In contrast to fully automatic approaches like $\mathrm{Re}^{3}$, several recent works have proposed human-interactive methods to maintain quality in longer stories (Coenen et al., 2021; Lee et al., 2022; Chung et al., 2022). Such works commonly combine both planning and revision systems (Goldfarb-Tarrant et al., 2019; Coenen et al., 2021). In principle, $\mathrm{Re}^{3}$ is also highly controllable via human interaction, as both our planning and revision systems operate nearly</p>
+<p>entirely in natural language space; however, we focus on fully automatic generation in this work.</p>
+<p>Prompting. Numerous works have demonstrated general-purpose language models' strong zero-shot ability on a wide variety of tasks via prompting (Brown et al., 2020; Zhong et al., 2021; Sanh et al., 2021; Ouyang et al., 2022; Wu et al., 2022). Careful prompt design can yield further gains (Lee et al., 2021; Liu et al., 2021; Kojima et al., 2022). However, most prompting methods focus on shorter-answer tasks rather than long-form generation. Instead of generating the output in one shot, our recursive reprompting procedure treats prompting as a subroutine to generate the final output in conjunction with our planning and revision infrastructure. Compared to chain-of-thought prompting approaches like Kojima et al. (2022), $\mathrm{Re}^{3}$ goes a step further by repeatedly re-composing the prompt in modular fashion, dynamically recombining the most contextually relevant parts of both the high-level plan and the story thus far.</p>
+<h2>3 Recursive Reprompting and Revision</h2>
+<p>We now describe our Recursive Reprompting and Revision framework $\left(\mathrm{Re}^{3}\right)$, which decomposes the human writing process into our Plan, Draft, Rewrite, and Edit modules. See Appendix K for concrete examples of each component in practice.</p>
+<h3>3.1 Plan Module</h3>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Illustration of $\mathrm{Re}^{3}$ 's Plan module, which prompts a language model to generate a setting, characters, and outline based on the premise. Highlighting indicates generated text.</p>
+<p>The Plan module augments a story premise with a setting, characters, and outline (Figure 2).</p>
+<p>The setting is a simple one-sentence extension of the premise, obtained by using The story is set in to prompt GPT3-Instruct-175B (Ouyang et al.,
+2022), a version of GPT3 finetuned to better follow human instructions. Next, we use GPT3-Instruct175B to generate up to three character names and then descriptions, conditioned on the premise and setting. For names, we do rejection sampling using simple heuristics to filter out malformed outputs (Appendix A). Finally, we prompt GPT3-Instruct175B to write a numbered outline of the story and parse the output into a list of outline points, resampling until the list is well-formed.</p>
+<p>These plan components, themselves generated by prompting, will be repeatedly reused to compose prompts for generating story passages in the Draft module; hence recursive reprompting.</p>
+<h3>3.2 Draft Module</h3>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Illustration of the prompt constructed in $\mathrm{Re}^{3}$ 's Draft module to generate each next story continuation. Our recursive reprompting approach combines pieces of the plan (blue) and previously generated story (grey) into a single prompt by concatenating the depicted components in order.</p>
+<p>For each point of the outline, we will generate several story passages before moving on to the next outline point. Each passage is generated as a fixed-length continuation from a structured prompt, which is composed by our recursive reprompting procedure as shown in Figure 3.</p>
+<p>The prompt begins with a selection of "Relevant Context" shown at the top of Figure 3. As the story progresses, we dynamically update the list of character descriptions using a named-entity-recognition-based pipeline, which identifies new entities from each new story passage using Flair (Akbik et al., 2018) and writes descriptions using GPT3-Instruct-175B. Thus "Relevant Context" initially contains all of the premise, setting, and characters shown in Figure 2, but subsequently selects only what is most relevant to the most recent</p>
+<p>story passage using a pretrained Dense Passage Retrieval (DPR) model (Karpukhin et al., 2020).</p>
+<p>The remainder of the prompt can be viewed as a coarse-to-fine description of the previous story, following the intuition that an author needs detailed information about the most recent passage but perhaps only higher-level information about much earlier passages. As shown in Figure 3, we include "Previous Sections' Outlines" as a very highlevel summary of previous larger story sections, followed by a "Recent Story Summary" written by GPT3-Instruct-13B ${ }^{3}$ of a few penultimate passages. At the end we repeat verbatim the immediately preceding passage as "Autoregressive Context" from which point the story should continue. Finally, to enforce relevance to the current outline point, we include the "Current Section Outline" in the prompt just before "Autoregressive Context."</p>
+<p>Finally, the full prompt is fed to GPT3-175B to generate the next story passage. ${ }^{4}$</p>
+<h3>3.3 Rewrite Module</h3>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: $\mathrm{Re}^{3}$ 's Rewrite module reranks the Draft module's continuations for coherence and relevance.</p>
+<p>The generator's first output continuation is often low-quality, even with the planning and recursive reprompting in the Plan and Draft modules. Humans may encounter a similar problem after a first draft, particularly upon receiving feedback from others, and be forced to rewrite a passage altogether. Our Rewrite module models this rewriting process</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup>by reranking Draft module outputs based on coherence with the previous passage and relevance to the current outline point (Figure 4).</p>
+<p>We note that this Rewrite module is the only part of $\mathrm{Re}^{3}$ which uses prior story data. All of the modules which actually generate text (Plan, Draft, and to some extent Edit) do not require prior data.
+Coherence Reranker. We train a discriminative model to predict whether a continuation is coherent with the previous story. As data, we split stories from the WritingPrompts dataset (Fan et al., 2018) into passages up to 1000 tokens long, labeling the ending up to 200 tokens as the gold continuation. Inspired by the contrastive learning setup of Wang et al. (2020) and Guan et al. (2020), we obtain negative examples by replacing the gold continuation with a random other continuation from either the same story or a different one. We then finetune a pretrained Longformer-Base (Beltagy et al., 2020) to classify whether a continuation is the true continuation for a given passage.
+Relevance Reranker. We train a relevance model with the same architecture as our coherence model to predict whether a continuation is relevant to the current outline point. We construct a dataset of 2000 training examples, where each example consists of a 200 -token story passage from WritingPrompts and a brief summary written by GPT3-Instruct-13B. Negative examples are constructed by selecting the summary of a different passage, whether in the same story or a different one.
+Additional Heuristics. Finally, we filter out continuations with some writing problems which are easy to detect via rule-based heuristics. For example, we check for repetition issues, e.g., repeating chunks of the structured prompt. Similarly, to maintain consistent narration, we filter out first person continuations to enforce a consistent third person perspective. Full details in Appendix B.</p>
+<h3>3.4 Edit Module</h3>
+<p>In contrast to the Rewrite module which reranks complete alternate continuations, the Edit module makes local edits to further refine a passage produced by careful planning, drafting, and rewriting.</p>
+<p>Specifically, we aim to remove long-range factual inconsistencies. When a human detects a small factual discontinuity upon proofreading, he or she might simply edit the offending detail, rather than making major changes to the high-level plan or doing substantial rewriting. Our Edit module mimics</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Illustration of $\mathrm{Re}^{3}$ 's Edit module. Starting from the Rewrite module's best continuation, we infer natural language facts about each character, and convert them to attribute-value pairs. New values (blue) are added to the attribute dictionary, and contradictory values (red) are corrected.
+this process in two steps: detecting factual inconsistencies, and correcting them.</p>
+<p>Detecting Factual Inconsistencies. An inconsistency involves two statements. As the number of statement pairs scales quadratically with story length, naively comparing all pairs can result in a sea of false positive "contradictions" (Section 5.2). Flagging inconsistencies while avoiding false positives requires overwhelming precision.</p>
+<p>Task Framing. To make the task more tractable, we focus on factual inconsistencies in character attributes (e.g., age, occupation, relationship to another character). At a high level, our detection system maintains a compact knowledge base in the form of Figure 5's "Attribute Dictionary" for each character. With each new story passage, we check for contradictions against only these attribute-value dictionaries instead of all previous text. The dictionaries are then updated for the new passage, and new dictionaries are created for new characters when detected as described in Section 3.2.</p>
+<p>Thus, the core of our detection system is a highprecision information extraction procedure for obtaining attribute-value pairs for a given character from a story passage. Rather than hard-coding a fixed set of attributes, our system is inspired by Open Information Extraction (Etzioni et al., 2008), in order to capture the wide variety of possible attributes which may be salient in different stories.</p>
+<p>Implementation Details. We begin by prompting GPT3-Instruct-175B for a numbered list of facts about the given character, shown as "Inferred</p>
+<p>Facts" in Figure 5. Each fact is fed with a few-shot prompt to GPT3-Instruct-13B to extract attribute keys. We then prompt GPT3-Instruct-13B with the fact and each attribute key to obtain complete attribute-value pairs. In steps prone to hallucination, we generate three outputs and keep only those which are repeated, or entailed by other outputs according to a BART-Large-based (Lewis et al., 2019) entailment model trained on MNLI (Williams et al., 2018). See Appendix C for complete details on information extraction, with example prompts.</p>
+<p>Finally, we add new pairs to our dictionary, and use the entailment model to flag contradictions between new and old values for the same key.</p>
+<p>Correcting Factual Inconsistencies. Once an inconsistency is detected, we frame the task of correcting it as controlled text editing. The original natural language fact (i.e., "Inferred Facts" in Figure 5) from which we extracted the contradicted attribute-value pair now becomes the basis for the "Editing Instruction" in Figure 5. This instruction is then fed along with the original continuation to the beta GPT3 Edit API.</p>
+<h2>4 Evaluation</h2>
+<p>Task Setup. We frame the task as generating a story given a brief initial premise. As a "story" is difficult to define in a rule-based manner, we do not impose any rule-based constraints on acceptable outputs, but will instead evaluate via several humanannotated metrics as described later.</p>
+<p>To generate the initial premises, we prompt GPT3-Instruct-175B with high temperature to acquire 100 diverse premises. ${ }^{5}$ All premises and stories are in English.</p>
+<p>Method Instantiation. For fair comparison, it is desirable for the concrete implementation (henceforth $\mathrm{RE}^{3}$ ) of our $\mathrm{Re}^{3}$ framework to output stories of consistent length. While $\mathrm{Re}^{3}$ is capable of generating shorter or longer stories (see e.g., our 7500word example in Appendix M), here we aim for roughly 3000 tokens (2000-2500 words). ${ }^{6}$ Thus we re-sample the initial outlines (Section 3.1) until they contain exactly three points, and generate exactly four 256 -token continuations for each outline</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Interesting $\uparrow$</th>
+<th style="text-align: center;">Coherent $\uparrow$</th>
+<th style="text-align: center;">Relevant $\uparrow$</th>
+<th style="text-align: center;">Humanlike $\uparrow$</th>
+<th style="text-align: center;">Misc. Problems $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ROLLING</td>
+<td style="text-align: center;">45.0</td>
+<td style="text-align: center;">45.7</td>
+<td style="text-align: center;">44.0</td>
+<td style="text-align: center;">74.0</td>
+<td style="text-align: center;">1.20</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">54.3</td>
+<td style="text-align: center;">$\mathbf{6 0 . 0}$</td>
+<td style="text-align: center;">$\mathbf{6 4 . 0}$</td>
+<td style="text-align: center;">$\mathbf{8 3 . 3}$</td>
+<td style="text-align: center;">$\mathbf{1 . 0 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ROLLING-FT</td>
+<td style="text-align: center;">52.7</td>
+<td style="text-align: center;">48.7</td>
+<td style="text-align: center;">49.3</td>
+<td style="text-align: center;">74.7</td>
+<td style="text-align: center;">1.48</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">53.7</td>
+<td style="text-align: center;">$\mathbf{6 0 . 0}$</td>
+<td style="text-align: center;">$\mathbf{6 5 . 3}$</td>
+<td style="text-align: center;">80.0</td>
+<td style="text-align: center;">$\mathbf{1 . 3 5}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Comparison of $\mathrm{RE}^{3}$ against two baselines, ROLLING and ROLLING-FT, in two separate experiments. The first two rows show a pairwise comparison between ROLLING and $\mathrm{RE}^{3}$ and the last two rows show the equivalent comparison between ROLLING-FT and $\mathrm{RE}^{3}$. Bolding indicates significant differences with $p&lt;0.05$ on a paired $t$-test. Workers judged stories from $\mathrm{RE}^{3}$ as significantly more coherent and relevant to the initial premise, in addition to having fewer writing problems.
+point before moving on to the next. As a storyending mechanism, we use the GPT3-175B Insert API to complete the story to the suffix "The End." Of course, more adaptive schemes for moving on to the next outline point and/or ending the story are possible, and we explore one possible "outline alignment" method in Appendix M.</p>
+<p>Baselines. As prior methods focus on dramatically shorter stories compared to $\mathrm{Re}^{3}$, they are difficult to compare to directly. ${ }^{7}$ Instead, we use the following two GPT3-175B-based baselines. ${ }^{8}$</p>
+<ol>
+<li>ROLLING, a baseline which generates 256 tokens at a time via GPT3-175B using the premise and all previously generated story text as the prompt, left-truncating the prompt if it exceeds 768 tokens. Hence, a "rolling window" with maximum context length 1024 (the same maximum context length used in $\mathrm{RE}^{3}$ ). After 3072 tokens are generated, we use the same story-ending mechanism as $\mathrm{RE}^{3}$.</li>
+<li>ROLLING-FT, which is identical to ROLLING except that GPT3-175B is first finetuned on several hundred passages from WritingPrompts stories of at least 3000 tokens. ${ }^{9}$
+Metrics. As our main metrics, we track the percentage of stories which are:
+<sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup>1. Interesting. Interesting to the reader.</li>
+<li>Coherent. Plot-coherent.</li>
+<li>Relevant. Faithful to the initial premise.</li>
+<li>Humanlike. Judged to be human-written.</li>
+</ol>
+<p>We additionally track how often generated stories suffer from any of the following writing issues:</p>
+<ol>
+<li>Narration. Jarring change(s) in narration and/or style.</li>
+<li>Inconsistent. Factually inconsistent or containing very odd details.</li>
+<li>Confusing. Confusing or difficult to follow.</li>
+<li>Repetitive. Highly repetitive.</li>
+<li>Disfluent. Frequent grammatical errors.</li>
+</ol>
+<p>Binary indicators for these issues are summed and reported together as Misc. Problems in the main text, with individual numbers in Appendix G.</p>
+<p>All metrics are judged by Amazon Mechanical Turk workers, who are shown a premise and two corresponding stories in random order: one generated by $\mathrm{RE}^{3}$ and one by a baseline. For interest, coherence, and relevance, workers indicate which story is better, or that both or neither are good. For the remaining metrics (humanlike and writing issues), workers mark each story individually. See Appendix H for an example Mechanical Turk task.</p>
+<p>Each pair of stories is judged by three workers. We report results individually for each pairwise comparison between $\mathrm{RE}^{3}$ and each baseline, never mixing numbers from different comparisons. Workers are segregated by comparison to prevent bias.</p>
+<p>Results. As shown in Table 1, $\mathrm{RE}^{3}$ is highly effective at writing a longer story following a desired premise while maintaining a coherent overarching plot, validating our design choices inspired by the human writing process as well as our recursive reprompting approach to generation. $\mathrm{RE}^{3}$ significantly and substantially improves over ROLLING and ROLLING-FT in both coherence and relevance. Annotators also marked $\mathrm{RE}^{3}$ 's stories as having significantly fewer miscellaneous writing problems.</p>
+<p>PREMISE: After years of being content with only a small inheritance, Sarah's life is turned upside down when she discovers she is actually a millionaire. She must learn to navigate her new life of luxury while also dealing with the guilt she feels over her new-found fortune.</p>
+<h2>GENERATED OUTLINE:</h2>
+<ol>
+<li>Sarah learns that she is a millionaire.</li>
+<li>Sarah must learn to navigate her new life of luxury.</li>
+<li>Sarah deals with the guilt she feels over her new-found fortune.</li>
+</ol>
+<h2>GENERATED STORY:</h2>
+<p>Sarah Jensen never knew she had inherited a fortune until her mother died. In fact, she had never met her father ...[15 words]...
+The only thing Sarah did know was that he had died long ago and that her mother had been left a sizeable inheritance. ...[23 words]...
+Sarah's mother never spent any of the money ... all that mattered to her was how much it would mean to her daughter when she inherited it ...[81 words]...
+Sarah learned that she was a millionaire. ...[417 words]...
+She would never have had a chance like this an opportunity to be financially independent, to live on her own ...[544 words]...
+Now that she was rich, things were going to be different for her. She could afford a hotel suite and a lavish meal if she wanted it. ...[450 words]...
+The words "Forgive me, father, for I have sinned" came unbidden into her mind as she reached out for her drink and took a large sip straight from the glass. ...[383 words]...
+But the guilt was weighing on her now. ...[346 words]...</p>
+<p>Table 2: A heavily abridged $\mathrm{RE}^{3}$ example generation (see Appendix J, Tables 39 and 40 for complete setup and story). While certainly not perfect, the story demonstrates strong long-range coherence and faithfulness to the premise.</p>
+<p>Finally, $\mathrm{RE}^{3}$ demonstrates strong performance in an absolute sense: annotators thought $83.3 \%$ and $80.0 \%$ respectively of $\mathrm{RE}^{3}$ 's stories were written by humans in the two comparisons. Table 2 shows a heavily abridged example story by $\mathrm{RE}^{3}$, exhibiting strong coherence and premise relevance.</p>
+<p>Nonetheless, we observe qualitatively that $\mathrm{RE}^{3}$ still has much room for improvement. Two common issues are illustrated in Table 3. First, while $\mathrm{RE}^{3}$ 's stories almost always follow the premise to some degree-unlike our baselines' stories-they may fail to capture all parts of the premise, and may fail to follow parts of the outline generated by the Plan module (e.g., the first part of the premise and outline in Table 3). Second, due to failures in the Rewrite and especially Edit modules, there remain some confusing passages or contradictory</p>
+<p>PREMISE: After the loss of her father, Shannon is determined to finish college and make something of herself. However, when she's sucked into a time portal and lands in the 19th century, Shannon has to find a way back to her own time before it's too late.</p>
+<h2>GENERATED OUTLINE:</h2>
+<ol>
+<li>Shannon is transported to the 19th century where she meets Jaxon Montgomery.</li>
+<li>Shannon and Jaxon fall in love, but she is still determined to find a way back to her own time.</li>
+<li>Shannon discovers that her father is still alive in the 19th century and she must choose between staying with Jaxon or returning to her own time.</li>
+</ol>
+<h2>GENERATED STORY:</h2>
+<p>Shannon was running late and hurried along the sidewalk. She was supposed to meet her best friend Hannah ...[423 words]...
+When Jaxon proposed, we'd already been dating for over a year, so I [Hannah] went with it. ...[470 words]...
+Thinking about him [Jaxon] made Shannon smile slightly as she recalled the first time they met ... right here in this backyard after noticing one another edging closer together ...[197 words]...
+Shannon smiled when she looked into his eyes ...[176 words]...
+[Jaxon asks,] "What do you mean that you're from the future?" ...[319 words]...
+She looked him [Jaxon] straight in the eyes and said firmly, "I must go back to my time now....[199 words]...
+She felt tears stinging in her eyes ...[73 words]...
+There was no way she could ever go back to her own time after all this. ... [287 words]...
+Shannon looked down at her feet again, then back up at Jaxon and said, "My father is alive?" ...[47 words]
+Jaxon gently rubbed Shannon's back in support and quietly said, "Yes, my love. He is alive and well. ...[52 words]...
+Jaxon shook his head and said, "No, Shannon. I want you to be happy. And if that means going back to your own time, then so be it." ...[72 words]...
+Shannon Randall vanished from the 19th century, never to be seen again.</p>
+<p>Table 3: Another heavily abridged $\mathrm{RE}^{3}$ example generation (see Appendix J, Tables 24 and 25 for complete setup and story). $\mathrm{RE}^{3}$ initially fails to follow the premise and outline, and in the beginning Jaxon is incorrectly introduced as Hannah's love interest. However, both issues are corrected in the subsequent story.
+statements: for example, in Table 3, the character Jaxon has a contradictory identity in some places.</p>
+<p>However, unlike rolling window methods, $\mathrm{RE}^{3}$ 's planning infrastructure is able to "self-correct" back to the original high-level plot despite early errors in generation. The latter part of the story in</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Interesting $\uparrow$</th>
+<th style="text-align: center;">Coherent $\uparrow$</th>
+<th style="text-align: center;">Relevant $\uparrow$</th>
+<th style="text-align: center;">Humanlike $\uparrow$</th>
+<th style="text-align: center;">Misc. Problems $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DRAFT-REWRITE-EDIT</td>
+<td style="text-align: center;">50.3</td>
+<td style="text-align: center;">46.7</td>
+<td style="text-align: center;">50.7</td>
+<td style="text-align: center;">70.0</td>
+<td style="text-align: center;">1.33</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">59.7</td>
+<td style="text-align: center;">$\mathbf{6 3 . 3}$</td>
+<td style="text-align: center;">$\mathbf{6 3 . 7}$</td>
+<td style="text-align: center;">$\mathbf{8 0 . 0}$</td>
+<td style="text-align: center;">1.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">PLAN-DRAFT-EDIT</td>
+<td style="text-align: center;">46.3</td>
+<td style="text-align: center;">42.3</td>
+<td style="text-align: center;">42.7</td>
+<td style="text-align: center;">59.7</td>
+<td style="text-align: center;">1.48</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">$\mathbf{5 6 . 7}$</td>
+<td style="text-align: center;">$\mathbf{5 6 . 0}$</td>
+<td style="text-align: center;">$\mathbf{6 3 . 3}$</td>
+<td style="text-align: center;">67.3</td>
+<td style="text-align: center;">$\mathbf{1 . 1 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">PLAN-DRAFT-REWRITE</td>
+<td style="text-align: center;">55.0</td>
+<td style="text-align: center;">60.3</td>
+<td style="text-align: center;">59.3</td>
+<td style="text-align: center;">87.7</td>
+<td style="text-align: center;">1.10</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">57.0</td>
+<td style="text-align: center;">57.3</td>
+<td style="text-align: center;">59.3</td>
+<td style="text-align: center;">87.0</td>
+<td style="text-align: center;">1.12</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Ablations on individual components of $\mathrm{RE}^{3}$, removing the Plan, Rewrite, and Edit modules respectively. Each two rows show a pairwise comparison experiment between $\mathrm{RE}^{3}$ and the corresponding ablation. Bolding indicates significant differences with $p&lt;0.05$. Both the Plan and Rewrite module are critical to performance, but the Edit module makes little difference.</p>
+<p>Table 3 illustrates this interesting capability.
+See Appendix J for additional complete, i.i.d. examples of stories from both $\mathrm{RE}^{3}$ and baselines.</p>
+<h2>5 Analysis</h2>
+<h3>5.1 Ablation Study</h3>
+<p>Ablated Modules. We investigate the relative contribution of the individual modules of $\mathrm{Re}^{3}$ : Plan, Draft, Rewrite, and Edit. We ablate each module in turn as follows, except the Draft module as it is unclear how our system would operate without it.</p>
+<ol>
+<li>DRAFT-REWRITE-EDIT, a version of $\mathrm{RE}^{3}$ without the Plan module. Accordingly, we remove the recursive reprompting in Draft. Thus DRAFT-REWRITE-EDIT generates text identically to the ROLLING baseline, but is revised by our Rewrite and Edit modules.</li>
+<li>PLAN-DRAFT-EDIT, a version of $\mathrm{RE}^{3}$ without the Rewrite module reranking.</li>
+<li>PLAN-DRAFT-REWRITE, a version of $\mathrm{RE}^{3}$ which no longer edits using the Edit module.</li>
+</ol>
+<p>Results. Table 4 shows that both the Plan and Rewrite modules, mimicking the human planning and rewriting processes, are critical for overall plot coherence and premise relevance. However, the Edit module contributes little to these metrics. We also observe qualitatively that there remain many continuity issues in $\mathrm{RE}^{3}$ 's final stories which are not resolved by our Edit module, but which could be fixed by an attentive human editor. Such continuity issues range from non-character-centric inconsistencies, to facts which change over time, to outline plot points which were omitted in the story.</p>
+<h3>5.2 Further Analysis of Edit Module</h3>
+<p>We use a controlled setting to investigate if the Edit module can at least detect the characterbased factual inconsistencies for which it is designed. We will refer to our detection subsystem
+as STRUCTURED-DETECT to avoid conflation with the Edit module as a whole.</p>
+<p>Task Setup. We construct an evaluation dataset as follows. First we generate setups following our Plan module, up to but not including the outline. For each setup $s$ we randomly resample a character's description until we manually observe a contradiction with the original, yielding a contradictory setup $s^{\prime}$. For each of $s$ and $s^{\prime}$, we generate a story ( $t$ and $t^{\prime}$ ), resampling until the contradicted attribute appears in the story. If the resampling fails after 5 attempts we restart the whole procedure. We generate $50\left(s, s^{\prime}, t, t^{\prime}\right)$ tuples in total; see Appendix L for an example.</p>
+<p>The task is then framed as classification: the method should judge $(s, t)$ and $\left(s^{\prime}, t^{\prime}\right)$ as consistent and $\left(s, t^{\prime}\right)$ and $\left(s^{\prime}, t^{\prime}\right)$ as contradictory. Thus the 50 $\left(s, s^{\prime}, t, t^{\prime}\right)$ tuples yield 200 input pairs.</p>
+<p>Baselines. We construct two simple baselines using the same BART-Large-MNLI entailment model used in STRUCTURED-DETECT. Given a $(s, t)$ pair, the first baseline, ENTAILMENT, simply checks each sentence of $s$ pairwise against each sentence of $t$, and returns the maximum probability of contradiction across all pairs. The second baseline, ENTAILMENT-DPR, checks each sentence of $t$ against only one sentence of $s$ based on relevance judged by DPR (Karpukhin et al., 2020).</p>
+<p>Results. As shown in Table 5, when detecting character-based inconsistencies, STRUCTUREDDETECT outperforms the two baselines according</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">ROC-AUC $\uparrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ENTAILMENT</td>
+<td style="text-align: center;">0.528</td>
+</tr>
+<tr>
+<td style="text-align: left;">ENTAILMENT-DPR</td>
+<td style="text-align: center;">0.610</td>
+</tr>
+<tr>
+<td style="text-align: left;">STRUCTURED-DETECT</td>
+<td style="text-align: center;">$\mathbf{0 . 6 8 4}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: ROC-AUC score of predicted contradiction probabilities for different methods on our evaluation set. STRUCTUREDDETECT outperforms our two entailment-based baselines.</p>
+<p>to the standard ROC-AUC metric for classification (Hanley and McNeil, 1982). Indeed, the most naive ENTAILMENT system's ROC-AUC score is barely better than chance performance ( 0.5 ), highlighting the core challenge wherein the detection system must be overwhelmingly precise. Moreover, STRUCTURED-DETECT is designed to scale to longer passages; we hypothesize that the performance gap compared to baselines would widen in an evaluation with longer inputs such as the stories from our main experiments.</p>
+<p>Even so, the absolute performance of all systems remains low, even in this simplified setting. Additionally, many of our generated full stories contain non-character-based inconsistencies, such as in the setting or current scene. Some stories also contain false positives (flagged non-contradictions), such as character attributes which change over time.</p>
+<p>Additionally, while we did not formally analyze the GPT3 Edit API's ability to correct inconsistencies after they are detected (as this system is largely not our contribution), we generally observed that it can fix isolated details but may struggle with larger changes. It also sometimes makes undesired edits or additions. Taken together, the compounding errors from the detection and correction subsystems make it difficult for our current Edit module to effectively improve factual consistency over a multiple-thousand-word horizon, without simultaneously introducing unnecessary changes.</p>
+<h2>6 Discussion</h2>
+<p>We have considered the problem of automatically generating longer stories, proposing the $\mathrm{Re}^{3}$ framework as an initial attempt at addressing the challenges of maintaining long-range coherence and premise relevance. Our $\mathrm{RE}^{3}$ implementation exhibits strong performance on these metrics while generating stories over 2000 words long.</p>
+<p>At its core, $\mathrm{Re}^{3}$ is a system for emulating the human writing process for long-form generation while leveraging only general-purpose language models in the generation procedure. Thus concepts from $\mathrm{Re}^{3}$ can potentially be adapted to non-story domains as well, especially the idea of dynamically re-injecting contextual information into a prompt. Moreover, should human interaction be desired, $\mathrm{Re}^{3}$ is in principle highly controllable: most modules operate almost entirely in natural language.</p>
+<p>Nonetheless, our main goal remains to further improve automatic long-form story generation.</p>
+<p>While $\mathrm{RE}^{3}$ 's stories are an order of magnitude longer than those from prior work, most humans would still consider them to be "short stories"-and on the shorter side at that. Our long term goal is to generate interesting, long-range-coherent stories of greater length-perhaps what humans might call "novellas"-and eventually full-length novels. One step in this direction could be to extend $\mathrm{Re}^{3}$ using multiple levels of hierarchical outline generation to obtain a much more detailed initial plan, as we do in Appendix M to generate a 7500-word story.</p>
+<p>In our view, the greatest barrier to further increasing story length is evaluation, which frustrates efforts to benchmark systems during both test time and development. In this work, we have compared $\mathrm{RE}^{3}$ to baselines solely through human evaluation, which can be both noisy as well as costly even with non-expert annotators. While prior works have proposed some possible measures (Barzilay and Lapata, 2008; Castricato et al., 2021), we hope that analyzing our generated stories (both $\mathrm{RE}^{3}$ and baselines) can inspire further research on metrics for which we currently rely solely on human annotation. For example, while there exist reasonable metrics for text similarity on a sentence or paragraph level, long-form generation could benefit from metrics detecting when a longer passage begins on-topic but slowly veers off-topic, or when a passage uses on-topic vocabulary but is otherwise nonsensical in context. Similarly, improved metrics for long-range factual contradictions could greatly aid efforts to improve generations' factual consistency, such as our Edit module. Even if new metrics do not completely replace human annotations, they could help us both to evaluate longer stories as well as conduct more detailed ablation studies with larger sample sizes.</p>
+<p>Additionally, while $\mathrm{RE}^{3}$ 's stories are relatively plot-coherent and faithful to the premise, substantial gaps remain along other axes compared to even beginner human writers. One such axis is long-range factual continuity: while we believe our structured detection-correction method is a humanlike approach, our current Edit module is certainly not human-level. Moreover, human stories exhibit long-range continuity along many axes other than just factual attributes of characters, such as overall theme; scenes and world setting; pace and tempo of storylines; and foreshadowing before major events. It remains highly nontrivial to incorporate such considerations into automatic story generation.</p>
+<h2>Limitations</h2>
+<p>The difficulty of evaluating long-form generation greatly constrains our experiments. Specifically, we are limited in the sample sizes of all our experiments as well as our ability to run more detailed ablations. Improved evaluation would also enable us to evaluate stories much longer than the current 2000-2500 words: while $\mathrm{Re}^{3}$ is capable of generating such stories (Appendix M), we do not formally evaluate them in this work. Note that compared to evaluation costs, the API costs associated with the actual story generation are significantly lesser.</p>
+<p>The difficulty of careful evaluation also affected system development. Many system design choices (e.g., prompt design, reranking heuristics) and hyperparameters (e.g., length of each story continuation, thresholds for checking contradiction in the Edit module) are simply selected manually, rather than chosen based on careful validation. Thus it is likely that substantial room for improvement remains in the detailed design of our individual modules.</p>
+<p>Many of our modules are custom-designed for story generation, especially the structured attributevalue dictionary for story characters used in the Edit module. Adaptation to a generation domain other than stories, at least in our current setup, may also require manually re-designing prompts and experimenting with parameters.</p>
+<p>Additionally, there remains substantial room for improvement in our Edit module. While we believe that a structured detection and correction system such as our Edit module is a principled way to address the important problem of long-range factual continuity, empirically our current implementation does not improve our main metrics (Table 4). Even in the controlled setting where it outperforms our baselines (Table 5), the absolute ROC-AUC score remains low. Moreover, it is designed to handle specifically contradictions related to character attributes, which we observe are a common but certainly not all-encompassing class of errors.</p>
+<p>Finally, we expect that $\mathrm{Re}^{3}$ 's performance may decrease in languages which lack strong generalpurpose language models such as GPT3.</p>
+<h2>Acknowledgements</h2>
+<p>We thank the Berkeley NLP group and our anonymous reviewers for their helpful feedback which helped us to greatly improve the paper. This work was supported by Berkeley AI Research, Meta</p>
+<p>AI, Open Philanthropy, DARPA under the SemaFor program (HR00112020054), the Machine Common Sense (MCS) program under Cooperative Agreement N66001-19-2-4032, and the NSF through a fellowship to the first author. The content does not necessarily reflect the position or the policy of the government, and no official endorsement should be inferred.</p>
+<h2>Ethics Statement</h2>
+<p>Strong natural language generation systems present opportunities for abuse, for example in fake news generation. We have attempted to mitigate this issue by focusing on the comparatively innocuous task of story generation. Additionally, in our Edit module we have explored methods for maintaining long-range factual consistency as a way to safeguard against model hallucination, and we envision that our Edit module could be adapted to incorporate a real-world knowledge base as needed to aid truthful generation.</p>
+<p>Our system relies heavily on pretrained generalpurpose language models, specifically GPT3 in our implementation, and thus may inherit the problematic biases associated with such models (Radford et al., 2019; Brown et al., 2020; Lucy and Bamman, 2021). These biases may be amplified in stories, which could negatively affect human readers. However, our overall framework $\mathrm{Re}^{3}$ is not necessarily tied to GPT3, and can in principle function with any other general-purpose language model. Thus, improvements in debiasing language models can translate into our $\mathrm{Re}^{3}$ framework as well. Additionally, one could apply controlled generation approaches (Dathathri et al., 2019; Krause et al., 2020; Yang and Klein, 2021) for debiasing text to our generation procedure.</p>
+<p>Finally, as mentioned in Limitations, $\mathrm{Re}^{3}$ 's performance is tied to the quality of the base language model used as a generator, and thus may suffer on non-English languages.</p>
+<h2>References</h2>
+<p>Alan Akbik, Duncan Blythe, and Roland Vollgraf. 2018. Contextual string embeddings for sequence labeling. In COLING 2018, 27th International Conference on Computational Linguistics, pages 1638-1649.</p>
+<p>Nader Akoury, Shufan Wang, Josh Whiting, Stephen Hood, Nanyun Peng, and Mohit Iyyer. 2020. Storium: A dataset and evaluation platform for machine-in-the-loop story generation. In the 2020 Conference</p>
+<p>on Empirical Methods in Natural Language Processing (EMNLP).</p>
+<p>Regina Barzilay and Mirella Lapata. 2008. Modeling local coherence: An entity-based approach. Computational Linguistics, 34(1):1-34.</p>
+<p>Iz Beltagy, Matthew E Peters, and Arman Cohan. 2020. Longformer: The long-document transformer. arXiv preprint arXiv:2004.05150.</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. 2020. Language models are few-shot learners. Advances in neural information processing systems, 33:1877-1901.</p>
+<p>Louis Castricato, Stella Biderman, David Thue, and Rogelio Cardona-Rivera. 2021. Towards a modeltheoretic view of narratives. In Proceedings of the Third Workshop on Narrative Understanding, pages $95-104$.</p>
+<p>Eugene Charniak. 1972. Toward a model of children's story comprehension. Ph.D. thesis, Massachusetts Institute of Technology.</p>
+<p>John Joon Young Chung, Wooseok Kim, Kang Min Yoo, Hwaran Lee, Eytan Adar, and Minsuk Chang. 2022. Talebrush: Sketching stories with generative pretrained language models. In CHI Conference on Human Factors in Computing Systems, pages 1-19.</p>
+<p>Andy Coenen, Luke Davis, Daphne Ippolito, Emily Reif, and Ann Yuan. 2021. Wordcraft: a human-ai collaborative editor for story writing. arXiv preprint arXiv:2107.07430.</p>
+<p>Sumanth Dathathri, Andrea Madotto, Janice Lan, Jane Hung, Eric Frank, Piero Molino, Jason Yosinski, and Rosanne Liu. 2019. Plug and play language models: A simple approach to controlled text generation. arXiv preprint arXiv:1912.02164.</p>
+<p>Oren Etzioni, Michele Banko, Stephen Soderland, and Daniel S Weld. 2008. Open information extraction from the web. Communications of the ACM, 51(12):68-74.</p>
+<p>Angela Fan, Mike Lewis, and Yann Dauphin. 2018. Hierarchical neural story generation. arXiv preprint arXiv:1805.04833.</p>
+<p>Angela Fan, Mike Lewis, and Yann Dauphin. 2019. Strategies for structuring story generation. arXiv preprint arXiv:1902.01109.</p>
+<p>Seraphina Goldfarb-Tarrant, Tuhin Chakrabarty, Ralph Weischedel, and Nanyun Peng. 2020. Content planning for neural story generation with aristotelian rescoring. arXiv preprint arXiv:2009.09870.</p>
+<p>Seraphina Goldfarb-Tarrant, Haining Feng, and Nanyun Peng. 2019. Plan, write, and revise: an interactive system for open-domain story generation. arXiv preprint arXiv:1904.02357.</p>
+<p>Albert Gu, Karan Goel, and Christopher Ré. 2021. Efficiently modeling long sequences with structured state spaces. arXiv preprint arXiv:2111.00396.</p>
+<p>Jian Guan, Fei Huang, Zhihao Zhao, Xiaoyan Zhu, and Minlie Huang. 2020. A knowledge-enhanced pretraining model for commonsense story generation. Transactions of the Association for Computational Linguistics, 8:93-108.</p>
+<p>Rujun Han, Hong Chen, Yufei Tian, and Nanyun Peng. 2022. Go back in time: Generating flashbacks in stories with event temporal prompts. In 2022 Annual Conference of the North American Chapter of the Association for Computational Linguistics (NAACL).</p>
+<p>James A Hanley and Barbara J McNeil. 1982. The meaning and use of the area under a receiver operating characteristic (roc) curve. Radiology, 143(1):2936.</p>
+<p>Ari Holtzman, Jan Buys, Li Du, Maxwell Forbes, and Yejin Choi. 2019. The curious case of neural text degeneration. arXiv preprint arXiv:1904.09751.</p>
+<p>Daphne Ippolito, David Grangier, Chris Callison-Burch, and Douglas Eck. 2019. Unsupervised hierarchical story infilling. In Proceedings of the First Workshop on Narrative Understanding, pages 37-43.</p>
+<p>Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. 2020. Dense passage retrieval for open-domain question answering. arXiv preprint arXiv:2004.04906.</p>
+<p>Daniel Khashabi, Sewon Min, Tushar Khot, Ashish Sabharwal, Oyvind Tafjord, Peter Clark, and Hannaneh Hajishirzi. 2020. Unifiedqa: Crossing format boundaries with a single qa system. arXiv preprint arXiv:2005.00700.</p>
+<p>Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo, and Yusuke Iwasawa. 2022. Large language models are zero-shot reasoners. arXiv preprint arXiv:2205.11916.</p>
+<p>Ben Krause, Akhilesh Deepak Gotmare, Bryan McCann, Nitish Shirish Keskar, Shafiq Joty, Richard Socher, and Nazneen Fatema Rajani. 2020. Gedi: Generative discriminator guided sequence generation. arXiv preprint arXiv:2009.06367.</p>
+<p>Chia-Hsuan Lee, Hao Cheng, and Mari Ostendorf. 2021. Dialogue state tracking with a language model using schema-driven prompting. arXiv preprint arXiv:2109.07506.</p>
+<p>Mina Lee, Percy Liang, and Qian Yang. 2022. Coauthor: Designing a human-ai collaborative writing dataset for exploring language model capabilities. arXiv preprint arXiv:2201.06796.</p>
+<p>Mike Lewis, Yinhan Liu, Naman Goyal, Marjan Ghazvininejad, Abdelrahman Mohamed, Omer Levy, Veselin Stoyanov, and Luke Zettlemoyer. 2019.</p>
+<p>BART: denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension. CoRR, abs/1910.13461.</p>
+<p>Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, et al. 2020. Retrieval-augmented generation for knowledge-intensive nlp tasks. Advances in Neural Information Processing Systems, 33:9459-9474.</p>
+<p>Boyang Li, Stephen Lee-Urban, George Johnston, and Mark Riedl. 2013. Story generation with crowdsourced plot graphs. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 27, pages 598-604.</p>
+<p>Zhiyu Lin and Mark O Riedl. 2021. Plug-and-blend: a framework for plug-and-play controllable story generation with sketches. In Proceedings of the AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment, volume 17, pages 58-65.</p>
+<p>Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao Jiang, Hiroaki Hayashi, and Graham Neubig. 2021. Pretrain, prompt, and predict: A systematic survey of prompting methods in natural language processing. arXiv preprint arXiv:2107.13586.</p>
+<p>Li Lucy and David Bamman. 2021. Gender and representation bias in gpt-3 generated stories. In Proceedings of the Third Workshop on Narrative Understanding, pages 48-55.</p>
+<p>Yishu Miao and Phil Blunsom. 2016. Language as a latent variable: Discrete generative models for sentence compression. arXiv preprint arXiv:1609.07317.</p>
+<p>Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll L Wainwright, Pamela Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. 2022. Training language models to follow instructions with human feedback. arXiv preprint arXiv:2203.02155.</p>
+<p>Nanyun Peng, Marjan Ghazvininejad, Jonathan May, and Kevin Knight. 2018. Towards controllable story generation. In NAACL Story-NLP Workshop.</p>
+<p>Lianhui Qin, Antoine Bosselut, Ari Holtzman, Chandra Bhagavatula, Elizabeth Clark, and Yejin Choi. 2019. Counterfactual story reasoning and generation. arXiv preprint arXiv:1909.04076.</p>
+<p>Alec Radford, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. 2019. Language models are unsupervised multitask learners.</p>
+<p>Hannah Rashkin, Asli Celikyilmaz, Yejin Choi, and Jianfeng Gao. 2020. Plotmachines: Outlineconditioned generation with dynamic plot state tracking. arXiv preprint arXiv:2004.14967.</p>
+<p>Victor Sanh, Albert Webson, Colin Raffel, Stephen H Bach, Lintang Sutawika, Zaid Alyafeai, Antoine Chaffin, Arnaud Stiegler, Teven Le Scao, Arun</p>
+<p>Raja, et al. 2021. Multitask prompted training enables zero-shot task generalization. arXiv preprint arXiv:2110.08207.</p>
+<p>Abigail See, Aneesh Pappu, Rohun Saxena, Akhila Yerukola, and Christopher D Manning. 2019. Do massively pretrained language models make better storytellers? arXiv preprint arXiv:1909.10705.</p>
+<p>Emma Strubell, Ananya Ganesh, and Andrew McCallum. 2019. Energy and policy considerations for deep learning in nlp. arXiv preprint arXiv:1906.02243.</p>
+<p>Yufei Tian and Nanyun Peng. 2022. Zero-shot sonnet generation with discourse-level planning and aesthetics features. In 2022 Annual Conference of the North American Chapter of the Association for Computational Linguistics (NAACL).</p>
+<p>Scott R Turner. 1994. The creative process: A computer model of storytelling and creativity.</p>
+<p>Rose E Wang, Esin Durmus, Noah Goodman, and Tatsunori Hashimoto. 2022. Language modeling via stochastic processes. arXiv preprint arXiv:2203.11370.</p>
+<p>Su Wang, Greg Durrett, and Katrin Erk. 2020. Narrative interpolation for generating and understanding stories. arXiv preprint arXiv:2008.07466.</p>
+<p>Tianming Wang and Xiaojun Wan. 2019. T-cvae: Transformer-based conditioned variational autoencoder for story completion. In IJCAI, pages 52335239 .</p>
+<p>Adina Williams, Nikita Nangia, and Samuel Bowman. 2018. A broad-coverage challenge corpus for sentence understanding through inference. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers), pages 1112-1122. Association for Computational Linguistics.</p>
+<p>Yuhuai Wu, Albert Q Jiang, Wenda Li, Markus N Rabe, Charles Staats, Mateja Jamnik, and Christian Szegedy. 2022. Autoformalization with large language models. arXiv preprint arXiv:2205.12615.</p>
+<p>Peng Xu, Mostofa Patwary, Mohammad Shoeybi, Raul Puri, Pascale Fung, Anima Anandkumar, and Bryan Catanzaro. 2020. Megatron-cntrl: Controllable story generation with external knowledge using large-scale language models. arXiv preprint arXiv:2010.00840.</p>
+<p>Kevin Yang and Dan Klein. 2021. Fudge: Controlled text generation with future discriminators. arXiv preprint arXiv:2104.05218.</p>
+<p>Lili Yao, Nanyun Peng, Ralph Weischedel, Kevin Knight, Dongyan Zhao, and Rui Yan. 2019. Plan-and-write: Towards better automatic storytelling. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, pages 7378-7385.</p>
+<p>Meng-Hsuan Yu, Juntao Li, Danyang Liu, Dongyan Zhao, Rui Yan, Bo Tang, and Haisong Zhang. 2020. Draft and edit: Automatic storytelling through multipass hierarchical conditional variational autoencoder. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 34, pages 1741-1748.</p>
+<p>Ruiqi Zhong, Kristy Lee, Zheng Zhang, and Dan Klein. 2021. Adapting language models for zero-shot learning by meta-tuning on dataset and prompt collections. arXiv preprint arXiv:2104.04670.</p>
+<h2>A Character Name Generation</h2>
+<p>We elaborate on our name generation scheme used in the Plan module (Section 3.1).</p>
+<p>Names are generated by GPT3-Instruct-175B with a prompt consisting of the premise, setting, and any previous character descriptions, shown in Table 6. Thus if e.g., a name already appears in the premise, it can be easily copied. After each name, we generate the corresponding description, and both the name and description are appended to the prompt before generating the next name.</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup>1.</p>
+<p>Full Name:
+Table 6: An example prompt used when generating the first name in the Plan module.</p>
+<p>To ensure that we sample reasonable names, we use several heuristics as follows. Each time we generate a name, we sample 10 names in total, and filter out those containing any of a fixed set of strings which we observed were problematic (e.g., story roles like "protagonist," or character attributes like "age" and "gender" which are not names). We additionally filter out strings with punctuation and strings not in the premise but which appear multiple times in the 10 generated strings (to add more diversity to the names). Finally, we prefer names with two words in them in an effort to get characters' full family names.</p>
+<p>While these simple heuristics are sufficient for this work, there remains ample room for improvement both in generated names' quality (avoiding the occasional edge cases which escape our heuristic filters) as well as fairness (by using a generation system which is perhaps less biased than GPT3).</p>
+<h2>B Details on Additional Reranking Heuristics</h2>
+<p>We elaborate on the details of the additional filtering heuristics used in our Rewrite system (Section 3.3). There are a few broad categories of problems which we aim to largely filter out with simple heuristics.</p>
+<p>First, we filter out any empty outputs.
+Second, we aim to reduce repetition in the generation both within itself and with the prompt. We simply check for repeated sequences of 5 words or more, and also check if the edit distance between any two sentences is a sufficiently small fraction of their length.</p>
+<p>Third, we aim to avoid jarring changes in narration. For example, this can result from the GPT3 generator reverting to the style of the prompt, with e.g., headings for story commentary or author notes. Thus we filter out any generations containing any of a fixed list of strings, such as "inComment" and "copyright". For some strings which may reasonably appear in a normal story passage as well, we filter out passages if two or more appear. We also filter out generations where any paragraph contains a colon within the first few words (a likely indicator of an analysis header).</p>
+<p>Fourth, we aim to maintain consistent third person narration, so we detect whether a continuation is written in first or second person by searching for the presence of "I," "we," and "you" outside of quotations and filter out such continuations.</p>
+<h2>C Details on Editing System Information Extraction</h2>
+<p>As discussed in Section 3.4, the core subroutine of our Edit module's detection system is an information extraction system for gathering structured information about a given character from a newly generated passage. We will illustrate this process using a running example taken mid-generation for a story starting from the plan shown in Table 7.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Premise</span><span class="o">:</span><span class="w"> </span><span class="n">In</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">sun</span><span class="w"> </span><span class="n">has</span>
+<span class="n">gone</span><span class="w"> </span><span class="n">out</span><span class="o">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">people</span><span class="w"> </span><span class="n">huddle</span><span class="w"> </span><span class="n">around</span><span class="w"> </span><span class="n">a</span>
+<span class="n">fire</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">small</span><span class="w"> </span><span class="n">cabin</span><span class="o">.</span><span class="w"> </span><span class="n">They</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">waiting</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span>
+<span class="n">message</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">tell</span><span class="w"> </span><span class="n">them</span>
+<span class="n">what</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">next</span><span class="o">.</span>
+<span class="n">Setting</span><span class="o">:</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">story</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="kd">set</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dark</span><span class="w"> </span><span class="n">cabin</span><span class="w"> </span><span class="n">lit</span>
+<span class="n">only</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">fire</span><span class="o">.</span>
+<span class="n">Characters</span><span class="o">:</span>
+<span class="mi">1</span><span class="o">.</span><span class="w"> </span><span class="n">Karen</span><span class="w"> </span><span class="n">Zellerion</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">strong</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">determined</span>
+<span class="n">woman</span><span class="o">.</span><span class="w"> </span><span class="n">She</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">leader</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="k">is</span>
+<span class="n">always</span><span class="w"> </span><span class="n">looking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">ways</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">help</span><span class="w"> </span><span class="n">her</span><span class="w"> </span><span class="n">people</span><span class="o">.</span>
+<span class="mi">2</span><span class="o">.</span><span class="w"> </span><span class="n">Luke</span><span class="w"> </span><span class="n">Zellerion</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">Karen</span><span class="s1">&#39;s husband and the</span>
+<span class="s1">second-in-command of the group. He is a skilled</span>
+<span class="s1">hunter and often uses his knowledge to help the</span>
+<span class="s1">others.</span>
+<span class="s1">3. Maria Zellerion is Karen and Luke&#39;</span><span class="n">s</span><span class="w"> </span><span class="n">daughter</span><span class="o">.</span>
+<span class="n">She</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bright</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">curious</span><span class="w"> </span><span class="n">girl</span><span class="w"> </span><span class="n">who</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">always</span>
+<span class="n">asking</span><span class="w"> </span><span class="n">questions</span><span class="w"> </span><span class="n">about</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="n">they</span><span class="w"> </span><span class="n">live</span><span class="w"> </span><span class="k">in</span><span class="o">.</span>
+<span class="n">Outline</span><span class="o">:</span>
+<span class="mi">1</span><span class="o">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">receives</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">outside</span>
+<span class="n">that</span><span class="w"> </span><span class="n">tells</span><span class="w"> </span><span class="n">them</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">certain</span><span class="w"> </span><span class="n">location</span><span class="o">.</span>
+<span class="mi">2</span><span class="o">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">sets</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">journey</span><span class="o">,</span>
+<span class="n">encountering</span><span class="w"> </span><span class="n">various</span><span class="w"> </span><span class="n">challenges</span><span class="w"> </span><span class="n">along</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">way</span><span class="o">.</span>
+<span class="mi">3</span><span class="o">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="n">arrives</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">location</span><span class="w"> </span><span class="n">and</span>
+<span class="n">discovers</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">they</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">supposed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">next</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Table 7: The plan generated by the Plan module for our running example illustrating the Edit module's attributevalue detection procedure.</p>
+<p>We begin by feeding GPT3-Instruct-175B a prompt containing the passage, the name of the character, and a request to list facts about the character, as shown in Table 8. We generate 3 outputs, parse the lists into individual facts, and retain those facts which are agreed upon by at least 2 of the outputs (according to an entailment model) to reduce hallucination.</p>
+<p>Next, we extract the attribute keys from each fact. This is done via a few-shot prompt to GPT3-Instruct-13B, selecting examples based on DPR relevance from a small collection of about 80 handwritten examples, as shown in Table 9. Note we do not keep the attribute values generated in this step as we observed frequent hallucination. Addition-</p>
+<p>"I don't know," answered Maria, "but I'll go with you if you're going to meet someone." so they left together.</p>
+<p>They walked down to the main part of the community where everyone else was gathering and found an older woman there named Lucy that Karen knew.
+"You know what's going on don't you?" Karen asked Lucy.
+"Yes, I do but I don't think I can tell you much because I've been sworn to secrecy," she replied. "I just have a feeling that if we're going to get any answers from this person we're looking for we're going to have to see them face-to-face," assured Lucy. They all agreed that this was the best way to do things and went looking for their neighbor Lizzy who had a car that worked. They met her again in the cafeteria and told her about their plans and Lizzy said she would like nothing better than a little adventure so she agreed to take them as long as no one got hurt along the way.</p>
+<p>Question: List very brief facts about Lucy's appearance, personality, and relationship to other characters.</p>
+<ol>
+<li>Lucy is an older woman.</li>
+<li>Lucy is sworn to secrecy.</li>
+<li>Lucy is a good friend of Karen's.</li>
+</ol>
+<p>Table 8: An example prompt for listing initial facts about a given character based on a newly written passage, used in the Edit module's detection procedure. We show one of the three generated continuations in highlighting. (Note that Lucy was not one of the original three characters generated by the Plan module, but rather was detected and added to our knowledge base over the course of generation as discussed in Section 3.2.)
+ally, we filter out any attribute keys which return either no answer or a sufficiently low-confidence result from a T5-large-based UnifiedQA question answering model (Khashabi et al., 2020) when given either the fact or original passage as context.</p>
+<p>Extract attributes from the given context using the format Attribute: Value.</p>
+<p>Context (Nora Johnson): Selma Vincenti is Nora's friend who recently got engaged to Bill. Nora Johnson's friend's name is Selma Vincenti Nora Johnson is Selma's friend
+Context (Shannon): Kathleen O'Brien is Shannon's mother.
+Shannon's mother's name is Kathleen O'Brien Shannon is Kathleen's daughter
+Context (Rachel Kim): Rachel Kim's father loves her children dearly.
+Rachel Kim's gender is female
+Context (Johnny): Johnny is a friendly and outgoing person, and he loves spending time with his sister Mira.
+Johnny's gender is male
+Johnny's sister's name is Mira
+Johnny is Mira's brother
+Context (Tina Palmer): Tina Palmer befriends Amy Sinkhorn.
+Tina Palmer is Amy's friend
+Tina Palmer's friend's name is Amy Sinkhorn
+Context (Lucy): Lucy is a good friend of Karen's.
+Lucy is Karen's friend
+Lucy is a good friend of Karen
+Karen is Lucy's friend
+Table 9: An example prompt for extracting attributes from a natural language fact ("Lucy is a good friend of Karen's.") in the Edit module. Attribute key-value pairs are extracted from each generated line in a rule-based manner, and we discard outputs for which our rule-based parser fails (both the second and third output lines in this case). After extraction, we keep only the key, while the value is discarded due to a high rate of hallucination in this step; we regenerate it later.</p>
+<p>To recompute the attribute values, we prompt GPT3-Instruct-13B with the original fact, character name, and attribute key as shown in Table 10, and take the most agreed upon of 3 outputs as the attribute value. We filter out any key-value pairs which are not entailed with sufficiently high probability by the original fact from which they were extracted.</p>
+<p>Lucy is a good friend of Karen's.
+Lucy is Karen's friend.
+Table 10: An example prompt for extracting values after identifying attribute keys in the Edit module. In this case, the character for which we are inferring is Lucy, and the attribute key is "Karen's."</p>
+<p>After acquiring key-value pairs, we need to update the structured attribute dictionary for the given character. When we detect a conflict (i.e., an attribute key is already present in the dictionary), we compare the new and old attribute values using an entailment model by converting the attribute-value pairs into simple sentences in a rule-based manner (e.g., "gender: female" in Karen's dictionary will convert to "Karen's gender is female."). If one attribute value entails the other, then we keep the former as the attribute value. If there is a neutral relation, we make no change. If there is a contradiction, we flag it for editing.</p>
+<p>Lastly, we can "complete" attributes involving other characters in the dictionary. For example, if Ben's teacher is Anna, GPT3-Instruct-175B can infer that Anna's student is Ben, and add this relation to our dictionary for Anna. Additionally, we can infer that Anna's relationship to Ben is "teacher" and that Ben's relationship to Anna is "student." An example of this procedure is shown in Table 11.</p>
+<div class="codehilite"><pre><span></span><code>Lucy is Karen Zellerion&#39;s friend.
+Karen Zellerion is Lucy&#39;s friend.
+</code></pre></div>
+
+<p>Table 11: Example prompt for "completing" attributes involving other characters in the Edit module. Note that we automatically matched "Karen" to our existing character "Karen Zellerion." From the initial fact that Lucy is Karen's friend, we infer that Karen is Lucy's friend, that Lucy's friend is Karen, and Karen's friend is Lucy. (This example also hints at one limitation of our current system, namely, that it implicitly assumes one value per attribute: e.g., if Lucy had a second friend it would flag a contradiction.)</p>
+<p>For the controlled setting evaluation in Section 5.2, we modify the system to output continuous probabilities of contradiction (to compute a ROC-AUC score) rather than discrete decisions on whether a previously detected attribute is contradicted. Thus for each passage, we simply return the entailment model's maximum probability of contradiction observed across all attribute key conflicts.</p>
+<h2>D Data on API Usage</h2>
+<p>In Table 12, we report the average number of API calls and number of tokens processed (including both prompts and generations) for each GPT3 API endpoint across 5 runs of $\mathrm{RE}^{3}$, using the same settings as in our main experiments.</p>
+<p>The large number of tokens generated from GPT3-175B and GPT3-Instruct-175B can be attributed to our filtering and reranking in the Plan and Rewrite modules; typically we generate 10 outputs per call. The Edit module is responsible for most of the GPT3-Instruct-13B usage as well as some of the GPT3-Instruct-175B usage. Finally, the Edit module is naturally the sole user of the Edit API, which also involves rejection sampling when the API either makes no change or returns an overly lengthy response.</p>
+<p>The total cost for generating a single $\mathrm{RE}^{3}$ story with these settings adds up to a few dollars. The baselines and ablations require fewer calls than reported here.</p>
+<h2>E Dataset Usage</h2>
+<p>The only preexisting story dataset used in this work is the WritingPrompts dataset (Fan et al., 2018), which is used to train our relevance and coherence rerankers (and the generator for the ROLLING-FT baseline). GPT3 is additionally used to derive summaries of WritingPrompts passages for training the relevance reranker. Finally, we generated some examples of contradictory story setups and story beginnings when analyzing our Edit module in Section 5.2, which relied solely on prompting GPT3, and not any preexisting dataset.</p>
+<p>All data used or generated for this paper, together with documentation, can be found through our codebase located at https://github.com/ yangkevin2/emnlp22-re3-story-generation.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>API Endpoint</th>
+<th>Average Calls</th>
+<th>Average Tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT3-175B</td>
+<td>davinci</td>
+<td>12.0</td>
+<td>34510.0</td>
+</tr>
+<tr>
+<td>GPT3-Instruct-175B</td>
+<td>text-davinci-002</td>
+<td>70.2</td>
+<td>25558.0</td>
+</tr>
+<tr>
+<td>GPT3 Edit API</td>
+<td>text-davinci-edit-001</td>
+<td>7.0</td>
+<td>19425.2</td>
+</tr>
+<tr>
+<td>GPT3-Instruct-13B</td>
+<td>text-curie-001</td>
+<td>362.6</td>
+<td>48401.8</td>
+</tr>
+</tbody>
+</table>
+<p>Table 12: For each API endpoint that we use, we report the average number of API calls and tokens processed per story generated by $\mathrm{RE}^{3}$. Note that for the Edit API, we simply add the total number of tokens in both prompt and output when calculating the number of tokens, although it is not obvious if this is the appropriate count. Calls to the Insert API are included under text-davinci-002.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Interesting $\uparrow$</th>
+<th style="text-align: center;">Coherent $\uparrow$</th>
+<th style="text-align: center;">Relevant $\uparrow$</th>
+<th style="text-align: center;">Humanlike $\uparrow$</th>
+<th style="text-align: center;">Misc. Problems $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$-SHORT</td>
+<td style="text-align: center;">44.7</td>
+<td style="text-align: center;">47.3</td>
+<td style="text-align: center;">59.3</td>
+<td style="text-align: center;">89.3</td>
+<td style="text-align: center;">$\mathbf{1 . 2 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">52.0</td>
+<td style="text-align: center;">56.0</td>
+<td style="text-align: center;">62.0</td>
+<td style="text-align: center;">87.3</td>
+<td style="text-align: center;">1.45</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$-LONG</td>
+<td style="text-align: center;">$\mathbf{6 4 . 0}$</td>
+<td style="text-align: center;">60.0</td>
+<td style="text-align: center;">58.0</td>
+<td style="text-align: center;">85.3</td>
+<td style="text-align: center;">1.77</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">42.0</td>
+<td style="text-align: center;">51.3</td>
+<td style="text-align: center;">58.0</td>
+<td style="text-align: center;">82.0</td>
+<td style="text-align: center;">1.68</td>
+</tr>
+</tbody>
+</table>
+<p>Table 13: Comparison of $\mathrm{RE}^{3}$ against versions generating shorter and longer stories ( $\mathrm{RE}^{3}$-SHORT and $\mathrm{RE}^{3}$-LONG respectively). The first two rows show a pairwise comparison between $\mathrm{RE}^{3}$-SHORT and $\mathrm{RE}^{3}$ and the last two rows show the equivalent comparison between $\mathrm{RE}^{3}$-LONG and $\mathrm{RE}^{3}$. Bolding indicates significant differences with $p&lt;0.05$ on a paired $t$-test. In most metrics the differences are insignificant.</p>
+<h2>F Length vs. Story Quality Analysis</h2>
+<p>In our main experiments, we ran $\mathrm{RE}^{3}$ with three outline sections and generated four 256 -token passages per outline section. Here, experiment with generating from $\mathrm{RE}^{3}$ using the same outlines, but with two or six 256 -token passages per outline section instead. We refer to these modified version of $\mathrm{RE}^{3}$ as $\mathrm{RE}^{3}$-SHORT and $\mathrm{RE}^{3}$-LONG respectively. The results are shown in Table 13.</p>
+<p>For the most part, the sample size of 50 stories for this comparison proved insufficient to draw clear quantitative conclusions on the impact of length on $\mathrm{RE}^{3}$ story quality. However, interestingly, annotators judged the longer stories to be more interesting. Additionally, it seems intuitive that longer stories are more likely to suffer the presence of writing problems at some point in the story simply due to having more total text.</p>
+<p>Qualitatively, we also observe that the generator may become repetitive or lose the plot thread over longer time horizons, but ending generation too early can also yield stories which seem "truncated" before they reach the main plot points. Trying to balance these factors by determining the length of story passages more dynamically could be an interesting avenue for future research.</p>
+<h2>G Full Metrics for Miscellaneous Writing Problems</h2>
+<p>We show the metrics for individual writing problems as described in Section 4. Tables 14 and 15 show the results for the main baselines and ablations respectively. The differences in individual metrics are largely not significant (although $\mathrm{RE}^{3}$ is never significantly worse), but in many cases become significant when taken in aggregate.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Narration $\downarrow$</th>
+<th style="text-align: center;">Inconsistent $\downarrow$</th>
+<th style="text-align: center;">Confusing $\downarrow$</th>
+<th style="text-align: center;">Repetitive $\downarrow$</th>
+<th style="text-align: center;">Disfluent $\downarrow$</th>
+<th style="text-align: center;">Misc. Problems $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">$\mathbf{1 . 0 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ROLLING</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">0.28</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.35</td>
+<td style="text-align: center;">$\mathbf{0 . 2 9}$</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">$\mathbf{1 . 3 5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ROLLING-FT</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">0.32</td>
+<td style="text-align: center;">0.37</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">1.48</td>
+</tr>
+</tbody>
+</table>
+<p>Table 14: Fraction of stories marked with individual writing problems from pairwise comparison of $\mathrm{RE}^{3}$ against two baselines, ROLLING and ROLLING-FT. Bolding indicates significant differences with $p&lt;0.05$. Differences in individual problems are largely not significant, but they become significant in aggregate (Misc. Problems)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Narration $\downarrow$</th>
+<th style="text-align: center;">Inconsistent $\downarrow$</th>
+<th style="text-align: center;">Confusing $\downarrow$</th>
+<th style="text-align: center;">Repetitive $\downarrow$</th>
+<th style="text-align: center;">Disfluent $\downarrow$</th>
+<th style="text-align: center;">Misc. Problems $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">1.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">DRAFT-REWRITE-EDIT</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.32</td>
+<td style="text-align: center;">0.34</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">1.33</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">$\mathbf{0 . 2 6}$</td>
+<td style="text-align: center;">0.35</td>
+<td style="text-align: center;">$\mathbf{0 . 2 5}$</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">$\mathbf{1 . 1 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">PLAN-DRAFT-EDIT</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">0.34</td>
+<td style="text-align: center;">0.38</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">1.48</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">$\mathbf{0 . 2 2}$</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">1.12</td>
+</tr>
+<tr>
+<td style="text-align: left;">PLAN-DRAFT-REWRITE</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.26</td>
+<td style="text-align: center;">0.28</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">1.1</td>
+</tr>
+</tbody>
+</table>
+<p>Table 15: Fraction of stories marked with individual writing problems from pairwise comparison of $\mathrm{RE}^{3}$ against ablations which remove the Plan, Rewrite, and Edit modules respectively. Bolding indicates significant differences with $p&lt;0.05$. Differences in individual problems are largely not significant.</p>
+<h1>H Mechanical Turk Evaluation Details</h1>
+<p>In Figure 6 we show an example Mechanical Turk survey from our evaluation in which the annotator is asked to answer questions comparing two stories. Workers were paid $\$ 1.50$ per hit.</p>
+<p>We're a group of NLP/AI researchers working on story generation. Below are two stories based on the same premise. Please quickly read or skim them and then answer the brief questions at the end; we expect the task to take about 5 minutes in total. Please note that we will check responses manually to ensure quality and accuracy.</p>
+<h1>Premise:</h1>
+<p>Karin is a young woman who just moved into a small town. She's excited to start her new life, but she soon realizes that the town is anything but welcoming. The residents are all strange and there's something clearly not right about the place. Karin starts to investigate, and she quickly realizes that the town is hiding a dark secret.</p>
+<h2>Story A:</h2>
+<p>The first day in any new place was always exciting for Karin. The feeling of starting over, of meeting new people and making a new life, it was even better than a vacation, because now she could decide her own life instead of just relaxing on the beach.</p>
+<p>So she had been excited, yes, but she was not surprised to find that the town had been anything but welcoming. She hadn't quite realized how far out in the woods she was moving into, but it didn't matter to her at all. The house itself was cozy and charming despite being so old that upper it had a bit of charm to it that made you feel like you were stepping back in time by living there. She felt as though the old house itself had accepted her as family when she finally found a job and moved in just outside of town proper - something Karin took as a good sign.</p>
+<p>She really hoped that things would get better soon though; the residents of this town were definitely not friendly at all. They were distant and impatient, and the ones that had decided to be polite simply didn't understand her. They would ask her questions, but she could tell they didn't care about the answers. It was like they were already prepared for someone like her to move in, as they were not sure in a special sense. When she didn't like her in the first place, even, she was instead like another friend.</p>
+<h2>Story B:</h2>
+<p>Karen Roe had just moved to a small town. She was twenty-two years old and she had just graduated college. She was happy to move away from her hometown. It wasn't that she hated her hometown, she just wanted to see the world. She wanted to see more of the world than the tiny town where she grew up in.</p>
+<p>She knew it was risky moving somewhere so new, but she had never been so excited in her life. Her first day in her new home, she ran around town like a little kid on Christmas morning. She went into every shop and spoke to everyone she could find. Everyone seemed friendly enough and they all told her how excited they were that someone new had moved into town.</p>
+<p>She went back home and began unpacking all of her belongings, making sure to keep her clothes organized by color and type of material each item was made out of. Once all of that was done, she finally sat down for dinner at about seven o'clock at night. It felt a little strange living alone in such a big house after sharing an apartment with three other girls for the last six years of college, but it felt nice too. It was a weird mix of emotions that made her feel excited and lonely at the same time.</p>
+<p>Karin's
+That I know - can't even be around each other for more than an hour without getting upset," she concluded with a sigh. He nodded at this as he began thinking about his own situation. Maybe there was some way he could give her some advice?</p>
+<h2>Questions:</h2>
+<ul>
+<li>1) Which story do you prefer / find more interesting overall?</li>
+</ul>
+<p>Story A
+Story B
+Both are about equally good
+Neither is good
+- 2) Which story has a more coherent overarching plot?</p>
+<p>Story A
+Story B
+Both are about equally good
+Neither is good</p>
+<ul>
+<li>3) Which story's plot is closer to the premise?</li>
+</ul>
+<p>Story A
+Story B
+Both are about equally good
+Neither is good
+- 4) Indicate which of the following problems are present in Story A (possibly none, possibly more than one).
+$\square$ Jarring change(s) in narration or style
+$\square$ Factual inconsistencies/oddities
+$\square$ Very confusing or hard to understand
+$\square$ Often ungrammatical or disfluent
+$\square$ Highly repetitive
+$\square$ None of the above
+- 5) Indicate which of the following problems are present in Story B (possibly none, possibly more than one).
+$\square$ Jarring change(s) in narration or style
+$\square$ Factual inconsistencies/oddities
+$\square$ Very confusing or hard to understand
+$\square$ Often ungrammatical or disfluent
+$\square$ Highly repetitive
+$\square$ None of the above
+- 6) Do you think Story A was written by a human?</p>
+<p>Yes
+No
+- 7) Do you think Story B was written by a human?</p>
+<p>Yes
+No</p>
+<p>Figure 6: Example of a Mechanical Turk survey from our evaluation. The actual stories are mostly omitted as we are simply showing the format of the survey.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Interesting</th>
+<th style="text-align: center;">Coherent</th>
+<th style="text-align: center;">Relevant</th>
+<th style="text-align: center;">Humanlike</th>
+<th style="text-align: center;">Misc Problems</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$ vs. ROLLING</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$ vs. ROLLING-FT</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">-0.05</td>
+<td style="text-align: center;">-0.03</td>
+</tr>
+</tbody>
+</table>
+<p>Table 16: Fleiss' kappa for agreement on individual metric annotations in pairwise comparisons between $\mathrm{RE}^{3}$ and baselines. Overall the agreement is relatively poor.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Interesting</th>
+<th style="text-align: center;">Coherent</th>
+<th style="text-align: center;">Relevant</th>
+<th style="text-align: center;">Humanlike</th>
+<th style="text-align: center;">Misc Problems</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$ vs. DRAFT-REWRITE-EDIT</td>
+<td style="text-align: center;">-0.01</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">-0.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$ vs. PLAN-DRAFT-EDIT</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathrm{RE}^{3}$ vs. PLAN-DRAFT-REWRITE</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">-0.03</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.02</td>
+</tr>
+</tbody>
+</table>
+<p>Table 17: Fleiss' kappa for agreement on individual metric annotations in pairwise comparisons between $\mathrm{RE}^{3}$ and ablations. Overall the agreement is relatively poor.</p>
+<h2>I Annotator Agreement</h2>
+<p>The evaluation task (Appendix H) asks annotators to "quickly read or skim" two fairly lengthy passages in order to be able to evaluate more stories. Thus many details may be missed. Moreover, many of our metrics are by nature rather subjective. Thus it is expected that individual labels may be highly noisy, resulting in poor annotator agreement. While we expect that agreement would be better with expert annotators, this would significantly increase the cost burden.</p>
+<p>Indeed the agreement as measured by Fleiss' kappa, while usually positive, is low on most of our comparisons (Tables 16 and 17).</p>
+<h2>J Example Stories</h2>
+<p>Here we show the stories generated by $\mathrm{RE}^{3}$ and the ROLLING and ROLLING-FT baselines on the first five premises in our main evaluation, i.e., the examples are i.i.d. and non-cherry-picked. We note that even with the same premise, there are of course many possible stories to be written, and re-generating could easily result in a completely different story with different strong points and problems. Nevertheless, we show these examples to provide a sense of the overall level of quality as well as to illustrate some types of problems which may arise.</p>
+<p>We individually summarize what we view as the strengths and weaknesses of each generated story in the caption at the bottom of each example to facilitate faster reading, while also describing general qualitative trends here. Unsurprisingly, both ROLLING and ROLLING-FT exhibit a common failure mode in which they generate a rambling series of coherent short passages which are largely irrelevant to the premise and even to each other. In contrast, although there are some confusing passages mixed in, $\mathrm{RE}^{3}$ 's stories of the same length generally maintain a coherent overarching plot for most of the generation. Moreover, our stories' overarching plots are clearly relevant to the initial premise, although they may deviate from the detailed outline which we generate in our Plan module.</p>
+<p>Some of the problems in $\mathrm{RE}^{3}$ may be partially due to the concessions we make due to evaluation costs and limitations (Section 4, Method Instantiation). We direct the reader to Appendix M for an example of a much longer (7500-word) story generated without these limitations, which we believe better represents the ceiling of what our $\mathrm{Re}^{3}$ framework is capable of.</p>
+<h1>J. 1 Examples for Premise 1</h1>
+<h2>Premise 1</h2>
+<p>A woman discovers that her husband has been cheating on her and decides to get revenge.
+Table 18: The premise for the first group of example generated stories. A very generic prompt overall.</p>
+<h2>Initial Setup and Outline for $\mathrm{RE}^{3}$, Premise 1</h2>
+<p>Premise: A woman discovers that her husband has been cheating on her and decides to get revenge.
+Setting: The story is set in the present day, in a small town.</p>
+<h2>Characters:</h2>
+<ol>
+<li>Diane Chambers is a beautiful woman in her early thirties. She has long dark hair and blue eyes. She is married to Mark Chambers and is a stay-at-home mom.</li>
+<li>Mark Chambers is a successful businessman in his early forties. He is tall and handsome, with brown hair and green eyes. He is married to Diane Chambers and is the father of two young children. 3. Karen Johnson is a beautiful blonde women in her early thirties. She is Mark Chambers' mistress and is also married with two young children.</li>
+</ol>
+<h2>Outline:</h2>
+<ol>
+<li>Diane Chambers discovers that her husband has been cheating on her with another woman.</li>
+<li>Diane Chambers decides to take revenge on her husband by having an affair of her own.</li>
+<li>Diane Chambers' affair is discovered by her husband, leading to a confrontation between the two.</li>
+</ol>
+<p>Table 19: $\mathrm{RE}^{3}$ 's initial setup and outline for Premise 1. The characters and outline make perfect sense for the given premise.</p>
+<h2>RE $^{3}$ Story for Premise 1</h2>
+<p>"When it rains, it pours," Mark Chambers said to his wife, Diane.
+"What's that supposed to mean?" she asked him.
+"It means that I've been living a double life for the last five years, and now everyone knows about it," he replied. "I've been cheating on you with Karen Johnson."</p>
+<p>Diane stared at her husband long and hard before replying to him. "Karen Johnson? As in the other woman in your office?"</p>
+<p>Mark nodded his head in confirmation. He looked at his wife with eyes as appealing as possible, hoping to win her back on her side. "Diane, I'm sorry for what I did to you," he told her. "But this has been going on for five years now."</p>
+<p>Diane didn't seem impressed by her husband's apology at all. She sat firmly on the moonlit sofa that stood in the middle of their room and folded her hands neatly across her lap. Her expression was one of disappointment and disgust; but mostly she just seemed sad. "Why are you telling me this now, Mark?" she queried him. "You told me that you were going to Chicago for a business meeting," she said.</p>
+<p>Mark could feel his wife's pain as clearly as if it had been his own. He tried to think desperately of how he could tell her everything without using the words 'cheating', 'affair' or 'deception'. But no matter how hard he thought, there was just no other way to say it; after all, that was exactly what he had done. He had been lying to her for five long years and now she knew about it. And it was about time that she did know about it. Any more lies would do more harm than good. So Mark grasped his wife's hand firmly and began to speak to her with a sincere tone in his voice. "Diane," he started, "I lied to you when I said that I was going on a business trip this weekend. The truth is that Karen Johnson is my lover." Diane's eyes widened as she understood what he had just said. "What?" she asked in a soft, low voice.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>Premise: Cathy is a high school student who is trying to figure out her future. She has been diagnosed with a rare disease that will cause her to slowly go blind. As she tries to make the most of her remaining sight, she also must come to terms with the fact that she may never be able to see again.</p>
+<p>Setting: The story is set in a small town in the United States.</p>
+<p>List the names and details of all major characters.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

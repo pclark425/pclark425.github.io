@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length Generalization Failure Theory (Positional Encoding Rigidity Mechanism) - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-220</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-220</p>
+                <p><strong>Name:</strong> Length Generalization Failure Theory (Positional Encoding Rigidity Mechanism)</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of how language models perform arithmetic.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> Language models fail to generalize to longer arithmetic problems primarily because their positional encodings create rigid, length-specific representations that cannot flexibly adapt to sequences longer than those seen during training. The model learns to associate specific positional indices with specific computational steps in multi-digit arithmetic algorithms (e.g., 'position 5 corresponds to the ones place in a 5-digit addition problem'). When presented with longer sequences, these learned position-to-computation-step mappings break down because: (1) the model encounters positional indices outside its training distribution, (2) the model must reuse positional patterns in novel ways, or (3) the relative spacing between operands and intermediate results differs from training examples. This theory posits that positional encoding rigidity is a primary (though not exclusive) mechanism underlying length generalization failure in arithmetic tasks.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Positional encodings create a fixed coordinate system that models use to index and sequence computational steps in multi-step arithmetic procedures.</li>
+                <li>During training on fixed-length arithmetic problems, models learn position-specific computational patterns (e.g., 'at position i, attend to position j to retrieve the i-th digit of the first operand').</li>
+                <li>When sequence length L_test exceeds maximum training length L_train, the model encounters positional coordinates p > L_train that have never been associated with arithmetic computation steps during training.</li>
+                <li>The degree of length generalization failure is proportional to: (1) the rigidity of the positional encoding scheme (absolute > relative), and (2) the magnitude of the length difference (L_test - L_train).</li>
+                <li>Models cannot spontaneously extrapolate learned position-based computational patterns to unseen positional indices without architectural mechanisms that support position-invariant or compositional position representations.</li>
+                <li>For arithmetic operations requiring alignment of digits by place value (addition, subtraction, multiplication), positional encoding rigidity particularly affects the model's ability to maintain correct digit-to-place-value mappings in longer problems.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Transformers with absolute positional encodings show severe and systematic degradation when tested on arithmetic problems with operand lengths exceeding those seen during training, with performance often dropping to near-chance levels. </li>
+    <li>Relative positional encodings (such as T5-style relative position biases) and attention bias schemes (such as ALiBi) show improved length generalization compared to absolute sinusoidal encodings, though still exhibit performance degradation on significantly longer sequences. </li>
+    <li>Training with randomized positional encodings (where positions are randomly perturbed during training) significantly improves length generalization on arithmetic tasks, suggesting that breaking rigid position-to-computation associations is beneficial. </li>
+    <li>Systematic studies show that the impact of positional encoding schemes on length generalization varies significantly, with some schemes enabling extrapolation to 2-3x training length while others fail immediately beyond training distribution. </li>
+    <li>Models exhibit sharp performance cliffs at specific length thresholds (often at or slightly beyond maximum training length), rather than gradual degradation, consistent with encountering out-of-distribution positional indices. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Training with a curriculum that gradually increases maximum sequence length (e.g., starting with 2-digit addition, then 3-digit, then 4-digit) should produce better length generalization than training with a fixed uniform distribution over a single length range, because it exposes the model to the pattern of how computation extends with length.</li>
+                <li>Models trained with position-relative attention mechanisms (like ALiBi) should show graceful degradation on longer sequences (e.g., 80% accuracy at 2x training length) rather than catastrophic failure (e.g., 10% accuracy), because relative positions provide some extrapolation capability.</li>
+                <li>Fine-tuning only the positional encoding parameters (or attention bias parameters) on a small number of longer sequences, while keeping all other weights frozen, should partially recover performance on longer arithmetic problems, demonstrating that position representations are the primary bottleneck.</li>
+                <li>Augmenting training data with examples where operands are padded with leading zeros (changing absolute positions while preserving arithmetic structure) should improve length generalization by reducing dependence on specific absolute positions.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>A hybrid architecture that uses absolute positional encodings for short sequences (< 10 tokens) but switches to relative positional encodings for longer sequences might achieve both strong in-distribution performance and length generalization, though whether the switching point can be learned automatically and whether this creates discontinuities in representation space is unknown.</li>
+                <li>Training on extremely variable and wide length distributions (e.g., uniform from 1-digit to 100-digit operands) might force the model to learn position-invariant algorithmic representations, but it's unclear whether this would prevent learning of any systematic algorithm due to the extreme diversity, or whether current optimization methods can discover such general solutions.</li>
+                <li>Architectures that learn to dynamically generate or modulate positional encodings based on problem structure (e.g., detecting operand boundaries and generating position encodings relative to those boundaries) might achieve perfect length generalization, but whether gradient-based optimization can discover such meta-learning solutions is unknown.</li>
+                <li>Removing positional encodings entirely and relying solely on learned relative position information through attention patterns might improve length generalization substantially, but could also severely hurt in-distribution performance on tasks requiring precise position tracking, with the net effect being uncertain.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If models with no positional information whatsoever (neither absolute nor relative encodings) still exhibit sharp performance drops at specific length thresholds similar to models with positional encodings, this would suggest positional encoding rigidity is not the primary cause of length generalization failure.</li>
+                <li>If models trained with heavily randomized positions during training (where position indices are shuffled or randomly offset) still show performance cliffs at the same length thresholds as standard models, this would challenge the theory that rigid position-to-computation associations are the core issue.</li>
+                <li>If replacing absolute positional encodings with theoretically superior position-independent alternatives (e.g., learned relative position embeddings with unbounded extrapolation) does not improve length generalization beyond marginal gains, the theory would need substantial revision.</li>
+                <li>If length generalization failure occurs equally across all arithmetic operations (addition, subtraction, multiplication, division) despite these operations having different positional structure requirements, this would suggest factors beyond positional encoding are dominant.</li>
+                <li>If models show identical length generalization failure on arithmetic tasks presented in different formats (e.g., vertical alignment vs. horizontal with explicit digit positions marked) despite different positional encoding patterns, this would indicate position encoding is not the limiting factor.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Different arithmetic operations show dramatically different length generalization capabilities, with addition often generalizing better than multiplication, which positional encoding rigidity alone does not fully explain since both operations involve similar positional structures. </li>
+    <li>Scratchpad and chain-of-thought methods substantially improve length generalization even when using identical positional encoding schemes, suggesting that computational depth and intermediate step visibility are important factors independent of positional encoding. </li>
+    <li>Some studies show that even with relative positional encodings designed for extrapolation (like ALiBi), models still fail to generalize to significantly longer sequences (e.g., 5-10x training length), suggesting additional bottlenecks beyond positional encoding. </li>
+    <li>Models sometimes exhibit non-monotonic performance patterns where accuracy partially recovers at certain longer lengths before declining again, which simple positional encoding rigidity does not predict. </li>
+    <li>The number of training examples and model size interact with length generalization in complex ways not explained by positional encoding alone, with some studies showing that larger models sometimes generalize worse to longer sequences. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Kazemnejad et al. (2023) The Impact of Positional Encoding on Length Generalization in Transformers [Directly studies and characterizes how different positional encoding schemes affect length generalization in arithmetic and other tasks]</li>
+    <li>Ruoss et al. (2023) Randomized Positional Encodings Boost Length Generalization of Transformers [Proposes that rigid positional encodings cause length generalization failure and demonstrates randomization as a solution]</li>
+    <li>Ontanon et al. (2022) Making Transformers Solve Compositional Tasks [Discusses how position-based computation creates limitations for compositional generalization including length]</li>
+    <li>Press et al. (2022) ALiBi: Train Short, Test Long [Implicitly theorizes that absolute positional encodings limit length generalization and proposes relative attention biases as solution]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Length Generalization Failure Theory (Positional Encoding Rigidity Mechanism)",
+    "theory_description": "Language models fail to generalize to longer arithmetic problems primarily because their positional encodings create rigid, length-specific representations that cannot flexibly adapt to sequences longer than those seen during training. The model learns to associate specific positional indices with specific computational steps in multi-digit arithmetic algorithms (e.g., 'position 5 corresponds to the ones place in a 5-digit addition problem'). When presented with longer sequences, these learned position-to-computation-step mappings break down because: (1) the model encounters positional indices outside its training distribution, (2) the model must reuse positional patterns in novel ways, or (3) the relative spacing between operands and intermediate results differs from training examples. This theory posits that positional encoding rigidity is a primary (though not exclusive) mechanism underlying length generalization failure in arithmetic tasks.",
+    "supporting_evidence": [
+        {
+            "text": "Transformers with absolute positional encodings show severe and systematic degradation when tested on arithmetic problems with operand lengths exceeding those seen during training, with performance often dropping to near-chance levels.",
+            "citations": [
+                "Anil et al. (2022) Exploring Length Generalization in Large Language Models",
+                "Deletang et al. (2023) Neural Networks and the Chomsky Hierarchy"
+            ]
+        },
+        {
+            "text": "Relative positional encodings (such as T5-style relative position biases) and attention bias schemes (such as ALiBi) show improved length generalization compared to absolute sinusoidal encodings, though still exhibit performance degradation on significantly longer sequences.",
+            "citations": [
+                "Shaw et al. (2018) Self-Attention with Relative Position Representations",
+                "Press et al. (2022) ALiBi: Train Short, Test Long"
+            ]
+        },
+        {
+            "text": "Training with randomized positional encodings (where positions are randomly perturbed during training) significantly improves length generalization on arithmetic tasks, suggesting that breaking rigid position-to-computation associations is beneficial.",
+            "citations": [
+                "Ruoss et al. (2023) Randomized Positional Encodings Boost Length Generalization of Transformers"
+            ]
+        },
+        {
+            "text": "Systematic studies show that the impact of positional encoding schemes on length generalization varies significantly, with some schemes enabling extrapolation to 2-3x training length while others fail immediately beyond training distribution.",
+            "citations": [
+                "Kazemnejad et al. (2023) The Impact of Positional Encoding on Length Generalization in Transformers"
+            ]
+        },
+        {
+            "text": "Models exhibit sharp performance cliffs at specific length thresholds (often at or slightly beyond maximum training length), rather than gradual degradation, consistent with encountering out-of-distribution positional indices.",
+            "citations": [
+                "Anil et al. (2022) Exploring Length Generalization in Large Language Models"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Positional encodings create a fixed coordinate system that models use to index and sequence computational steps in multi-step arithmetic procedures.",
+        "During training on fixed-length arithmetic problems, models learn position-specific computational patterns (e.g., 'at position i, attend to position j to retrieve the i-th digit of the first operand').",
+        "When sequence length L_test exceeds maximum training length L_train, the model encounters positional coordinates p &gt; L_train that have never been associated with arithmetic computation steps during training.",
+        "The degree of length generalization failure is proportional to: (1) the rigidity of the positional encoding scheme (absolute &gt; relative), and (2) the magnitude of the length difference (L_test - L_train).",
+        "Models cannot spontaneously extrapolate learned position-based computational patterns to unseen positional indices without architectural mechanisms that support position-invariant or compositional position representations.",
+        "For arithmetic operations requiring alignment of digits by place value (addition, subtraction, multiplication), positional encoding rigidity particularly affects the model's ability to maintain correct digit-to-place-value mappings in longer problems."
+    ],
+    "new_predictions_likely": [
+        "Training with a curriculum that gradually increases maximum sequence length (e.g., starting with 2-digit addition, then 3-digit, then 4-digit) should produce better length generalization than training with a fixed uniform distribution over a single length range, because it exposes the model to the pattern of how computation extends with length.",
+        "Models trained with position-relative attention mechanisms (like ALiBi) should show graceful degradation on longer sequences (e.g., 80% accuracy at 2x training length) rather than catastrophic failure (e.g., 10% accuracy), because relative positions provide some extrapolation capability.",
+        "Fine-tuning only the positional encoding parameters (or attention bias parameters) on a small number of longer sequences, while keeping all other weights frozen, should partially recover performance on longer arithmetic problems, demonstrating that position representations are the primary bottleneck.",
+        "Augmenting training data with examples where operands are padded with leading zeros (changing absolute positions while preserving arithmetic structure) should improve length generalization by reducing dependence on specific absolute positions."
+    ],
+    "new_predictions_unknown": [
+        "A hybrid architecture that uses absolute positional encodings for short sequences (&lt; 10 tokens) but switches to relative positional encodings for longer sequences might achieve both strong in-distribution performance and length generalization, though whether the switching point can be learned automatically and whether this creates discontinuities in representation space is unknown.",
+        "Training on extremely variable and wide length distributions (e.g., uniform from 1-digit to 100-digit operands) might force the model to learn position-invariant algorithmic representations, but it's unclear whether this would prevent learning of any systematic algorithm due to the extreme diversity, or whether current optimization methods can discover such general solutions.",
+        "Architectures that learn to dynamically generate or modulate positional encodings based on problem structure (e.g., detecting operand boundaries and generating position encodings relative to those boundaries) might achieve perfect length generalization, but whether gradient-based optimization can discover such meta-learning solutions is unknown.",
+        "Removing positional encodings entirely and relying solely on learned relative position information through attention patterns might improve length generalization substantially, but could also severely hurt in-distribution performance on tasks requiring precise position tracking, with the net effect being uncertain."
+    ],
+    "negative_experiments": [
+        "If models with no positional information whatsoever (neither absolute nor relative encodings) still exhibit sharp performance drops at specific length thresholds similar to models with positional encodings, this would suggest positional encoding rigidity is not the primary cause of length generalization failure.",
+        "If models trained with heavily randomized positions during training (where position indices are shuffled or randomly offset) still show performance cliffs at the same length thresholds as standard models, this would challenge the theory that rigid position-to-computation associations are the core issue.",
+        "If replacing absolute positional encodings with theoretically superior position-independent alternatives (e.g., learned relative position embeddings with unbounded extrapolation) does not improve length generalization beyond marginal gains, the theory would need substantial revision.",
+        "If length generalization failure occurs equally across all arithmetic operations (addition, subtraction, multiplication, division) despite these operations having different positional structure requirements, this would suggest factors beyond positional encoding are dominant.",
+        "If models show identical length generalization failure on arithmetic tasks presented in different formats (e.g., vertical alignment vs. horizontal with explicit digit positions marked) despite different positional encoding patterns, this would indicate position encoding is not the limiting factor."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Different arithmetic operations show dramatically different length generalization capabilities, with addition often generalizing better than multiplication, which positional encoding rigidity alone does not fully explain since both operations involve similar positional structures.",
+            "citations": [
+                "Nogueira et al. (2021) Investigating the Limitations of Transformers with Simple Arithmetic Tasks"
+            ]
+        },
+        {
+            "text": "Scratchpad and chain-of-thought methods substantially improve length generalization even when using identical positional encoding schemes, suggesting that computational depth and intermediate step visibility are important factors independent of positional encoding.",
+            "citations": [
+                "Nye et al. (2021) Show Your Work: Scratchpads for Intermediate Computation with Language Models"
+            ]
+        },
+        {
+            "text": "Some studies show that even with relative positional encodings designed for extrapolation (like ALiBi), models still fail to generalize to significantly longer sequences (e.g., 5-10x training length), suggesting additional bottlenecks beyond positional encoding.",
+            "citations": [
+                "Deletang et al. (2023) Neural Networks and the Chomsky Hierarchy"
+            ]
+        },
+        {
+            "text": "Models sometimes exhibit non-monotonic performance patterns where accuracy partially recovers at certain longer lengths before declining again, which simple positional encoding rigidity does not predict.",
+            "citations": [
+                "Anil et al. (2022) Exploring Length Generalization in Large Language Models"
+            ]
+        },
+        {
+            "text": "The number of training examples and model size interact with length generalization in complex ways not explained by positional encoding alone, with some studies showing that larger models sometimes generalize worse to longer sequences.",
+            "citations": [
+                "Deletang et al. (2023) Neural Networks and the Chomsky Hierarchy"
+            ]
+        }
+    ],
+    "conflicting_evidence": [],
+    "special_cases": [
+        "Very small increases in length (e.g., 5-10% beyond maximum training length) often succeed with minimal performance degradation, while larger increases show sharp drops, suggesting a threshold effect where the model can interpolate slightly but cannot extrapolate substantially.",
+        "Some positional encoding schemes (like ALiBi) show asymmetric generalization patterns - performing well for moderately longer sequences (1.5-2x training length) but still failing catastrophically for very long sequences (5-10x training length), indicating multiple failure modes.",
+        "For arithmetic operations with carries (addition, multiplication), length generalization may fail differently than for operations without carries (digit-wise operations), as carry propagation requires long-range dependencies that interact with positional encoding.",
+        "When operands have very different lengths (e.g., multiplying a 2-digit by a 10-digit number), positional encoding issues may manifest differently than when operands have similar lengths, as the alignment problem changes.",
+        "Models trained with explicit position markers or delimiters (e.g., commas separating digit groups) sometimes show different length generalization patterns, suggesting that explicit structural cues can partially compensate for positional encoding limitations."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Kazemnejad et al. (2023) The Impact of Positional Encoding on Length Generalization in Transformers [Directly studies and characterizes how different positional encoding schemes affect length generalization in arithmetic and other tasks]",
+            "Ruoss et al. (2023) Randomized Positional Encodings Boost Length Generalization of Transformers [Proposes that rigid positional encodings cause length generalization failure and demonstrates randomization as a solution]",
+            "Ontanon et al. (2022) Making Transformers Solve Compositional Tasks [Discusses how position-based computation creates limitations for compositional generalization including length]",
+            "Press et al. (2022) ALiBi: Train Short, Test Long [Implicitly theorizes that absolute positional encodings limit length generalization and proposes relative attention biases as solution]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 0,
+    "theory_query": "Build a theory of how language models perform arithmetic.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-60",
+    "original_theory_name": "Length Generalization Failure Theory",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

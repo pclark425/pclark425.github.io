@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-959 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-959</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-959</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-23.html">extraction-schema-23</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of systems or methods that use probabilistic symbolic world models (such as PPDDL, PDDL, or belief states) for planning in text-based environments, especially those that integrate uncertainty from large language models.</div>
+                <p><strong>Paper ID:</strong> paper-6c66b136dd5969dd4294a5b45714dea9d02af48b</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/6c66b136dd5969dd4294a5b45714dea9d02af48b" target="_blank">Parameter Estimation in Stochastic Logic Programs</a></p>
+                <p><strong>Paper Venue:</strong> Machine-mediated learning</p>
+                <p><strong>Paper TL;DR:</strong> A new algorithm called failure-adjusted maximisation (FAM) is presented, an instance of the EM algorithm that applies specifically to normalised SLPs and provides a closed-form for computing parameter updates within an iterative maximisation approach.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-959",
+    "paper_id": "paper-6c66b136dd5969dd4294a5b45714dea9d02af48b",
+    "extraction_schema_id": "extraction-schema-23",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00682975,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Parameter Estimation in Stochastic Logic Programs</h1>
+<p>JAMES CUSSENS<br>jc@cs.york.ac.uk<br>Department of Computer Science, University of York, Heslington, York YO10 5DD, UK</p>
+<p>Editors: Peter Flach and Sašo Džeroski</p>
+<h4>Abstract</h4>
+<p>Stochastic logic programs (SLPs) are logic programs with parameterised clauses which define a loglinear distribution over refutations of goals. The log-linear distribution provides, by marginalisation, a distribution over variable bindings, allowing SLPs to compactly represent quite complex distributions.</p>
+<p>We analyse the fundamental statistical properties of SLPs addressing issues concerning infinite derivations, 'unnormalised' SLPs and impure SLPs. After detailing existing approaches to parameter estimation for log-linear models and their application to SLPs, we present a new algorithm called failure-adjusted maximisation (FAM). FAM is an instance of the EM algorithm that applies specifically to normalised SLPs and provides a closed-form for computing parameter updates within an iterative maximisation approach. We empirically show that FAM works on some small examples and discuss methods for applying it to bigger problems.</p>
+<p>Keywords: logic programming, parameter estimation, EM algorithm</p>
+<h2>1. Introduction</h2>
+<p>There is currently considerable interest amongst the AI community in developing probabilistic knowledge representations that extend existing approaches to incorporate domain knowledge and/or relational data (Ngo \&amp; Haddaway, 1997; Koller \&amp; Pfeffer, 1997; Koller \&amp; Pfeffer, 1998; Kersting \&amp; De Raedt, 2000; Muggleton, 2000; Cussens, 2000).</p>
+<p>One approach to this problem is to integrate probabilistic and 'logical' methods: an idea that has a long history dating back to Boole (1854) and which is extensively discussed in Cussens (1999a). A common idea is to use a set of formulae in first-order logic (a firstorder theory) to encode domain knowledge. Such a theory can describe relations between objects. Probability can then be 'added' so that the probability with which an object has some attribute depends on the attributes which related objects have (Friedman et al., 1999) or, more generally, so that probabilities depend on what is entailed by the logically-encoded domain knowledge (Ngo \&amp; Haddaway, 1997).</p>
+<p>As well as arguing that these more complex models are required to adequately represent complex probabilistic knowledge, workers have addressed the question of algorithms for inference in, and learning of, such statistical-logical models. This paper focuses exclusively on the parameter learning problem for a particular choice of statistical-logical model: stochastic logic programs (SLPs) (Muggleton, 1996; Cussens, 1999b; Muggleton, 2000; Cussens, 2000).</p>
+<p>Muggleton (1996) explicitly introduced SLPs as generalisations of hidden Markov models (HMMs) and stochastic context-free grammars (SCFGs). Statistical approaches, often using</p>
+<p>HMMs and SCFGs, have revolutionised computational linguistics (Charniak, 1993). More recently, there has been work using Maximum Entropy methods applied to non-context-free models (Abney, 1997; Riezler, 1998). SLPs fall into this non-context-free category, and can be seen as a special case of Riezler's probabilistic constraint logic programs (Riezler, 1998) which Riezler uses to represent constraint grammars.</p>
+<p>However, SLPs are applicable to more than computational linguistics. Muggleton (1996) argued that SLPs can be used within inductive logic programming (ILP). ILP is machine learning within a logical framework where logic programs are induced from data and domain knowledge and where there already exists valuable work involving probabilistic methods (Pompe \&amp; Kononenko, 1995; Muggleton, 1996; Pompe \&amp; Kononenko, 1997; Flach \&amp; Lachiche, 1999). Most notable is Dehaspe (1997) where, in work related to the current paper, Dehaspe combines maximum entropy and ILP methods in the MACCENT algorithm. The connections and contrasts between Dehaspe's log-linear models with clausal constraints and SLPs can be found in Cussens (1999b). Despite this existing work, it is fair to say that probabilistic methods in ILP require considerable development if ILP is to realise its potential for statistical relational learning. From a statistical point of view most ILP is lop-sided, focussing exclusively on the structure of the model (i.e. the induced logic program) at the expensive of parameter learning. This clearly must be remedied if ILP is to become better at inducing models that represent uncertainty.</p>
+<p>This paper is lop-sided in the opposite direction, focusing exclusively on a parametric statistical analysis of SLPs, so that a large number of topics examined in related work are expressly left out. Most noticeably, the current paper does not examine structure learning as Dehaspe did. Also there is no attempt to connect the semantics of SLPs to that of logic programs as in Muggleton (2000). There is also little on the connections between SLPs and related approaches, which are discussed in Cussens (1999a, 1999b).</p>
+<p>The paper is organised as follows. Section 2 is devoted entirely to defining terminology. Section 3 introduces SLPs and the probability distributions they define. A number of different types of SLPs are examined, and the relationships between SLPs and three existing probabilistic models are given. The core of the paper is Section 4, which concerns parameter estimation for SLPs. Conclusions and pointers to further work are in Section 5.</p>
+<h1>2. Logic programming definitions</h1>
+<p>For convenience, here is a brief overview of the more important logic programming concepts. For more details, the reader can consult any standard textbook on logic programming (e.g., Lloyd, 1987). Definite (logic) programs consist of a set of definite clauses, where each definite clause is a disjunctive first-order formula such as $p(X, Y) \vee \neg q(X, Z) \vee \neg r(Z)$ which we will write as $p(X, Y) \leftarrow q(X, Z), r(Z)$. All variables are implicitly universally quantified. We will denote variables by names starting with upper-case letters and use lowercase letters for predicate and function symbols. A literal is an atomic formula (briefly atom) or the negation of an atom. Definite clauses consist of exactly one positive literal ( $p(X, Y)$ in our example) and zero or more negative literals (such as $q(X, Z)$ and $r(Z)$ ). The positive literal is the head of the clause and the negative literals are the body. If $C$ is a clause, $C^{+}$ denotes the head of $C$ and $C^{-}$the body.</p>
+<p>A goal or query is of the form $\leftarrow A_{1}, \ldots, A_{M}$, where $A_{1}, \ldots, A_{M}$ are all atoms. If $M=0$ then we have the empty goal denoted by $\square$. It is also convenient to introduce an extra goal fail. A substitution such as $\theta={X / f(a, W), Y / Z}$ is a mapping from variables to first-order terms. A substitution $\theta$ unifies two atoms $A_{1}$ and $A_{2}$ if $A_{1} \theta$ ( $\theta$ applied to $A_{1}$ ) is identical to $A_{2} \theta$. A computation rule is a function from goals to atoms such that the value of the function for a goal is an atom, called the selected atom, in that goal. (With Prolog the selected atom is always the leftmost atom of a goal.) Resolution is an inference rule that takes an atom $A$ selected from a goal $\leftarrow A_{1}, \ldots, A, \ldots, A_{M}$, unifies $A$ with the head $C^{+}$of an input clause $C=C^{+} \leftarrow C^{-}$using a substitution $\theta$ and returns $\left(\leftarrow A_{1}, \ldots, C^{-}, \ldots, A_{M}\right) \theta$ as a new goal. Note that $C^{-}$may be empty.</p>
+<p>An SLD-derivation of a goal $G_{0}$ using a logic program $\mathcal{P}$ via a computation rule Sel is a (finite or infinite) sequence of goals with the following properties.</p>
+<ul>
+<li>The initial goal in the sequence is $G_{0}$</li>
+<li>If $G_{j}=\square$ or $G_{j}=$ fail then the sequence terminates at $G_{j}$.</li>
+<li>If $G_{j} \neq \square$ and $G_{j} \neq$ fail, then $G_{j+1}$ is produced from $G_{j}$ using resolution as follows:</li>
+<li>Let $A_{j}$ be the atom of the non-empty goal $G_{j}$ selected using Sel.</li>
+<li>Let $C_{j}$ be any clause in $\mathcal{P}$ such that $C_{j}^{+}$and $A_{j}$ have the same predicate symbol. ( $C_{j}$ will have its variables renamed so that $C_{j}$ and $G_{j}$ have no variables in common.)</li>
+<li>Let $\theta_{j}$ be the most general unifier of $A_{j}$ and $C_{j}^{+}$if one exists, otherwise it is undefined.</li>
+</ul>
+<p>If $\theta_{j}$ is undefined then $G_{j+1}=$ fail. Otherwise, $G_{j+1}$ is the result of replacing $A_{j}$ by $C_{j}^{-}$in $G_{j}$ and then applying $\theta_{j}$ to the result. Note that this may mean that $G_{j+1}=\square$ (is empty).</p>
+<p>We will abbreviate SLD-derivation to derivation. Clearly, all finite derivations consist of a finite number of goals followed by either fail or $\square$. Since the computation rule is fixed and the initial goal is given, an SLD-derivation is completely determined (up to renaming of variables) by the sequence of clauses it uses $\left(C_{0}, C_{1}, C_{2}, \ldots\right)$ and where appropriate we will denote a derivation by this clause sequence.</p>
+<p>The SLD-tree for a goal $G_{0}$ is a tree of goals, with $G_{0}$ as root node, and such that the children of any goal $G$ are all the goals which can be produced by one resolution step from $G$ and a choice of clause. ( $\square$ and fail have no children.) An SLD-refutation is a finite SLD-derivation ending in the empty goal $\square$. We will sometimes refer to an SLDrefutation as a successful derivation and will also abbreviate it to refutation. Branches of the SLD-tree ending in the empty goal are success branches corresponding to refutations (successful derivations). A computed answer for a goal $G_{0}$ is a substitution for the variables in $G_{0}$ produced by an SLD-refutation of $G_{0}$. The substitution is found by composing the $\theta_{j}$ produced during the refutation and then restricting to just those variables in $G_{0}$.</p>
+<p>We will often use Prolog notation, where $p(X, Y) \leftarrow q(X, Z), r(Z)$ is represented thus $\mathrm{p}(\mathrm{X}, \mathrm{Y}):-\mathrm{q}(\mathrm{X}, \mathrm{Z}), \mathrm{r}(\mathrm{Z})$. and $\leftarrow q(X, a)$ is represented thus $:-\mathrm{q}(\mathrm{X}, \mathrm{a})$. We will use the symbol $x$ to represent an SLD-derivation and $r$ to represent an SLD-refutation. $R(G)$ denotes the set of all refutations of $G ; R(G)$ can be empty, finite or infinite. $D(G)$ denotes the set of all derivations of $G$.</p>
+<h1>3. Stochastic logic programs</h1>
+<p>Kameya and Sato (2000) note that "there are two different basic attitudes towards the use of probability in logic or logic programming". These are the constraint approach where the probability that a logical formula is true is constrained to lie in some region and the distribution approach where a specific probability distribution is defined which gives the probability that each logical formula is true. However, it is common to both strands that the probability distributions in question are defined over 'possible worlds' (first-order models) which (by marginalisation) give for each closed logical formula the probability that it is true. For example, in Poole (1997) "Possible worlds are built by choosing propositions from sets of independent choice alternatives".</p>
+<p>It is important to understand that SLPs do not define distributions of this nature. An SLP $\mathcal{S}$ with parameters $\lambda$ together with a goal $G$ defines up to three different related distributions: $\psi_{(\lambda, \mathcal{S}, G)}, f_{(\lambda, \mathcal{S}, G)}$ and $p_{(\lambda, \mathcal{S}, G)}$, defined over derivations, refutations and atoms, respectively. None of these necessarily define a distribution over possible worlds, although it may be possible to encode such a distribution using an SLP. In particular, as shown in Section 3.1.3, $p_{(\lambda, \mathcal{S}, G)}$ defines a distribution over atoms, not over the truth values of atoms.</p>
+<p>Definition 1. A stochastic logic program (SLP) $\mathcal{S}$ is a definite logic program where some of the clauses are parameterised with non-negative numbers. A pure $S L P$ is an SLP where all clauses have parameters, as opposed to an impure $S L P$ where not all clauses have parameters. A normalised $S L P$ is one where parameters for clauses whose heads share the same predicate symbol sum to one. If this is not the case, then we have an unnormalised SLP.</p>
+<p>Figure 1 shows $\mathcal{S}<em 0="0">{0}$, a very simple example of a pure normalised SLP. Note that the first clause in $\mathcal{S}</em>$.}$, although syntactically legal, would not be found in a real logic program, since it is logically equivalent to the simpler clause $s(X) \leftarrow p(X)$. However, the distributions defined by SLPs depend on the syntactic structure of the underlying logic program so that replacing $0.4: s(X) \leftarrow p(X), p(X)$ by $0.4: s(X) \leftarrow p(X)$ would change the probability distributions defined by $\mathcal{S}_{0</p>
+<p>This section provides formal definitions for SLPs, starting with pure normalised SLPs in Section 3.1 and then moving on to consider unnormalised and impure SLPs in Sections 3.2 and 3.3 respectively. In Section 3.4, SLPs are related to Bayesian nets, Markov nets and stochastic context-free grammars.</p>
+<h3>3.1. Pure normalised SLPs</h3>
+<p>3.1.1. Defining distributions over derivations. We begin by describing pure normalised SLPs since these have a particularly simple characterisation in terms of Markov chains. In</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">$0.4: \mathrm{s}(\mathrm{X}):-\mathrm{p}(\mathrm{X}), \mathrm{p}(\mathrm{X})$.</th>
+<th style="text-align: left;">$0.3: \mathrm{p}(\mathrm{a})$.</th>
+<th style="text-align: left;">$0.2: \mathrm{q}(\mathrm{a})$.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$0.6: \mathrm{s}(\mathrm{X}):-\mathrm{q}(\mathrm{X})$.</td>
+<td style="text-align: left;">$0.7: \mathrm{p}(\mathrm{b})$.</td>
+<td style="text-align: left;">$0.8: \mathrm{q}(\mathrm{b})$.</td>
+</tr>
+</tbody>
+</table>
+<p>Figure 1. $\mathcal{S}_{0}$ : A simple pure, normalised SLP.</p>
+<p>the definition of SLD-derivation given in Section 2, $C_{j}$ the $j$ th clause in a derivation can be any clause such that the predicate symbol of $C_{j}^{+}$matches that of $A_{j}$, the $j$ th selected atom. Recall that, assuming a fixed computation rule and a given initial goal, a derivation is determined by its choice of clauses. It follows that there is only room for probability in the choice of clause. In a pure normalised SLP each choice for $C_{j}$ has a parameter attached and the parameters sum to one, so they can therefore be interpreted as probabilities.</p>
+<p>Pure normalised SLPs are defined such that each parameter $l\left(C_{i}\right)$ denotes the probability that $C_{i}$ is the next clause used in a derivation given that $C_{i}^{+}$has the correct predicate symbol. Abbreviate $l\left(C_{i}\right)$ to $l_{i}$ and write $\lambda_{i}=\log l_{i}$ where $\log$ denotes natural logarithm. In this paper both $\lambda_{i}$ and $l_{i}$ are used to describe SLP parameters.</p>
+<p>The clause parameters thus define transition probabilities between goals. We will now define these transition probabilities formally. To do so consider the set $\left{G_{\kappa}\right}<em _kappa_="\kappa," _kappa_prime="\kappa^{\prime">{\kappa}$ of all possible goals and define $p</em>\right}}}$ the probability of moving from $G_{\kappa}$ to $G_{\kappa^{\prime}}$. Together with $a_{\kappa}$ the probability of beginning with $G_{\kappa}$, there is enough to define the Markov chain defined by a pure normalised SLP and an initial goal. The set $\left{G_{\kappa<em 0="0">{\kappa}$ can be all goals in some particular first-order language, but typically only those appearing in the SLD-tree of the initial goal $G</em>$ are of interest. (Readers unfamiliar with Markov chains are recommended (Feller, 1950) as an introduction.)</p>
+<p>Definition 2. Let $\mathcal{S}$ be a pure normalised SLP and let $G_{0}$ be a goal. $\mathcal{S}$ and $G_{0}$ define a Markov chain where the states of the Markov chain are goals $G_{\kappa}$ and where $a_{\kappa}=1$ if $G_{\kappa}=G_{0}$ and $a_{\kappa}=0$ otherwise</p>
+<p>$$
+p_{\kappa \kappa^{\prime}}=\left{\begin{array}{ll}
+l_{i} &amp; \text { if } G_{\kappa^{\prime}} \text { is a child of } G_{\kappa} \text { produced by using clause } C_{i} \
+1 &amp; \text { if } G_{\kappa}=G_{\kappa^{\prime}}=\square \
+1 &amp; \text { if } G_{\kappa}=G_{\kappa^{\prime}}=\text { fail } \
+0 &amp; \text { otherwise }
+\end{array}\right.
+$$</p>
+<p>$\square$ and fail are absorbing states of the Markov chain-once they are reached the chain remains stuck there forever. We are therefore mapping finite derivations to infinite realisations of the Markov chain where only a finite initial sequence of states are not $\square$ or fail. This is common in the application of Markov chains since it means we can conveniently situate all sequences in the single sample space of infinite sequences. (We will nonetheless continue to refer to finite derivations whenever this is more intuitive.)</p>
+<p>Since the $a_{\kappa}$ and $p_{\kappa \kappa^{\prime}}$ define a Markov chain it follows immediately that, for any $n$, we have a probability distribution over all sequences of goals of length $n$ and also a probability distribution over all infinite sequences of goals. However, it is clear from the definitions of $a_{\kappa}$ and $p_{\kappa \kappa^{\prime}}$ that any sequence of goals that does not correspond to an SLD-derivation starting with $G_{0}$ has probability zero. It follows that our Markov chain defines a probability distribution over SLD-derivations starting with $G_{0}$.</p>
+<p>For any SLD-derivation starting with $G_{0}$, it is not difficult to see that the probability of that derivation, as defined by the Markov chain, is $\prod_{i=1}^{n} l_{i}^{v_{i}}$ where $v_{i}$ is the number of times the clause $C_{i}$ is used in that derivation. We now state this formally, by defining a distribution $\psi_{(x, \mathcal{S}, G)}(x)$ over $D(G)$, the set of all SLD-derivations which begin with the goal</p>
+<p>$G$ and which use a pure normalised SLP $\mathcal{S}$ with parameters $\lambda . D(G)$ contains (i) infinite derivations, (ii) finite derivations ending in $\square$ (refutations of $G$ ) and (iii) finite derivations ending in fail. Definition 3 (and later Definition 4) is an adaptation of a definition found in Riezler (1998).</p>
+<p>Definition 3. Let $G$ be a goal, and $\mathcal{S}$ be a pure normalised SLP. $\mathcal{S}$ defines a probability distribution $\psi_{(\lambda, \mathcal{S}, G)}(x)$ on the set $D(G)$ (the set of derivations starting with $G$ using $\mathcal{S}$ ) s.t. for all $x \in D(G)$ :</p>
+<p>$$
+\psi_{(\lambda, \mathcal{S}, G)}(x)=e^{\lambda \cdot v(x)}=\prod_{i=1}^{n} l_{i}^{v_{i}(x)}
+$$</p>
+<p>$\lambda=\left(\lambda_{1}, \ldots, \lambda_{n}\right) \in \mathbb{R}^{n}$ is a vector of log-parameters where $\lambda_{i}$ is the $\log$ of $l_{i}$, the parameter attached to the $i$ th parameterised clause,
+$v=\left(v_{1}, \ldots, v_{n}\right)$ is a vector of clause counts s.t. for each $v_{i}: D(G) \rightarrow \mathbb{N} \cup{\infty}, v_{i}(x)$ is the number of times the $i$ th parameterised clause is used as an input clause in derivation $x$,
+$\lambda \cdot v(x)$ is a weighted count s.t. $\lambda \cdot v(x)=\sum_{i=1}^{n} \lambda_{i} v_{i}(x)$,
+Usually it will be clear which SLP and goal is being used to define the distribution, so we will often abbreviate $\psi_{(\lambda, \mathcal{S}, G)}(x)$ to $\psi_{\lambda}(x)$.
+3.1.2. Defining distributions over refutations. Our main focus of interest is not $\psi_{(\lambda, \mathcal{S}, G)}(x)$ but the conditional distribution $\psi_{(\lambda, \mathcal{S}, G)}(x \mid x \in R(G))$, the distribution over derivations given that each is a refutation. We will denote this distribution by $f_{(\lambda, \mathcal{S}, G)}$ :</p>
+<p>$$
+f_{(\lambda, \mathcal{S}, G)}(x) \stackrel{\text { def }}{=} \psi_{(\lambda, \mathcal{S}, G)}(x \mid x \in R(G))
+$$</p>
+<p>Let</p>
+<p>$$
+Z_{(\lambda, \mathcal{S}, G)} \stackrel{\text { def }}{=} \sum_{x \in R(G)} \psi_{(\lambda, \mathcal{S}, G)}(x)=\psi_{(\lambda, \mathcal{S}, G)}(R(G))
+$$</p>
+<p>then</p>
+<p>$$
+f_{(\lambda, \mathcal{S}, G)}(x)= \begin{cases}Z_{(\lambda, \mathcal{S}, G)}^{-1} \psi_{(\lambda, \mathcal{S}, G)}(x) &amp; \text { if } x \in R(G) \ 0 &amp; \text { if } x \in D(G) \backslash R(G)\end{cases}
+$$</p>
+<p>$f_{(\lambda, \mathcal{S}, G)}(x)$ is a log-linear model over refutations, defined for goals where $Z_{(\lambda, \mathcal{S}, G)}&gt;0$. To see this, consider Definition 4, where $f_{(\lambda, \mathcal{S}, G)}$ is defined without reference to $\psi_{(\lambda, \mathcal{S}, G)}$. The only slight alteration to a standard log-linear model is that it is extended so that derivations which are not refutations have probability zero, rather than being undefined.</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 2. Annotated SLD-tree for $\mathcal{S}_{0}$.</p>
+<p>Definition 4. Let $G$ be a goal such that $Z_{(\lambda, \mathcal{S}, G)}&gt;0$, and $\mathcal{S}$ be a pure normalised SLP. $\mathcal{S}$ defines a log-linear probability distribution $f_{(\lambda, \mathcal{S}, G)}(r)$ on the set $R(G)$ (the set of refutations of $G$ using $\mathcal{S}$ ) s.t. for all $r \in R(G)$ :</p>
+<p>$$
+f_{(\lambda, \mathcal{S}, G)}(r)=Z_{(\lambda, \mathcal{S}, G)}^{-1} e^{\lambda \cdot v(r)}=Z_{(\lambda, \mathcal{S}, G)}^{-1} \prod_{i=1}^{n} l_{i}^{\lambda,(r)}
+$$</p>
+<p>$Z_{(\lambda, \mathcal{S}, G)}=\sum_{r \in R(G)} e^{\lambda \cdot v(r)}$ is a normalizing constant, $\lambda, v$ and $\lambda \cdot v(r)$ are defined as in Definition 3.</p>
+<p>We extend the normal log-linear definition so that $f_{(\lambda, \mathcal{S}, G)}(x)=0$, if $x \in D(G) \backslash R(G)$. $f_{(\lambda, \mathcal{S}, G)}(x)$ is thus a distribution over the whole of $D(G)$.</p>
+<p>The distributions $\psi_{\lambda}$ and $f_{\lambda}$ are more easily understood by referring to the SLD-tree which underlies them. By way of example, figure 2 shows an annotated SLD-tree for refutations of the goal $\leftarrow s(X)$ using $\mathcal{S}<em 0="0">{0}$. There are 6 derivations, of which 4 are successful and 2 are failures. The branches of the tree are labelled with (i) the unification effected by choosing clauses and (ii) the parameters attached to these clauses. Since $\mathcal{S}</em>}$ is pure and normalised $\psi_{\lambda}$ is a probability distribution over derivations, and the tree shows how the probability mass of one is divided up as we move down the tree. To find $\psi_{\lambda}(x)$ for any derivation $x$ we multiply the parameters on the branches corresponding to that derivation. Both failure derivations have probability 0.084 , so $Z_{(\lambda, \mathcal{S<em 1="1">{0}, \leftarrow s(X))}=1-2 \times 0.084=0.832$. So, for example, if the leftmost refutation is $r</em>}$, then $f_{(\lambda, \mathcal{S<em 1="1">{0}, \leftarrow s(X))}\left(r</em>$.)
+3.1.3. Defining distributions over atoms. $f_{\lambda}$ defines a distribution over atoms via marginalisation. First define the yield of a refutation and the proofs of an atom.}\right)=(0.4 \times 0.3 \times 0.3) / 0.832 \approx 0.043$ (The tree assumes that the variable in the two $s / 2$ clauses is renamed to $X^{\prime}$ and $X^{\prime \prime</p>
+<p>Definition 5. The yield $Y(r)$ of a refutation $r$ of unit goal $G=\leftarrow A$ is $A \theta$ where $\theta$ is the computed answer for $G$ using $r$. The set of proofs for an atom $y_{k}$ is the set $X\left(y_{k}\right)=$ $\left{r \mid Y(r)=y_{k}\right}$. Note that $X(Y(r))$ is the set of all refutations that yield the same atom as $r$.</p>
+<p>We only define yields with respect to unit goals. This is just a convenience, since given a non-unit goal $\leftarrow G_{1}, \ldots, G_{M}$, we can always add the clause $A^{\prime} \leftarrow G_{1}, \ldots, G_{M}$, where $A^{\prime}$ contains all the variables of $G_{1}, \ldots, G_{M}$, and then consider yields of $\leftarrow A^{\prime}$. Note that from a logical perspective a refutation of $\leftarrow A$ with computed answer $\theta$ amounts to a proof of $A \theta$, so this choice of terminology is natural.</p>
+<p>We now define a distribution $p_{(\lambda, \mathcal{S}, G)}$ over atoms in terms of their proofs.</p>
+<p>$$
+p_{(\lambda, \mathcal{S}, G)}\left(y_{k}\right) \stackrel{\text { def }}{=} \sum_{r \in X\left(y_{k}\right)} f_{(\lambda, \mathcal{S}, G)}(r)=Z_{(x, \mathcal{S}, G)}^{-1} \sum_{r \in X\left(y_{k}\right)} e^{\lambda \cdot v(r)}
+$$</p>
+<p>If $G$ has $t$ variables, then $p_{(\lambda, \mathcal{S}, G)}\left(y_{k}\right)$ defines a $t$-dimensional distribution over variable bindings for these $t$ variables. Note that we allow non-ground bindings unlike in (Muggleton, 1996; Cussens, 1999b; Mugleton, 2000). We will see in Section 3.4 how we can use these $t$-dimensional distributions to encode probabilistic models using other formalisms into SLPs. Returning to our example SLP $\mathcal{S}_{0}$ we find that it defines a distribution over the sample space ${s(a), s(b)}$, where</p>
+<p>$$
+p_{(\lambda, \mathcal{S}_{0}, \leftarrow s(X))}(s(a))=(0.4 \times 0.3 \times 0.3+0.6 \times 0.2) / 0.832=0.1875
+$$</p>
+<p>and</p>
+<p>$$
+p_{(\lambda, \mathcal{S}_{0}, \leftarrow s(X))}(s(b))=(0.4 \times 0.7 \times 0.7+0.6 \times 0.8) / 0.832=0.8125
+$$</p>
+<p>It follows from the definition in (1) that we can express $p_{(\lambda, \mathcal{S}, G)}\left(y_{k}\right)$ as a ratio of $Z$-values:</p>
+<p>$$
+p_{(\lambda, \mathcal{S}, G)}\left(y_{k}\right)=\frac{Z_{(\lambda, \mathcal{S}, \leftarrow y_{k})}}{Z_{(\lambda, \mathcal{S}, G)}}
+$$</p>
+<p>$Z$-values can be expressed recursively. Let $Z_{(\lambda, \mathcal{S}, \square)}=1, Z_{(\lambda, \mathcal{S}, \text { fall })}=0$ and for all other goals $G_{\kappa}$</p>
+<p>$$
+Z_{\left(\lambda, \mathcal{S}, G_{\kappa}\right)}=\sum_{G_{\kappa^{\prime}}} p_{\kappa \kappa^{\prime}} Z_{\left(\lambda, \mathcal{S}, G_{\kappa^{\prime}}\right)}
+$$</p>
+<p>These equations can form the basis of a variable elimination algorithm for computing $p_{(\lambda, \mathcal{S}, G)}\left(y_{k}\right)$ as discussed in Cussens (2000).</p>
+<h1>3.2. Unnormalised SLP</h1>
+<p>It is clear from Definition 4 that the parameters $\lambda$ of an SLP need not be normalised to define distributions $f_{\lambda}$ and $p_{\lambda}$. The only condition that needs to be added to Definition 4 is that $Z_{\lambda}$</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 3. $\mathcal{S}_{\text {UNNORM }}$, an unnormalised SLP not equivalent to any normalised SLP.
+must be finite. If this condition is met but the parameters are not normalised then we have an unnormalised SLP. We will see in Section 3.4 that unnormalised SLPs can conveniently represent Bayesian nets.</p>
+<p>If an SLP is normalised then each clause parameter can be interpreted as a probabilitythe probability with which that clause is chosen when its head has the appropriate predicate symbol. This property of normalised SLPs is exploited in the failure-adjusted maximisation (FAM) algorithm for normalised SLPs presented in Section 4.4. Given that normalised SLPs have this useful feature, it would be nice if any unnormalised SLP could be reparameterised to an equivalent normalised SLP with the same underlying logic program. Unfortunately, this is not the case.</p>
+<p>Consider $\mathcal{S}<em _left_l__-="\left(l_{-">{\text {UNNORM }}$, the unnormalised SLP in figure 3. Clearly, $p(a)$ gets probability $2 / 3$ and $p(b)$ gets probability $1 / 3$, according to $p</em>} \mathcal{S<em 1="1">{\text {UNNORM. }} \leftarrow p(X)\right)}$. Consider parameters $l</em>}$ and $l_{2}$ for $C_{1}$ and $C_{2}$ giving the same distribution. It is easy to see that $l_{1}=2$ and $l_{2}$ can take any value. In particular, no normalised SLP, with the same clauses as $\mathcal{S<em _left_l__-="\left(l_{-">{\text {UNNORM }}$ can represent $p</em>$.} \mathcal{S}_{\text {UNNORM. }} \leftarrow p(X)\right)</p>
+<p>The point is that because unnormalised SLPs allow clause parameters to exceed one, the derivation $\left(C_{1}, C_{2}\right)$ can get strictly higher probability than $\left(C_{2}\right)$ despite using extra clauses. This is not possible with normalised SLPs, where a refutation can be seen as a sequence of probabilistic choices between clauses: as more choices are made the probability is nonincreasing.</p>
+<p>A restriction to normalised SLPs is a real restriction. However, it is only because normalised SLPs can be viewed in terms of probabilistic choices that we can apply the FAM algorithm described in Section 4.4. Another appealing intuitive feature of normalised SLPs is that we can view refutations as arguments for a particular yielded atom where the more steps there are in the argument, the weaker it becomes.</p>
+<h1>3.3. Impure SLPs</h1>
+<p>Consider $\mathcal{S}<em _IMPURE="{IMPURE" _text="\text">{\text {IMPURE }}$, the impure SLP in figure 4. Informally, we want $\mathcal{S}</em>$ to give these 4 probabilities to the 4 possible yields produced by $\leftarrow$ james $(X)$.}}$ to say that James has had papers accepted for both MLJ and UAI, and because of this the atoms james (vhappy), james (happy), james (ok) and james (unhappy) have the probabilities given by the parameters. So we want $p_{\left(l_{-} \mathcal{S}_{\text {IMPURE. }} \leftarrow j a m e s(X)\right)</p>
+<p>Let us attempt to find a pure SLP which defines such a probability on the four yields of $\leftarrow$ james $(X)$. Suppose the paper.accepted/1 clauses were parameterised with parameters $l_{1}^{\prime}$ and $l_{2}^{\prime}$, giving the parameter set $\lambda^{\prime}$. Since we want $p_{\lambda^{\prime}}(j a m e s($ vhappy $))=0.5$, and $p_{\lambda^{\prime}}(j a m e s($ happy $))=0.3$, it is easy to see that we must have $l_{1}^{\prime}=l_{2}^{\prime}$. We must also have $p_{\lambda^{\prime}}(j a m e s($ vhappy $)) / p_{\lambda^{\prime}}(j a m e s(o k))=5$, but clearly since $l_{1}^{\prime}=l_{2}^{\prime}$, we have $p_{\lambda^{\prime}}(j a m e s$ (vhappy $)) / p_{\lambda^{\prime}}(j a m e s(o k))=0.5 l_{1}^{\prime} /\left(0.1 l_{1}^{\prime}+0.1 l_{1}^{\prime}\right)=5 / 2$. Therefore we can not extend $\mathcal{S}_{\text {IMPURE }}$ to a pure SLP defining the same distribution.</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">0.5</span> <span class="o">:</span> <span class="nf">james</span><span class="p">(</span><span class="s s-Atom">vhappy</span><span class="p">)</span> <span class="o">:-</span> <span class="nf">paper_accepted</span><span class="p">(</span><span class="s s-Atom">mlj</span><span class="p">).</span>
+<span class="mf">0.3</span> <span class="o">:</span> <span class="nf">james</span><span class="p">(</span><span class="s s-Atom">happy</span><span class="p">)</span> <span class="o">:-</span> <span class="nf">paper_accepted</span><span class="p">(</span><span class="s s-Atom">uai</span><span class="p">).</span>
+<span class="mf">0.1</span> <span class="o">:</span> <span class="nf">james</span><span class="p">(</span><span class="s s-Atom">ok</span><span class="p">)</span> <span class="o">:-</span> <span class="nf">paper_accepted</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="mf">0.1</span> <span class="o">:</span> <span class="nf">james</span><span class="p">(</span><span class="s s-Atom">unhappy</span><span class="p">).</span>
+    <span class="nf">paper_accepted</span><span class="p">(</span><span class="s s-Atom">mlj</span><span class="p">).</span>
+    <span class="nf">paper_accepted</span><span class="p">(</span><span class="s s-Atom">uai</span><span class="p">).</span>
+</code></pre></div>
+
+<p>Figure 4. $\mathcal{S}_{\text {IMPURE, }}$ an impure SLP.</p>
+<p>The desired meaning for unparameterised clauses is to see them as non-probabilistic domain knowledge acting as constraints. The ability to combine such domain knowledge with probabilities is the central feature of SLPs (although not unique to SLPs). In pure SLPs only equational constraints between first-order terms are possible. These are not sufficiently expressive in many cases as even the tiny linguistic examples in Cussens (2000) show.</p>
+<p>On this view, it is enough to know that the paper_accepted(X) constraint in the 3rd james/1 clause is satisfied-we do not care that is 'satisfied twice' and we do not want the fact that there are two refutations of $\leftarrow$ paper_accepted $(X)$ to affect the distribution, which must happen if the paper_accepted/1 clauses are parameterised.</p>
+<p>To effect the desired meaning we just alter Definition 4, so that the possibly many ways of satisfying our constraints are collapsed to a single element in the probability space.</p>
+<p>Definition 6. Let $\mathcal{S}$ be an SLP (pure or impure). Identify refutations with the sequence of clauses they use. For any refutation, let $\operatorname{red}(r)$ be the clause sequence produced by deleting all unparameterised clauses. Let $\simeq$ be an equivalence relation on $R(G)$ where $r_{1} \simeq r_{2}$ iff $\operatorname{red}\left(r_{1}\right)=\operatorname{red}\left(r_{2}\right)$. Let $r$ be a representative of its equivalence class $\operatorname{Eq}(r)$, then</p>
+<p>$$
+f_{\left(\lambda, \mathcal{S}, G\right)}(\operatorname{Eq}(r)) \stackrel{\text { def }}{=} f_{\left(\lambda, \mathcal{S}, G\right)}(r)
+$$</p>
+<p>$f_{\left(\lambda, \mathcal{S}, G\right)}(\operatorname{Eq}(r))$ is well-defined since each member of the equivalence class has exactly the same parameterised clauses, so $f_{\left(\lambda, \mathcal{S}, G\right)}$ is the same for all of them. We write $\operatorname{Eq}(r) \in R(G)$ to mean that every refutation in $\operatorname{Eq}(r)$ is in $R(G)$.</p>
+<p>If, for any $r \in R(G)$, all refutations in $\operatorname{Eq}(r)$ yield the same atom</p>
+<p>$$
+p_{\left(\lambda, \mathcal{S}, G\right)}\left(y_{k}\right) \stackrel{\text { def }}{=} \sum_{\operatorname{Eq}(r) \in \lambda, r \in X\left(y_{k}\right)} f_{\left(\lambda, \mathcal{S}, G\right)}(\operatorname{Eq}(r))
+$$</p>
+<p>Definition 6 ensures that impure SLPs are defined to have the desired behaviour discussed previously. $\mathcal{S}<em _WRONG="{WRONG" _text="\text">{\text {IMPURE }}$ defines the right probabilities, since the two refutations yielding james( $o k$ ) have been collapsed into one equivalence class. Definition 6 agrees with Definition 4 when the SLP happens to be pure, since then all the equivalence classes contain a single refutation. Note the restriction concerning yields which means that the SLP $\mathcal{S}</em>$. This is essentially because there}}$ in figure 5 does not define a distribution $p_{\left(\lambda, \mathcal{S}_{\text {WRONG }}, \leftarrow p(X, Y)\right)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">$p(X, 1)$</th>
+<th style="text-align: left;">$:-q(X)$.</th>
+<th style="text-align: left;">$0.6: q(a)$.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$p(X, 2)$</td>
+<td style="text-align: left;">$:-q(X)$.</td>
+<td style="text-align: left;">$0.4: q(b)$.</td>
+</tr>
+</tbody>
+</table>
+<p>Figure 5. $\mathcal{S}<em _k_="(k," _mathcal_S="\mathcal{S">{\text {WRONG }}$, an SLP that does not define a distribution $p</em>$.
+is an unquantified choice between the $p / 2$ clauses, which is a real choice because it affects yields. Note also that Definition 6 ensures that an SLP with no parameterised clauses does not define a distribution for any goal that can yield more than one atom.}_{\text {WRONG }}}, \leftarrow p(X, Y))</p>
+<h1>3.4. Relations to some existing probabilistic models</h1>
+<p>In this section we encode three familiar probabilistic models into SLPs. Considerably more complex SLPs encoding, for example, distributions over a hypothesis space of logic programs are used in Cussens (2000).</p>
+<p>Figure 6 shows the Asia Bayesian network and an SLP representation of it, where $p_{\left(\mathcal{S}, k, \leftarrow a s i a(A, T, E, S, L, B, X, D)\right)}$ gives the joint distribution represented by the Bayesian net. The equation</p>
+<p>$$
+\begin{aligned}
+&amp; P(A, T, E, S, L, B, X, D) \
+&amp; \quad=P(A) P(S) P(T \mid A) P(L \mid S) P(B \mid S) P(E \mid T, L) P(D \mid E, B) P(X \mid E)
+\end{aligned}
+$$</p>
+<p>is directly encoded using an impure, unnormalised SLP, with each of the 8 conditional probability tables defined by a single predicate. Since $E$ is a function of $T$ and $L$, we only need 4 unparameterised clauses to encode $P(E \mid T, L)$ as opposed to the 8 that would be required if $P(E \mid T, L)$ were encoded as the other conditional probability distributions are. It is clear that any Bayesian net with discrete variables can be represented by an SLP in this manner.</p>
+<p>The translation from Bayesian net to SLP is problematic in that the directionality of Bayesian nets is obscured. In contrast, the mapping between Markov nets and SLPs is
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 6. Asia Bayesian net and its encoding as an SLP.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 7. Asia Markov net and its encoding as an SLP.</p>
+<p>$$
+\begin{array}{ll}
+0.5: s(A, D):-A=[a \mid B], s(B, C), C=[a \mid D] . &amp; 0.1: s([a, a \mid T], T) \
+0.3: s(A, D):-A=[b \mid B], s(B, C), C=[b \mid D] . &amp; 0.1: s([b, b \mid T], T)
+\end{array}
+$$</p>
+<p>Figure 8. $\mathcal{S}_{\text {PSLINDROME }}$, an SLP representation of an SCFG.
+transparent. Figure 7 shows a Markov net derived from the Asia Bayesian net and its translation to an impure unnormalised SLP. The structure of the Markov net can be completely described with a single clause, and the 6 clique potentials each get their own predicate symbol.</p>
+<p>Since SLPs generalise stochastic context-free grammars (SCFGs) it is easy to encode SCFGs as SLPs. Consider the context-free grammar $S \rightarrow a S a|b S b| a a \mid b b$ which generates palindromes. By placing a probability distribution over the four productions we have an SCFG which defines a distribution over palindromic strings of $a$ s and $b \mathrm{~s}$. $\mathcal{S}<em _left_lambda_="\left(\lambda," _mathcal_S="\mathcal{S">{\text {PSLINDROME }}$ in figure 8 encodes such an SCFG as an SLP where $p</em>$ is the distribution over strings. Hidden Markov models, which are essentially stochastic regular grammars, can be dealt with similarly.}_{\text {PSLINDROME }}, \leftarrow t(X,| |)\right.</p>
+<h1>4. Parameter estimation in SLPs</h1>
+<p>Our goal is to estimate $\lambda$, the true values of the clause parameters of an SLP $\mathcal{S}$ whose underlying logic program is fixed and where we have decided which clauses are to be parameterised. So the features of the log-linear model are given-we just need to estimate the parameters. We assume that we have a set of atoms $y=\left(y_{1}, \ldots, y_{N}\right)$ which have been generated by $\mathcal{S}$ according to the (unknown) distribution $p_{(\lambda, \mathcal{S}, G)}$, where $\mathcal{S}$ and $G$ are given. The data define $\hat{p}$, the empirical distribution over atoms. $\hat{p}\left(y_{k}\right)$ is just the relative frequency with which the atom $y_{k}$ appears in the data $y$.</p>
+<p>Since SLPs are a special case of loglinear models, we can apply parameter fitting algorithms for general loglinear models to SLPs. Section 4.1 briefly summarises approaches to parameter estimation for general loglinear models following the presentation given in Della Pietra et al. (1997). Section 4.2 shows how these general methods apply to SLPs using an example taken from Abney (1997). Section 4.3 explains how Riezler has extended these approaches to deal with incomplete data. These sections are included for completeness, and can be skimmed by those familiar with this work. Section 4.4 contains the main contribution of the paper: a new method of parameter estimation for pure normalised SLPs.</p>
+<h1>4.1. Parameter estimation for loglinear models</h1>
+<p>In this section we give a brief and informal account of maximum likelihood parameter estimation for general loglinear models taken from Della Pietra et al. (1997) where a detailed and formal account of this topic can be found. Della Pietra et al. consider generalised Gibbs distributions defined over a space $\Omega$ of the form</p>
+<p>$$
+p(\omega)=\left[Z_{\lambda}\left(q_{0}\right)\right]^{-1} e^{\sum_{i=1}^{n} \lambda_{i} v_{i}(\omega)} q_{0}(\omega)=\left[Z_{\lambda}\left(q_{0}\right)\right]^{-1} e^{\lambda, v(\omega)} q_{0}(\omega)
+$$</p>
+<p>where $v(\omega)=\left(v_{1}(\omega), v_{2}(\omega), \ldots, v_{n}(\omega)\right)$ is a vector of feature values with $v_{i}: \Omega \rightarrow \mathbb{R}$, $\lambda=\left(\lambda_{1}, \lambda_{2}, \ldots, \lambda_{n}\right)$ is a vector of real-valued parameters and $q_{0}$ is some 'initial' distribution over $\Omega$. In Della Pietra et al. (1997) the feature vector is denoted by ' $f$ ', but we will use $v$, since in this paper $f$ represents a distribution.)</p>
+<p>Let the empirical distribution $\hat{p}(\omega)$ be the relative frequency with which $\omega \in \Omega$ occurs in the training data. Let us introduce the notation $\operatorname{Prob}[r v]$ to mean the expected value of a random variable $r v$ according to a distribution Prob. $\hat{p}[v]$ is then the vector of empirical mean values of the features. Consider now $\mathcal{P}(v, \hat{p})$, the set of distributions which agree with the data as to the expected values of the features:</p>
+<p>$$
+\mathcal{P}(v, \hat{p})={p: p[v]=\hat{p}[v]}
+$$</p>
+<p>It turns out that the MLE estimate for $\lambda$ is that value of $\lambda$ which defines a distribution in $\mathcal{P}(v, \hat{p})$ which maximises the entropy of $p(\omega)$ relative to $q_{0}$. It is for this reason that loglinear models are often referred to as maximum entropy (MAXENT) models, particularly in the computational linguistics literature. It follows that we can do MLE by solving the equations in (2) and maximising relative entropy. This approach is applied to a small SLP parameter estimation problem in Section 4.2, but is not feasible for large problems.</p>
+<p>As an alternative Della Pietra et al. present an iterative approach called Improved Iterative Scaling (IIS) which is guaranteed to converge to the MLE. To describe IIS, we need to introduce some new notation. Let</p>
+<p>$$
+v_{#}(\omega) \stackrel{\text { def }}{=} \sum_{i}^{n} v_{i}(\omega)
+$$</p>
+<p>$v_{#}(\omega)$ can be thought of as something like the total value of all features for $\omega$. If the features are binary then $v_{#}(\omega)$ is the number of features which are 'on' for $\omega$.</p>
+<p>We also introduce a notation useful for updating loglinear distributions. Let $\circ$ be defined so that, for any parameter vector $\gamma$ :</p>
+<p>$$
+(\gamma \circ q)(\omega)=\left[Z_{\gamma}(q)\right]^{-1} e^{\gamma \cdot v} q(\omega)
+$$</p>
+<p>It is easy to see that if</p>
+<p>$$
+q(\omega)=\left[Z_{\gamma}\left(q_{0}\right)\right]^{-1} e^{\lambda \cdot v} q_{0}(\omega)
+$$</p>
+<p>then</p>
+<p>$$
+(\gamma \circ q)(\omega)=\left[Z_{(k+\gamma)}\left(q_{0}\right)\right]^{-1} e^{(k+\gamma) \cdot \gamma} q_{0}(\omega)
+$$</p>
+<p>So $(\gamma \circ q)(\omega)$ is $q(\omega)$ with $\gamma$ added to the parameter vector.
+Definition 7 (Improved Iterative Scaling (IIS)).</p>
+<ol>
+<li>Set $q^{(0)}=q_{0}$</li>
+<li>For each $i$, let $\gamma_{i}^{(h)} \in[-\infty, \infty)$ be the unique solution of</li>
+</ol>
+<p>$$
+q^{(h)}\left[v_{i} e^{y_{i}^{(h)} v_{0}}\right]=\tilde{p}\left[v_{i}\right]
+$$</p>
+<ol>
+<li>Set $q^{(h+1)}=\gamma^{(h)} \circ q^{(h)}$.</li>
+<li>Set $h \leftarrow h+1$ and go to 2 unless $q^{(h)}$ has converged.</li>
+</ol>
+<p>Crucially, we can solve (3) for each feature parameter in turn. The value for $\gamma_{i}^{(h)}$ depends only on the data and on $q^{(h)}$, not on the values $\gamma_{i}^{(h)}$ for $i^{\prime} \neq i$. If $v_{0}(\omega)=K$ for all $\omega$, we have a closed form solution for $\gamma_{i}^{(h)}$ :</p>
+<p>$$
+\gamma_{i}^{(h)}=\frac{1}{K} \log \frac{\tilde{p}\left[v_{i}\right]}{q^{(h)}\left[v_{i}\right]}
+$$</p>
+<p>Otherwise it is necessary to solve a polynomial equation for each feature (Della Pietra et al. 1997). In either case expectations with respect to $q^{(h)}$ must be calculated as well as the observed frequencies $\tilde{p}\left[v_{i}\right]$. In many cases, $\Omega$ will be too complex for an exact computation of these expectations, so sampling over $\Omega$ will be required to estimate the required expectations.</p>
+<h1>4.2. Existing approaches to complete-data parameter estimation for SLPs</h1>
+<p>Suppose we have data $y$ in the form of a set of atoms and we wish to perform maximum likelihood estimation (MLE) to estimate the parameters for an SLP with known structure. We will assume for the time being that the data is complete (or unambiguous) in the sense that, for each atom in the data, there is only one refutation that can yield it. This bijective mapping between refutations and atoms means that $\tilde{p}$, the empirical distribution over atoms, determines $\tilde{f}$, the empirical distribution over refutations. $\tilde{f}(r)$ is the relative frequency with which refutation $r$ must have occurred to produce the data $y$.</p>
+<p>For each refutation $r$ we have $v_{i}(r)$, the frequency with which clause $C_{i}$ is used in $r$. So from $\tilde{f}$, a distribution over refutations, we can compute the expected frequency of each clause $C_{i}$ according to $\tilde{f}$. We will denote this expectation by $\tilde{f}\left[v_{i}\right]$. Since the distribution over refutations is a log-linear model we can apply the results for general log-linear models</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">l_1:s(X,p) :- p(X), p(X).</th>
+<th style="text-align: left;">l_3:p(a).</th>
+<th style="text-align: left;">l_5:q(a).</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">l_2:s(X,q) :- q(X).</td>
+<td style="text-align: left;">l_4:p(b).</td>
+<td style="text-align: left;">l_6:q(b).</td>
+</tr>
+</tbody>
+</table>
+<p>Figure 9. $\mathcal{S}_{1}$ : A simple SLP, unambiguous for $\leftarrow s(X, Y)$.
+and find the MLE estimates for the SLP parameters by equating expectations as in (2). The MLE estimates are $\hat{\lambda}$ where</p>
+<p>$$
+\forall i: \hat{f}\left[v_{i}\right]=f_{\hat{\lambda}}\left[v_{i}\right]
+$$</p>
+<p>and $f_{\hat{\lambda}}$ is the distribution with maximum entropy which meets these constraints.
+Let us apply this approach to MLE using $\mathcal{S}<em 1="1">{1}$, the SLP shown in figure 9. $\mathcal{S}</em>$ that is used in Abney (1997).
+$\mathcal{S}}$ is an odd looking SLP, but we will use it since it has essentially the same structure as the stochastic attribute-value grammar $G_{2<em _lambda="\lambda">{1}$ is unambiguous for $\leftarrow s(X, Y)$ and the bijection between the four refutations $\leftarrow s(X, Y)$ and the four atoms that they yield is given in detail in Table 1 where each 4-tuple gives the goal, selected atom, input clause and substitution used at each stage in the refutation. We also record the distributions $p</em>$ in Table 1.}$ and $f_{\lambda</p>
+<p>Table 1. The mapping between refutations and atoms and the distributions $p_{\lambda}$ and $f_{\lambda}$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Atom</th>
+<th style="text-align: left;">$s(a, p)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Refutation</td>
+<td style="text-align: left;">$(\leftarrow s(X, Y), s(X, Y), C_{1},{Y / p})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$((\leftarrow p(X), p(X)), p(X), C_{3},{X / a})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$(\leftarrow p(a), p(a), C_{3},{ })$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$\square$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Probability</td>
+<td style="text-align: left;">$p_{\lambda}(s(a, p))=f_{\lambda}\left(C_{1} C_{3} C_{3}\right)=Z_{\lambda}^{-1} l_{1} l_{2}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atom</td>
+<td style="text-align: left;">$s(b, p)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Refutation</td>
+<td style="text-align: left;">$(\leftarrow s(X, Y), s(X, Y), C_{1},{Y / p})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$((\leftarrow p(X), p(X)), p(X), C_{4},{X / b})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$(\leftarrow p(b), p(b), C_{4},{ })$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$\square$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Probability</td>
+<td style="text-align: left;">$p_{\lambda}(s(b, p))=f_{\lambda}\left(C_{1} C_{4} C_{4}\right)=Z_{\lambda}^{-1} l_{1} l_{4}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atom</td>
+<td style="text-align: left;">$s(a, q)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Refutation</td>
+<td style="text-align: left;">$(\leftarrow s(X, Y), s(X, Y), C_{2},{Y / q})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$(\leftarrow q(X), q(X), C_{5},{X / a})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$\square$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Probability</td>
+<td style="text-align: left;">$p_{\lambda}(s(a, q))=f_{\lambda}\left(C_{2} C_{5}\right)=Z_{\lambda}^{-1} l_{2} l_{5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atom</td>
+<td style="text-align: left;">$s(b, q)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Refutation</td>
+<td style="text-align: left;">$(\leftarrow s(X, Y), s(X, Y), C_{2},{Y / q})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$(\leftarrow q(X), q(X), C_{6},{X / b})$</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">$\square$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Probability</td>
+<td style="text-align: left;">$p_{\lambda}(s(b, q))=f_{\lambda}\left(C_{2} C_{6}\right)=Z_{\lambda}^{-1} l_{2} l_{6}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2. Empirical distributions of atoms and refutations.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Count</th>
+<th style="text-align: left;">4</th>
+<th style="text-align: left;">2</th>
+<th style="text-align: left;">3</th>
+<th style="text-align: left;">3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Atoms</td>
+<td style="text-align: left;">$s(a, p)$</td>
+<td style="text-align: left;">$s(b, p)$</td>
+<td style="text-align: left;">$s(a, q)$</td>
+<td style="text-align: left;">$s(b, q)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\bar{p}=$</td>
+<td style="text-align: left;">$1 / 3$</td>
+<td style="text-align: left;">$1 / 6$</td>
+<td style="text-align: left;">$1 / 4$</td>
+<td style="text-align: left;">$1 / 4$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Refutations</td>
+<td style="text-align: left;">$C_{1} C_{3} C_{3}$</td>
+<td style="text-align: left;">$C_{1} C_{4} C_{4}$</td>
+<td style="text-align: left;">$C_{2} C_{5}$</td>
+<td style="text-align: left;">$C_{2} C_{6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\bar{f}=$</td>
+<td style="text-align: left;">$1 / 3$</td>
+<td style="text-align: left;">$1 / 6$</td>
+<td style="text-align: left;">$1 / 4$</td>
+<td style="text-align: left;">$1 / 4$</td>
+</tr>
+</tbody>
+</table>
+<p>Suppose our data comprise 12 atoms. Each atom should be seen as the yield of a refutation sampled from the distribution $f_{\left\langle\lambda, \beta_{1}, \leftarrow s(X, Y)\right\rangle}$. Following Abney, we will assume that the proportions of atoms (and consequently refutations) in our data are as in Table 2 Now that we have $f_{\lambda}$ and $\bar{f}$ tabulated in Tables 1 and 2 respectively we can compute the expected values of clause frequencies according to these two distributions. These expectations are tabulated in Table 3.</p>
+<p>By equating the expectations in Table 3 and manipulating the resulting set of 6 polynomials, we find that for $\bar{\lambda}=\left(\bar{\lambda}<em 2="2">{1}, \bar{\lambda}</em>}, \bar{\lambda<em 4="4">{3}, \bar{\lambda}</em>}, \bar{\lambda<em 6="6">{5}, \bar{\lambda}</em>}\right)=\left(\log \bar{l<em 2="2">{1}, \log \bar{l}</em>}, \log \bar{l<em 4="4">{3}, \log \bar{l}</em>}, \log \bar{l<em 6="6">{5}, \log \bar{l}</em>\right)$ to be a set of MLE parameters we must have:</p>
+<p>$$
+\begin{aligned}
+\left(\bar{l}<em 4="4">{3}\right)^{2} &amp; =2\left(\bar{l}</em> \
+\bar{l}}\right)^{2<em 1="1">{2} &amp; =3 \bar{l}</em>}\left(\bar{l<em 5="5">{4}\right)^{2} \
+\bar{l}</em>=1 / 2
+\end{aligned}
+$$} &amp; =\bar{l}_{6</p>
+<p>It follows that $Z_{\bar{\lambda}}=2 \bar{l}<em _bar_lambda="\bar{\lambda">{2}$, and by applying (4)-(6) to the expressions in Table 1 we find that $f</em>}}=\bar{f}$ and $p_{\bar{\lambda}}=\bar{p}$. (For example $p_{\bar{\lambda}}(s(a, p))=Z_{\bar{\lambda}}^{-1} \bar{l<em 3="3">{1}\left(\bar{l}</em>}\right)^{2}=\bar{l<em 4="4">{1} 2\left(\bar{l}</em>}\right)^{2} / 2 \bar{l<em 2="2">{2}=\frac{2}{3} \bar{l}</em>=$ $1 / 3$. The other 3 probabilities follow equally easily.)} / 2 \bar{l}_{2</p>
+<p>Since any parameter set satisfying (4)-(6) defines the same distribution $f_{\bar{\lambda}}$ they are obviously all MLE estimates. Our current MLE estimation problem is somewhat atypical in that there are more parameters (six) than elements in the sample space (four). This is why we have a spare two degrees of freedom in choosing MLE parameters. It also explains why we were able to find $\bar{\lambda}$ such that $f_{\bar{\lambda}}=\bar{f}$. Usually in parameter estimation of loglinear</p>
+<p>Table 3. Expected frequency of clauses according to $f_{\lambda}$ and $\bar{f}$, where $Z_{\lambda}=l_{1}\left(l_{2}^{2}+l_{4}^{2}\right)+l_{2}\left(l_{5}+l_{6}\right)$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Clause</th>
+<th style="text-align: left;">$f_{\lambda}\left[v_{i}\right]$</th>
+<th style="text-align: left;">$\bar{f}\left[v_{i}\right]$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$C_{1}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} l_{1}\left(l_{2}^{2}+l_{4}^{2}\right)$</td>
+<td style="text-align: left;">$1 / 2$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{2}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} l_{2}\left(l_{5}+l_{6}\right)$</td>
+<td style="text-align: left;">$1 / 2$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{3}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} 2\left(l_{1} l_{2}^{2}\right)$</td>
+<td style="text-align: left;">$2 / 3$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{4}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} 2\left(l_{1} l_{4}^{2}\right)$</td>
+<td style="text-align: left;">$1 / 3$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{5}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} l_{2} l_{3}$</td>
+<td style="text-align: left;">$1 / 4$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{6}$</td>
+<td style="text-align: left;">$Z_{\lambda}^{-1} l_{2} l_{6}$</td>
+<td style="text-align: left;">$1 / 4$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4. MLE estimates wrt $f_{\lambda}$ for a normalised SLP.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$\bar{l}_{1}$</th>
+<th style="text-align: center;">$\bar{l}_{2}$</th>
+<th style="text-align: center;">$\bar{l}_{3}$</th>
+<th style="text-align: center;">$\bar{l}_{4}$</th>
+<th style="text-align: center;">$\bar{l}_{5}$</th>
+<th style="text-align: center;">$\bar{l}_{6}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\frac{3+2 \sqrt{2}}{6+2 \sqrt{2}}$</td>
+<td style="text-align: center;">$\frac{5}{6+2 \sqrt{2}}$</td>
+<td style="text-align: center;">$\frac{\sqrt{2}}{1+\sqrt{2}}$</td>
+<td style="text-align: center;">$\frac{1}{1+\sqrt{2}}$</td>
+<td style="text-align: center;">$\frac{1}{2}$</td>
+<td style="text-align: center;">$\frac{1}{2}$</td>
+</tr>
+</tbody>
+</table>
+<p>models there are many more points in the sample space than parameters and it is not possible to find $\bar{\lambda}$ such that $f_{\bar{\lambda}}=\bar{f}$. If we throw in the constraint that we are only interested in $\bar{\lambda}$ which define a normalised SLP we get the unique values given in Table 4 which are also given in Abney (1997).</p>
+<p>In summary, our approach to this small problem is (i) enumerate the 4 refutations of $\leftarrow p(X, Y)$ in $\mathcal{S}<em r="r">{1}$ (Table 1), (ii) compute their probabilities (Table 1), (iii) count how often the clauses were used in each refutation, (iv) set up the equations (Table 3) and (v) solve for $\bar{\lambda}$. In real problems such an approach will be infeasible; there will be too many refutations to enumerate. An even more basic difficulty is that we have to solve a set of simultaneous polynomial equations-we can not solve for $\bar{\lambda}</em>$ point-wise.</p>
+<p>A feasible alternative is to use Improved Iterative Scaling (IIS) which was described for general loglinear models in Section 4.1. Applying IIS to the problem of MLE for SLPs we have</p>
+<p>$$
+v_{#}(r)=\sum_{i}^{n} v_{i}(r)
+$$</p>
+<p>So $v_{#}(r)$ is the total number of parameterised clauses used in a refutation $r$. If a particular parameterised clause is used more than once, then each occurrence contributes to $v_{#}(r)$. We can now rewrite the definition of IIS to apply directly to SLPs:</p>
+<p>Definition 8 (Improved Iterative Scaling (IIS)). Let $\lambda^{(0)}$ be the initial set of parameter estimates. Set $h=0$</p>
+<ol>
+<li>For each parameterised clause $C_{i}$, let $\gamma_{i}^{(h)} \in[-\infty, \infty]$ be the unique solution of</li>
+</ol>
+<p>$$
+f_{\lambda^{(h)}}\left[v_{i} e^{\gamma_{i}^{(h)} v_{#}}\right]=\bar{f}\left[v_{i}\right]
+$$</p>
+<ol>
+<li>Set $\lambda^{(h+1)}=\gamma^{(h)}+\lambda^{(h)}$.</li>
+<li>Set $h \leftarrow h+1$ and go to 2 unless $f_{\lambda^{(h)}}$ has converged.</li>
+</ol>
+<p>If $v_{#}$ is constant we have:</p>
+<p>$$
+\gamma_{i}=\frac{1}{K} \log \frac{\bar{f}\left[v_{i}\right]}{f_{\lambda}\left[v_{i}\right]}
+$$</p>
+<h1>4.3. Riezler's iterative maximization for incomplete data parameter estimation in SLPs</h1>
+<p>To use IIS directly we must have the values $\hat{f}\left[v_{i}\right]$-where $\hat{f}(r)$ is the relative frequency with which refutation $r$ has occurred to produce the observed data composed of atoms. But we are not in a position to calculate these values if the atoms in our data have more than one refutation that can yield them. If we have incomplete or ambiguous data of this sort IIS needs adapting to be usable.</p>
+<p>Riezler (1998) shows how the complete data approach can be adapted for incomplete data. Essentially we replace the unknown actual relative frequency $(\hat{f}(r))$ with which refutation $r$ has occurred, with $f_{\lambda}(r \mid y)$ the known probability of $r$ occurring according to our current parameter estimates, conditional on $y$, the observed data. We have</p>
+<p>$$
+f_{\lambda}(r \mid y)=\tilde{p}(Y(r)) f_{\lambda}(r \mid X(Y(r)))
+$$</p>
+<p>$f_{\lambda}(r \mid y)$ is the probability that an atom, randomly chosen from the data, was generated with refutation $r$. In the complete data case, $X(Y(r))=r$, so that $f_{\lambda}(r \mid y)$ does not depend on $\lambda$ and $f_{\lambda}(r \mid y)=\hat{f}(r)$ which is known. With ambiguous data, we have to divide up (using $f_{\lambda}$ ) the empirical probability for an atom $y_{k}=Y(r)$ between the various $r$ s that might have generated it. Let us extend our notation for expectations so that $f_{\lambda}\left[v_{i} \mid y\right]$ denotes the expected value of $v_{i}$ according to the distribution $f_{\lambda}(r \mid y) . f_{\lambda}\left[v_{i} \mid y\right]$ is hence the expected number of times the parameterised clause $C_{i}$ was used to generate an atom randomly chosen from the data. Riezler shows that we can iteratively improve parameter estimates by adapting Improved Iterative Scaling to cope with incomplete data. We just replace $\hat{f}(r)$ in IIS with $f_{\lambda}(r \mid y)$ giving us the Iterative Maximization (IM) algorithm.</p>
+<p>Definition 9 (Iterative Maximization (IM)). Let $\lambda^{(0)}$ be our initial set of parameter estimates. Set $h=0$</p>
+<ol>
+<li>For each parameterised clause $C_{i}$, let $\gamma_{i}^{(h)} \in[-\infty, \infty]$ be the unique solution of</li>
+</ol>
+<p>$$
+f_{\lambda^{(h)}}\left[v_{i} e^{\gamma_{i}^{(h)} v_{0}}\right]=f_{\lambda^{(h)}}\left[v_{i} \mid y\right]
+$$</p>
+<ol>
+<li>Set $\lambda^{(h+1)}=\gamma^{(h)}+\lambda^{(h)}$.</li>
+<li>Set $h \leftarrow h+1$ and go to 1 unless $f_{\lambda^{(h)}}$ has converged.</li>
+</ol>
+<p>If $v_{\Phi}(r)=K$ for all $r$, we have a closed form solution:</p>
+<p>$$
+\gamma_{i}^{(h)}=\frac{1}{K} \log \frac{f_{\lambda^{(h)}}\left[v_{i} \mid y\right]}{f_{\lambda^{(h)}}\left[v_{i}\right]}
+$$</p>
+<p>Let us apply IM to learning the parameters of $\mathcal{S}<em 2="2">{2}$ in figure 10 using the data set described in Table 5. $\mathcal{S}</em>$ with unknown parameters. Note that both $s(a)$ and $s(b)$ are ambiguous-both could have been generated in two ways.}$ is just $\mathcal{S}_{0</p>
+<p>We begin by computing $f_{\lambda}(r \mid y), f_{\lambda}(r), f_{\lambda}\left[v_{i} \mid y\right]$ and $f_{\lambda}\left[v_{i}\right]$ as functions of $\lambda$; the results are in Tables 6 and 7.</p>
+<p>Table 5. Empirical distribution of atoms (incomplete data).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Atom</th>
+<th style="text-align: center;">$s(a)$</th>
+<th style="text-align: center;">$s(b)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Count</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\hat{p}=$</td>
+<td style="text-align: center;">$7 / 12$</td>
+<td style="text-align: center;">$5 / 12$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6. Probability distributions for iterative maximization, where $Z_{\lambda}=l_{1}\left(l_{2}^{2}+l_{4}^{2}\right)+l_{2}\left(l_{5}+l_{6}\right)$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">$r$</th>
+<th style="text-align: center;">$f_{\lambda}(r \mid y)$</th>
+<th style="text-align: center;">$f_{\lambda}(r)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\left(C_{1}, C_{3}, C_{3}\right)$</td>
+<td style="text-align: center;">$\frac{7}{12} \frac{l_{1} l_{2}^{2}}{l_{1} l_{2}^{2}+l_{2} l_{5}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{1} l_{2}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left(C_{2}, C_{5}\right)$</td>
+<td style="text-align: center;">$\frac{7}{12} \frac{l_{2} l_{5}}{l_{1} l_{2}^{2}+l_{2} l_{5}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{2} l_{5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left(C_{1}, C_{4}, C_{4}\right)$</td>
+<td style="text-align: center;">$\frac{5}{12} \frac{l_{1} l_{4}^{2}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{1} l_{4}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left(C_{2}, C_{6}\right)$</td>
+<td style="text-align: center;">$\frac{5}{12} \frac{l_{2} l_{6}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{2} l_{6}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7. Expectations for iterative maximization.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Clause</th>
+<th style="text-align: center;">$f_{\lambda}\left[v_{i} \mid y\right]$</th>
+<th style="text-align: center;">$f_{\lambda}\left[v_{i}\right]$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$C_{1}$</td>
+<td style="text-align: center;">$\frac{7}{12} \frac{l_{1} l_{4}^{2}}{l_{1} l_{2}^{2}+l_{2} l_{5}}+\frac{5}{12} \frac{l_{1} l_{4}^{2}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1}\left(l_{1} l_{2}^{2}+l_{3} l_{4}^{2}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{2}$</td>
+<td style="text-align: center;">$\frac{7}{12} \frac{l_{2} l_{5}}{l_{1} l_{2}^{2}+l_{2} l_{5}}+\frac{5}{12} \frac{l_{2} l_{6}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1}\left(l_{2} l_{5}+l_{2} l_{6}\right)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{3}$</td>
+<td style="text-align: center;">$2 \frac{5}{12} \frac{l_{1} l_{4}^{2}}{l_{1} l_{2}^{2}+l_{2} l_{5}}$</td>
+<td style="text-align: center;">$2 Z_{\lambda}^{-1} l_{1} l_{2}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{4}$</td>
+<td style="text-align: center;">$2 \frac{5}{12} \frac{l_{1} l_{4}^{2}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$2 Z_{\lambda}^{-1} l_{1} l_{4}^{2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{5}$</td>
+<td style="text-align: center;">$\frac{7}{12} \frac{l_{2} l_{5}}{l_{1} l_{2}^{2}+l_{2} l_{5}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{2} l_{5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$C_{6}$</td>
+<td style="text-align: center;">$\frac{5}{12} \frac{l_{2} l_{6}}{l_{1} l_{4}^{2}+l_{2} l_{6}}$</td>
+<td style="text-align: center;">$Z_{\lambda}^{-1} l_{2} l_{6}$</td>
+</tr>
+</tbody>
+</table>
+<p>Fortunately, all refutations involving $C_{1}$ use 3 parameterised clauses, similarly for refutations involving $C_{3}$ and $C_{4}$. For $C_{2}, C_{5}$ and $C_{6}$ the number of parameterised clauses used in refutations is always 2 . This allows us to use the closed-form for $\gamma_{i}^{(h)}$ in Eq. (7).</p>
+<p>$$
+\begin{aligned}
+&amp; \gamma_{i}^{(h)}=\frac{1}{3} \log \left(\frac{f_{\lambda^{(h)}}\left[v_{i} \mid y\right]}{f_{\lambda^{(h)}}\left[v_{i}\right]}\right), \quad i=1,3,4 \
+&amp; \gamma_{i}^{(h)}=\frac{1}{2} \log \left(\frac{f_{\lambda^{(h)}}\left[v_{i} \mid y\right]}{f_{\lambda^{(h)}}\left[v_{i}\right]}\right), \quad i=2,5,6 \
+&amp; \begin{array}{lll}
+11: s(\mathrm{X}):-\mathrm{p}(\mathrm{X}), \mathrm{p}(\mathrm{X}) . &amp; 13: \mathrm{p}(\mathrm{a}) . &amp; 15: \mathrm{q}(\mathrm{a}) \
+12: s(\mathrm{X}):-\mathrm{q}(\mathrm{X}) . &amp; 14: \mathrm{p}(\mathrm{~b}) . &amp; 16: \mathrm{q}(\mathrm{~b})
+\end{array}
+\end{aligned}
+$$</p>
+<p>Figure 10. $\mathcal{S}_{2}$ : A simple SLP.</p>
+<p>Table 8. Iterative maximization from two different starting points.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">$C_{1}$</th>
+<th style="text-align: center;">$C_{2}$</th>
+<th style="text-align: center;">$C_{3}$</th>
+<th style="text-align: center;">$C_{4}$</th>
+<th style="text-align: center;">$C_{5}$</th>
+<th style="text-align: center;">$C_{6}$</th>
+<th style="text-align: center;">$\log L_{x}(y)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\left\langle\hat{i}_{i}\right\rangle^{0}$</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">-8.3178</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\ldots$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\ldots$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left\langle\hat{i}_{i}\right\rangle^{9}$</td>
+<td style="text-align: center;">0.5005</td>
+<td style="text-align: center;">0.4996</td>
+<td style="text-align: center;">0.5470</td>
+<td style="text-align: center;">0.4471</td>
+<td style="text-align: center;">0.5722</td>
+<td style="text-align: center;">0.4227</td>
+<td style="text-align: center;">-8.1503</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left\langle\hat{i}_{i}\right\rangle^{0}$</td>
+<td style="text-align: center;">5.0000</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">0.4350</td>
+<td style="text-align: center;">0.5000</td>
+<td style="text-align: center;">5.0000</td>
+<td style="text-align: center;">25.0000</td>
+<td style="text-align: center;">-12.3703</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\ldots$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\ldots$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\left\langle\hat{i}_{i}\right\rangle^{15}$</td>
+<td style="text-align: center;">6.5340</td>
+<td style="text-align: center;">0.4524</td>
+<td style="text-align: center;">0.7655</td>
+<td style="text-align: center;">0.3215</td>
+<td style="text-align: center;">11.6720</td>
+<td style="text-align: center;">12.8896</td>
+<td style="text-align: center;">-8.1503</td>
+</tr>
+</tbody>
+</table>
+<p>We can use the results contained in Table 7 and Eq. (7) to do Iterative Maximization (IM). The results of doing IM, with two different starting parameter sets are shown in Table 8. The final column shows the log-likelihood of the data which is always increasing. We converge to two different parameter sets which both define the same distribution, showing that, in general, the parameters of SLPs, like other loglinear models, are not identifiable: different parameters sets can define the same distribution.</p>
+<h1>4.4. Failure-adjusted maximisation</h1>
+<p>In previous sections we have applied general purpose algorithms to parameter estimation in SLPs. In this section we show how to use the EM algorithm to do MLE parameter estimation for pure, normalised SLPs. (Familiarity with the EM algorithm is assumed.) We will call this application of the EM algorithm failure-adjusted maximisation (FAM) because the algorithm can be seen as an adjustment of the application of EM to context-free models such as HMMs and SCFGs, where the adjustment is explicitly expressed in terms of failure derivations.</p>
+<p>FAM rests on the observation that a data set of atoms can be viewed as an incomplete data set derived from a complete data set of derivations which has been truncated to form a set of refutations and then grouped to give the observed set of atoms. The basic idea is to suppose that the observed $n$ atoms are generated as follows. An unknown number of derivations are sampled according to $\psi_{\lambda}$, then all the derivations that end in failure are thrown away (the data is truncated) leaving us with a set of refutations. Next all information about the refutations is thrown away, except the atoms that each of them yield. In other words, all refutations yielding the same atom are grouped together.</p>
+<p>The application of the EM algorithm to grouped truncated data is given in Dempster et al. (1997) and our presentation of the FAM algorithm specialises that given in Dempster et al. (1997) to SLPs. The observed data is $y=\left(y_{1}, y_{2}, \ldots, y_{N}\right)$ a set of atoms, which we will reformulate into a more convenient form. Let us assume that $N_{0}$ of the atoms are unambiguous in the sense that they only have one proof. Let us denote this set of proofs by $\mathbf{x}<em 01="01">{0}=x</em>\right)$.}, x_{02}, \ldots, x_{0 N_{0}}$. As for the other (ambiguous) atoms in the data, let there be $t-1$ different ambiguous atoms and let $N_{k}(k=1, \ldots, t-1)$ denote the number of times atom $y_{k}$ appears in $y$. Writing $\mathbf{N}=\left(N_{0}, N_{1}, \ldots, N_{t-1}\right)$, we have that the observed data is $y=\left(\mathbf{N}, \mathbf{x}_{0</p>
+<p>For each $k=1, \ldots, t-1$, let $\mathbf{x}<em 1="1" k="k">{k}=\left(x</em>}, \ldots, x_{k N_{k}}\right)$ denote the unknown proofs corresponding to the $N_{k}$ observations of atom $y_{k}$. We could consider $\left(\mathbf{N}, \mathbf{x<em 1="1">{0}, \mathbf{x}</em>}, \ldots, \mathbf{x<em _lambda="\lambda">{t-1}\right)$ the hidden complete data sampled from $f</em>$, is still hard. As Dempster et al. (1997) observe}$ and proceed to (attempt to) apply EM. The problem is (as demonstrated in Section 4.2) that MLE for $f_{\lambda}$, whilst easier than for $p_{\lambda</p>
+<p>The drawback of [considering $\left(\mathbf{N}, \mathbf{x}<em 1="1">{0}, \mathbf{x}</em>\right)$ as the complete data] in many standard examples is that maximum likelihood estimates from a truncated family are not expressible in closed form, so that the M-step of the EM-algorithm itself requires an iterative procedure.}, \ldots, \mathbf{x}_{t-1</p>
+<p>We propose therefore a further extension of the complete data [ . . ] to include truncated sample points. We denote by $m$ the number of truncated sample points.</p>
+<p>Following Dempster et al. let us suppose that there were $m$ failure derivations which were truncated. Denote these unknown failure derivations by $\mathbf{x}<em 1="1" t="t">{t}=\left(x</em>}, \ldots, x_{t m}\right)$. Now the complete data is $\mathbf{x}=\left(\mathbf{N}, \mathbf{x<em 1="1">{0}, \mathbf{x}</em>}, \ldots, \mathbf{x<em t="t">{t-1}, m, \mathbf{x}</em>)\right)$ where}\right)$. This is a set of $N+m$ independent and identically distributed (iid) derivations. The sampling distribution over such a set of derivations can be compactly defined by defining $v(\mathbf{x})=\left(v_{1}(\mathbf{x}), \ldots v_{n}(\mathbf{x</p>
+<p>$$
+v_{i}(\mathbf{x}) \stackrel{\text { def }}{=} \sum_{k=0}^{t} \sum_{i=1}^{N_{k}} v_{i}\left(x_{k i}\right)
+$$</p>
+<p>So $v_{i}(\mathbf{x})$ is the total number of times clause $C_{i}$ was used to produce the complete data. Using $\psi_{\lambda}$ to represent the distribution over iid sequences of derivations, as well as a the distribution over derivations, we have (as given in Dempster et al. (1997)):</p>
+<p>$$
+\begin{aligned}
+\psi_{\lambda}(\mathbf{x}) &amp; =\frac{N!}{\prod_{k=0}^{t-1} N_{k}!}\binom{m+N+1}{m} \prod_{k=0}^{t} \prod_{i=1}^{N_{k}} \psi_{\lambda}\left(x_{k i}\right) \
+&amp; =\frac{N!}{\prod_{k=0}^{t-1} N_{k}!}\binom{m+N+1}{m} \prod_{k=0}^{t} \prod_{i=1}^{N_{k}} e^{\lambda \cdot v\left(x_{k i}\right)} \
+&amp; =\frac{N!}{\prod_{k=0}^{t-1} N_{k}!}\binom{m+N+1}{m} e^{\lambda \cdot v(\mathbf{x})}
+\end{aligned}
+$$</p>
+<p>The motivation for completing the data in this way is that MLE for $\psi_{\lambda}$ (as opposed to $p_{\lambda}$ or $f_{\lambda}$ ) is extremely easy. In the case of normalised SLPs each derivation is a walk through the Markov chain, and we can do MLE by just counting how often each clause is used. The MLE estimate for each clause is just that clause's frequency divided by the total frequency for each clause whose head has the same predicate symbol.</p>
+<p>By positing lots of missing data, we have made the M-step of EM very easy. We pay a price for this when we come to the E-step. The E-step, in this case, requires us to compute the expected values of the sufficient statistics of $\mathbf{x}$ according to $\psi_{\lambda^{(k)}}(\mathbf{x} \mid y)$ where $\lambda^{(k)}$ is the current parameter estimate. The sufficient statistics of $\mathbf{x}$ are the $v_{i}(\mathbf{x})$. So, for each $i$,</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

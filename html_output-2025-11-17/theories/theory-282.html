@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belief-Space Planning Theory for Text Environments - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-282</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-282</p>
+                <p><strong>Name:</strong> Belief-Space Planning Theory for Text Environments</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about probabilistic symbolic world models for text environments that integrate LLM uncertainty into planning.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> This theory proposes that planning in text-based environments with LLMs should be formulated as belief-space planning, where the agent maintains a probability distribution (belief state) over possible symbolic world states and plans by reasoning about how actions affect these belief distributions. The theory posits that text observations from the environment are inherently partial and ambiguous, requiring the agent to maintain uncertainty about the true underlying symbolic state. LLMs serve dual roles: (1) as observation models that map text observations to distributions over symbolic states, and (2) as generative models that predict how actions affect symbolic states and what observations will result. Planning involves searching for action sequences that maximize expected reward while accounting for both state uncertainty and observation uncertainty. Critically, the theory argues that belief states should be represented as distributions over complete symbolic state configurations, where each configuration specifies truth values for all relevant predicates. Actions update beliefs through a predict-update cycle: prediction propagates beliefs forward through action effects, and update incorporates new observations using Bayesian inference. The theory further posits that information-gathering actions emerge naturally from this framework, as actions that reduce belief entropy about high-value state features become instrumentally valuable.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>A belief state b_t at time t is a probability distribution over symbolic state configurations S, where each configuration s ∈ S assigns truth values to all predicates in the symbolic vocabulary</li>
+                <li>Text observations o_t are mapped to belief states through an LLM-based observation model P(o_t | s_t) that captures the probability of observing text o_t given true symbolic state s_t</li>
+                <li>Actions a affect belief states through a belief update operator: b_{t+1} = Update(Predict(b_t, a), o_{t+1}), where Predict propagates beliefs through action effects and Update incorporates new observations</li>
+                <li>The Predict step computes b'_{t+1}(s') = Σ_s b_t(s) · P(s' | s, a), where P(s' | s, a) is the LLM-derived transition model representing how action a changes state s to s'</li>
+                <li>The Update step applies Bayes' rule: b_{t+1}(s') ∝ P(o_{t+1} | s') · b'_{t+1}(s'), normalizing over all possible states</li>
+                <li>Planning seeks action sequences π = [a_1, ..., a_n] that maximize expected cumulative reward: E[Σ_t γ^t R(b_t, a_t)], where γ is a discount factor and R is a reward function over belief states and actions</li>
+                <li>Information-gathering actions (e.g., 'examine', 'look at') have instrumental value proportional to the expected reduction in belief entropy about predicates that are preconditions for high-reward actions</li>
+                <li>The LLM's uncertainty about symbolic state interpretations (epistemic uncertainty) is distinct from environmental stochasticity (aleatoric uncertainty), and both contribute to the belief state distribution</li>
+                <li>Predicates with high uncertainty in the belief state should be treated conservatively in planning, with actions requiring confident preconditions being deferred until sufficient information is gathered</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>LLMs can generate structured symbolic representations from natural language with varying degrees of confidence, providing a basis for observation models </li>
+    <li>Belief-space planning has been successfully applied to robotics and partially observable domains, demonstrating the viability of planning with state uncertainty </li>
+    <li>Text-based environments present partial observability challenges where the full state is not directly observable from text descriptions </li>
+    <li>Probabilistic logic programming frameworks can represent uncertainty in symbolic predicates and support inference over distributions </li>
+    <li>Grounding natural language to symbolic representations improves planning and reasoning in interactive environments </li>
+    <li>LLMs exhibit calibrated uncertainty in some tasks, which can be leveraged for probabilistic reasoning </li>
+    <li>Information-gathering actions are valuable in partially observable domains for reducing uncertainty about critical state features </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In text environments with ambiguous initial descriptions (e.g., 'You are in a room with several objects'), agents using belief-space planning will naturally execute information-gathering actions (e.g., 'examine objects') before attempting goal-directed actions</li>
+                <li>When multiple action sequences could achieve a goal, the belief-space planner will prefer sequences that maintain lower belief uncertainty throughout execution, even if they are longer</li>
+                <li>In environments where certain predicates are consistently difficult for the LLM to infer from text (e.g., object weights, locked/unlocked status), the agent will develop a preference for actions that disambiguate these predicates early in episodes</li>
+                <li>The agent's performance will degrade gracefully as observation ambiguity increases, with longer planning times and more information-gathering actions, rather than catastrophic failures</li>
+                <li>In repeated interactions with similar environments, the agent can learn improved observation models P(o|s) that reduce belief uncertainty, leading to more efficient planning over time</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>If the symbolic vocabulary is misaligned with the environment's true state space, belief-space planning might maintain persistently high entropy beliefs that never converge, potentially leading to indefinite information-gathering loops without progress toward goals</li>
+                <li>The computational complexity of exact belief updates might scale exponentially with the number of predicates and objects, potentially requiring approximation methods whose impact on planning quality is unclear</li>
+                <li>When LLM observation models P(o|s) are systematically miscalibrated (overconfident or underconfident), the resulting belief states might lead to either overly cautious or overly risky plans, with unknown performance implications</li>
+                <li>In environments with complex logical dependencies between predicates (e.g., 'if door is locked, then key must exist somewhere'), maintaining consistent belief distributions might require constraint satisfaction that is computationally intractable</li>
+                <li>The optimal balance between exploration (information-gathering) and exploitation (goal-directed action) in belief-space planning for text environments might differ fundamentally from other domains due to the unique properties of natural language observations</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If planning with maximum likelihood symbolic states (argmax_s b(s)) achieves equal performance to full belief-space planning, the computational overhead of maintaining belief distributions would be unjustified</li>
+                <li>If LLM-generated observation probabilities P(o|s) do not correlate with actual observation likelihoods in the environment, the belief update mechanism would produce unreliable beliefs</li>
+                <li>If information-gathering actions do not reduce belief entropy about relevant predicates, the theory's prediction about their instrumental value would be incorrect</li>
+                <li>If belief states do not converge toward true states as more observations are gathered (i.e., beliefs do not become more accurate over time), the Bayesian update mechanism would be fundamentally flawed</li>
+                <li>If the expected reward of plans computed using belief states does not correlate with actual achieved rewards, the planning objective would be misspecified</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not specify how to handle temporal predicates and their evolution over time in the belief state </li>
+    <li>The optimal granularity of symbolic predicates (fine-grained vs. coarse-grained) and its impact on belief-space complexity is not addressed </li>
+    <li>The theory does not account for how to learn or adapt the symbolic vocabulary itself based on environment experience </li>
+    <li>The relationship between sub-symbolic LLM representations and symbolic belief states is not fully specified </li>
+    <li>The theory does not address how to handle contradictory observations or belief revision when new observations conflict with prior beliefs </li>
+    <li>Scalability to large state spaces with many objects and predicates is not thoroughly addressed </li>
+    <li>The theory does not specify how to handle multi-step reasoning where action effects depend on complex logical combinations of predicates </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Kaelbling et al. (1998) Planning and Acting in Partially Observable Stochastic Domains [Foundational POMDP framework, but not applied to text environments with LLMs]</li>
+    <li>Kaelbling & Lozano-Pérez (2013) Integrated Task and Motion Planning in Belief Space [Belief-space planning for robotics with symbolic and geometric reasoning, but not for text environments]</li>
+    <li>Liu et al. (2023) LLM+P: Empowering Large Language Models with Optimal Planning Proficiency [Uses LLMs for planning but does not maintain probabilistic belief states]</li>
+    <li>Silver et al. (2023) Generalized Planning in PDDL Domains with Pretrained Large Language Models [LLM-based planning without belief-space formulation]</li>
+    <li>Côté et al. (2018) TextWorld: A Learning Environment for Text-based Games [Text environment framework but does not propose belief-space planning]</li>
+    <li>Ammanabrolu & Riedl (2019) Playing Text-Adventure Games with Graph-Based Deep Reinforcement Learning [Graph-based approach to text games without explicit belief-space planning]</li>
+    <li>De Raedt et al. (2007) ProbLog: A Probabilistic Prolog and Its Application in Link Discovery [Probabilistic logic programming, but not applied to LLM-based text environment planning with belief states]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Belief-Space Planning Theory for Text Environments",
+    "theory_description": "This theory proposes that planning in text-based environments with LLMs should be formulated as belief-space planning, where the agent maintains a probability distribution (belief state) over possible symbolic world states and plans by reasoning about how actions affect these belief distributions. The theory posits that text observations from the environment are inherently partial and ambiguous, requiring the agent to maintain uncertainty about the true underlying symbolic state. LLMs serve dual roles: (1) as observation models that map text observations to distributions over symbolic states, and (2) as generative models that predict how actions affect symbolic states and what observations will result. Planning involves searching for action sequences that maximize expected reward while accounting for both state uncertainty and observation uncertainty. Critically, the theory argues that belief states should be represented as distributions over complete symbolic state configurations, where each configuration specifies truth values for all relevant predicates. Actions update beliefs through a predict-update cycle: prediction propagates beliefs forward through action effects, and update incorporates new observations using Bayesian inference. The theory further posits that information-gathering actions emerge naturally from this framework, as actions that reduce belief entropy about high-value state features become instrumentally valuable.",
+    "supporting_evidence": [
+        {
+            "text": "LLMs can generate structured symbolic representations from natural language with varying degrees of confidence, providing a basis for observation models",
+            "citations": [
+                "Liu et al. (2023) LLM+P: Empowering Large Language Models with Optimal Planning Proficiency",
+                "Silver et al. (2023) Generalized Planning in PDDL Domains with Pretrained Large Language Models",
+                "Huang et al. (2022) Language Models as Zero-Shot Planners: Extracting Actionable Knowledge for Embodied Agents"
+            ]
+        },
+        {
+            "text": "Belief-space planning has been successfully applied to robotics and partially observable domains, demonstrating the viability of planning with state uncertainty",
+            "citations": [
+                "Kaelbling et al. (1998) Planning and Acting in Partially Observable Stochastic Domains",
+                "Kaelbling & Lozano-Pérez (2013) Integrated Task and Motion Planning in Belief Space",
+                "Platt et al. (2010) Belief Space Planning assuming Maximum Likelihood Observations"
+            ]
+        },
+        {
+            "text": "Text-based environments present partial observability challenges where the full state is not directly observable from text descriptions",
+            "citations": [
+                "Côté et al. (2018) TextWorld: A Learning Environment for Text-based Games",
+                "Hausknecht et al. (2020) Interactive Fiction Games: A Colossal Adventure"
+            ]
+        },
+        {
+            "text": "Probabilistic logic programming frameworks can represent uncertainty in symbolic predicates and support inference over distributions",
+            "citations": [
+                "De Raedt et al. (2007) ProbLog: A Probabilistic Prolog and Its Application in Link Discovery",
+                "Fierens et al. (2015) Inference and Learning in Probabilistic Logic Programs using Weighted Boolean Formulas"
+            ]
+        },
+        {
+            "text": "Grounding natural language to symbolic representations improves planning and reasoning in interactive environments",
+            "citations": [
+                "Jiang et al. (2019) Language to Action: Towards Interactive Task Learning with Physical Agents",
+                "Tellex et al. (2011) Understanding Natural Language Commands for Robotic Navigation and Mobile Manipulation"
+            ]
+        },
+        {
+            "text": "LLMs exhibit calibrated uncertainty in some tasks, which can be leveraged for probabilistic reasoning",
+            "citations": [
+                "Kadavath et al. (2022) Language Models (Mostly) Know What They Know",
+                "Kuhn et al. (2023) Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation"
+            ]
+        },
+        {
+            "text": "Information-gathering actions are valuable in partially observable domains for reducing uncertainty about critical state features",
+            "citations": [
+                "Araya et al. (2010) A POMDP Extension with Belief-dependent Rewards",
+                "Spaan & Vlassis (2005) Perseus: Randomized Point-based Value Iteration for POMDPs"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "A belief state b_t at time t is a probability distribution over symbolic state configurations S, where each configuration s ∈ S assigns truth values to all predicates in the symbolic vocabulary",
+        "Text observations o_t are mapped to belief states through an LLM-based observation model P(o_t | s_t) that captures the probability of observing text o_t given true symbolic state s_t",
+        "Actions a affect belief states through a belief update operator: b_{t+1} = Update(Predict(b_t, a), o_{t+1}), where Predict propagates beliefs through action effects and Update incorporates new observations",
+        "The Predict step computes b'_{t+1}(s') = Σ_s b_t(s) · P(s' | s, a), where P(s' | s, a) is the LLM-derived transition model representing how action a changes state s to s'",
+        "The Update step applies Bayes' rule: b_{t+1}(s') ∝ P(o_{t+1} | s') · b'_{t+1}(s'), normalizing over all possible states",
+        "Planning seeks action sequences π = [a_1, ..., a_n] that maximize expected cumulative reward: E[Σ_t γ^t R(b_t, a_t)], where γ is a discount factor and R is a reward function over belief states and actions",
+        "Information-gathering actions (e.g., 'examine', 'look at') have instrumental value proportional to the expected reduction in belief entropy about predicates that are preconditions for high-reward actions",
+        "The LLM's uncertainty about symbolic state interpretations (epistemic uncertainty) is distinct from environmental stochasticity (aleatoric uncertainty), and both contribute to the belief state distribution",
+        "Predicates with high uncertainty in the belief state should be treated conservatively in planning, with actions requiring confident preconditions being deferred until sufficient information is gathered"
+    ],
+    "new_predictions_likely": [
+        "In text environments with ambiguous initial descriptions (e.g., 'You are in a room with several objects'), agents using belief-space planning will naturally execute information-gathering actions (e.g., 'examine objects') before attempting goal-directed actions",
+        "When multiple action sequences could achieve a goal, the belief-space planner will prefer sequences that maintain lower belief uncertainty throughout execution, even if they are longer",
+        "In environments where certain predicates are consistently difficult for the LLM to infer from text (e.g., object weights, locked/unlocked status), the agent will develop a preference for actions that disambiguate these predicates early in episodes",
+        "The agent's performance will degrade gracefully as observation ambiguity increases, with longer planning times and more information-gathering actions, rather than catastrophic failures",
+        "In repeated interactions with similar environments, the agent can learn improved observation models P(o|s) that reduce belief uncertainty, leading to more efficient planning over time"
+    ],
+    "new_predictions_unknown": [
+        "If the symbolic vocabulary is misaligned with the environment's true state space, belief-space planning might maintain persistently high entropy beliefs that never converge, potentially leading to indefinite information-gathering loops without progress toward goals",
+        "The computational complexity of exact belief updates might scale exponentially with the number of predicates and objects, potentially requiring approximation methods whose impact on planning quality is unclear",
+        "When LLM observation models P(o|s) are systematically miscalibrated (overconfident or underconfident), the resulting belief states might lead to either overly cautious or overly risky plans, with unknown performance implications",
+        "In environments with complex logical dependencies between predicates (e.g., 'if door is locked, then key must exist somewhere'), maintaining consistent belief distributions might require constraint satisfaction that is computationally intractable",
+        "The optimal balance between exploration (information-gathering) and exploitation (goal-directed action) in belief-space planning for text environments might differ fundamentally from other domains due to the unique properties of natural language observations"
+    ],
+    "negative_experiments": [
+        "If planning with maximum likelihood symbolic states (argmax_s b(s)) achieves equal performance to full belief-space planning, the computational overhead of maintaining belief distributions would be unjustified",
+        "If LLM-generated observation probabilities P(o|s) do not correlate with actual observation likelihoods in the environment, the belief update mechanism would produce unreliable beliefs",
+        "If information-gathering actions do not reduce belief entropy about relevant predicates, the theory's prediction about their instrumental value would be incorrect",
+        "If belief states do not converge toward true states as more observations are gathered (i.e., beliefs do not become more accurate over time), the Bayesian update mechanism would be fundamentally flawed",
+        "If the expected reward of plans computed using belief states does not correlate with actual achieved rewards, the planning objective would be misspecified"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not specify how to handle temporal predicates and their evolution over time in the belief state",
+            "citations": []
+        },
+        {
+            "text": "The optimal granularity of symbolic predicates (fine-grained vs. coarse-grained) and its impact on belief-space complexity is not addressed",
+            "citations": [
+                "Konidaris et al. (2018) On the Necessity of Abstraction"
+            ]
+        },
+        {
+            "text": "The theory does not account for how to learn or adapt the symbolic vocabulary itself based on environment experience",
+            "citations": [
+                "Konidaris et al. (2018) On the Necessity of Abstraction",
+                "Garnelo & Shanahan (2019) Reconciling Deep Learning with Symbolic Artificial Intelligence"
+            ]
+        },
+        {
+            "text": "The relationship between sub-symbolic LLM representations and symbolic belief states is not fully specified",
+            "citations": [
+                "Garnelo & Shanahan (2019) Reconciling Deep Learning with Symbolic Artificial Intelligence"
+            ]
+        },
+        {
+            "text": "The theory does not address how to handle contradictory observations or belief revision when new observations conflict with prior beliefs",
+            "citations": [
+                "Gärdenfors (1988) Knowledge in Flux: Modeling the Dynamics of Epistemic States"
+            ]
+        },
+        {
+            "text": "Scalability to large state spaces with many objects and predicates is not thoroughly addressed",
+            "citations": []
+        },
+        {
+            "text": "The theory does not specify how to handle multi-step reasoning where action effects depend on complex logical combinations of predicates",
+            "citations": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some work suggests that end-to-end neural approaches without explicit symbolic representations can achieve strong performance in text environments",
+            "citations": [
+                "Narasimhan et al. (2015) Language Understanding for Text-based Games using Deep Reinforcement Learning",
+                "Ammanabrolu & Riedl (2019) Playing Text-Adventure Games with Graph-Based Deep Reinforcement Learning"
+            ]
+        },
+        {
+            "text": "Recent work shows that LLMs can perform planning through chain-of-thought prompting without maintaining explicit belief states",
+            "citations": [
+                "Wei et al. (2022) Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+                "Yao et al. (2023) Tree of Thoughts: Deliberate Problem Solving with Large Language Models"
+            ]
+        },
+        {
+            "text": "Some evidence suggests that LLM uncertainty estimates may not be well-calibrated, potentially undermining their use in observation models",
+            "citations": [
+                "Jiang et al. (2021) Can You Trust Your Model's Uncertainty? Evaluating Predictive Uncertainty Under Dataset Shift"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In fully observable text environments where observations uniquely determine symbolic states, belief states collapse to point distributions, reducing the framework to classical symbolic planning",
+        "When the symbolic vocabulary perfectly captures the environment's state space and the LLM has perfect understanding, belief uncertainty arises only from environmental stochasticity, not observation ambiguity",
+        "In deterministic environments with perfect observation models, belief states remain as point distributions throughout execution, eliminating the need for belief-space planning",
+        "When action effects are deterministic and fully known, the Predict step becomes deterministic state transition, simplifying belief propagation",
+        "In safety-critical applications, belief-space planning should use conservative reward functions that penalize high-uncertainty beliefs about safety-relevant predicates",
+        "For environments with very large state spaces, approximate belief representations (e.g., particle filters, Gaussian beliefs over continuous features) may be necessary, trading exactness for computational tractability",
+        "When the cost of information-gathering actions is very high, the agent may need to act under high uncertainty rather than gathering information, requiring risk-sensitive planning objectives"
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Kaelbling et al. (1998) Planning and Acting in Partially Observable Stochastic Domains [Foundational POMDP framework, but not applied to text environments with LLMs]",
+            "Kaelbling & Lozano-Pérez (2013) Integrated Task and Motion Planning in Belief Space [Belief-space planning for robotics with symbolic and geometric reasoning, but not for text environments]",
+            "Liu et al. (2023) LLM+P: Empowering Large Language Models with Optimal Planning Proficiency [Uses LLMs for planning but does not maintain probabilistic belief states]",
+            "Silver et al. (2023) Generalized Planning in PDDL Domains with Pretrained Large Language Models [LLM-based planning without belief-space formulation]",
+            "Côté et al. (2018) TextWorld: A Learning Environment for Text-based Games [Text environment framework but does not propose belief-space planning]",
+            "Ammanabrolu & Riedl (2019) Playing Text-Adventure Games with Graph-Based Deep Reinforcement Learning [Graph-based approach to text games without explicit belief-space planning]",
+            "De Raedt et al. (2007) ProbLog: A Probabilistic Prolog and Its Application in Link Discovery [Probabilistic logic programming, but not applied to LLM-based text environment planning with belief states]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "theory_query": "Build a theory about probabilistic symbolic world models for text environments that integrate LLM uncertainty into planning.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-118",
+    "original_theory_name": "Belief-Space Planning Theory for Text Environments",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

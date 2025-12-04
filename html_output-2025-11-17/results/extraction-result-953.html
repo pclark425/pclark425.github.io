@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-953 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-953</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-953</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-23.html">extraction-schema-23</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of systems or methods that use probabilistic symbolic world models (such as PPDDL, PDDL, or belief states) for planning in text-based environments, especially those that integrate uncertainty from large language models.</div>
+                <p><strong>Paper ID:</strong> paper-8aed57b61457655e8354f1b68b34ed1cc0a222ef</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/8aed57b61457655e8354f1b68b34ed1cc0a222ef" target="_blank">Keep CALM and Explore: Language Models for Action Generation in Text-based Games</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> This paper proposes the Contextual Action Language Model (CALM) to generate a compact set of action candidates at each game state, and combines CALM with a reinforcement learning agent which re-ranks the generated action candidates to maximize in-game rewards.</p>
+                <p><strong>Paper Abstract:</strong> Text-based games present a unique challenge for autonomous agents to operate in natural language and handle enormous action spaces. In this paper, we propose the Contextual Action Language Model (CALM) to generate a compact set of action candidates at each game state. Our key insight is to train language models on human gameplay, where people demonstrate linguistic priors and a general game sense for promising actions conditioned on game history. We combine CALM with a reinforcement learning agent which re-ranks the generated action candidates to maximize in-game rewards. We evaluate our approach using the Jericho benchmark, on games unseen by CALM during training. Our method obtains a 69% relative improvement in average game score over the previous state-of-the-art model. Surprisingly, on half of these games, CALM is competitive with or better than other models that have access to ground truth admissible actions. Code and data are available at this https URL.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-953",
+    "paper_id": "paper-8aed57b61457655e8354f1b68b34ed1cc0a222ef",
+    "extraction_schema_id": "extraction-schema-23",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.007075,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Keep CALM and Explore: Language Models for Action Generation in Text-based Games</h1>
+<p>Shunyu Yao ${ }^{\dagger}$, Rohan Rao ${ }^{\ddagger}$, Matthew Hausknecht ${ }^{\ddagger}$, Karthik Narasimhan ${ }^{\dagger}$<br>${ }^{\dagger}$ Princeton University ${ }^{\ddagger}$ Microsoft Research<br>{shunyuy, rohanr, karthikn}@princeton.edu<br>matthew.hausknecht@microsoft.com</p>
+<h4>Abstract</h4>
+<p>Text-based games present a unique challenge for autonomous agents to operate in natural language and handle enormous action spaces. In this paper, we propose the Contextual Action Language Model (CALM) to generate a compact set of action candidates at each game state. Our key insight is to train language models on human gameplay, where people demonstrate linguistic priors and a general game sense for promising actions conditioned on game history. We combine CALM with a reinforcement learning agent which re-ranks the generated action candidates to maximize ingame rewards. We evaluate our approach using the Jericho benchmark (Hausknecht et al., 2019a), on games unseen by CALM during training. Our method obtains a $69 \%$ relative improvement in average game score over the previous state-of-the-art model. Surprisingly, on half of these games, CALM is competitive with or better than other models that have access to ground truth admissible actions."</p>
+<h2>1 Introduction</h2>
+<p>Text-based games have proven to be useful testbeds for developing agents that operate in language. As interactions in these games (input observations, action commands) are through text, they require solid language understanding for successful gameplay. While several reinforcement learning (RL) models have been proposed recently (Narasimhan et al., 2015; He et al., 2015; Hausknecht et al., 2019a; Ammanabrolu and Riedl, 2019), combinatorially large action spaces continue to make these games challenging for these approaches.</p>
+<p>The action space problem is exacerbated by the fact that only a tiny fraction of action commands are admissible in any given game state. An admissible action is one that is parseable by the game</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Observation: You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. You are carrying: A brass lantern ...</p>
+<h2>Random Actions:</h2>
+<p>close door, north a, eat troll with egg, ...
+CALM (n-gram) Actions:
+enter room, leave room, lock room, open door, close door, knock on door, ...
+CALM (GPT-2) Actions:
+east, open case, get rug, turn on lantern, move rug, unlock case with key, ...</p>
+<p>Next Observation: With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door...</p>
+<p>Figure 1: Sample gameplay from ZORK1 along with action sets generated by two variants of CALM. The game recognizes a vocabulary size of 697 , resulting in more than $697^{4} \approx 200$ billion potential 4 -word actions. 'move rug' is the optimal action to take here and is generated by our method as a candidate.
+engine and changes the underlying game state. For example, in Figure 1, one can observe that randomly sampling actions from the game vocabulary leads to several inadmissible ones like 'north $a$ ' or 'eat troll with egg'. Thus, narrowing down the action space to admissible actions requires both syntactic and semantic knowledge, making it challenging for current systems.</p>
+<p>Further, even within the space of admissible actions, it is imperative for an autonomous agent to know which actions are most promising to advance the game forward, and explore them first. Human players innately display such game-related common sense. For instance in Figure 1, players</p>
+<p>might prefer the command "move rug" over "knock on door" since the door is nailed shut. However, even the state-of-the-art game-playing agents do not incorporate such priors, and instead rely on rule-based heuristics (Hausknecht et al., 2019a) or handicaps provided by the learning environment (Hausknecht et al., 2019a; Ammanabrolu and Hausknecht, 2020) to circumvent these issues.</p>
+<p>In this work, we propose the Contextual Action Language Model (CALM) to alleviate this challenge. Specifically, at each game step we use CALM to generate action candidates, which are fed into a Deep Reinforcement Relevance Network (DRRN) (He et al., 2015) that uses game rewards to learn a value function over these actions. This allows our model to combine generic linguistic priors for action generation with the ability to adaptively choose actions that are best suited for the game.</p>
+<p>To train CALM, we introduce a novel dataset of 426 human gameplay transcripts for 590 different text-based games. While these transcripts are noisy and actions are not always optimal, they contain a substantial amount of linguistic priors and game sense. Using this dataset, we train a single instance of CALM and deploy it to generate actions across many different downstream games. Importantly, in order to demonstrate the generalization of our approach, we do not use any transcripts from our evaluation games to train the language model.</p>
+<p>We investigate both n-gram and state-of-the-art GPT-2 (Radford et al., 2019) language models and first evaluate the quality of generated actions in isolation by comparing against ground-truth sets of admissible actions. Subsequently, we evaluate the quality of CALM in conjunction with RL over 28 games from the Jericho benchmark (Hausknecht et al., 2019a). Our method outperforms the previous state-of-the-art method by $69 \%$ in terms of average normalized score. Surprisingly, on 8 games our method even outperforms competing methods that use the admissible action handicap - for example, in the game of INHUMANE, we achieve a score of 25.7 while the state-of-the-art KG-A2C agent (Ammanabrolu and Hausknecht, 2020) achieved 3.</p>
+<p>In summary, our contributions are two-fold. First, we propose a novel learning-based approach for reducing enormous action spaces in text-based games using linguistic knowledge. Second, we introduce a new dataset of human gameplay transcripts, along with an evaluation scheme to measure the quality of action generation in these games.</p>
+<h2>2 Related Work</h2>
+<p>Reinforcement Learning for Text-based Games Early work on text-based games (Narasimhan et al., 2015; He et al., 2015) developed RL agents on synthetic environments with small, pre-defined text action spaces. Even with small actions spaces (e.g. $&lt;200$ actions), approaches to filter inadmissible actions (Zahavy et al., 2018; Jain et al., 2019) led to faster learning convergence. Recently, Hausknecht et al. (2019a) introduced Jericho - a benchmark of challenging man-made text games. These games contain significantly greater linguistic variation and larger action spaces compared to frameworks like TextWorld (Côté et al., 2018).</p>
+<p>To assist RL agents, Jericho provides a handicap that identifies admissible actions at each game state. This has been used by approaches like DRRN (He et al., 2015) as a reduced action space. Other RL agents like TDQN (Hausknecht et al., 2019a) and KGA2C (Ammanabrolu and Hausknecht, 2020) rely on the handicap for an auxiliary training loss. In general, as these RL approaches lack linguistic priors and only learn through in-game rewards, they are reliant on the admissible-action handicap to make the action space tractable to explore.</p>
+<p>Linguistic Priors for Text-based Games A different line of work has explored various linguistic priors for generating action commands. Fulda et al. (2017) used Word2vec (Mikolov et al., 2013) embeddings to infer affordance properties (i.e. verbs suitable for an object). Other approaches (Kostka et al., 2017; Hausknecht et al., 2019b) trained simple n-gram language models to learn affordances for action generation. Perhaps most similar to our work is that of Tao et al. (2018), who trained seq2seq (Sutskever et al., 2014) models to produce admissible actions in synthetic TextWorld (Côté et al., 2018) games. In a slightly different setting, Urbanek et al. (2019) trained BERT (Devlin et al., 2018) to generate contextually relevant dialogue utterances and actions in fantasy settings. However, these approaches are game-specific and do not use any reinforcement learning to optimize gameplay. In contrast, we combine strong linguistic priors with reinforcement learning, and use a modern language model that can generate complex actions and flexibly model the dependency between actions and contexts. We also train on multiple games and generalize to unseen games.</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 2: CALM combined with an RL agent – DRRN (He et al., 2015) – for gameplay. CALM is trained on transcripts of human gameplay for action generation. At each state, CALM generates action candidates conditioned on the game context, and the DRRN calculates the Q-values over them to select an action. Once trained, a single instance of CALM can be used to generate actions for any text-based game.</p>
+<h3>Generation in Text-based Games and Interactive Dialog</h3>
+<p>Besides solving games, researchers have also used language models to create text-based games. Ammanabrolu et al. (2019) used Markov chains and neural language models to procedurally generate quests for TextWorld-like games. AI Dungeon 2 (Walton, 2019) used GPT-2 to generate narrative text in response to arbitrary text actions, but lacked temporal consistency over many steps.</p>
+<p>More broadly, the concept of generating candidates and re-ranking has been studied in other interactive language tasks such as dialogue (Zhao and Eskenazi, 2016; Williams et al., 2017; Song et al., 2016; Chen et al., 2017) and communication games (Lazaridou et al., 2020). These approaches often focus on improving aspects like fluency and accuracy of the generated utterances, whereas our re-ranking approach only aims to maximize future rewards in the task. Also, our CALM pre-trained model generalizes to new environments without requiring any re-training.</p>
+<h2>3 Method</h2>
+<h3>3.1 Background</h3>
+<p>A text-based game can be formally specified as a partially observable Markov decision process (POMDP) (S, T, A, O, R, γ), where a player issues text actions a ∈ A and receives text observations o ∈ O and scalar rewards r = R(s, a) at each step. Different games have different reward designs, but typically provide sparse positive rewards for solving key puzzles and advancing the story, and negative rewards for dying. γ ∈ [0, 1] is the reward discount factor. Latent state s ∈ S contains the current game information (e.g., locations of the player and items, the player's inventory), which is only partially reflected in o. The transition function s′ = T(s, a) specifies how action a is applied on state s, and a is admissible at state s if T(s, a) ≠ s (i.e., if it is parseable by the game and changes the state). S, T and R are not provided to the player.</p>
+<h3>Reinforcement Learning</h3>
+<p>One approach to developing text-based game agents is reinforcement learning (RL). The Deep Reinforcement Relevance Network (DRRN) (He et al., 2015) is an RL algorithm that learns a Q-network Q_{φ}(o, a) parametrized by φ. The model encodes the observation o and each action candidate a using two separate encoders f_{o} and f_{a} (usually recurrent neural networks such as GRU (Cho et al., 2014)), and then aggregates the representations to derive the Q-value through a decoder g:</p>
+<p>$$Q_{\phi}(o,a) = g(f_{o}(o), f_{a}(a)) \qquad (1)$$</p>
+<p>For learning φ, tuples (o, a, r, o′) of observation, action, reward and the next observation are sampled from an experience replay buffer and the following temporal difference (TD) loss is minimized:</p>
+<p>$$\mathcal{L}<em _phi="\phi">{\text{TD}}(\phi) = (r + \gamma \max_{a' \in A} Q</em>(o,a))^2 \qquad (2)$$}(o',a') - Q_{\phi</p>
+<p>During gameplay, a softmax exploration policy is used to sample an action:</p>
+<p>$$\pi_{\phi}(a|o) = \frac{\exp(Q_{\phi}(o,a))}{\sum_{a' \in A} \exp(Q_{\phi}(o,a'))} \tag{3}$$</p>
+<p>While the above equation contains only a single observation, this can also be extended to a policy $\pi(a \mid c)$ conditioned on a longer context $c=$ $\left(o_{1}, a_{1}, \ldots, o_{t}\right)$ of previous observations and actions till current time step $t$. Note that when the action space $A$ is large, (2) and (3) become intractable.</p>
+<h3>3.2 Contextual Action Language Model (CALM)</h3>
+<p>To reduce large action spaces and make learning tractable, we train language models to generate compact sets of actions candidates. Consider a dataset $\mathcal{D}$ of $N$ trajectories of human gameplay across different games, where each trajectory of length $l$ consists of interleaved observations and actions $\left(o_{1}, a_{1}, o_{2}, a_{2}, \cdots, o_{l}, a_{l}\right)$. The context $c_{t}$ at timestep $t$ is defined as the history of observations and actions, i.e. $c_{t}=\left(o_{1}, a_{1}, \ldots, a_{t-1}, o_{t}\right)$. In practice, we find that a window size of 2 works well, i.e. $c_{t}=\left(o_{t-1}, a_{t-1}, o_{t}\right)$. We train parametrized language models $p_{\theta}$ to generate actions $a$ conditioned on contexts $c$. Specifically, we use all $N$ trajectories and minimize the following cross-entropy loss:</p>
+<p>$$
+\mathcal{L}<em D="D" _a_="(a," _sim="\sim" c_="c)">{\mathrm{LM}}(\theta)=-\mathbb{E}</em>(a \mid c)
+$$} \log p_{\theta</p>
+<p>Since each action $a$ is typically a multi-word phrase consisting of $m$ tokens $a^{1}, a^{2}, \cdots, a^{m}$, we can further factorize the right hand side of (4) as:</p>
+<p>$$
+p_{\theta}(a \mid c)=\prod_{i=1}^{m} p_{\theta}\left(a^{i} \mid a^{&lt;i}, c\right)
+$$</p>
+<p>Thus, we can simply use the cross-entropy loss over each token $a^{i}$ in action $a$ during training. We investigate two types of language models:</p>
+<ol>
+<li>n-gram: This model simply uses n-gram counts from actions in $\mathcal{D}$ to model the following probability:</li>
+</ol>
+<p>$$
+p_{(n, \alpha)}\left(a^{i} \mid a^{&lt;i}\right)=\frac{\operatorname{cnt}\left(a^{i-n+1}, \cdots, a^{i}\right)+\alpha}{\operatorname{cnt}\left(a^{i-n+1}, \cdots, a^{i-1}\right)+\alpha|V|}
+$$</p>
+<p>where $\operatorname{cnt}\left(a^{i}, \cdots, a^{j}\right)$ counts the number of occurrences of the action sub-sequence $\left(a^{i}, \cdots, a^{j}\right)$ in the training set, $\alpha$ is a smoothing constant, and $V$ is the token vocabulary. Note that this model is trained in a context-independent way and only captures basic linguistic structure and common affordance relations observed in human actions. We optimize the parameters $(n, \alpha)$ to minimize the perplexity on a held-out validation set of actions.</p>
+<p>To generate top actions given context $c$, we construct a restricted action space $\mathcal{A}<em c="c">{c}=\mathcal{V} \times \mathcal{B}</em>}$, where $\mathcal{V}$ is the set of verb phrases (e.g.open, knock on) collected from training actions, and $\mathcal{B<em _alpha_="\alpha)" _n_="(n,">{c}$ is the set of nouns (e.g. door) detected in $c$ using spaCy's ${ }^{\dagger}$ noun-phrase detection. Then we calculate $p</em>$ and choose the top ones.
+2. GPT-2 (Radford et al., 2019): We use a pretrained GPT-2 and train it on $\mathcal{D}$ according to (4) and (5). Unlike the previous n-gram model, GPT-2 helps model dependencies between the context and the action in a flexible way, relying on minimal assumptions about the structure of actions. We use beam search to generate most likely actions.}(a)$ for each $a \in \mathcal{A}_{c</p>
+<h3>3.3 Reinforcement Learning with CALM</h3>
+<p>Though language models learn to generate useful actions, they are not optimized for gameplay performance. Therefore, we use CALM to generate top- $k$ action candidates $A_{\mathrm{LM}}(c, k) \subset A$ given context $c$, and train a DRRN to learn a Q-function over this action space. This can be done by simply replacing $A$ with $A_{\mathrm{LM}}(c, k)$ in equations (2) and (3). In this way, we combine the CALM's generic action priors with the ability of RL to learn policies optimized for the gameplay. We choose not to fine-tune CALM in RL so as to avoid overfitting to a specific game and invalidate the general priors present in CALM.</p>
+<p>To summarize, we employ CALM for providing a reduced action space for text adventure agents to explore efficiently. Even though we choose a specific RL agent (DRRN) in our experiments, CALM is simple and generic, and can be combined with any RL agent.</p>
+<h2>4 Experimental Setup</h2>
+<p>We perform empirical studies to 1) evaluate the quality of actions generated by CALM in isolation from the complexities of RL, 2) evaluate CALM combined with an RL agent for gameplay, and 3) analyze what factors contribute to the effectiveness of our method. We describe our setup in this section and provide results in Section 5.</p>
+<h3>4.1 Data and Environment</h3>
+<p>ClubFloyd Dataset We collect data from ClubFloyd ${ }^{\ddagger}$, which archives transcripts of humans cooperatively playing text-based games. We</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 3: Distributions of actions and observations in the ClubFloyd Dataset, in terms of the number of tokens. Actions more than 7 tokens (&lt;0.5%) and observations more than 256 tokens (&lt;2%) are trimmed.</p>
+<p>crawl 426 transcripts covering 590 games (in some transcripts people play more than one game), and build a dataset of 223,527 context-action pairs {((o_{t-1}, a_{t-1}, o_{t}), a_{t})}. We pre-process the data by removing samples with meta-actions (e.g. 'save', 'restore') or observations with over 256 tokens. Figure 3 visualizes the action and observation length distributions. We also note that a few common actions (e.g. 'north', 'take all', 'examine') make up a large portion of the data. More details on the dataset are in the supplementary material.</p>
+<p><strong>Game Environment</strong> To test our RL agents, we use 28 man-made text games from the Jericho framework (Hausknecht et al., 2019a). We augment state observations with location and inventory descriptions by issuing the 'look' and 'inventory' commands, following the standard practice described in Hausknecht et al. (2019a).</p>
+<p>The Jericho framework implements an <em>admissible action handicap</em> by enumerating all combinations of game verbs and objects at each state, and testing each action's admissibility by accessing the underlying simulator states and load-and-save functions. As a result, the handicap runs no faster than a GPT-2 inference pass, and could in fact be unavailable for games outside Jericho. Jericho also provides an optimal <em>walkthrough</em> trajectory to win each game. Table 1 provides statistics of the ClubFloyd Dataset and the Jericho walkthroughs. We observe that ClubFloyd has a much larger vocabulary and a diverse set of games, which makes it ideal for training CALM. We utilize Jericho walkthroughs in our standalone evaluation of CALM in § 5.1.</p>
+<h3>4.2 CALM Setup</h3>
+<p><strong>Training</strong> For training CALM (n-gram), we condition only on the current observation, i.e. c_{t} = o_{t}</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ClubFloyd</th>
+<th>Jericho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>Dataset</td>
+<td>Walkthroughs</td>
+</tr>
+<tr>
+<td># unique games</td>
+<td>590</td>
+<td>28</td>
+</tr>
+<tr>
+<td>Vocab size</td>
+<td>39,670</td>
+<td>9,623</td>
+</tr>
+<tr>
+<td>Vocab size (game avg.)</td>
+<td>2,363</td>
+<td>1,037</td>
+</tr>
+<tr>
+<td>Avg. trajectory length</td>
+<td>360</td>
+<td>98</td>
+</tr>
+<tr>
+<td>Action Quality</td>
+<td>Non-optimal</td>
+<td>Optimal</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Statistics of the ClubFloyd Dataset and Jericho walkthrough trajectories.</p>
+<p>instead of c_{t} = (o_{t-1}, a_{t-1}, o_{t}), since o_{t-1} and a_{t-1} may contain irrelevant objects to the current state. We split the dataset into 90% training set and 10% validation set, and choose n and α based on the validation set perplexity. We find a bi-gram model n = 2, α = 0.00073 works best, achieving a per-action perplexity of 863, 808 on the validation set and 17, 181 on the training set.</p>
+<p>For CALM (GPT-2), we start with a 12-layer, 768-hidden, 12-head, 117M parameter GPT-2 model pre-trained on the WebText corpus (Radford et al., 2019). The implementation and pretrained weights of this model are obtained from Wolf et al. (2019). We then train it on the ClubFloyd transcripts for 3 epochs to minimize (4). We split the dataset into 90% training set and 10% validation set and we obtain a training loss of 0.25 and a validation loss of 1.98. Importantly, <em>both models are trained only on transcripts that do not overlap with the 28 Jericho games we evaluate on</em>.</p>
+<p><strong>Generating Top Actions</strong> For every unique state of each game, we generate the top k = 30 actions. For CALM (n-gram), we enumerate all actions in A_{c} plus 13 one-word directional actions (e.g. 'north', 'up', 'exit'). To encourage action diversity, at most 4 actions are generated for each object b ∈ B_{c}. For CALM (GPT-2), we use beam search with a beam size of 40, and then choose the top 30 actions.</p>
+<h3>4.3 RL Agent Setup</h3>
+<p><strong>Training</strong> We use DRRN (He et al., 2015) to estimate Q-Values over action candidates generated by CALM. Following Hausknecht et al. (2019a), we use a FastText model (Joulin et al., 2017) to predict the admissibility of an action based on the game's textual response and filter out candidate actions that are found to be inadmissible. We train the DRRN asynchronously on 8 parallel instances of the game environment for 10^{6} steps in total. Following Narasimhan et al. (2015), we use a separate</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 4: Precision and recall of gold and admissible actions generated by CALM, evaluated on walkthrough trajectories of 28 games provided by Jericho. k is the number of actions generated by CALM. Shaded areas represent standard deviation.</p>
+<p>experience replay buffer to store trajectories with the best score at any point of time. The final score of a training run is taken to be the average score of the final 100 episodes during training. For each game, we train five independent agents with different random seeds and report the average score. For model variants in § 5.3 we only run one trail.</p>
+<p><strong>Baselines</strong> We compare with three baselines:</p>
+<ol>
+<li><em>NAIL</em> (Hausknecht et al., 2019b): Uses handwritten rules to act and explore, therefore requires no reinforcement learning or oracle access to admissible actions.</li>
+<li><em>DRRN</em> (He et al., 2015): This RL agent described in § 3.1 uses ground-truth admissible actions provided by the Jericho handicap.</li>
+<li><em>KG-A2C</em> (Ammanabrolu and Hausknecht, 2020): This RL agent constructs a game knowledge graph to augment the state space as well as constrain the types of actions generated. During learning, it requires the admissible action handicap to guide its exploration of the action space.</li>
+</ol>
+<p>Of these methods, DRRN and KG-A2C require ground-truth admissible actions, which our model does not use, but we add them as reference comparisons for completeness.</p>
+<h1>5 Results</h1>
+<h2>5.1 Evaluating CALM on walkthroughs</h2>
+<p>Metrics like validation loss or accuracy on validation set of our ClubFloyd data are not sufficient to evaluate CALM (see supplementary material for details on these metrics). This is because: 1) there can be multiple admissible actions in each state, and 2) the human actions in the trajectories are not guaranteed to be optimal or even admissible. Therefore, we use the walkthroughs provided in Jericho to provide an additional assessment on the quality of actions generated by CALM.</p>
+<p>Consider a walkthrough to be an optimal trajectory (o₁, a₁, ..., oᵢ, aᵢ) leading to the maximum score achievable in the game. At step t (1 ≤ t ≤ l), the context cᵢ is (o_{t−1}, a_{t−1}, o_{t}), the gold action is aᵢ and the full set of admissible actions Aᵢ is obtained from the Jericho handicap. Suppose the generated set of top-k actions at step t is A_{LM}(cᵢ, k). We then calculate the average precision of admissible actions (precₐ), recall of admissible actions (recₐ), and recall of gold actions (recₚ) as follows:</p>
+<p>$$
+\begin{aligned}
+\text{prec}<em t="1">a(k) &amp;= \frac{1}{l} \sum</em> \
+\text{rec}}^{l} \frac{|A_t \cap A_{\text{LM}}(c_t, k)|}{k<em t="1">a(k) &amp;= \frac{1}{l} \sum</em> \
+\text{rec}}^{l} \frac{|A_t \cap A_{\text{LM}}(c_t, k)|}{|A_t|<em t="1">g(k) &amp;= \frac{1}{l} \sum</em>(c_t, k)|
+\end{aligned}
+\tag{9}
+$$}^{l} |{a_t} \cap A_{\text{LM}</p>
+<p>We calculate these metrics on each of the 28 games and present the averaged metrics as a function of k in Figure 4. The recₐ curve shows that the top k = 15 actions of CALM (GPT-2 and n-gram) are both expected to contain around 30% of all admissible actions in each walkthrough state. However, when k goes from 15 to 30, CALM (GPT-2) can come up with 10% more admissible actions, while the gains are limited for CALM (n-gram). When k is small, CALM (n-gram) benefits from its strong action assumption of one verb plus one object. However, this assumption also restricts CALM (n-gram) from generating more complex actions (e.g., 'open case with key') that CALM (GPT-2) can produce. This can also be seen in the recₚ curve, where the top-30 actions from CALM (GPT-2) contain the gold action in 20% more game states than CALM (n-gram). This gap is larger when it comes to gold actions, because they are more likely to be complex actions that the CALM (n-gram) is</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Without Handicap</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">With Handicap</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Game</td>
+<td style="text-align: center;">CALM <br> (GPT-2)</td>
+<td style="text-align: center;">CALM <br> (n-gram)</td>
+<td style="text-align: center;">NAIL</td>
+<td style="text-align: center;">KG-A2C</td>
+<td style="text-align: center;">DRRN</td>
+<td style="text-align: center;">Max <br> Score</td>
+</tr>
+<tr>
+<td style="text-align: center;">905</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">acorncourt</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr>
+<td style="text-align: center;">advland</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">20.6</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">advent</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">350</td>
+</tr>
+<tr>
+<td style="text-align: center;">anchor</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">awaken</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">balances</td>
+<td style="text-align: center;">9.1</td>
+<td style="text-align: center;">8.9</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">51</td>
+</tr>
+<tr>
+<td style="text-align: center;">deephome</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">13.3</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">300</td>
+</tr>
+<tr>
+<td style="text-align: center;">detective</td>
+<td style="text-align: center;">289.7</td>
+<td style="text-align: center;">284.3</td>
+<td style="text-align: center;">136.9</td>
+<td style="text-align: center;">207.9</td>
+<td style="text-align: center;">197.8</td>
+<td style="text-align: center;">360</td>
+</tr>
+<tr>
+<td style="text-align: center;">dragon</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.6</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$-3.5$</td>
+<td style="text-align: center;">25</td>
+</tr>
+<tr>
+<td style="text-align: center;">enchanter</td>
+<td style="text-align: center;">19.1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">12.1</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;">inhumane</td>
+<td style="text-align: center;">25.7</td>
+<td style="text-align: center;">1.7</td>
+<td style="text-align: center;">0.6</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">0.7</td>
+<td style="text-align: center;">90</td>
+</tr>
+<tr>
+<td style="text-align: center;">jewel</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1.6</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">1.6</td>
+<td style="text-align: center;">90</td>
+</tr>
+<tr>
+<td style="text-align: center;">karn</td>
+<td style="text-align: center;">2.3</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1.2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2.1</td>
+<td style="text-align: center;">170</td>
+</tr>
+<tr>
+<td style="text-align: center;">library</td>
+<td style="text-align: center;">9.0</td>
+<td style="text-align: center;">5.1</td>
+<td style="text-align: center;">0.9</td>
+<td style="text-align: center;">14.3</td>
+<td style="text-align: center;">17.0</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr>
+<td style="text-align: center;">ludicorp</td>
+<td style="text-align: center;">10.1</td>
+<td style="text-align: center;">5.4</td>
+<td style="text-align: center;">8.4</td>
+<td style="text-align: center;">17.8</td>
+<td style="text-align: center;">13.8</td>
+<td style="text-align: center;">150</td>
+</tr>
+<tr>
+<td style="text-align: center;">moonlit</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">omniqueat</td>
+<td style="text-align: center;">6.9</td>
+<td style="text-align: center;">4.5</td>
+<td style="text-align: center;">5.6</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">16.8</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">pentari</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">50.7</td>
+<td style="text-align: center;">27.2</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr>
+<td style="text-align: center;">snacktime</td>
+<td style="text-align: center;">19.4</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">9.7</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">norcero</td>
+<td style="text-align: center;">6.2</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">5.8</td>
+<td style="text-align: center;">20.8</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;">spellbskr</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">39.9</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">21.3</td>
+<td style="text-align: center;">37.8</td>
+<td style="text-align: center;">600</td>
+</tr>
+<tr>
+<td style="text-align: center;">spinn</td>
+<td style="text-align: center;">1.4</td>
+<td style="text-align: center;">0.6</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.3</td>
+<td style="text-align: center;">0.8</td>
+<td style="text-align: center;">250</td>
+</tr>
+<tr>
+<td style="text-align: center;">temple</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">7.3</td>
+<td style="text-align: center;">7.6</td>
+<td style="text-align: center;">7.9</td>
+<td style="text-align: center;">35</td>
+</tr>
+<tr>
+<td style="text-align: center;">zenon</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">3.9</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">zork1</td>
+<td style="text-align: center;">30.4</td>
+<td style="text-align: center;">24.8</td>
+<td style="text-align: center;">10.3</td>
+<td style="text-align: center;">34.0</td>
+<td style="text-align: center;">32.6</td>
+<td style="text-align: center;">350</td>
+</tr>
+<tr>
+<td style="text-align: center;">zork3</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;">ztau</td>
+<td style="text-align: center;">3.7</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">9.2</td>
+<td style="text-align: center;">21.6</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">avg. norm</td>
+<td style="text-align: center;">$9.4 \%$</td>
+<td style="text-align: center;">$5.5 \%$</td>
+<td style="text-align: center;">$5.6 \%$</td>
+<td style="text-align: center;">$10.8 \%$</td>
+<td style="text-align: center;">$13.0 \%$</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Performance of our models (CALM (GPT-2) and CALM (n-gram)) compared to baselines (NAIL, KG-A2C, DRRN) on Jericho. We report raw scores for individual games as well as average normalized scores (avg. norm). Advent and Deephome's initial scores are 1 and 36, respectively. Underlined games represent those where CALM outperforms handicapassisted methods KGA2C and DRRN.
+unable to model.
+Further, we note that as $k$ increases, the average quality of the actions decreases ( $p r e c_{a}$ curve), while they contain more admissible actions ( $r e c_{a}$ curve). Thus, $k$ plays an important role in balancing exploration (more admissible actions) with exploitation (a larger ratio of admissible actions) for the RL agent, which we demonstrate empirically in $\S 5.3$. We provide several examples of generated actions from both models in the supplementary material.</p>
+<h3>5.2 Evaluating gameplay on Jericho</h3>
+<p>We provide scores of our CALM-augmented DRRN agent on individual games in Table 2. To take into account different score scales across games, we consider both the raw score and the normalized score (raw score divided by maximum score), and only report the average normalized score across games.</p>
+<p>Of the handicap-free models, CALM (n-gram)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variant</th>
+<th style="text-align: left;">avg. norm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">CALM (default)</td>
+<td style="text-align: left;">$9.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM (20\%)</td>
+<td style="text-align: left;">$8.1 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM (50\%)</td>
+<td style="text-align: left;">$8.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM (w/ Jericho)</td>
+<td style="text-align: left;">$10.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM (w/o PT)</td>
+<td style="text-align: left;">$6.8 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM $(k=10)$</td>
+<td style="text-align: left;">$5.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM $(k=20)$</td>
+<td style="text-align: left;">$9.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM $(k=40)$</td>
+<td style="text-align: left;">$9.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">CALM (random agent)</td>
+<td style="text-align: left;">$1.8 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Average normalized scores on Jericho for different variants of CALM (GPT-2). CALM (default) is the CALM (GPT-2) model used for results in Table 2.
+achieves similar performance to NAIL, while CALM (GPT-2) outperforms CALM (n-gram) and NAIL by $4.4 \%$ and $3.8 \%$ on absolute normalized scores, respectively. Relatively, this represents almost a $69 \%$ improvement over NAIL. Figure 5 presents a game-wise comparison between CALM (GPT-2) and NAIL.</p>
+<p>Surprisingly, even when compared to handicapassisted models, CALM (GPT-2) performs quite well. On 8 out of 28 games (underlined in Table 2), CALM (GPT-2) outperforms both DRRN and KGA2C despite the latter having access to groundtruth admissible actions. This improvement is especially impressive on games like DETECTIVE, INHUMANE and SNACKTIME, where our normalized score is higher by more than $20 \%$. We hypothesize CALM excludes some non-useful admissible actions like "throw egg at sword" that humans never issue, which can speed up exploration. Also, it is possible that CALM sometimes discover admissible actions even the handicap cannot (due to the imperfection of state change detection).</p>
+<h3>5.3 Analysis</h3>
+<p>What Factors Contribute to Gameplay? We now analyze various components and design choices made in CALM (GPT-2). First, we investigate how much of the model's performance is due to pre-training on text corpora as opposed to training on our ClubFloyd data. Then, we vary the number of actions $(k)$ generated by the model. We also consider combing CALM with a random agent instead of RL. This leads us to the following variants:</p>
+<ol>
+<li>CALM (X\%): These variants are trained with only $\mathrm{X} \%$ of the transcripts from ClubFloyd. $X=0$ is equivalent to using a pre-trained GPT-</li>
+</ol>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 5: Difference in normalized scores achieved by CALM (GPT-2) and NAIL, in decreasing order.</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 6: Final scores (blue) and maximum scores (normalized) seen during exploration (red) for CALM (GPT-2). There is a lot of potential for developing better algorithms to learn from high-scoring trajectories.</p>
+<p>2 model off-the-shelf – we find that this fails to produce actions that are even parseable by the game engine and therefore is not reported in the table.</p>
+<ol>
+<li>
+<p><strong>CALM (w/ Jericho)</strong>: This variant is trained on additional ClubFloyd data that includes 8 scripts from games contained in Jericho.</p>
+</li>
+<li>
+<p><strong>CALM (w/o PT)</strong>: This is a randomly initialized GPT-2 model, instead of a pre-trained one, trained on ClubFloyd data. We train this model for 10 epochs until the validation loss converges, unlike previous models which we train for 3 epochs.</p>
+</li>
+<li>
+<p><strong>CALM (k = Y)</strong>: This is a model variant that produces action sets of size Y.</p>
+</li>
+<li>
+<p><strong>CALM (random agent)</strong>: This model variant replaces DRRN by a random agent that samples uniformly from CALM top-30 actions at each state.</p>
+</li>
+</ol>
+<p>As shown in Table 3, the significant drop in score for CALM without pretraining shows that both pre-training and ClubFloyd training are important for gameplay performance. Pre-training provides general linguistic priors that regularize action generation while the ClubFloyd data conditions the model towards generating actions useful in text-based games.</p>
+<p>Adding heldout transcripts from Jericho evaluation games (CALM w/ Jericho) provides additional benefit as expected, even surpassing handicap-assisted KG-A2C in terms of the average normalized score. Counter-intuitively, we find that the greatest performance gains aren't on games featured in the heldout transcripts. See supplementary material for more details.</p>
+<p>For the models with different k values, CALM (k = 10) is much worse than other choices, but similar to CALM (n-gram) in Table 2. Note that in Figure 4 the recall of admissible actions is similar between GPT-2 and n-gram when k ≤ 10. We believe it is because top-10 GPT-2 actions are usually simple actions that occur a lot in ClubFloyd (e.g. 'east', 'get object'), which is also what n-gram can capture. It is really the complex actions captured when k &gt; 10 that makes GPT-2 much better than n-gram. On the other hand, though k = 20, 30, 40 achieve similar overall performance, they achieve different results for different games. So potentially the CALM overall performance can be further improved by choosing different k for different games. Finally, CALM (random agent) performs a poor score of 1.8%, and clearly shows the importance of combining CALM with an RL agent to adaptively choose actions.</p>
+<p><strong>Is CALM limiting RL?</strong> A natural question to ask is whether reducing the action space using CALM results in missing key actions that may have led to higher scores in the games. To answer this, we also plot the maximum scores seen by our CALM (GPT-2) agent during RL in Figure 6. Some games (e.g. 905, ACORNCOURT) are intrinsically hard to achieve any score. However, on other games with non-zero scores, DRRN is</p>
+<p>unable to stably converge to the maximum score seen in RL exploration. If RL can fully exploit and learn from the trajectories experienced under the CALM action space for each game, the average normalized score would be $14.7 \%$, higher than any model in Table 2, both with and without handicaps.</p>
+<h2>6 Conclusion</h2>
+<p>In this paper, we proposed the Contextual Action Language Model (CALM), a language model approach to generating action candidates for reinforcement learning agents in text-based games. Our key insight is to use language models to capture linguistic priors and game sense from humans gameplay on a diverse set of games. We demonstrated that CALM can generate high-quality, contextuallyrelevant actions even for games unseen in its training set, and when paired with a DRRN agent, outperforms previous approaches on the Jericho benchmark (Hausknecht et al., 2019a) by as much as $69 \%$ in terms of average normalized score. Remarkably, on many of these games, our approach is competitive even with models that use ground truth admissible actions, implying that CALM is able to generate high-quality actions across diverse games and contexts.</p>
+<p>From the results in Table 2, it is safe to conclude that text-based games are still far from being solved. Even with access to ground truth admissible actions, sparse rewards and partial observability pose daunting challenges for current agents. In the future, we believe that strong linguistic priors will continue to be a key ingredient for building nextlevel learning agents in these games. By releasing our dataset and code we hope to provide a solid foundation to accelerate work in this direction.</p>
+<h2>Acknowledgement</h2>
+<p>Gracious thanks to Jacqeline Ashwell for running ClubFloyd and agreeing to our use of the collected transcripts. We thank Danqi Chen, Jimmy Yang, Jens Tuyls, and other colleagues from Princeton NLP group for proofreading and discussion. We also thank reviewers for constructive feedbacks. This research was partially funded by the Center for Statistics and Machine Learning at Princeton University through support from Microsoft.</p>
+<h2>References</h2>
+<p>Prithviraj Ammanabrolu, William Broniec, Alex Mueller, Jeremy Paul, and Mark O Riedl. 2019. Toward automated quest generation in text-adventure games. arXiv preprint arXiv:1909.06283.</p>
+<p>Prithviraj Ammanabrolu and Matthew Hausknecht. 2020. Graph constrained reinforcement learning for natural language action spaces. arXiv preprint arXiv:2001.08837.</p>
+<p>Prithviraj Ammanabrolu and Mark Riedl. 2019. Playing text-adventure games with graph-based deep reinforcement learning. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pages 3557-3565.</p>
+<p>Hongshen Chen, Xiaorui Liu, Dawei Yin, and Jiliang Tang. 2017. A survey on dialogue systems: Recent advances and new frontiers. Acm Sigkdd Explorations Newsletter, 19(2):25-35.</p>
+<p>Kyunghyun Cho, Bart van Merriënboer, Dzmitry Bahdanau, and Yoshua Bengio. 2014. On the properties of neural machine translation: Encoder-decoder approaches. In Proceedings of SSST-8, Eighth Workshop on Syntax, Semantics and Structure in Statistical Translation, pages 103-111, Doha, Qatar. Association for Computational Linguistics.</p>
+<p>Marc-Alexandre Côté, Ákos Kádár, Xingdi Yuan, Ben Kybartas, Tavian Barnes, Emery Fine, James Moore, Matthew Hausknecht, Layla El Asri, Mahmoud Adada, et al. 2018. Textworld: A learning environment for text-based games. In Workshop on Computer Games, pages 41-75. Springer.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2018. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.</p>
+<p>Nancy Fulda, Daniel Ricks, Ben Murdoch, and David Wingate. 2017. What can you do with a rock? affordance extraction via word embeddings. CoRR, abs/1703.03429.</p>
+<p>Matthew Hausknecht, Prithviraj Ammanabrolu, MarcAlexandre Côté, and Xingdi Yuan. 2019a. Interactive fiction games: A colossal adventure. CoRR, abs/1909.05398.</p>
+<p>Matthew Hausknecht, Ricky Loynd, Greg Yang, Adith Swaminathan, and Jason D Williams. 2019b. Nail: A general interactive fiction agent. arXiv preprint arXiv:1902.04259.</p>
+<p>Ji He, Jianshu Chen, Xiaodong He, Jianfeng Gao, Lihong Li, Li Deng, and Mari Ostendorf. 2015. Deep reinforcement learning with a natural language action space. arXiv preprint arXiv:1511.04636.</p>
+<p>Vishal Jain, William Fedus, Hugo Larochelle, Doina Precup, and Marc G. Bellemare. 2019. Algorithmic improvements for deep reinforcement learning applied to interactive fiction. CoRR, abs/1903.03094.</p>
+<p>Armand Joulin, Edouard Grave, Piotr Bojanowski, and Tomas Mikolov. 2017. Bag of tricks for efficient text classification. In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics: Volume 2, Short Papers, pages 427-431. Association for Computational Linguistics.</p>
+<p>Daniel Jurafsky and James H. Martin. 2009. Speech and Language Processing (2nd Edition). PrenticeHall, Inc., USA.</p>
+<p>Bartosz Kostka, Jaroslaw Kwiecien, Jakub Kowalski, and Pawel Rychlikowski. 2017. Text-based adventures of the golovin AI agent. CoRR, abs/1705.05637.</p>
+<p>Angeliki Lazaridou, Anna Potapenko, and Olivier Tieleman. 2020. Multi-agent communication meets natural language: Synergies between functional and structural language learning. arXiv preprint arXiv:2005.07064.</p>
+<p>Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S Corrado, and Jeff Dean. 2013. Distributed representations of words and phrases and their compositionality. In C. J. C. Burges, L. Bottou, M. Welling, Z. Ghahramani, and K. Q. Weinberger, editors, Advances in Neural Information Processing Systems 26, pages 3111-3119. Curran Associates, Inc.</p>
+<p>Karthik Narasimhan, Tejas D. Kulkarni, and Regina Barzilay. 2015. Language understanding for textbased games using deep reinforcement learning. In EMNLP, pages 1-11.</p>
+<p>Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. 2019. Language models are unsupervised multitask learners. OpenAI Blog, 1(8):9.</p>
+<p>Yiping Song, Rui Yan, Xiang Li, Dongyan Zhao, and Ming Zhang. 2016. Two are better than one: An ensemble of retrieval-and generation-based dialog systems. arXiv preprint arXiv:1610.07149.</p>
+<p>Ilya Sutskever, Oriol Vinyals, and Quoc V Le. 2014. Sequence to sequence learning with neural networks. In Advances in neural information processing systems, pages 3104-3112.</p>
+<p>Ruo Yu Tao, Marc-Alexandre Côté, Xingdi Yuan, and Layla El Asri. 2018. Towards solving text-based games by producing adaptive action spaces. arXiv preprint arXiv:1812.00855.</p>
+<p>Jack Urbanek, Angela Fan, Siddharth Karamcheti, Saachi Jain, Samuel Humeau, Emily Dinan, Tim Rocktäschel, Douwe Kiela, Arthur Szlam, and Jason Weston. 2019. Learning to speak and act in a fantasy text adventure game. CoRR, abs/1903.03094.</p>
+<p>Nick Walton. 2019. Ai dungeon 2: Creating infinitely generated text adventures with deep learning language models.</p>
+<p>Jason D. Williams, Kavosh Asadi, and Geoffrey Zweig. 2017. Hybrid code networks: practical and efficient end-to-end dialog control with supervised and reinforcement learning. In Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 665677, Vancouver, Canada. Association for Computational Linguistics.</p>
+<p>Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, R'emi Louf, Morgan Funtowicz, and Jamie Brew. 2019. Huggingface's transformers: State-of-the-art natural language processing. ArXiv, abs/1910.03771.</p>
+<p>Tom Zahavy, Matan Haroush, Nadav Merlis, Daniel J Mankowitz, and Shie Mannor. 2018. Learn what not to learn: Action elimination with deep reinforcement learning. In S. Bengio, H. Wallach, H. Larochelle, K. Grauman, N. Cesa-Bianchi, and R. Garnett, editors, Advances in Neural Information Processing Systems 31, pages 3562-3573. Curran Associates, Inc.</p>
+<p>Tiancheng Zhao and Maxine Eskenazi. 2016. Towards end-to-end learning for dialog state tracking and management using deep reinforcement learning. In Proceedings of the 17th Annual Meeting of the Special Interest Group on Discourse and Dialogue, pages 1-10, Los Angeles. Association for Computational Linguistics.</p>
+<h2>A ClubFloyd Dataset</h2>
+<p>The ClubFloyd transcripts we collected are gameplay logs generated by a group of people that regularly meet to play interactive fiction games. The participants are experienced at playing text-based games, however they may not be familiar with the game that's being played, and do make several mistakes. We include a snippet of a transcript in Figure 7. We crawled the ClubFloyd website to acquire 426 transcripts, spanning over 500 games.</p>
+<p>To process a transcript, we clean the data and extract observations and actions. The data contains several sources of noise, which we remove: the first is non-game information such as chat logs between the humans playing the games; second are metaactions that humans use to save and load games and navigate menus; and finally, we remove typos, expand common abbreviations ("n" to "north", "x" to "examine", etc.), and filter out any actions that weren't recognized by the game parsers.</p>
+<p>Once we have our cleaned observations and actions, we group observations and actions into the</p>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 7: Selection from a raw ClubFloyd Transcript of the game 9:05</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[OBS] [That object is either not here or not important.] [ACTION] south [OBS]</span>
+<span class="na">You&#39;ll have to get out of the car first. [ACTION] pat car to reverse</span>
+<span class="k">[OBS] You&#39;ll have to get out of the car first. [ACTION] pat car to reverse [OBS]</span>
+<span class="na">[That object is either not here or not important.] [ACTION] drive</span>
+<span class="k">[OBS] [That object is either not here or not important.] [ACTION] drive [OBS]</span>
+<span class="na">(the car) Driving Ab, scenic Las Mesas. Man, this place is an absolute toilet. Soon</span>
+<span class="na">you&#39;ll be able to afford to get the hell out of here - provided you can avoid making</span>
+<span class="na">any more slip-ups on the job. As you cruise down the road, you notice a freeway</span>
+<span class="na">onramp approaching. Would you like to get on? &gt; &gt; [ACTION] yes</span>
+</code></pre></div>
+
+<p>Figure 8: Cleaned section of Figure 7
+form $\left(o_{j-1}, a_{j-1}, o_{j}\right), a_{j}$. For the very first observation and action, we pad the beginning of the example with the observation "You are at the start of your journey" and the action "begin journey".</p>
+<p>After this entire pre-processing, the dataset contains 223,527 examples.</p>
+<h2>B CALM Training</h2>
+<p>In this section, we will provide training details of CALM (GPT-2), CALM (n-gram), and their variants.</p>
+<h2>B. 1 CALM (GPT-2)</h2>
+<p>We first discuss the CALM (GPT-2) models, and begin with the portion of the ClubFloyd data that they are trained on. We begin with a 12-layer, 768 hidden, 12 -head, 117 M parameter pretrained OpenAI GPT-2 model.</p>
+<p>We note that the number of samples we train on, even in the CALM (GPT-2) model + Jericho games variant, is less than the total samples in the dataset. This is because we do not train on incomplete batches of data, and we omit samples that exceed 256 tokens.</p>
+<p>CALM (GPT-2) To train CALM (GPT-2), we take transcripts from ClubFloyd (excluding Jericho games) and order the samples based on the transcript number they came from. This yields a dataset of 193,588 samples. We select the first $90 \%$ of the samples as train data, and the last $10 \%$ of the samples as validation data.</p>
+<p>CALM (GPT-2) 50\%, 20\%, (+) Jericho To train the $50 \%$ and $20 \%$ variants, we select without replacement 212 transcripts ( 94,609 samples), and 85 transcripts ( 38,334 samples) respectively from the ClubFloyd transcripts (excluding Jericho games). We order the samples based on the transcript they come from, choose the first $90 \%$ of the data as our training data and last $10 \%$ as validation data.</p>
+<p>For the CALM (GPT-2) variant including Jericho games, we include every ClubFloyd transcript, we randomly order the transcripts, order the samples based on the order of the transcripts, and then we select the first $90 \%$ of the data as our training data, and the last $10 \%$ of the data as validation data. This split contains 206,286 samples.</p>
+<p>CALM (GPT-2) Random Initialization For the CALM (GPT-2) variant with random initialization, we begin with a GPT-2 model that has not been pretrained. We only use the transcripts in ClubFloyd that do not correspond to any Jericho game we test on. We randomly order the transcripts, and order the samples based on the order of the transcripts. We select the first $90 \%$ of the data as our training data, and the last $10 \%$ of the data as validation data.</p>
+<p>Parameter Optimization In order to train GPT2, we minimize the cross-entropy between GPT-2's distribution over actions and the action taken in the ClubFloyd example. We use Adam to optimize the weights of our model with learning rate $=2 \mathrm{e}-5$ and Adam epsilon $=1 \mathrm{e}-8$. For the learning rate we use a linear schedule with warmup. Finally, we clip gradients allowing a max gradient norm of 1 .</p>
+<p>We include the loss on the train and validation set, as well as the accuracy (defined as the percentage of examples on which the action assigned the</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Metric</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Main</td>
+<td style="text-align: center;">Train Loss</td>
+<td style="text-align: center;">0.32</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train Acc</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Loss</td>
+<td style="text-align: center;">2.14</td>
+<td style="text-align: center;">2.04</td>
+<td style="text-align: center;">1.98</td>
+<td style="text-align: center;">1.96</td>
+<td style="text-align: center;">1.96</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Acc</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">$50 \%$</td>
+<td style="text-align: center;">Train Loss</td>
+<td style="text-align: center;">0.66</td>
+<td style="text-align: center;">0.55</td>
+<td style="text-align: center;">0.49</td>
+<td style="text-align: center;">0.46</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train Acc</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Loss</td>
+<td style="text-align: center;">2.19</td>
+<td style="text-align: center;">2.09</td>
+<td style="text-align: center;">2.06</td>
+<td style="text-align: center;">2.04</td>
+<td style="text-align: center;">2.05</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Acc</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">$20 \%$</td>
+<td style="text-align: center;">Train Loss</td>
+<td style="text-align: center;">0.37</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.26</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train Acc</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Loss</td>
+<td style="text-align: center;">2.32</td>
+<td style="text-align: center;">2.17</td>
+<td style="text-align: center;">2.12</td>
+<td style="text-align: center;">2.09</td>
+<td style="text-align: center;">2.08</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Acc</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">Jericho</td>
+<td style="text-align: center;">Train Loss</td>
+<td style="text-align: center;">0.62</td>
+<td style="text-align: center;">0.53</td>
+<td style="text-align: center;">0.48</td>
+<td style="text-align: center;">0.45</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train Acc</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Loss</td>
+<td style="text-align: center;">2.10</td>
+<td style="text-align: center;">2.00</td>
+<td style="text-align: center;">1.97</td>
+<td style="text-align: center;">1.96</td>
+<td style="text-align: center;">1.98</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Acc</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">Random Init</td>
+<td style="text-align: center;">Train Loss</td>
+<td style="text-align: center;">0.36</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.23</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train Acc</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.15</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Loss</td>
+<td style="text-align: center;">4.96</td>
+<td style="text-align: center;">4.60</td>
+<td style="text-align: center;">4.35</td>
+<td style="text-align: center;">4.16</td>
+<td style="text-align: center;">4.01</td>
+<td style="text-align: center;">3.73</td>
+<td style="text-align: center;">3.73</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Val Acc</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.12</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Training Metrics for CALM Variants
+highest probability by GPT-2 was the ClubFloyd action) in Table 4.</p>
+<h2>B. 2 CALM (n-gram)</h2>
+<p>In order to train the CALM n-gram model, we consider the set of transcripts in ClubFloyd (excluding Jericho games). Next, we take the set of actions that appear in these transcripts, and train an n-gram model with Laplace $\alpha$ smoothing to model these sequences (Jurafsky and Martin, 2009). We order actions by the transcript they appear in and take the first $70 \%$ of the actions as train data and leave the remaining $30 \%$ as validation data. For each $n$, we choose alpha that minimizes perplexity per word on the validation data. We also tried a linear interpolation of these estimates (Jurafsky and Martin, 2009) although we did not observe an improvement over our bigram model. In this model, we estimate $p\left(a^{i} \mid a^{i-3}, a^{i-2}, a^{i-1}\right)=$ $w_{1} p^{<em>}\left(a^{i} \mid a^{i-3}, a^{i-2}, a^{i-1}\right)+w_{2} p^{</em>}\left(a^{i} \mid a^{i-2}, a^{i-1}\right)+$ $w_{3} p^{<em>}\left(a^{i} \mid a^{i-1}\right)+w_{4} p^{</em>}\left(a^{i}\right)$ where $\sum_{i} w_{i}=$ 1 , and $p^{*}$ indicates our m-gram estimate for $p\left(a^{i} \mid a^{i-m+1}, \ldots, a^{i-1}\right)$.</p>
+<h2>C Walkthrough Evaluation</h2>
+<p>In Figure 10, we provide a piece of walkthrough trajectory of Zork1, with GPT-2 and n-gram generated actions at each state. Note that n-gram actions are mostly limited to be no more than two tokens, while GPT-2 can generate more complex actions like "put sword in case".</p>
+<p>In Figure 9, we provide game-specific metric curves for Zork1 and Detective. On harder games like Zork1, there is significant gap between GPT-2 and n-gram, while easy games like Detective the gap is very small.</p>
+<h2>D Gameplay Evaluation</h2>
+<p>On Zork1, we provide learning curves for CALM (GPT-2) (Figure 11) and CALM (n-gram) (Figure 12). We also provide trail curves for CALM (GPT-2) on Zork3 (Figure 14), a game we are behind NAIL, and trails using different top- $k \in$ ${10,20,30,40}$ actions by CALM (GPT-2) on Zork1 (Figure 13).</p>
+<p>We provide per-game results for model variants in Table 5. It is interesting that CALM (w/ Jericho) is significantly better than CALM (GPT-2) on the games of Temple and Deephome (non-trivial scores achieved), which are not the games with ClubFloyd scripts added. On the other hand, games like 905 and moonlit have scripts added, but do not get improved.</p>
+<p>In the end, we append one example trajectory piece of DRRN + CALM (GPT-2) on Zork1 (Figure 15), where CALM generated action candidates and their Q-values are shown along with observations, actions and scores.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Game</th>
+<th style="text-align: center;">CALM (GPT-2)</th>
+<th style="text-align: center;">CALM (ngram)</th>
+<th style="text-align: center;">CALM (w/o PT)</th>
+<th style="text-align: center;">CALM (20\%)</th>
+<th style="text-align: center;">CALM (50\%)</th>
+<th style="text-align: center;">CALM (w/ Jericho)</th>
+<th style="text-align: center;">CALM (k=10)</th>
+<th style="text-align: center;">CALM (k=20)</th>
+<th style="text-align: center;">CALM (k=40)</th>
+<th style="text-align: center;">CALM (random agent)</th>
+<th style="text-align: center;">Max Score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">960</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">acroticone</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">adv7and</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">advent</td>
+<td style="text-align: center;">36.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">36.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">36.00</td>
+<td style="text-align: center;">350</td>
+</tr>
+<tr>
+<td style="text-align: center;">anchor</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">avokcn</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">balance</td>
+<td style="text-align: center;">9.13 ( $\pm 0.08$ )</td>
+<td style="text-align: center;">8.86 ( $\pm 0.04$ )</td>
+<td style="text-align: center;">6.00</td>
+<td style="text-align: center;">7.69</td>
+<td style="text-align: center;">9.43</td>
+<td style="text-align: center;">4.05 ( $\pm 0.15$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">9.17</td>
+<td style="text-align: center;">8.07</td>
+<td style="text-align: center;">1.70</td>
+<td style="text-align: center;">51</td>
+</tr>
+<tr>
+<td style="text-align: center;">dayphone</td>
+<td style="text-align: center;">1.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">1.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">6.95 ( $\pm 5.43$ )</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">1.05</td>
+<td style="text-align: center;">500</td>
+</tr>
+<tr>
+<td style="text-align: center;">detective</td>
+<td style="text-align: center;">289.71 ( $\pm 0.20$ )</td>
+<td style="text-align: center;">284.33 ( $\pm 11.04$ )</td>
+<td style="text-align: center;">288.21</td>
+<td style="text-align: center;">289.30</td>
+<td style="text-align: center;">289.38</td>
+<td style="text-align: center;">289.87 ( $\pm 0.11$ )</td>
+<td style="text-align: center;">289.73</td>
+<td style="text-align: center;">289.51</td>
+<td style="text-align: center;">290.04</td>
+<td style="text-align: center;">40.00</td>
+<td style="text-align: center;">500</td>
+</tr>
+<tr>
+<td style="text-align: center;">dragon</td>
+<td style="text-align: center;">0.13 ( $\pm 0.05$ )</td>
+<td style="text-align: center;">0.05 ( $\pm 0.03$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.19 ( $\pm 0.03$ )</td>
+<td style="text-align: center;">0.32</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">-0.19</td>
+<td style="text-align: center;">25</td>
+</tr>
+<tr>
+<td style="text-align: center;">exchange</td>
+<td style="text-align: center;">19.09 ( $\pm 0.59$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">19.92 ( $\pm 0.06$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">15.33</td>
+<td style="text-align: center;">20.89</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;">tebemase</td>
+<td style="text-align: center;">25.73 ( $\pm 2.93$ )</td>
+<td style="text-align: center;">1.72 ( $\pm 0.93$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">20.15</td>
+<td style="text-align: center;">22.38</td>
+<td style="text-align: center;">28.16 ( $\pm 3.32$ )</td>
+<td style="text-align: center;">8.38</td>
+<td style="text-align: center;">30.03</td>
+<td style="text-align: center;">21.73</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">86</td>
+</tr>
+<tr>
+<td style="text-align: center;">street</td>
+<td style="text-align: center;">9.27 ( $\pm 0.01$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.30 ( $\pm 0.05$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.46</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">90</td>
+</tr>
+<tr>
+<td style="text-align: center;">barn</td>
+<td style="text-align: center;">2.30 ( $\pm 0.05$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">3.19</td>
+<td style="text-align: center;">1.73</td>
+<td style="text-align: center;">2.19 ( $\pm 0.06$ )</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">2.63</td>
+<td style="text-align: center;">1.71</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">170</td>
+</tr>
+<tr>
+<td style="text-align: center;">library</td>
+<td style="text-align: center;">9.02 ( $\pm 5.07$ )</td>
+<td style="text-align: center;">5.07 ( $\pm 0.28$ )</td>
+<td style="text-align: center;">13.77</td>
+<td style="text-align: center;">12.31</td>
+<td style="text-align: center;">11.84</td>
+<td style="text-align: center;">12.47 ( $\pm 0.35$ )</td>
+<td style="text-align: center;">3.22</td>
+<td style="text-align: center;">10.40</td>
+<td style="text-align: center;">16.46</td>
+<td style="text-align: center;">1.74</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">ludicrou</td>
+<td style="text-align: center;">10.09 ( $\pm 0.60$ )</td>
+<td style="text-align: center;">3.44 ( $\pm 0.04$ )</td>
+<td style="text-align: center;">11.39</td>
+<td style="text-align: center;">11.40</td>
+<td style="text-align: center;">9.87</td>
+<td style="text-align: center;">10.64 ( $\pm 0.90$ )</td>
+<td style="text-align: center;">10.93</td>
+<td style="text-align: center;">11.72</td>
+<td style="text-align: center;">9.00</td>
+<td style="text-align: center;">6.72</td>
+<td style="text-align: center;">150</td>
+</tr>
+<tr>
+<td style="text-align: center;">moonlit</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">omnigace</td>
+<td style="text-align: center;">6.88 ( $\pm 0.10$ )</td>
+<td style="text-align: center;">4.33 ( $\pm 0.09$ )</td>
+<td style="text-align: center;">4.80</td>
+<td style="text-align: center;">7.08</td>
+<td style="text-align: center;">5.79</td>
+<td style="text-align: center;">6.87 ( $\pm 0.15$ )</td>
+<td style="text-align: center;">4.98</td>
+<td style="text-align: center;">6.20</td>
+<td style="text-align: center;">6.55</td>
+<td style="text-align: center;">3.10</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">pentaxi</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr>
+<td style="text-align: center;">muchtime</td>
+<td style="text-align: center;">19.40 ( $\pm 0.29$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">7.84</td>
+<td style="text-align: center;">31.75 ( $\pm 8.62$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">19.25</td>
+<td style="text-align: center;">20.14</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">motorize</td>
+<td style="text-align: center;">6.18 ( $\pm 1.80$ )</td>
+<td style="text-align: center;">5.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">5.00</td>
+<td style="text-align: center;">5.03</td>
+<td style="text-align: center;">5.73</td>
+<td style="text-align: center;">5.65( $\pm 1.45$ )</td>
+<td style="text-align: center;">11.57</td>
+<td style="text-align: center;">5.00</td>
+<td style="text-align: center;">5.00</td>
+<td style="text-align: center;">5.00</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;">spellbite</td>
+<td style="text-align: center;">39.99 ( $\pm 0.01$ )</td>
+<td style="text-align: center;">39.92 ( $\pm 0.03$ )</td>
+<td style="text-align: center;">39.94</td>
+<td style="text-align: center;">39.97</td>
+<td style="text-align: center;">39.86</td>
+<td style="text-align: center;">40.00 ( $\pm 0.06$ )</td>
+<td style="text-align: center;">40.00</td>
+<td style="text-align: center;">39.96</td>
+<td style="text-align: center;">40.00</td>
+<td style="text-align: center;">36.20</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;">spirit</td>
+<td style="text-align: center;">1.36 ( $\pm 0.03$ )</td>
+<td style="text-align: center;">0.64 ( $\pm 0.07$ )</td>
+<td style="text-align: center;">1.78</td>
+<td style="text-align: center;">1.23</td>
+<td style="text-align: center;">1.32</td>
+<td style="text-align: center;">1.23 ( $\pm 0.05$ )</td>
+<td style="text-align: center;">1.85</td>
+<td style="text-align: center;">1.51</td>
+<td style="text-align: center;">1.21</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">250</td>
+</tr>
+<tr>
+<td style="text-align: center;">nongle</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">3.52 ( $\pm 1.99$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">35</td>
+</tr>
+<tr>
+<td style="text-align: center;">zence</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">nook1</td>
+<td style="text-align: center;">20.39 ( $\pm 3.01$ )</td>
+<td style="text-align: center;">24.36 ( $\pm 0.52$ )</td>
+<td style="text-align: center;">11.20</td>
+<td style="text-align: center;">22.25</td>
+<td style="text-align: center;">27.44</td>
+<td style="text-align: center;">32.17 ( $\pm 6.39$ )</td>
+<td style="text-align: center;">12.78</td>
+<td style="text-align: center;">31.38</td>
+<td style="text-align: center;">29.1</td>
+<td style="text-align: center;">2.46</td>
+<td style="text-align: center;">200</td>
+</tr>
+<tr>
+<td style="text-align: center;">nook5</td>
+<td style="text-align: center;">0.53 ( $\pm 0.08$ )</td>
+<td style="text-align: center;">0.02 ( $\pm 0.01$ )</td>
+<td style="text-align: center;">0.85</td>
+<td style="text-align: center;">0.79</td>
+<td style="text-align: center;">0.34</td>
+<td style="text-align: center;">0.46 ( $\pm 0.06$ )</td>
+<td style="text-align: center;">0.97</td>
+<td style="text-align: center;">0.49</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr>
+<td style="text-align: center;">erax</td>
+<td style="text-align: center;">3.74 ( $\pm 0.30$ )</td>
+<td style="text-align: center;">0.00 ( $\pm 0.00$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">5.66</td>
+<td style="text-align: center;">4.65</td>
+<td style="text-align: center;">3.93 ( $\pm 0.07$ )</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1.71</td>
+<td style="text-align: center;">6.58</td>
+<td style="text-align: center;">0.55</td>
+<td style="text-align: center;">100</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Raw scores for variants of CALM (GPT-2) on each game. Games in bold are those with ClubFloyd scripts. Note that some scores are only based on one trial. CALM (GPT-2), CALM (ngram) and CALM (w/ Jericho) are based on five trails and the standard deviation is given.
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 9: Walkthrough evaluation for Zork1 and Detective.</p>
+<p>step 22
+state: [CLS] living room above the trophy case hangs an elvish sword of great antiquity. [SEP] get sword [SEP] taken. you are carrying: a sword a nasty knife a rope a brass lantern a clove of garlic a jewel-encrusted egg living room you are in the living room. there is a doorway to the east, a wooden door with strange gothic lettering to the west which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. [SEP]
+gpt2,acts: ['east', 'west', 'north', 'south', 'up', 'down', 'drop sword', 'open trophy case', 'open door', 'southeast', 'wait ', 'southwest', 'northwest', 'wear sword', 'northeast', 'out', 'take sword', 'knock on door', 'get statue', 'open trophy', 'get rug', 'close door', 'take rug', 'get all', 'get sword', 'open case', 'take all', 'put sword in case', get trophy', 'open gothic']
+ngram,acts: ['north', 'east', 'south', 'west', 'open door', 'examine door', 'take all', 'unlock door', 'get all', 'close door ', 'drop all', 'put all', 'tie rope', 'examine knife', 'take knife', 'examine case', 'examine sword', 'open case', ' examine rug', 'examine rope', 'examine west', 'take rope', 'take sword', 'examine lantern', 'put knife', 'pull rope', take lantern', 'examine egg', 'take rug', 'look under rug']
+valid,acts: ['east', 'open egg with lantern', 'throw rope at egg', 'throw egg at knife', 'throw sword at egg', 'throw garlic at egg', 'throw lantern at egg', 'throw knife at egg', 'throw knife at lantern', 'push rug', 'put down all', 'put down rope', 'put down egg', 'put down sword', 'put down garlic', 'put down lantern', 'put down knife', 'take on egg', 'open case', 'turn on lantern']
+gold,act: ['push rug']
+score: 15
+step 23
+state: [CLS] taken. [SEP] move rug [SEP] with a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door. you are carrying: a sword a nasty knife a rope a brass lantern a clove of garlic a jewel-encrusted egg living room you are in the living room. there is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a closed trap door at your feet. [SEP]
+gpt2,acts: ['east', 'west', 'open door', 'north', 'open trap door', 'south', 'open case', 'down', 'up', 'wait', 'open trap', 'pull rug', 'move cover', 'knock on door', 'southeast', 'push rug', 'search cover', 'open cover', 'out', 'close trap', 'southwest', 'move rug', 'enter trap', 'open gothic', 'drop sword', 'search rug', 'northwest', 'close trap door', 'take rug', 'take all']
+ngram,acts: ['north', 'east', 'south', 'west', 'open door', 'examine door', 'take all', 'unlock door', 'get all', 'close door ', 'drop all', 'put all', 'tie rope', 'examine knife', 'take knife', 'examine case', 'examine sword', 'open case', ' examine rug', 'examine rope', 'examine west', 'take rope', 'take sword', 'examine lantern', 'put knife', 'pull rope', take lantern', 'examine egg', 'take rug', 'look under rug']
+valid,acts: ['east', 'open egg with lantern', 'throw rope at egg', 'throw egg at knife', 'throw sword at egg', 'throw garlic at egg', 'throw lantern at egg', 'throw knife at egg', 'throw knife at lantern', 'put down all', 'put down rope', 'put down egg', 'put down sword', 'put down garlic', 'put down lantern', 'put down knife', 'take on egg', 'open trap', 'open case', 'turn on lantern']
+gold,act: ['open trap']
+score: 15
+step 24
+state: [CLS] with a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door. [SEP] open trapdoor [SEP] the door reluctantly opens to reveal a rickety staircase descending into darkness. you are carrying: a sword a nasty knife a rope a brass lantern a clove of garlic a jewel-encrusted egg living room you are in the living room. there is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a rug lying beside an open trap door. [SEP]
+gpt2,acts: ['east', 'west', 'down', 'up', 'north', 'south', 'open trophy case', 'wait', 'knock on door', 'take rug', ' southeast', 'enter trapdoor', 'out', 'drop sword', 'take rope', 'in', 'southwest', 'northeast', 'get rope', 'open case ', 'get rug', 'search rug', 'enter trap', 'climb rope', 'northeast', 'take sword', 'move rug', 'take all', 'put sword in trapdoor', 'close trapdoor']
+ngram,acts: ['north', 'east', 'south', 'west', 'open door', 'examine door', 'take all', 'unlock door', 'get all', 'close door ', 'drop all', 'put all', 'tie rope', 'examine knife', 'take knife', 'examine case', 'examine sword', 'open case', examine rope', 'examine west', 'take rope', 'take sword', 'examine lantern', 'put knife', 'pull rope', 'take lantern', 'examine egg', 'put sword', 'get sword', 'put egg']
+valid,acts: ['east', 'open egg with lantern', 'throw rope at egg', 'throw egg at knife', 'throw sword at egg', 'throw garlic at egg', 'throw lantern at egg', 'throw knife at egg', 'throw knife at lantern', 'put down all', 'put down rope', 'put down egg', 'put down sword', 'put down garlic', 'put down lantern', 'put down knife', 'close trap', 'take on egg', open case', 'turn on lantern', 'down']
+gold,act: ['down']
+score: 15
+step 25
+state: [CLS] the door reluctantly opens to reveal a rickety staircase descending into darkness. [SEP] down [SEP] you have moved into a dark place. the trap door crashes shut, and you hear someone barring it. it is pitch black. you are likely to be eaten by a grue. your sword is glowing with a faint blue glow. you are carrying: a sword a nasty knife a rope a brass lantern a clove of garlic a jewel-encrusted egg it is pitch black. you are likely to be eaten by a grue. [SEP]
+gpt2,acts: ['down', 'west', 'east', 'north', 'wait', 'south', 'up', 'open door', 'southeast', 'listen', 'southwest', 'out', ' northeast', 'open trap door', 'northwest', 'enter trap', 'drop sword', 'sleep', 'close door', 'knock on door', 'get rope', 'open trap', 'turn off lamp', 'sing', 'stand', 'take rope', 'forward', 'shout', 'pull rope', 'sound']
+ngram,acts: ['north', 'east', 'south', 'west', 'open door', 'examine door', 'take all', 'unlock door', 'get all', 'close door ', 'drop all', 'put all', 'tie rope', 'examine knife', 'take knife', 'examine case', 'examine sword', 'open case', examine rope', 'examine west', 'take rope', 'take sword', 'examine lantern', 'put knife', 'pull rope', 'take lantern', 'examine egg', 'put sword', 'get sword', 'put egg']
+valid,acts: ['south', 'north', 'open egg with lantern', 'throw rope at egg', 'throw egg at sword', 'throw garlic at egg', throw lantern at egg', 'throw knife at egg', 'throw sword at egg', 'throw sword at lantern', 'put down all', 'put down rope', 'put down egg', 'put down garlic', 'put down lantern', 'put down knife', 'put down sword', 'take on egg', 'turn on lantern', 'east']
+gold,act: ['turn on lantern']
+score: 40</p>
+<p>Figure 10: A piece of walkthrough evaluation in Zork1.</p>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 11: CALM (GPT-2) learning Zork1. Results show the five independent training runs.
+<img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 12: CALM (n-gram) learning Zork1. Results show the five independent training runs.</p>
+<p><img alt="img-9.jpeg" src="img-9.jpeg" /></p>
+<p>Figure 13: CALM (GPT-2) on Zork1 when decoding variable numbers of top- $k$ actions $(k=10,20,30,40)$.
+<img alt="img-10.jpeg" src="img-10.jpeg" /></p>
+<p>Figure 14: CALM (GPT-2) learning curves on Zork3.</p>
+<p>State 62235: [CLS] North of House You are facing the north side of a white house. There is no door here, and all the windows are boarded up. To the north a narrow path winds through the trees. [SEP] north [SEP] Forest Path This is a path winding through a dimly lit forest. The path heads north south here. One particularly large tree with some low branches stands at the edge of the path. You are empty handed. Forest Path This is a path winding through a dimly lit forest. The path heads north south here. One particularly large tree with some low branches stands at the edge of the path. [SEP]
+Actions62235: [‘climb tree’, ‘up’, ‘s’, ‘n’, ‘north’, ‘south’, ‘east’, ‘west’]
+Qvalues62235: [15.38, 15.29, 12.4, 12.34, 11.99, 11.73, 11.13, 10.57]
+$\Rightarrow$ Action62235: up
+Reward62235: 0, Score 0, Done False
+State 62236: [CLS] Forest Path This is a path winding through a dimly lit forest. The path heads north south here. One particularly large tree with some low branches stands at the edge of the path. [SEP] up [SEP] Up a Tree You are about 10 feet above the ground nestled among some large branches. The nearest branch above you is above your reach. Beside you on the branch is a small bird’s nest. In the bird’s nest is a large egg encrusted with precious jewels, apparently scavenged by a childless songbird. The egg is covered with fine gold inlay, and ornamented in lapis lazuli and mother of pearl. Unlike most eggs, this one is hinged and closed with a delicate looking clasp. The egg appears extremely fragile. You are empty handed. Up a Tree You are about 10 feet above the ground nestled among some large branches. The nearest branch above you is above your reach. Beside you on the branch is a small bird’s nest. In the bird’s nest is a large egg encrusted with precious jewels, apparently scavenged by a childless songbird. The egg is covered with fine gold inlay, and ornamented in lapis lazuli and mother of pearl. Unlike most eggs, this one is hinged and closed with a delicate looking clasp. The egg appears extremely fragile. [SEP]
+Actions62236: [‘get egg’, ‘take egg’, ‘eat egg’, ‘down’, ‘take all’, ‘get nest’, ‘take nest’]
+Qvalues62236: [17.03, 17.02, 16.99, 13.22, 11.75, 11.05, 10.68]
+$\Rightarrow$ Action62236: eat egg
+Reward62236: 5, Score 5, Done False
+State 62237: [CLS] Up a Tree You are about 10 feet above the ground nestled among some large branches. The nearest branch above you is above your reach. Beside you on the branch is a small bird’s nest. In the bird’s nest is a large egg encrusted with precious jewels, apparently scavenged by a childless songbird. The egg is covered with fine gold inlay, and ornamented in lapis lazuli and mother of pearl. Unlike most eggs, this one is hinged and closed with a delicate looking clasp. The egg appears extremely fragile. [SEP] eat egg [SEP] (Taken) I don’t think that the jewel encrusted egg would agree with you. You are carrying: A jewel encrusted egg. Up a Tree You are about 10 feet above the ground nestled among some large branches. The nearest branch above you is above your reach. Beside you on the branch is a small bird’s nest. [SEP]
+Actions62237: [‘down’, ‘jump’, ‘put egg in nest’, ‘drop egg’, ‘throw egg at nest’, ‘eat nest’, ‘get nest’, ‘take nest’]
+Qvalues62237: [12.93, 12.93, 11.49, 11.22, 11.1, 9.49, 9.41, 9.36]
+$\Rightarrow$ Action62237: down
+Reward62237: 0, Score 5, Done False
+State 62238: [CLS] (Taken) I don’t think that the jewel encrusted egg would agree with you. [SEP] down [SEP] Forest Path You are carrying: A jewel encrusted egg Forest Path This is a path winding through a dimly lit forest. The path heads north south here. One particularly large tree with some low branches stands at the edge of the path. [SEP]
+Actions62238: [‘south’, ‘climb tree’, ‘drop egg’, ‘drop all’, ‘up’, ‘throw egg at tree’, ‘east’, ‘north’, ‘west’]
+Qvalues62238: [14.26, 11.78, 11.46, 11.41, 11.03, 11.03, 10.85, 10.72, 10.5]
+$\Rightarrow$ Action62238: south
+Reward62238: 0, Score 5, Done False
+State 62239: [CLS] Forest Path [SEP] south [SEP] North of House You are carrying: A jewel encrusted egg North of House You are facing the north side of a white house. There is no door here, and all the windows are boarded up. To the north a narrow path winds through the trees. [SEP]
+Actions62239: [‘east’, ‘southeast’, ‘west’, ‘north’, ‘southwest’, ‘drop all’, ‘drop egg’]
+Qvalues62239: [15.96, 15.82, 12.94, 12.86, 12.68, 12.32, 12.26]
+$\Rightarrow$ Action62239: southeast
+Reward62239: 0, Score 5, Done False
+State 62240: [CLS] North of House [SEP] southeast [SEP] Behind House You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar. You are carrying: A jewel encrusted egg Behind House You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar. [SEP]
+Actions62240: [‘drop egg’, ‘drop all’, ‘northwest’, ‘north’, ‘open window’, ‘south’, ‘southwest’, ‘east’]
+Qvalues62240: [17.9, 17.89, 14.71, 14.5, 13.59, 13.51, 12.97, 12.8]
+$\Rightarrow$ Action62240: drop all
+Reward62240: 0, Score 5, Done False
+State 62241: [CLS] Behind House You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar. [SEP] drop all [SEP] jewel encrusted egg: Dropped. You are empty handed. Behind House You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar. There is a jewel encrusted egg here. [SEP]
+Actions62241: [‘open window’, ‘take it’, ‘get egg’, ‘get encrusted egg’, ‘eat egg’, ‘take egg’, ‘get it’, ‘take all’, ‘get all’, ‘north’, ‘northwest’, ‘south’, ‘east’, ‘southwest’]
+Qvalues62241: [19.91, 16.52, 16.44, 16.4, 16.26, 16.25, 14.9, 14.25, 14.03, 13.86, 13.17, 12.49, 12.45, 12.1]
+$\Rightarrow$ Action62241: open window
+Reward62241: 0, Score 5, Done False
+State 62242: [CLS] jewel encrusted egg: Dropped. [SEP] open window [SEP] With great effort, you open the window far enough to allow entry. You are empty handed. Behind House You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is open. There is a jewel encrusted egg here. [SEP]
+Actions62242: [‘west’, ‘in’, ‘enter window’, ‘north’, ‘northwest’, ‘east’, ‘eat egg’, ‘take egg’, ‘get egg’, ‘down’, ‘get all’, ‘south’, ‘southwest’, ‘up’]
+Qvalues62242: [22.42, 20.53, 18.46, 16.62, 15.93, 15.17, 14.3, 14.13, 14.1, 13.82, 13.74, 13.68, 13.56, 11.59]
+$\Rightarrow$ Action62242: west
+Reward62242: 10, Score 15, Done False
+State 62243: [CLS] With great effort, you open the window far enough to allow entry. [SEP] west [SEP] Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. On the table is an elongated brown sack, smelling of hot peppers. A bottle is sitting on the table. The glass bottle contains: A quantity of water You are empty handed. Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. On the table is an elongated brown sack, smelling of hot peppers. A bottle is sitting on the table. The glass bottle contains: A quantity of water [SEP]
+Actions62243: [‘open sack’, ‘eat sack’, ‘open bottle’, ‘take sack’, ‘get sack’, ‘out’, ‘enter window’, ‘east’, ‘west’, ‘get bottle’, ‘take bottle’, ‘take all’, ‘get all’, ‘up’]
+Qvalues62243: [13.74, 13.68, 12.38, 11.53, 11.4, 11.25, 11.13, 11.06, 10.36, 10.23, 10.15, 9.63, 9.61, 6.54]
+$\Rightarrow$ Action62243: open sack
+Reward62243: 0, Score 15, Done False</p>
+<p>State 62244: [CLS] Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. On the table is an elongated brown sack, smelling of hot peppers. A bottle is sitting on the table. The glass bottle contains: A quantity of water [SEP] open sack [SEP] Opening the brown sack reveals a lunch, and a clove of garlic. You are empty handed. Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. A bottle is sitting on the table. The glass bottle contains: A quantity of water There is a brown sack here. The brown sack contains: A lunch A clove of garlic [SEP]
+Actions62244: ['take sack', 'get sack', 'eat sack', 'take hug', 'take garlic', 'out', 'close sack', 'get garlic', 'take lunch ', 'take clove', 'eat garlic', 'east', 'west', 'take bottle', 'get all', 'take all', 'up']
+Qvalues62244: [15.32, 15.25, 15.23, 14.95, 12.16, 12.12, 11.9, 11.89, 11.84, 11.7, 11.66, 11.65, 11.18, 10.95, 10.44, 10.39, $9.46]$
+$&gt;&gt;$ Action62244: get sack
+Reward62244: 0, Score 15, Done False
+State 62245: [CLS] Opening the brown sack reveals a lunch, and a clove of garlic. [SEP] get sack [SEP] Taken. You are carrying: A brown sack The brown sack contains: A lunch A clove of garlic Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. A bottle is sitting on the table. The glass bottle contains: A quantity of water [SEP]
+Actions62245: ['get clove', 'take clove', 'get garlic', 'take garlic', 'west', 'put garlic on table', 'drop garlic', 'open bottle', 'put sack on table', 'get food', 'drop all', 'drop sack', 'out', 'east', 'get bottles', 'take bottle', 'get bottle', 'take glass', 'get all', 'up']
+Qvalues62245: [16.25, 16.19, 16.01, 15.94, 14.53, 14.18, 14.04, 13.83, 12.39, 11.77, 11.62, 11.56, 11.05, 10.86, 10.26, 10.21, 10.08, 9.4, 9.3, 7.84]
+$&gt;&gt;$ Action62245: take clove
+Reward62245: 0, Score 15, Done False
+State 62246: [CLS] Taken. [SEP] take clove [SEP] Taken. You are carrying: A clove of garlic A brown sack The brown sack contains: A lunch Kitchen You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open. A bottle is sitting on the table. The glass bottle contains : A quantity of water [SEP]
+Actions62246: ['west', 'open bottle', 'drop clove', 'put garlic on table', 'drop garlic', 'put clove on table', 'put clove in sack', 'put garlic in sack', 'east', 'out', 'take bottle', 'get bottle', 'get all', 'up', 'get glass', 'take glass']
+Qvalues62246: [17.59, 16.09, 14.8, 14.69, 14.66, 14.47, 13.37, 13.26, 12.45, 12.12, 11.82, 11.51, 10.67, 10.48, 10.48, 10.38] $&gt;&gt;$ Action62246: west
+Reward62246: 0, Score 15, Done False
+State 62247: [CLS] Taken. [SEP] west [SEP] Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. Above the trophy case hangs an elvish sword of great antiquity. A battery powered brass lantern is on the trophy case. You are carrying: A clove of garlic A brown sack The brown sack contains: A lunch Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. Above the trophy case hangs an elvish sword of great antiquity. A battery powered brass lantern is on the trophy case. [SEP]
+Actions62247: ['light lantern', 'get lantern', 'take lantern', 'turn off lantern', 'open case', 'open trophy case', 'turn on lantern', 'east', 'take all', 'get sword', 'get all', 'take sword', 'drop all']
+Qvalues62247: [20.04, 19.1, 18.96, 18.95, 18.35, 18.35, 17.76, 15.08, 14.41, 14.23, 14.12, 13.97, 12.25]
+$&gt;&gt;$ Action62247: light lantern
+Reward62247: 0, Score 15, Done False
+State 62248: [CLS] Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. Above the trophy case hangs an elvish sword of great antiquity. A battery powered brass lantern is on the trophy case. [SEP] light lantern [SEP] (Taken) The brass lantern is now on. You are carrying: A brass lantern (providing light) A clove of garlic A brown sack The brown sack contains: A lunch Living Room You are in the living room There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. Above the trophy case hangs an elvish sword of great antiquity. [SEP]
+Actions62248: ['take sword', 'get sword', 'turn off lantern', 'drop sack', 'drop all', 'drop lantern', 'east']
+Qvalues62248: [22.64, 22.46, 19.89, 17.26, 15.66, 15.57, 14.99]
+$&gt;&gt;$ Action62248: get sword
+Reward62248: 0, Score 15, Done False
+State 62249: [CLS] (Taken) The brass lantern is now on. [SEP] get sword [SEP] Taken. You are carrying: A sword A brass lantern (providing light) A clove of garlic A brown sack The brown sack contains: A lunch Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room. [SEP]
+Actions62249: ['move rug', 'drop sword', 'turn off lantern', 'east', 'put lantern in case', 'up']
+Qvalues62249: [25.33, 15.03, 15.93, 11.99, 11.17, 10.45]
+$&gt;&gt;$ Action62249: move rug
+Reward62249: 0, Score 15, Done False
+State 62250: [CLS] Taken. [SEP] move rug [SEP] With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door. You are carrying: A sword A brass lantern (providing light) A clove of garlic A brown sack The brown sack contains: A lunch Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a closed trap door at your feet. [SEP]
+Actions62250: ['open trap door', 'open trapdoor', 'open cover', 'drop lantern', 'east']
+Qvalues62250: [27.97, 27.94, 27.91, 21.05, 20.41]
+$&gt;&gt;$ Action62250: open cover
+Reward62250: 0, Score 15, Done False
+State 62251: [CLS] With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door. [SEP] open cover [SEP] The door reluctantly opens to reveal a tickety staircase descending into darkness. You are carrying: A sword A brass lantern (providing light) A clove of garlic A brown sack The brown sack contains : A lunch Living Room You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a rug lying beside an open trap door. [SEP] Actions62251: ['down', 'close trap door', 'east', 'drop sack', 'drop lantern', 'put sack in case']
+Qvalues62251: [30.88, 25.45, 22.21, 21.96, 20.7, 20.62]
+$&gt;&gt;$ Action62251: down
+Reward62251: 25, Score 40, Done False
+Figure 15: Last episode of game trajectory of DRRN + CALM (GPT-2) on Zork 1, from start until 40 is scored.</p>
+<p>Example 1: "You see the monster stumble from its cave. You are carrying a bow and three arrows"
+CALM (GPT-2) Top 10 Generated Actions: ['south',
+'hit monster with bow',
+'up',
+'shoot monster with bow',
+'down',
+'east',
+'west',
+'north',
+'kill monster',
+'shoot monster ']
+Example 2: "Tom looked concerned. The panel of levers and dials clearly was confusing him"
+CALM (GPT-2) Top 10 Generated Actions: ['south',
+'pull lever',
+'talk to tom',
+'open panel',
+'east',
+'west',
+'turn dials',
+'north',
+'push button',
+'pull levers']
+Example 3:"Your body feels cold as you plunge into the river"
+CALM (GPT-2) Top 10 Generated Actions: ['south',
+'wait',
+'up',
+'enter river',
+'down',
+'east',
+'west',
+'snim',
+'drink water',
+'north']</p>
+<p>Figure 16: Some handpicked example observations and top 10 action predictions for CALM (GPT-2). The top non-directional actions demonstrate some understanding of the objects present in the observations, and some commonsense actions involving those objects.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{\dagger}$ https://spacy.io/
+${ }^{\ddagger}$ http://www.allthingsjacq.com/
+interactive_fiction.html#clubfloyd&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametric-Contextual Competition Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-25</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-25</p>
+                <p><strong>Name:</strong> Parametric-Contextual Competition Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> </p>
+                <p><strong>Description:</strong> Language models maintain two competing sources of information when generating responses: parametric knowledge (learned during pretraining/finetuning and stored in weights) and contextual evidence (provided in the prompt). Rather than simply adding these sources, models engage in a competitive selection process where one source can suppress or override the other. The strength of each source depends on the model's internal confidence in its parametric knowledge (measured by token probability), the perceived plausibility of contextual evidence (measured by deviation from priors), and explicit prompt framing. When contextual evidence conflicts with strong parametric priors, models often exhibit 'parametric dominance' where they ignore or underweight the contextual evidence, effectively decreasing their reliance on the provided evidence as their internal confidence increases. This competition is modulated by model scale, with larger models showing both stronger parametric priors and better ability to selectively override them when appropriate.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Models maintain separate parametric and contextual information channels that compete rather than simply combine additively.</li>
+                <li>The probability of adopting contextual evidence P(adopt_context) is inversely proportional to the model's internal confidence in its parametric prior, approximately: P(adopt_context) ≈ P(adopt_context|low_prior_conf) - β * P(prior), where β ranges from 0.1 to 0.45.</li>
+                <li>The probability of adopting contextual evidence decreases as the deviation between context and prior increases: P(adopt_context) ∝ -α * |deviation(context, prior)|, where α > 0.</li>
+                <li>Larger models exhibit stronger parametric priors that are harder to override with contextual evidence, unless the models are specifically trained to attend to context.</li>
+                <li>Models exhibit 'selective deferral' where they preferentially use contextual evidence when their parametric confidence is low and ignore it when parametric confidence is high.</li>
+                <li>Prompt framing acts as a meta-parameter that modulates the relative weighting between parametric and contextual sources, with 'strict' framing increasing context adherence and 'loose' framing increasing parametric reliance.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Models often ignore up-to-date or contradictory context evidence and produce outputs consistent with outdated parametric knowledge, even when context explicitly contradicts their training-time knowledge. <a href="../results/extraction-result-192.html#e192.1" class="evidence-link">[e192.1]</a> </li>
+    <li>Higher token-probability (confidence) of a model's prior answer strongly reduces the probability the model will adopt contextual evidence, with slopes ranging from -0.1 to -0.45 across datasets. <a href="../results/extraction-result-194.html#e194.10" class="evidence-link">[e194.10]</a> </li>
+    <li>The more contextual evidence deviates from truth or model prior, the less likely the model is to adopt that context, showing a negatively correlated relationship. <a href="../results/extraction-result-194.html#e194.9" class="evidence-link">[e194.9]</a> </li>
+    <li>Generative T5 readers frequently ignore contradictory contextual evidence and revert to memorized answers, especially for larger models and when trained with imperfect retrieval. <a href="../results/extraction-result-202.html#e202.0" class="evidence-link">[e202.0]</a> </li>
+    <li>When presented with corpus-substituted passages, models predicted the substitute answer less than 50% of the time on many sets and were less confident on substituted inputs. <a href="../results/extraction-result-202.html#e202.3" class="evidence-link">[e202.3]</a> </li>
+    <li>GPT-3 exhibits substantial context bias (30.4%) where it frequently adopts incorrect retrieved facts when prior is correct, but also shows prior bias where it ignores correct context. <a href="../results/extraction-result-194.html#e194.0" class="evidence-link">[e194.0]</a> </li>
+    <li>Despite context asserting updated facts, models still predicted outdated answers based on parametric knowledge. <a href="../results/extraction-result-192.html#e192.1" class="evidence-link">[e192.1]</a> </li>
+    <li>Small changes in prompt wording (strict vs loose instructions) significantly alter how readily LLMs follow context vs prior knowledge. <a href="../results/extraction-result-194.html#e194.8" class="evidence-link">[e194.8]</a> </li>
+    <li>Models use internal token-probability confidence to implicitly weigh external evidence, with more deferral when internal confidence is low. <a href="../results/extraction-result-194.html#e194.10" class="evidence-link">[e194.10]</a> </li>
+    <li>Providing explicit disambiguating evidence substantially raises accuracy but models still show up to 3.4 percentage point drops when correct answer contradicts social bias. <a href="../results/extraction-result-197.html#e197.0" class="evidence-link">[e197.0]</a> </li>
+    <li>FiD disproportionately relies on a few top-ranked passages by attention, with keeping only top-3 unperturbed passages resulting in ~70% original answer prediction. <a href="../results/extraction-result-195.html#e195.2" class="evidence-link">[e195.2]</a> </li>
+    <li>Memorization Ratio measures model overreliance on parametric knowledge, with values up to 29.5% before mitigation and correlating positively with model size. <a href="../results/extraction-result-202.html#e202.2" class="evidence-link">[e202.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For any given model, there exists a critical token-probability threshold θ_c such that when P(prior) > θ_c, the model will ignore contradictory contextual evidence more than 70% of the time.</li>
+                <li>Training models with mixed parametric-contextual conflict examples will reduce the slope β in the P(adopt_context) relationship, making models more responsive to contextual evidence across all confidence levels.</li>
+                <li>Explicitly showing models their own token probabilities for prior answers in the prompt will allow them to better calibrate when to trust context vs prior.</li>
+                <li>Models fine-tuned on tasks requiring context-following will show reduced parametric dominance even on out-of-domain tasks.</li>
+                <li>Providing multiple diverse pieces of contextual evidence that agree will overcome parametric dominance more effectively than a single piece of evidence, even when that single piece is highly relevant.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exist 'critical deviation points' where small increases in context-prior deviation cause sudden drops in context adoption (phase transitions in the competition).</li>
+                <li>Whether the parametric-contextual competition can be directly observed in model activations, with distinct neural populations encoding each source.</li>
+                <li>Whether models can be trained to explicitly output their confidence in parametric vs contextual sources, enabling interpretable source attribution.</li>
+                <li>Whether the competition mechanism is fundamentally the same across different model architectures (decoder-only vs encoder-decoder) or whether architecture affects the balance.</li>
+                <li>Whether providing explicit 'source reliability' signals in prompts can override the implicit competition mechanism.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding cases where increasing model confidence in parametric priors actually increases (rather than decreases) adoption of contradictory contextual evidence would challenge the inverse relationship.</li>
+                <li>Demonstrating that models with no parametric knowledge of a domain still show 'context resistance' when given evidence would challenge the parametric-contextual competition framework.</li>
+                <li>Showing that the relationship between prior confidence and context adoption is not monotonic (e.g., very high confidence leads to more context adoption) would challenge the theory.</li>
+                <li>Finding that prompt framing has no effect on the parametric-contextual balance would challenge the meta-parameter aspect of the theory.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Why some models (like Claude Opus) show much lower context bias than others despite similar scale. <a href="../results/extraction-result-194.html#e194.3" class="evidence-link">[e194.3]</a> </li>
+    <li>The specific mechanism by which prompt framing modulates the competition (what neural computations implement this meta-control). <a href="../results/extraction-result-194.html#e194.8" class="evidence-link">[e194.8]</a> </li>
+    <li>Why RoBERTa-Base shows unexpected bias toward UNKNOWN selections that differs from the general pattern. <a href="../results/extraction-result-197.html#e197.2" class="evidence-link">[e197.2]</a> </li>
+    <li>The exact threshold or functional form of how deviation magnitude affects context adoption across different domains. <a href="../results/extraction-result-194.html#e194.9" class="evidence-link">[e194.9]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Longpre et al. (2021) Entity-Based Knowledge Conflicts in Question Answering [Introduces concept of knowledge conflicts and memorization ratio, but doesn't formalize the competition mechanism]</li>
+    <li>Shi et al. (2023) Trusting Your Evidence: Hallucinate Less with Context-aware Decoding [Proposes CAD method to address prior dominance, but doesn't provide unified theory of competition]</li>
+    <li>Tan et al. (2024) ClashEval: Quantifying the tug-of-war between an LLM's internal prior and external evidence [Empirically demonstrates the 'tug-of-war' and quantifies relationships, providing key evidence for but not formalizing this theory]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Parametric-Contextual Competition Theory",
+    "theory_description": "Language models maintain two competing sources of information when generating responses: parametric knowledge (learned during pretraining/finetuning and stored in weights) and contextual evidence (provided in the prompt). Rather than simply adding these sources, models engage in a competitive selection process where one source can suppress or override the other. The strength of each source depends on the model's internal confidence in its parametric knowledge (measured by token probability), the perceived plausibility of contextual evidence (measured by deviation from priors), and explicit prompt framing. When contextual evidence conflicts with strong parametric priors, models often exhibit 'parametric dominance' where they ignore or underweight the contextual evidence, effectively decreasing their reliance on the provided evidence as their internal confidence increases. This competition is modulated by model scale, with larger models showing both stronger parametric priors and better ability to selectively override them when appropriate.",
+    "supporting_evidence": [
+        {
+            "text": "Models often ignore up-to-date or contradictory context evidence and produce outputs consistent with outdated parametric knowledge, even when context explicitly contradicts their training-time knowledge.",
+            "uuids": [
+                "e192.1"
+            ]
+        },
+        {
+            "text": "Higher token-probability (confidence) of a model's prior answer strongly reduces the probability the model will adopt contextual evidence, with slopes ranging from -0.1 to -0.45 across datasets.",
+            "uuids": [
+                "e194.10"
+            ]
+        },
+        {
+            "text": "The more contextual evidence deviates from truth or model prior, the less likely the model is to adopt that context, showing a negatively correlated relationship.",
+            "uuids": [
+                "e194.9"
+            ]
+        },
+        {
+            "text": "Generative T5 readers frequently ignore contradictory contextual evidence and revert to memorized answers, especially for larger models and when trained with imperfect retrieval.",
+            "uuids": [
+                "e202.0"
+            ]
+        },
+        {
+            "text": "When presented with corpus-substituted passages, models predicted the substitute answer less than 50% of the time on many sets and were less confident on substituted inputs.",
+            "uuids": [
+                "e202.3"
+            ]
+        },
+        {
+            "text": "GPT-3 exhibits substantial context bias (30.4%) where it frequently adopts incorrect retrieved facts when prior is correct, but also shows prior bias where it ignores correct context.",
+            "uuids": [
+                "e194.0"
+            ]
+        },
+        {
+            "text": "Despite context asserting updated facts, models still predicted outdated answers based on parametric knowledge.",
+            "uuids": [
+                "e192.1"
+            ]
+        },
+        {
+            "text": "Small changes in prompt wording (strict vs loose instructions) significantly alter how readily LLMs follow context vs prior knowledge.",
+            "uuids": [
+                "e194.8"
+            ]
+        },
+        {
+            "text": "Models use internal token-probability confidence to implicitly weigh external evidence, with more deferral when internal confidence is low.",
+            "uuids": [
+                "e194.10"
+            ]
+        },
+        {
+            "text": "Providing explicit disambiguating evidence substantially raises accuracy but models still show up to 3.4 percentage point drops when correct answer contradicts social bias.",
+            "uuids": [
+                "e197.0"
+            ]
+        },
+        {
+            "text": "FiD disproportionately relies on a few top-ranked passages by attention, with keeping only top-3 unperturbed passages resulting in ~70% original answer prediction.",
+            "uuids": [
+                "e195.2"
+            ]
+        },
+        {
+            "text": "Memorization Ratio measures model overreliance on parametric knowledge, with values up to 29.5% before mitigation and correlating positively with model size.",
+            "uuids": [
+                "e202.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Models maintain separate parametric and contextual information channels that compete rather than simply combine additively.",
+        "The probability of adopting contextual evidence P(adopt_context) is inversely proportional to the model's internal confidence in its parametric prior, approximately: P(adopt_context) ≈ P(adopt_context|low_prior_conf) - β * P(prior), where β ranges from 0.1 to 0.45.",
+        "The probability of adopting contextual evidence decreases as the deviation between context and prior increases: P(adopt_context) ∝ -α * |deviation(context, prior)|, where α &gt; 0.",
+        "Larger models exhibit stronger parametric priors that are harder to override with contextual evidence, unless the models are specifically trained to attend to context.",
+        "Models exhibit 'selective deferral' where they preferentially use contextual evidence when their parametric confidence is low and ignore it when parametric confidence is high.",
+        "Prompt framing acts as a meta-parameter that modulates the relative weighting between parametric and contextual sources, with 'strict' framing increasing context adherence and 'loose' framing increasing parametric reliance."
+    ],
+    "new_predictions_likely": [
+        "For any given model, there exists a critical token-probability threshold θ_c such that when P(prior) &gt; θ_c, the model will ignore contradictory contextual evidence more than 70% of the time.",
+        "Training models with mixed parametric-contextual conflict examples will reduce the slope β in the P(adopt_context) relationship, making models more responsive to contextual evidence across all confidence levels.",
+        "Explicitly showing models their own token probabilities for prior answers in the prompt will allow them to better calibrate when to trust context vs prior.",
+        "Models fine-tuned on tasks requiring context-following will show reduced parametric dominance even on out-of-domain tasks.",
+        "Providing multiple diverse pieces of contextual evidence that agree will overcome parametric dominance more effectively than a single piece of evidence, even when that single piece is highly relevant."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exist 'critical deviation points' where small increases in context-prior deviation cause sudden drops in context adoption (phase transitions in the competition).",
+        "Whether the parametric-contextual competition can be directly observed in model activations, with distinct neural populations encoding each source.",
+        "Whether models can be trained to explicitly output their confidence in parametric vs contextual sources, enabling interpretable source attribution.",
+        "Whether the competition mechanism is fundamentally the same across different model architectures (decoder-only vs encoder-decoder) or whether architecture affects the balance.",
+        "Whether providing explicit 'source reliability' signals in prompts can override the implicit competition mechanism."
+    ],
+    "negative_experiments": [
+        "Finding cases where increasing model confidence in parametric priors actually increases (rather than decreases) adoption of contradictory contextual evidence would challenge the inverse relationship.",
+        "Demonstrating that models with no parametric knowledge of a domain still show 'context resistance' when given evidence would challenge the parametric-contextual competition framework.",
+        "Showing that the relationship between prior confidence and context adoption is not monotonic (e.g., very high confidence leads to more context adoption) would challenge the theory.",
+        "Finding that prompt framing has no effect on the parametric-contextual balance would challenge the meta-parameter aspect of the theory."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Why some models (like Claude Opus) show much lower context bias than others despite similar scale.",
+            "uuids": [
+                "e194.3"
+            ]
+        },
+        {
+            "text": "The specific mechanism by which prompt framing modulates the competition (what neural computations implement this meta-control).",
+            "uuids": [
+                "e194.8"
+            ]
+        },
+        {
+            "text": "Why RoBERTa-Base shows unexpected bias toward UNKNOWN selections that differs from the general pattern.",
+            "uuids": [
+                "e197.2"
+            ]
+        },
+        {
+            "text": "The exact threshold or functional form of how deviation magnitude affects context adoption across different domains.",
+            "uuids": [
+                "e194.9"
+            ]
+        }
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Longpre et al. (2021) Entity-Based Knowledge Conflicts in Question Answering [Introduces concept of knowledge conflicts and memorization ratio, but doesn't formalize the competition mechanism]",
+            "Shi et al. (2023) Trusting Your Evidence: Hallucinate Less with Context-aware Decoding [Proposes CAD method to address prior dominance, but doesn't provide unified theory of competition]",
+            "Tan et al. (2024) ClashEval: Quantifying the tug-of-war between an LLM's internal prior and external evidence [Empirically demonstrates the 'tug-of-war' and quantifies relationships, providing key evidence for but not formalizing this theory]"
+        ]
+    },
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

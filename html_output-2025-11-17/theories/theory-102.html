@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Prompt-Based Belief Augmentation Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-102</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-102</p>
+                <p><strong>Name:</strong> LLM Prompt-Based Belief Augmentation Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how agents perform planning with external tools in partially observable text environments, including belief-state updates that incorporate tool outputs and guide shortest-path actions, based on the following results.</p>
+                <p><strong>Description:</strong> Large language models used as planning agents in partially observable text environments can overcome memory limitations and improve long-horizon performance through explicit textual belief-state augmentation in prompts. The effectiveness depends on: (1) the structure and conciseness of the belief representation (compact summaries outperform full trajectory replay), (2) the agent's ability to update beliefs based on observations and tool outputs, (3) the alignment between belief format and task requirements, and (4) the trade-off between prompt length constraints and belief completeness. This approach is most beneficial when tasks require long-horizon memory beyond the LLM's effective context window, when state information is distributed across multiple observations, or when tool outputs must be tracked over time. The mechanism works by maintaining a persistent textual summary that is updated at each step and provided as context for action selection.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Explicit textual belief-state summaries in LLM prompts significantly improve performance in partially observable environments by providing persistent memory beyond the model's effective context window (typically improving task completion by 50-130% and reducing invalid actions by 50%).</li>
+                <li>Compact, structured belief representations (templates with 5-10 key fields, tips, or recent K-step histories) are more effective than verbose full-trajectory histories due to prompt length constraints, with optimal K typically between 2-10 depending on task complexity.</li>
+                <li>Belief updates can be performed by: (1) the LLM itself via prompted generation, (2) rule-based external modules that format updates, or (3) hybrid approaches; LLM-generated updates provide flexibility but may introduce inconsistencies, while rule-based updates ensure consistency but lack adaptability.</li>
+                <li>The effectiveness of prompt-based belief is limited by: (1) the LLM's ability to maintain consistency across updates, (2) retrieval of relevant information from long prompts (attention degradation), and (3) the alignment between belief structure and task requirements.</li>
+                <li>Trade-offs exist between belief completeness (more information) and prompt efficiency (staying within context limits); optimal balance depends on task horizon, state complexity, and LLM context window size, with diminishing returns beyond certain belief sizes.</li>
+                <li>Prompt-based belief is most beneficial when: (1) task horizon exceeds LLM's effective memory span, (2) critical information is distributed across non-consecutive observations, (3) tool outputs must be tracked over time, or (4) coordination requires maintaining models of other agents' knowledge.</li>
+                <li>Different belief formats are optimal for different task types: key-value templates for structured state tracking, narrative summaries for spatial/temporal reasoning, and procedural code for algorithmic tasks.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>GPT-4 with explicit textual belief state achieves 86.1% valid action rate and 12.3 rounds to completion vs 71.8% valid actions and 28.3 rounds without belief, demonstrating 50.7% reduction in invalid actions and 130% efficiency improvement <a href="../results/extraction-result-773.html#e773.0" class="evidence-link">[e773.0]</a> <a href="../results/extraction-result-773.html#e773.1" class="evidence-link">[e773.1]</a> </li>
+    <li>LLM-Tips using concise introspective tips achieves >0.9 success rate and >0.95 normalized points, outperforming pure replay which underperforms due to context limits <a href="../results/extraction-result-802.html#e802.0" class="evidence-link">[e802.0]</a> </li>
+    <li>ReAct interleaving reasoning traces with actions outperforms Inner Monologue (observation-only feedback) in ALFWorld, showing value of structured reasoning in belief <a href="../results/extraction-result-889.html#e889.2" class="evidence-link">[e889.2]</a> </li>
+    <li>Inner Monologue using textual feedback integration (success detectors, scene descriptors) enables closed-loop replanning and improves recovery from failures <a href="../results/extraction-result-875.html#e875.0" class="evidence-link">[e875.0]</a> <a href="../results/extraction-result-875.html#e875.1" class="evidence-link">[e875.1]</a> <a href="../results/extraction-result-875.html#e875.3" class="evidence-link">[e875.3]</a> </li>
+    <li>Translated LM with autoregressive trajectory correction (appending selected admissible actions to prompt) improves executability from 7-18% to 73-79% <a href="../results/extraction-result-867.html#e867.1" class="evidence-link">[e867.1]</a> <a href="../results/extraction-result-877.html#e877.0" class="evidence-link">[e877.0]</a> </li>
+    <li>LLM agent with symbolic modules using textual inventory state and valid actions in prompt achieves 88.7% average performance across symbolic tasks <a href="../results/extraction-result-770.html#e770.0" class="evidence-link">[e770.0]</a> </li>
+    <li>Swift (Flan-T5) with native 10-action history achieves 27.86 avg reward, and removing action history harms performance, showing importance of textual trajectory memory <a href="../results/extraction-result-789.html#e789.3" class="evidence-link">[e789.3]</a> </li>
+    <li>KNOWNO using textual context augmented with perception outputs achieves 0.76 plan success and 0.74 task success with prediction set size 1.72 <a href="../results/extraction-result-876.html#e876.0" class="evidence-link">[e876.0]</a> </li>
+    <li>BUTLER using observation queue (last 5 observations) and recurrent aggregator improves over baselines in ALFWorld, showing value of structured observation history <a href="../results/extraction-result-874.html#e874.1" class="evidence-link">[e874.1]</a> </li>
+    <li>ConAgents' grounding agent conditions on trajectory history H_i = {(t_j, r_j)} of past plans and execution results, achieving 79% success on RestBench-TMDB <a href="../results/extraction-result-800.html#e800.0" class="evidence-link">[e800.0]</a> </li>
+    <li>Text Game Interface provides templated observations and error messages that LLM agents use to update textual belief states in multi-agent coordination <a href="../results/extraction-result-773.html#e773.4" class="evidence-link">[e773.4]</a> </li>
+    <li>EHRAgent maintains trajectory of code and execution results, using parsed error traces to update planning context, achieving 71.58% success rate <a href="../results/extraction-result-799.html#e799.0" class="evidence-link">[e799.0]</a> </li>
+    <li>PAL generates complete programs with meaningful variable names and comments that serve as explicit procedural belief state, achieving 72% on GSM8K <a href="../results/extraction-result-888.html#e888.0" class="evidence-link">[e888.0]</a> </li>
+    <li>ViperGPT uses program-local state (variables, lists, dicts) as explicit belief, achieving 72% IoU on RefCOCO and 51.9% on OK-VQA <a href="../results/extraction-result-866.html#e866.0" class="evidence-link">[e866.0]</a> </li>
+    <li>LangGround MARL agents use communication vectors as textual belief updates, achieving 4.3±1.20 steps in Predator-Prey with tips <a href="../results/extraction-result-805.html#e805.1" class="evidence-link">[e805.1]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>An LLM agent with a learned belief summarization module (e.g., a small neural network that compresses observations into compact summaries) will outperform agents with hand-crafted belief templates by 10-20% on tasks with complex state spaces.</li>
+                <li>Agents that use retrieval-augmented generation to selectively include relevant past information in prompts (rather than fixed-size windows) will outperform fixed-window agents by 15-30% on tasks with long-range dependencies.</li>
+                <li>In multi-agent settings, LLM agents that maintain explicit belief states about teammates' knowledge (theory of mind) will achieve 20-40% higher coordination success than agents without such beliefs.</li>
+                <li>Hybrid belief systems that combine rule-based updates for factual information with LLM-generated updates for strategic reasoning will outperform pure LLM-based belief updates by 10-15%.</li>
+                <li>Agents that use hierarchical belief representations (high-level goals + low-level state) will handle longer horizons more effectively than flat belief representations, improving performance by 20-30% on complex tasks.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether prompt-based belief mechanisms can scale to very long-horizon tasks (1000+ steps) or whether they fundamentally hit context-length limits even with retrieval augmentation, and what the scaling curve looks like.</li>
+                <li>Whether future LLMs with 1M+ token context windows will eliminate the need for compact belief representations, or whether structured summaries will remain beneficial due to attention degradation or computational costs.</li>
+                <li>Whether learned prompt optimization techniques (e.g., soft prompts, meta-learning) can automatically discover optimal belief representation formats for different task types, and how much improvement they provide over hand-crafted formats.</li>
+                <li>Whether belief augmentation provides similar benefits across different LLM architectures (decoder-only vs encoder-decoder vs mixture-of-experts) or whether the optimal approach is architecture-dependent.</li>
+                <li>Whether multi-modal belief representations (combining text, images, structured data) in prompts provide synergistic benefits beyond single-modality beliefs, and what the optimal integration strategy is.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Demonstrating that LLMs with very large context windows (100K+ tokens) perform as well without explicit belief summaries as with them would challenge the need for compact representations and suggest the theory is primarily about working around context limitations.</li>
+                <li>Showing that random or adversarial belief updates (e.g., inserting false information) perform as well as principled updates would question the importance of belief structure and update mechanisms.</li>
+                <li>Finding that belief augmentation provides no benefit in tasks where it should be highly relevant (e.g., long-horizon partially observable tasks) would challenge the theory's core claims about when belief is beneficial.</li>
+                <li>Demonstrating that implicit memory mechanisms (e.g., fine-tuned recurrent models) consistently outperform explicit prompt-based belief would suggest the approach is suboptimal compared to learned alternatives.</li>
+                <li>Showing that belief augmentation hurts performance on tasks where it's predicted to help would indicate the theory's boundary conditions are incorrect.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to automatically determine the optimal level of detail for belief summaries for a given task without manual tuning </li>
+    <li>The computational costs of belief update operations (LLM calls, parsing, formatting) and their impact on agent latency and throughput </li>
+    <li>How to handle belief updates when observations are ambiguous, contradictory, or noisy, and what error-correction mechanisms are needed </li>
+    <li>The interaction between belief representation and different LLM architectures, sizes, and training procedures </li>
+    <li>How belief augmentation interacts with other prompting techniques (chain-of-thought, few-shot examples, instruction tuning) </li>
+    <li>The role of belief in multi-agent coordination beyond simple knowledge tracking (e.g., strategic reasoning, deception) </li>
+    <li>Whether and how belief representations should be task-specific vs domain-general </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Wei et al. (2022) Chain-of-Thought Prompting Elicits Reasoning in Large Language Models [CoT prompting as implicit belief/reasoning trace, foundational work on structured prompting]</li>
+    <li>Yao et al. (2023) ReAct: Synergizing Reasoning and Acting in Language Models [Interleaved reasoning and action, explicit reasoning traces as belief]</li>
+    <li>Gandhi et al. (2023) Introspective Tips: Large Language Model for In-Context Decision Making [Compact belief summaries via tips, demonstrates compression benefits]</li>
+    <li>Huang et al. (2022) Inner Monologue: Embodied Reasoning through Planning with Language Models [Textual feedback integration as belief updates, closed-loop planning]</li>
+    <li>Ahn et al. (2022) Do As I Can, Not As I Say: Grounding Language in Robotic Affordances [SayCan, implicit belief through affordance grounding]</li>
+    <li>Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Episodic memory and reflection as belief mechanism]</li>
+    <li>Kahneman (2011) Thinking, Fast and Slow [Dual-process theory: System 1 (implicit) vs System 2 (explicit) reasoning, analogous to implicit vs explicit belief]</li>
+    <li>Laird et al. (1987) SOAR: An Architecture for General Intelligence [Production system with working memory, early explicit belief architecture]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "LLM Prompt-Based Belief Augmentation Theory",
+    "theory_description": "Large language models used as planning agents in partially observable text environments can overcome memory limitations and improve long-horizon performance through explicit textual belief-state augmentation in prompts. The effectiveness depends on: (1) the structure and conciseness of the belief representation (compact summaries outperform full trajectory replay), (2) the agent's ability to update beliefs based on observations and tool outputs, (3) the alignment between belief format and task requirements, and (4) the trade-off between prompt length constraints and belief completeness. This approach is most beneficial when tasks require long-horizon memory beyond the LLM's effective context window, when state information is distributed across multiple observations, or when tool outputs must be tracked over time. The mechanism works by maintaining a persistent textual summary that is updated at each step and provided as context for action selection.",
+    "supporting_evidence": [
+        {
+            "text": "GPT-4 with explicit textual belief state achieves 86.1% valid action rate and 12.3 rounds to completion vs 71.8% valid actions and 28.3 rounds without belief, demonstrating 50.7% reduction in invalid actions and 130% efficiency improvement",
+            "uuids": [
+                "e773.0",
+                "e773.1"
+            ]
+        },
+        {
+            "text": "LLM-Tips using concise introspective tips achieves &gt;0.9 success rate and &gt;0.95 normalized points, outperforming pure replay which underperforms due to context limits",
+            "uuids": [
+                "e802.0"
+            ]
+        },
+        {
+            "text": "ReAct interleaving reasoning traces with actions outperforms Inner Monologue (observation-only feedback) in ALFWorld, showing value of structured reasoning in belief",
+            "uuids": [
+                "e889.2"
+            ]
+        },
+        {
+            "text": "Inner Monologue using textual feedback integration (success detectors, scene descriptors) enables closed-loop replanning and improves recovery from failures",
+            "uuids": [
+                "e875.0",
+                "e875.1",
+                "e875.3"
+            ]
+        },
+        {
+            "text": "Translated LM with autoregressive trajectory correction (appending selected admissible actions to prompt) improves executability from 7-18% to 73-79%",
+            "uuids": [
+                "e867.1",
+                "e877.0"
+            ]
+        },
+        {
+            "text": "LLM agent with symbolic modules using textual inventory state and valid actions in prompt achieves 88.7% average performance across symbolic tasks",
+            "uuids": [
+                "e770.0"
+            ]
+        },
+        {
+            "text": "Swift (Flan-T5) with native 10-action history achieves 27.86 avg reward, and removing action history harms performance, showing importance of textual trajectory memory",
+            "uuids": [
+                "e789.3"
+            ]
+        },
+        {
+            "text": "KNOWNO using textual context augmented with perception outputs achieves 0.76 plan success and 0.74 task success with prediction set size 1.72",
+            "uuids": [
+                "e876.0"
+            ]
+        },
+        {
+            "text": "BUTLER using observation queue (last 5 observations) and recurrent aggregator improves over baselines in ALFWorld, showing value of structured observation history",
+            "uuids": [
+                "e874.1"
+            ]
+        },
+        {
+            "text": "ConAgents' grounding agent conditions on trajectory history H_i = {(t_j, r_j)} of past plans and execution results, achieving 79% success on RestBench-TMDB",
+            "uuids": [
+                "e800.0"
+            ]
+        },
+        {
+            "text": "Text Game Interface provides templated observations and error messages that LLM agents use to update textual belief states in multi-agent coordination",
+            "uuids": [
+                "e773.4"
+            ]
+        },
+        {
+            "text": "EHRAgent maintains trajectory of code and execution results, using parsed error traces to update planning context, achieving 71.58% success rate",
+            "uuids": [
+                "e799.0"
+            ]
+        },
+        {
+            "text": "PAL generates complete programs with meaningful variable names and comments that serve as explicit procedural belief state, achieving 72% on GSM8K",
+            "uuids": [
+                "e888.0"
+            ]
+        },
+        {
+            "text": "ViperGPT uses program-local state (variables, lists, dicts) as explicit belief, achieving 72% IoU on RefCOCO and 51.9% on OK-VQA",
+            "uuids": [
+                "e866.0"
+            ]
+        },
+        {
+            "text": "LangGround MARL agents use communication vectors as textual belief updates, achieving 4.3±1.20 steps in Predator-Prey with tips",
+            "uuids": [
+                "e805.1"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Explicit textual belief-state summaries in LLM prompts significantly improve performance in partially observable environments by providing persistent memory beyond the model's effective context window (typically improving task completion by 50-130% and reducing invalid actions by 50%).",
+        "Compact, structured belief representations (templates with 5-10 key fields, tips, or recent K-step histories) are more effective than verbose full-trajectory histories due to prompt length constraints, with optimal K typically between 2-10 depending on task complexity.",
+        "Belief updates can be performed by: (1) the LLM itself via prompted generation, (2) rule-based external modules that format updates, or (3) hybrid approaches; LLM-generated updates provide flexibility but may introduce inconsistencies, while rule-based updates ensure consistency but lack adaptability.",
+        "The effectiveness of prompt-based belief is limited by: (1) the LLM's ability to maintain consistency across updates, (2) retrieval of relevant information from long prompts (attention degradation), and (3) the alignment between belief structure and task requirements.",
+        "Trade-offs exist between belief completeness (more information) and prompt efficiency (staying within context limits); optimal balance depends on task horizon, state complexity, and LLM context window size, with diminishing returns beyond certain belief sizes.",
+        "Prompt-based belief is most beneficial when: (1) task horizon exceeds LLM's effective memory span, (2) critical information is distributed across non-consecutive observations, (3) tool outputs must be tracked over time, or (4) coordination requires maintaining models of other agents' knowledge.",
+        "Different belief formats are optimal for different task types: key-value templates for structured state tracking, narrative summaries for spatial/temporal reasoning, and procedural code for algorithmic tasks."
+    ],
+    "new_predictions_likely": [
+        "An LLM agent with a learned belief summarization module (e.g., a small neural network that compresses observations into compact summaries) will outperform agents with hand-crafted belief templates by 10-20% on tasks with complex state spaces.",
+        "Agents that use retrieval-augmented generation to selectively include relevant past information in prompts (rather than fixed-size windows) will outperform fixed-window agents by 15-30% on tasks with long-range dependencies.",
+        "In multi-agent settings, LLM agents that maintain explicit belief states about teammates' knowledge (theory of mind) will achieve 20-40% higher coordination success than agents without such beliefs.",
+        "Hybrid belief systems that combine rule-based updates for factual information with LLM-generated updates for strategic reasoning will outperform pure LLM-based belief updates by 10-15%.",
+        "Agents that use hierarchical belief representations (high-level goals + low-level state) will handle longer horizons more effectively than flat belief representations, improving performance by 20-30% on complex tasks."
+    ],
+    "new_predictions_unknown": [
+        "Whether prompt-based belief mechanisms can scale to very long-horizon tasks (1000+ steps) or whether they fundamentally hit context-length limits even with retrieval augmentation, and what the scaling curve looks like.",
+        "Whether future LLMs with 1M+ token context windows will eliminate the need for compact belief representations, or whether structured summaries will remain beneficial due to attention degradation or computational costs.",
+        "Whether learned prompt optimization techniques (e.g., soft prompts, meta-learning) can automatically discover optimal belief representation formats for different task types, and how much improvement they provide over hand-crafted formats.",
+        "Whether belief augmentation provides similar benefits across different LLM architectures (decoder-only vs encoder-decoder vs mixture-of-experts) or whether the optimal approach is architecture-dependent.",
+        "Whether multi-modal belief representations (combining text, images, structured data) in prompts provide synergistic benefits beyond single-modality beliefs, and what the optimal integration strategy is."
+    ],
+    "negative_experiments": [
+        "Demonstrating that LLMs with very large context windows (100K+ tokens) perform as well without explicit belief summaries as with them would challenge the need for compact representations and suggest the theory is primarily about working around context limitations.",
+        "Showing that random or adversarial belief updates (e.g., inserting false information) perform as well as principled updates would question the importance of belief structure and update mechanisms.",
+        "Finding that belief augmentation provides no benefit in tasks where it should be highly relevant (e.g., long-horizon partially observable tasks) would challenge the theory's core claims about when belief is beneficial.",
+        "Demonstrating that implicit memory mechanisms (e.g., fine-tuned recurrent models) consistently outperform explicit prompt-based belief would suggest the approach is suboptimal compared to learned alternatives.",
+        "Showing that belief augmentation hurts performance on tasks where it's predicted to help would indicate the theory's boundary conditions are incorrect."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to automatically determine the optimal level of detail for belief summaries for a given task without manual tuning",
+            "uuids": []
+        },
+        {
+            "text": "The computational costs of belief update operations (LLM calls, parsing, formatting) and their impact on agent latency and throughput",
+            "uuids": []
+        },
+        {
+            "text": "How to handle belief updates when observations are ambiguous, contradictory, or noisy, and what error-correction mechanisms are needed",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between belief representation and different LLM architectures, sizes, and training procedures",
+            "uuids": []
+        },
+        {
+            "text": "How belief augmentation interacts with other prompting techniques (chain-of-thought, few-shot examples, instruction tuning)",
+            "uuids": []
+        },
+        {
+            "text": "The role of belief in multi-agent coordination beyond simple knowledge tracking (e.g., strategic reasoning, deception)",
+            "uuids": []
+        },
+        {
+            "text": "Whether and how belief representations should be task-specific vs domain-general",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Vanilla GPT-3 175B achieves 77.86% human-judged correctness without explicit belief mechanisms, suggesting high semantic understanding doesn't require explicit belief for some tasks",
+            "uuids": [
+                "e867.0"
+            ]
+        },
+        {
+            "text": "Behavior-cloned transformers achieve strong performance (competitive with LLM agents) with implicit sequence modeling rather than explicit belief",
+            "uuids": [
+                "e770.1"
+            ]
+        },
+        {
+            "text": "LSTM-DQN achieves ~100% quest completion in Home world and ~96% in Fantasy world using only implicit LSTM memory without explicit textual belief",
+            "uuids": [
+                "e872.0"
+            ]
+        },
+        {
+            "text": "DRRN achieves 13.0% normalized score on Jericho games without explicit belief tracking, using only current observation encoding",
+            "uuids": [
+                "e894.0"
+            ]
+        },
+        {
+            "text": "MAPPO achieves team score of 90 points using implicit RNN hidden states rather than explicit textual belief",
+            "uuids": [
+                "e773.3"
+            ]
+        },
+        {
+            "text": "Some tasks can be solved with very short prompts and minimal belief state, suggesting belief augmentation overhead may not be justified for simple tasks",
+            "uuids": []
+        },
+        {
+            "text": "WebGPT and GPT-4 baselines struggle with long contexts despite having belief-like prompt structures, suggesting prompt-based belief has fundamental limitations",
+            "uuids": [
+                "e798.0",
+                "e798.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For very short tasks (1-5 steps), explicit belief augmentation may provide minimal benefit as the full history fits in the prompt and the overhead of belief maintenance outweighs benefits.",
+        "When the environment provides complete state information in each observation (fully observable), belief summaries may be redundant unless they provide computational benefits through compression.",
+        "For tasks with highly structured state (e.g., formal games, databases), symbolic state representations or structured data formats may be more effective than natural language textual summaries.",
+        "In multi-modal settings (vision + text), belief representations may need to integrate both modalities, and the optimal format may differ from text-only cases.",
+        "When using very large context window LLMs (100K+ tokens), the trade-offs shift toward less aggressive compression, though attention degradation may still favor structured summaries.",
+        "For real-time applications with strict latency constraints, the computational cost of belief updates may make simpler implicit memory mechanisms preferable.",
+        "In adversarial settings, explicit belief states in prompts may be vulnerable to manipulation or observation, requiring secure belief management.",
+        "When tool outputs are highly structured (e.g., database query results, API responses), hybrid representations combining textual summaries with structured data may be optimal.",
+        "For tasks requiring precise numerical or logical reasoning, procedural belief representations (code, formal logic) may outperform natural language summaries."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Wei et al. (2022) Chain-of-Thought Prompting Elicits Reasoning in Large Language Models [CoT prompting as implicit belief/reasoning trace, foundational work on structured prompting]",
+            "Yao et al. (2023) ReAct: Synergizing Reasoning and Acting in Language Models [Interleaved reasoning and action, explicit reasoning traces as belief]",
+            "Gandhi et al. (2023) Introspective Tips: Large Language Model for In-Context Decision Making [Compact belief summaries via tips, demonstrates compression benefits]",
+            "Huang et al. (2022) Inner Monologue: Embodied Reasoning through Planning with Language Models [Textual feedback integration as belief updates, closed-loop planning]",
+            "Ahn et al. (2022) Do As I Can, Not As I Say: Grounding Language in Robotic Affordances [SayCan, implicit belief through affordance grounding]",
+            "Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Episodic memory and reflection as belief mechanism]",
+            "Kahneman (2011) Thinking, Fast and Slow [Dual-process theory: System 1 (implicit) vs System 2 (explicit) reasoning, analogous to implicit vs explicit belief]",
+            "Laird et al. (1987) SOAR: An Architecture for General Intelligence [Production system with working memory, early explicit belief architecture]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 5,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

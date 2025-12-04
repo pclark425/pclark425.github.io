@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Adaptation and Residual Learning Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-359</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-359</p>
+                <p><strong>Name:</strong> Online Adaptation and Residual Learning Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> This theory specifies how residual learning should be structured and applied for effective sim-to-real transfer in scientific laboratory automation. The core principle is that simulation should learn a 'coarse dynamics model' and base policy that captures the nominal, predictable aspects of laboratory tasks, while online residual learning in the real environment corrects for systematic sim-to-real gaps and handles stochastic, unpredictable variations. The theory proposes a decomposition: π_real(s) = π_sim(s) + π_residual(s), where π_sim is frozen after simulation training and π_residual is learned online. The residual policy should be: (1) initialized to zero to ensure safe deployment, (2) constrained in magnitude to prevent large deviations (||π_residual(s)|| ≤ α·||π_sim(s)|| where α starts small and grows with confidence), (3) trained with high sample efficiency using model-based methods or meta-learning, and (4) regularized to remain smooth and generalizable. The theory further specifies that the base policy should achieve at least 60-70% task success in simulation (the 'minimum viable base policy' threshold) before real-world deployment, and that residual learning should focus on correcting systematic biases (e.g., friction, sensor noise, material properties) rather than learning entirely new behaviors. Online adaptation should use a multi-timescale approach: fast adaptation (1-10 trials) for immediate corrections, medium-term adaptation (10-100 trials) for systematic bias correction, and slow adaptation (100+ trials) for rare events and edge cases.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>The real-world policy should be decomposed as π_real(s) = π_sim(s) + π_residual(s), where π_sim is trained in simulation and frozen, and π_residual is learned online in the real environment.</li>
+                <li>The residual policy should be initialized to zero (π_residual(s) = 0 for all s initially) to ensure that initial real-world behavior matches simulation predictions and is safe.</li>
+                <li>The magnitude of the residual policy should be constrained: ||π_residual(s)|| ≤ α(t)·||π_sim(s)||, where α(t) is a confidence-modulated coefficient that starts small (α(0) ≈ 0.1-0.2) and grows with successful experience.</li>
+                <li>The base simulation policy must achieve a 'minimum viable base policy' threshold of 60-70% task success in simulation before real-world deployment to ensure sufficient prior knowledge.</li>
+                <li>Online residual learning should prioritize sample efficiency, using model-based methods or meta-learning to achieve meaningful adaptation within 10-50 real-world trials.</li>
+                <li>The residual policy should be regularized for smoothness (e.g., Lipschitz continuity) and simplicity (e.g., L2 regularization) to promote generalization and prevent overfitting to specific instances.</li>
+                <li>Multi-timescale adaptation should be employed: fast adaptation (1-10 trials) using high learning rates for immediate corrections, medium-term adaptation (10-100 trials) for systematic bias correction, and slow adaptation (100+ trials) for rare events.</li>
+                <li>The residual policy should focus on correcting systematic sim-to-real gaps (friction, sensor noise, material properties, timing) rather than learning entirely new task strategies.</li>
+                <li>Uncertainty estimation should guide exploration during online adaptation, with higher exploration in states where the simulation model is known to be inaccurate.</li>
+                <li>The residual learning process should maintain a 'rollback capability' where if performance degrades significantly (>20% drop in success rate), the system reverts to the base simulation policy.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Residual reinforcement learning has been shown to enable effective sim-to-real transfer by learning corrections to simulation-trained policies rather than learning from scratch in the real world. </li>
+    <li>Online adaptation methods using model-based reinforcement learning can achieve sample-efficient learning in real robotic systems within tens of trials. </li>
+    <li>Meta-learning approaches enable rapid adaptation to new tasks and environments by learning how to learn, achieving adaptation in 1-10 gradient steps. </li>
+    <li>Domain randomization in simulation can improve sim-to-real transfer by training policies that are robust to variations, but often requires real-world fine-tuning for optimal performance. </li>
+    <li>Constraint-based safe learning methods can maintain safety during online adaptation by limiting policy changes and action magnitudes. </li>
+    <li>Multi-timescale learning in robotics has been shown to improve adaptation by separating fast reactive behaviors from slow strategic learning. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a robotic pipetting task, a simulation-trained base policy achieving 65% success will reach 85-90% success after 30-50 real-world trials with residual learning, compared to 60-70% success without online adaptation.</li>
+                <li>Residual policies will show the largest corrections (highest ||π_residual||/||π_sim|| ratios) in states involving contact dynamics, friction-dependent manipulation, and precise timing, where simulation is typically least accurate.</li>
+                <li>Constraining residual policy magnitude to α ≤ 0.3 will maintain safety while still enabling 80%+ of the performance improvement achievable with unconstrained residual learning.</li>
+                <li>Multi-timescale adaptation will achieve 90% of final performance 2-3x faster than single-timescale adaptation, with the fast timescale providing immediate improvements and the slow timescale handling edge cases.</li>
+                <li>Meta-learning the residual policy structure across multiple related laboratory tasks will enable new tasks to adapt in 5-10 trials rather than 30-50 trials required for task-specific residual learning.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether residual learning can effectively transfer across different robot platforms (e.g., training residuals on Robot A and applying to Robot B with similar but not identical kinematics) is unknown but would dramatically accelerate multi-robot deployment if successful.</li>
+                <li>The optimal ratio of simulation training to real-world residual learning (e.g., 10,000 sim trials : 50 real trials vs. 100,000 sim trials : 20 real trials) for different task complexities is unclear but critical for resource allocation.</li>
+                <li>Whether adversarial training of the base policy in simulation (explicitly training to be robust to residual corrections) improves or hinders subsequent residual learning is unknown but could significantly impact the training pipeline.</li>
+                <li>If residual policies learned for one scientific domain (e.g., chemistry) can provide useful initialization for another domain (e.g., biology) through transfer learning is uncertain but would enable cross-domain knowledge sharing.</li>
+                <li>The extent to which human demonstrations can be incorporated into residual learning (e.g., using human corrections as training signal) versus purely autonomous learning is unclear but could dramatically improve sample efficiency and safety.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If learning π_real from scratch in the real world (without a simulation base policy) achieves similar sample efficiency and final performance as the residual learning approach, this would challenge the core decomposition principle.</li>
+                <li>If unconstrained residual policies (no magnitude limits) achieve the same safety record as constrained residuals while learning faster, this would question the need for the constraint α(t).</li>
+                <li>If single-timescale adaptation performs equivalently to multi-timescale adaptation in both speed and final performance, this would challenge the multi-timescale learning component.</li>
+                <li>If base policies with <60% simulation success can still achieve effective real-world performance through residual learning, this would challenge the 'minimum viable base policy' threshold.</li>
+                <li>If residual policies do not show systematic patterns (e.g., larger corrections in contact-rich states) but instead show random corrections across all states, this would challenge the theory's assumption about systematic sim-to-real gaps.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not specify how to handle non-stationary environments where the real-world dynamics change over time (e.g., equipment degradation, changing material properties), requiring continuous adaptation. </li>
+    <li>How to detect and handle situations where the simulation is so inaccurate that the base policy is actively harmful (negative transfer) is not fully addressed. </li>
+    <li>The computational requirements for online model-based learning or meta-learning in real-time laboratory settings and their feasibility constraints are not specified. </li>
+    <li>How to balance exploration for residual learning with exploitation for task completion when experiments are costly or time-sensitive is not fully addressed. </li>
+    <li>The theory does not specify how to handle multi-agent scenarios where multiple robots must coordinate, and residual learning must account for other agents' adaptations. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Johannink et al. (2019) Residual Reinforcement Learning for Robot Control [Introduces residual RL but not the specific framework for scientific discovery with safety constraints and multi-timescale adaptation]</li>
+    <li>Silver et al. (2018) Residual Policy Learning [Foundational work on residual policies but does not address sim-to-real transfer or online adaptation specifics]</li>
+    <li>Nagabandi et al. (2019) Learning to Adapt in Dynamic, Real-World Environments through Meta-Reinforcement Learning [Addresses online adaptation but not specifically through residual learning framework]</li>
+    <li>Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models [Addresses sample-efficient online learning but not residual learning decomposition]</li>
+    <li>Finn et al. (2017) Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks [Provides meta-learning for adaptation but not specifically for residual policies in sim-to-real transfer]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Online Adaptation and Residual Learning Theory",
+    "theory_description": "This theory specifies how residual learning should be structured and applied for effective sim-to-real transfer in scientific laboratory automation. The core principle is that simulation should learn a 'coarse dynamics model' and base policy that captures the nominal, predictable aspects of laboratory tasks, while online residual learning in the real environment corrects for systematic sim-to-real gaps and handles stochastic, unpredictable variations. The theory proposes a decomposition: π_real(s) = π_sim(s) + π_residual(s), where π_sim is frozen after simulation training and π_residual is learned online. The residual policy should be: (1) initialized to zero to ensure safe deployment, (2) constrained in magnitude to prevent large deviations (||π_residual(s)|| ≤ α·||π_sim(s)|| where α starts small and grows with confidence), (3) trained with high sample efficiency using model-based methods or meta-learning, and (4) regularized to remain smooth and generalizable. The theory further specifies that the base policy should achieve at least 60-70% task success in simulation (the 'minimum viable base policy' threshold) before real-world deployment, and that residual learning should focus on correcting systematic biases (e.g., friction, sensor noise, material properties) rather than learning entirely new behaviors. Online adaptation should use a multi-timescale approach: fast adaptation (1-10 trials) for immediate corrections, medium-term adaptation (10-100 trials) for systematic bias correction, and slow adaptation (100+ trials) for rare events and edge cases.",
+    "supporting_evidence": [
+        {
+            "text": "Residual reinforcement learning has been shown to enable effective sim-to-real transfer by learning corrections to simulation-trained policies rather than learning from scratch in the real world.",
+            "citations": [
+                "Johannink et al. (2019) Residual Reinforcement Learning for Robot Control, ICRA",
+                "Silver et al. (2018) Residual Policy Learning, arXiv"
+            ]
+        },
+        {
+            "text": "Online adaptation methods using model-based reinforcement learning can achieve sample-efficient learning in real robotic systems within tens of trials.",
+            "citations": [
+                "Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models, NeurIPS",
+                "Nagabandi et al. (2018) Neural Network Dynamics for Model-Based Deep Reinforcement Learning with Model-Free Fine-Tuning, ICRA"
+            ]
+        },
+        {
+            "text": "Meta-learning approaches enable rapid adaptation to new tasks and environments by learning how to learn, achieving adaptation in 1-10 gradient steps.",
+            "citations": [
+                "Finn et al. (2017) Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks, ICML",
+                "Nagabandi et al. (2019) Learning to Adapt in Dynamic, Real-World Environments through Meta-Reinforcement Learning, ICLR"
+            ]
+        },
+        {
+            "text": "Domain randomization in simulation can improve sim-to-real transfer by training policies that are robust to variations, but often requires real-world fine-tuning for optimal performance.",
+            "citations": [
+                "Tobin et al. (2017) Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World, IROS",
+                "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization, ICRA"
+            ]
+        },
+        {
+            "text": "Constraint-based safe learning methods can maintain safety during online adaptation by limiting policy changes and action magnitudes.",
+            "citations": [
+                "Achiam et al. (2017) Constrained Policy Optimization, ICML",
+                "Berkenkamp et al. (2017) Safe Model-based Reinforcement Learning with Stability Guarantees, NeurIPS"
+            ]
+        },
+        {
+            "text": "Multi-timescale learning in robotics has been shown to improve adaptation by separating fast reactive behaviors from slow strategic learning.",
+            "citations": [
+                "Duan et al. (2016) Benchmarking Deep Reinforcement Learning for Continuous Control, ICML",
+                "Botvinick et al. (2019) Reinforcement Learning, Fast and Slow, Trends in Cognitive Sciences"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "The real-world policy should be decomposed as π_real(s) = π_sim(s) + π_residual(s), where π_sim is trained in simulation and frozen, and π_residual is learned online in the real environment.",
+        "The residual policy should be initialized to zero (π_residual(s) = 0 for all s initially) to ensure that initial real-world behavior matches simulation predictions and is safe.",
+        "The magnitude of the residual policy should be constrained: ||π_residual(s)|| ≤ α(t)·||π_sim(s)||, where α(t) is a confidence-modulated coefficient that starts small (α(0) ≈ 0.1-0.2) and grows with successful experience.",
+        "The base simulation policy must achieve a 'minimum viable base policy' threshold of 60-70% task success in simulation before real-world deployment to ensure sufficient prior knowledge.",
+        "Online residual learning should prioritize sample efficiency, using model-based methods or meta-learning to achieve meaningful adaptation within 10-50 real-world trials.",
+        "The residual policy should be regularized for smoothness (e.g., Lipschitz continuity) and simplicity (e.g., L2 regularization) to promote generalization and prevent overfitting to specific instances.",
+        "Multi-timescale adaptation should be employed: fast adaptation (1-10 trials) using high learning rates for immediate corrections, medium-term adaptation (10-100 trials) for systematic bias correction, and slow adaptation (100+ trials) for rare events.",
+        "The residual policy should focus on correcting systematic sim-to-real gaps (friction, sensor noise, material properties, timing) rather than learning entirely new task strategies.",
+        "Uncertainty estimation should guide exploration during online adaptation, with higher exploration in states where the simulation model is known to be inaccurate.",
+        "The residual learning process should maintain a 'rollback capability' where if performance degrades significantly (&gt;20% drop in success rate), the system reverts to the base simulation policy."
+    ],
+    "new_predictions_likely": [
+        "In a robotic pipetting task, a simulation-trained base policy achieving 65% success will reach 85-90% success after 30-50 real-world trials with residual learning, compared to 60-70% success without online adaptation.",
+        "Residual policies will show the largest corrections (highest ||π_residual||/||π_sim|| ratios) in states involving contact dynamics, friction-dependent manipulation, and precise timing, where simulation is typically least accurate.",
+        "Constraining residual policy magnitude to α ≤ 0.3 will maintain safety while still enabling 80%+ of the performance improvement achievable with unconstrained residual learning.",
+        "Multi-timescale adaptation will achieve 90% of final performance 2-3x faster than single-timescale adaptation, with the fast timescale providing immediate improvements and the slow timescale handling edge cases.",
+        "Meta-learning the residual policy structure across multiple related laboratory tasks will enable new tasks to adapt in 5-10 trials rather than 30-50 trials required for task-specific residual learning."
+    ],
+    "new_predictions_unknown": [
+        "Whether residual learning can effectively transfer across different robot platforms (e.g., training residuals on Robot A and applying to Robot B with similar but not identical kinematics) is unknown but would dramatically accelerate multi-robot deployment if successful.",
+        "The optimal ratio of simulation training to real-world residual learning (e.g., 10,000 sim trials : 50 real trials vs. 100,000 sim trials : 20 real trials) for different task complexities is unclear but critical for resource allocation.",
+        "Whether adversarial training of the base policy in simulation (explicitly training to be robust to residual corrections) improves or hinders subsequent residual learning is unknown but could significantly impact the training pipeline.",
+        "If residual policies learned for one scientific domain (e.g., chemistry) can provide useful initialization for another domain (e.g., biology) through transfer learning is uncertain but would enable cross-domain knowledge sharing.",
+        "The extent to which human demonstrations can be incorporated into residual learning (e.g., using human corrections as training signal) versus purely autonomous learning is unclear but could dramatically improve sample efficiency and safety."
+    ],
+    "negative_experiments": [
+        "If learning π_real from scratch in the real world (without a simulation base policy) achieves similar sample efficiency and final performance as the residual learning approach, this would challenge the core decomposition principle.",
+        "If unconstrained residual policies (no magnitude limits) achieve the same safety record as constrained residuals while learning faster, this would question the need for the constraint α(t).",
+        "If single-timescale adaptation performs equivalently to multi-timescale adaptation in both speed and final performance, this would challenge the multi-timescale learning component.",
+        "If base policies with &lt;60% simulation success can still achieve effective real-world performance through residual learning, this would challenge the 'minimum viable base policy' threshold.",
+        "If residual policies do not show systematic patterns (e.g., larger corrections in contact-rich states) but instead show random corrections across all states, this would challenge the theory's assumption about systematic sim-to-real gaps."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not specify how to handle non-stationary environments where the real-world dynamics change over time (e.g., equipment degradation, changing material properties), requiring continuous adaptation.",
+            "citations": []
+        },
+        {
+            "text": "How to detect and handle situations where the simulation is so inaccurate that the base policy is actively harmful (negative transfer) is not fully addressed.",
+            "citations": []
+        },
+        {
+            "text": "The computational requirements for online model-based learning or meta-learning in real-time laboratory settings and their feasibility constraints are not specified.",
+            "citations": []
+        },
+        {
+            "text": "How to balance exploration for residual learning with exploitation for task completion when experiments are costly or time-sensitive is not fully addressed.",
+            "citations": []
+        },
+        {
+            "text": "The theory does not specify how to handle multi-agent scenarios where multiple robots must coordinate, and residual learning must account for other agents' adaptations.",
+            "citations": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some research suggests that end-to-end learning directly in the real world can outperform sim-to-real transfer approaches when sufficient real-world data is available, potentially challenging the residual learning framework.",
+            "citations": [
+                "Levine et al. (2016) End-to-End Training of Deep Visuomotor Policies, JMLR"
+            ]
+        },
+        {
+            "text": "Studies on catastrophic forgetting suggest that online adaptation can degrade performance on previously learned skills, potentially conflicting with the assumption that residual learning only improves performance.",
+            "citations": [
+                "Kirkpatrick et al. (2017) Overcoming catastrophic forgetting in neural networks, PNAS",
+                "French (1999) Catastrophic forgetting in connectionist networks, Trends in Cognitive Sciences"
+            ]
+        },
+        {
+            "text": "Research showing that highly randomized simulation can eliminate the need for real-world fine-tuning challenges the necessity of residual learning for sim-to-real transfer.",
+            "citations": [
+                "OpenAI et al. (2019) Solving Rubik's Cube with a Robot Hand, arXiv"
+            ]
+        },
+        {
+            "text": "Evidence that model-free methods can be more sample-efficient than model-based methods in some domains conflicts with the theory's emphasis on model-based residual learning.",
+            "citations": [
+                "Haarnoja et al. (2018) Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor, ICML"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For tasks with extremely high simulation fidelity (&gt;95% real-world success with sim-trained policy), residual learning may provide minimal benefit and could be skipped to reduce complexity.",
+        "In safety-critical operations (e.g., handling hazardous materials), the constraint coefficient α should remain small (α ≤ 0.1) throughout learning, even with high confidence, to maintain conservative behavior.",
+        "For tasks with significant visual perception components, the residual policy may need to operate in a different state space (e.g., learned visual features) than the simulation policy (e.g., ground-truth state), requiring careful state representation alignment.",
+        "In multi-step scientific protocols where early steps affect later steps, residual learning should be staged (learn residuals for step 1, then step 2, etc.) rather than simultaneous to avoid compounding errors.",
+        "For rare but critical events (e.g., detecting contamination, equipment failure), the residual policy should incorporate anomaly detection and trigger conservative fallback behaviors rather than attempting adaptation.",
+        "When the base policy is learned through imitation learning from human demonstrations rather than RL in simulation, the residual learning approach may need different initialization and constraints to account for suboptimal but safe human strategies."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Johannink et al. (2019) Residual Reinforcement Learning for Robot Control [Introduces residual RL but not the specific framework for scientific discovery with safety constraints and multi-timescale adaptation]",
+            "Silver et al. (2018) Residual Policy Learning [Foundational work on residual policies but does not address sim-to-real transfer or online adaptation specifics]",
+            "Nagabandi et al. (2019) Learning to Adapt in Dynamic, Real-World Environments through Meta-Reinforcement Learning [Addresses online adaptation but not specifically through residual learning framework]",
+            "Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models [Addresses sample-efficient online learning but not residual learning decomposition]",
+            "Finn et al. (2017) Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks [Provides meta-learning for adaptation but not specifically for residual policies in sim-to-real transfer]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 2,
+    "theory_query": "Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-192",
+    "original_theory_name": "Online Adaptation and Residual Learning Theory",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

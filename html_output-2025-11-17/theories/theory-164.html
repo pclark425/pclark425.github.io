@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Randomization Sufficiency Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-164</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-164</p>
+                <p><strong>Name:</strong> Domain Randomization Sufficiency Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about minimal simulator fidelity requirements for training transferable scientific reasoning in domains such as thermodynamics, circuits, and biology, based on the following results.</p>
+                <p><strong>Description:</strong> For transfer to real-world systems, broad randomization of simulator parameters across physically plausible ranges can compensate for lack of photorealistic fidelity or exact parameter identification, provided the simulator maintains correct qualitative physics structure. The simulator need not perfectly match reality in all details; instead, training across a distribution of plausible variations produces policies/models robust to the actual (unknown) real-world parameters. Effectiveness depends critically on: (1) correct structural/qualitative physics in the base simulator, (2) randomization of task-relevant parameters with informed ranges, (3) sufficient training diversity, and (4) appropriate task characteristics (closed-loop control benefits more than open-loop planning). The approach trades peak performance for robustness and can fail when randomization ranges are poorly chosen or when fundamental physics models are missing.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Photorealistic rendering is not necessary for vision-based transfer if sufficient appearance diversity (textures, lighting, camera poses, backgrounds) is provided during training, covering the space of visual variations likely in the target domain</li>
+                <li>Exact parameter identification is not necessary if training covers a distribution that includes or brackets the true real-world parameters within physically plausible ranges</li>
+                <li>Randomization of task-relevant parameters (contact dynamics/friction for manipulation, appearance for vision, latency/noise for control) is more important than randomization of task-irrelevant parameters</li>
+                <li>Domain randomization can compensate for simplified models of complex phenomena (e.g., micro-scale contact, aerodynamics) if: (a) the base simulator captures correct qualitative behavior, and (b) randomization captures the resulting behavioral variability</li>
+                <li>The optimal randomization range trades off between robustness (wider ranges) and performance (narrower ranges); excessively wide randomization can produce infeasible scenarios, degrade learning efficiency, and yield overly conservative policies</li>
+                <li>Randomization effectiveness depends on task structure: closed-loop reactive control benefits more from randomization than open-loop planning tasks where action sequences are highly sensitive to exact dynamics</li>
+                <li>Informed or Bayesian randomization (using domain knowledge or limited real data to constrain ranges) is more effective than uniform randomization over arbitrarily wide ranges</li>
+                <li>Randomization must be combined with correct structural physics; it cannot compensate for fundamentally missing dynamics models (e.g., missing actuator models, missing aerodynamic forces)</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>MuJoCo domain randomization (mass 80-120%, friction 0.5-1.25, motor strength 80-120%, latency, control step, etc.) enabled successful sim-to-real transfer for robotic manipulation without exact parameter identification <a href="../results/extraction-result-1328.html#e1328.0" class="evidence-link">[e1328.0]</a> </li>
+    <li>CAD2RL randomized textures/lighting across synthetic hallways achieved successful real-world quadrotor flight without photorealistic rendering, outperforming single realistic reconstruction (RTG) <a href="../results/extraction-result-1497.html#e1497.0" class="evidence-link">[e1497.0]</a> <a href="../results/extraction-result-1497.html#e1497.3" class="evidence-link">[e1497.3]</a> </li>
+    <li>Domain randomization in MuJoCo+Unity for dexterous manipulation (physics parameters, observation noise, unmodeled effects like delays/backlash/forces) was necessary and sufficient for transfer; removing any randomization category caused substantial transfer degradation <a href="../results/extraction-result-1534.html#e1534.2" class="evidence-link">[e1534.2]</a> </li>
+    <li>Low-fidelity MuJoCo renderer with heavy visual randomization (200+ textures, lighting, camera poses, distractors) transferred successfully to real robot localization without photorealistic rendering or detailed system identification <a href="../results/extraction-result-1511.html#e1511.0" class="evidence-link">[e1511.0]</a> </li>
+    <li>Randomized parameter ensemble in PyBullet (mass, inertia, friction, latency, perturbations) improved transfer robustness and reduced sim-to-real gap compared to fixed parameters, though with lower peak simulated performance <a href="../results/extraction-result-1506.html#e1506.2" class="evidence-link">[e1506.2]</a> </li>
+    <li>Robustified controllers with dynamics/appearance randomization in MuJoCo+Ogre3D required ~4x less real-world fine-tuning (55K vs 220K steps) than non-robustified controllers for marble maze task <a href="../results/extraction-result-1493.html#e1493.0" class="evidence-link">[e1493.0]</a> </li>
+    <li>Random Force Injection (RFI) - injecting stochastic forces rather than randomizing many individual parameters - achieved superior and more consistent sim-to-real transfer with less tuning effort than traditional domain randomization <a href="../results/extraction-result-1306.html#e1306.3" class="evidence-link">[e1306.3]</a> </li>
+    <li>Randomization of action timestep and observation noise were particularly critical for transfer in MuJoCo pushing task; disabling either caused success rate to drop from 0.89 to 0.29 or 0.25 <a href="../results/extraction-result-1328.html#e1328.0" class="evidence-link">[e1328.0]</a> </li>
+    <li>Domain randomization approach (CAD2RL) cited as successful example enabling sim-to-real transfer without real-image training when using heavy appearance variation <a href="../results/extraction-result-1535.html#e1535.7" class="evidence-link">[e1535.7]</a> </li>
+    <li>Ensemble/randomized physics simulations mentioned as strategy for learning robust control policies that generalize over parameter uncertainty <a href="../results/extraction-result-1511.html#e1511.1" class="evidence-link">[e1511.1]</a> </li>
+    <li>General discussion of domain randomization as robustness strategy even when simulators are approximations <a href="../results/extraction-result-1300.html#e1300.2" class="evidence-link">[e1300.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For thermodynamics simulators: Randomizing boundary conditions (heat transfer coefficients ±20%), material properties (thermal conductivity, specific heat ±15%), initial temperatures (±10%), and ambient conditions across plausible ranges should enable transfer to real thermal systems without exact material property identification, provided the heat equation structure is correct</li>
+                <li>For circuit simulators: Randomizing component tolerances (resistors/capacitors ±10-20%), parasitic effects (stray capacitance/inductance), power supply noise, and temperature coefficients should enable transfer to physical circuits without precise component characterization, for circuits operating in linear/weakly-nonlinear regimes</li>
+                <li>For biological simulators: Randomizing kinetic rate constants (±30-50%), initial concentrations (±20%), cell-to-cell variability, and measurement noise should enable transfer to real biological experiments without exact parameter fitting, for systems where the reaction network topology is known</li>
+                <li>Vision-based control tasks in new domains (e.g., thermal imaging for process control) should benefit more from appearance randomization than dynamics randomization, similar to robotics vision tasks</li>
+                <li>Contact-rich manipulation in new domains (e.g., food handling, soft materials) should require randomization of contact/friction parameters specifically, similar to rigid-body manipulation</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether domain randomization alone (without high-fidelity base physics) can enable transfer in domains with strong nonlinear coupling and bifurcations (e.g., thermodynamic phase transitions, circuit oscillations, biological feedback loops with switch-like behavior)</li>
+                <li>The minimum diversity (number of randomized parameters × range width) required for successful transfer as a function of task complexity, domain, and gap structure - and whether this scales differently for thermodynamics/circuits/biology vs mechanics</li>
+                <li>Whether randomization strategies that work for robotics (primarily mechanics with ~10-100 parameters) transfer effectively to other scientific domains with different characteristic timescales (microseconds to hours), coupling strengths, and parameter counts (potentially 100s-1000s)</li>
+                <li>Whether stochastic force injection (RFI-style) generalizes to other domains: e.g., random thermal fluctuations for thermodynamics, random voltage/current noise for circuits, random molecular noise for biology</li>
+                <li>The relationship between randomization effectiveness and the specific structure of the reality gap (systematic bias vs random noise vs model misspecification) - whether different gap types require different randomization strategies</li>
+                <li>Whether Bayesian/adaptive randomization (learning optimal ranges from limited real data) provides sufficient benefit to justify the additional complexity in scientific domains beyond robotics</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding cases where narrow, well-calibrated simulators (with exact parameter identification) consistently outperform broadly randomized simulators would challenge the sufficiency of randomization and suggest identification is necessary</li>
+                <li>Demonstrating that randomization of demonstrably irrelevant parameters (e.g., visual appearance for proprioceptive control, or thermal properties for electrical circuits) improves transfer would challenge the task-relevance principle</li>
+                <li>Showing that extremely wide randomization covering physically implausible parameter ranges (e.g., negative masses, superluminal speeds) improves transfer would challenge the plausibility constraint</li>
+                <li>Finding domains where randomization actively harms transfer (negative transfer) compared to fixed nominal parameters would challenge the generality of the approach</li>
+                <li>Demonstrating that randomization cannot compensate for missing fundamental physics (e.g., training without gravity for terrestrial robotics, without diffusion for reaction-diffusion systems) would establish hard limits on randomization sufficiency</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Limited direct evidence from thermodynamics, circuits, and biology domains - most evidence is from robotics/mechanics/vision, with only indirect evidence from other scientific domains <a href="../results/extraction-result-1321.html#e1321.8" class="evidence-link">[e1321.8]</a> <a href="../results/extraction-result-1329.html#e1329.0" class="evidence-link">[e1329.0]</a> <a href="../results/extraction-result-1329.html#e1329.1" class="evidence-link">[e1329.1]</a> <a href="../results/extraction-result-1329.html#e1329.2" class="evidence-link">[e1329.2]</a> <a href="../results/extraction-result-1329.html#e1329.3" class="evidence-link">[e1329.3]</a> <a href="../results/extraction-result-1329.html#e1329.4" class="evidence-link">[e1329.4]</a> <a href="../results/extraction-result-1329.html#e1329.8" class="evidence-link">[e1329.8]</a> </li>
+    <li>How to determine optimal randomization ranges without extensive real-world experimentation or domain expertise - the theory does not provide a principled method for range selection </li>
+    <li>The computational cost of training with wide randomization (orders of magnitude more samples required) and whether this cost is justified by transfer benefits in all domains <a href="../results/extraction-result-1534.html#e1534.2" class="evidence-link">[e1534.2]</a> </li>
+    <li>The relationship between randomization strategy and the specific structure of the reality gap (e.g., whether systematic biases require different randomization than random noise) </li>
+    <li>How randomization interacts with other sim-to-real techniques (e.g., domain adaptation, residual learning, system identification) - whether they are complementary or redundant </li>
+    <li>The role of curriculum learning in randomization (starting narrow and widening) vs immediate wide randomization </li>
+    <li>Whether the benefits of randomization scale with model capacity (larger networks may be better able to learn robust features from randomized data) </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Tobin et al. (2017) Domain randomization for transferring deep neural networks from simulation to the real world [Original domain randomization paper for vision, established core concept]</li>
+    <li>Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Extended domain randomization to dynamics/physics parameters for control]</li>
+    <li>OpenAI et al. (2018) Learning dexterous in-hand manipulation [Large-scale domain randomization for complex manipulation, demonstrated necessity of randomizing unmodeled effects]</li>
+    <li>Muratore et al. (2022) Robot Learning From Randomized Simulations: A Review [Comprehensive review of domain randomization approaches, discusses tradeoffs and limitations]</li>
+    <li>Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience [SimOpt - adaptive randomization using real data]</li>
+    <li>Mehta et al. (2020) Active Domain Randomization [Adaptive selection of randomization parameters during training]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Domain Randomization Sufficiency Theory",
+    "theory_description": "For transfer to real-world systems, broad randomization of simulator parameters across physically plausible ranges can compensate for lack of photorealistic fidelity or exact parameter identification, provided the simulator maintains correct qualitative physics structure. The simulator need not perfectly match reality in all details; instead, training across a distribution of plausible variations produces policies/models robust to the actual (unknown) real-world parameters. Effectiveness depends critically on: (1) correct structural/qualitative physics in the base simulator, (2) randomization of task-relevant parameters with informed ranges, (3) sufficient training diversity, and (4) appropriate task characteristics (closed-loop control benefits more than open-loop planning). The approach trades peak performance for robustness and can fail when randomization ranges are poorly chosen or when fundamental physics models are missing.",
+    "supporting_evidence": [
+        {
+            "text": "MuJoCo domain randomization (mass 80-120%, friction 0.5-1.25, motor strength 80-120%, latency, control step, etc.) enabled successful sim-to-real transfer for robotic manipulation without exact parameter identification",
+            "uuids": [
+                "e1328.0"
+            ]
+        },
+        {
+            "text": "CAD2RL randomized textures/lighting across synthetic hallways achieved successful real-world quadrotor flight without photorealistic rendering, outperforming single realistic reconstruction (RTG)",
+            "uuids": [
+                "e1497.0",
+                "e1497.3"
+            ]
+        },
+        {
+            "text": "Domain randomization in MuJoCo+Unity for dexterous manipulation (physics parameters, observation noise, unmodeled effects like delays/backlash/forces) was necessary and sufficient for transfer; removing any randomization category caused substantial transfer degradation",
+            "uuids": [
+                "e1534.2"
+            ]
+        },
+        {
+            "text": "Low-fidelity MuJoCo renderer with heavy visual randomization (200+ textures, lighting, camera poses, distractors) transferred successfully to real robot localization without photorealistic rendering or detailed system identification",
+            "uuids": [
+                "e1511.0"
+            ]
+        },
+        {
+            "text": "Randomized parameter ensemble in PyBullet (mass, inertia, friction, latency, perturbations) improved transfer robustness and reduced sim-to-real gap compared to fixed parameters, though with lower peak simulated performance",
+            "uuids": [
+                "e1506.2"
+            ]
+        },
+        {
+            "text": "Robustified controllers with dynamics/appearance randomization in MuJoCo+Ogre3D required ~4x less real-world fine-tuning (55K vs 220K steps) than non-robustified controllers for marble maze task",
+            "uuids": [
+                "e1493.0"
+            ]
+        },
+        {
+            "text": "Random Force Injection (RFI) - injecting stochastic forces rather than randomizing many individual parameters - achieved superior and more consistent sim-to-real transfer with less tuning effort than traditional domain randomization",
+            "uuids": [
+                "e1306.3"
+            ]
+        },
+        {
+            "text": "Randomization of action timestep and observation noise were particularly critical for transfer in MuJoCo pushing task; disabling either caused success rate to drop from 0.89 to 0.29 or 0.25",
+            "uuids": [
+                "e1328.0"
+            ]
+        },
+        {
+            "text": "Domain randomization approach (CAD2RL) cited as successful example enabling sim-to-real transfer without real-image training when using heavy appearance variation",
+            "uuids": [
+                "e1535.7"
+            ]
+        },
+        {
+            "text": "Ensemble/randomized physics simulations mentioned as strategy for learning robust control policies that generalize over parameter uncertainty",
+            "uuids": [
+                "e1511.1"
+            ]
+        },
+        {
+            "text": "General discussion of domain randomization as robustness strategy even when simulators are approximations",
+            "uuids": [
+                "e1300.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Photorealistic rendering is not necessary for vision-based transfer if sufficient appearance diversity (textures, lighting, camera poses, backgrounds) is provided during training, covering the space of visual variations likely in the target domain",
+        "Exact parameter identification is not necessary if training covers a distribution that includes or brackets the true real-world parameters within physically plausible ranges",
+        "Randomization of task-relevant parameters (contact dynamics/friction for manipulation, appearance for vision, latency/noise for control) is more important than randomization of task-irrelevant parameters",
+        "Domain randomization can compensate for simplified models of complex phenomena (e.g., micro-scale contact, aerodynamics) if: (a) the base simulator captures correct qualitative behavior, and (b) randomization captures the resulting behavioral variability",
+        "The optimal randomization range trades off between robustness (wider ranges) and performance (narrower ranges); excessively wide randomization can produce infeasible scenarios, degrade learning efficiency, and yield overly conservative policies",
+        "Randomization effectiveness depends on task structure: closed-loop reactive control benefits more from randomization than open-loop planning tasks where action sequences are highly sensitive to exact dynamics",
+        "Informed or Bayesian randomization (using domain knowledge or limited real data to constrain ranges) is more effective than uniform randomization over arbitrarily wide ranges",
+        "Randomization must be combined with correct structural physics; it cannot compensate for fundamentally missing dynamics models (e.g., missing actuator models, missing aerodynamic forces)"
+    ],
+    "new_predictions_likely": [
+        "For thermodynamics simulators: Randomizing boundary conditions (heat transfer coefficients ±20%), material properties (thermal conductivity, specific heat ±15%), initial temperatures (±10%), and ambient conditions across plausible ranges should enable transfer to real thermal systems without exact material property identification, provided the heat equation structure is correct",
+        "For circuit simulators: Randomizing component tolerances (resistors/capacitors ±10-20%), parasitic effects (stray capacitance/inductance), power supply noise, and temperature coefficients should enable transfer to physical circuits without precise component characterization, for circuits operating in linear/weakly-nonlinear regimes",
+        "For biological simulators: Randomizing kinetic rate constants (±30-50%), initial concentrations (±20%), cell-to-cell variability, and measurement noise should enable transfer to real biological experiments without exact parameter fitting, for systems where the reaction network topology is known",
+        "Vision-based control tasks in new domains (e.g., thermal imaging for process control) should benefit more from appearance randomization than dynamics randomization, similar to robotics vision tasks",
+        "Contact-rich manipulation in new domains (e.g., food handling, soft materials) should require randomization of contact/friction parameters specifically, similar to rigid-body manipulation"
+    ],
+    "new_predictions_unknown": [
+        "Whether domain randomization alone (without high-fidelity base physics) can enable transfer in domains with strong nonlinear coupling and bifurcations (e.g., thermodynamic phase transitions, circuit oscillations, biological feedback loops with switch-like behavior)",
+        "The minimum diversity (number of randomized parameters × range width) required for successful transfer as a function of task complexity, domain, and gap structure - and whether this scales differently for thermodynamics/circuits/biology vs mechanics",
+        "Whether randomization strategies that work for robotics (primarily mechanics with ~10-100 parameters) transfer effectively to other scientific domains with different characteristic timescales (microseconds to hours), coupling strengths, and parameter counts (potentially 100s-1000s)",
+        "Whether stochastic force injection (RFI-style) generalizes to other domains: e.g., random thermal fluctuations for thermodynamics, random voltage/current noise for circuits, random molecular noise for biology",
+        "The relationship between randomization effectiveness and the specific structure of the reality gap (systematic bias vs random noise vs model misspecification) - whether different gap types require different randomization strategies",
+        "Whether Bayesian/adaptive randomization (learning optimal ranges from limited real data) provides sufficient benefit to justify the additional complexity in scientific domains beyond robotics"
+    ],
+    "negative_experiments": [
+        "Finding cases where narrow, well-calibrated simulators (with exact parameter identification) consistently outperform broadly randomized simulators would challenge the sufficiency of randomization and suggest identification is necessary",
+        "Demonstrating that randomization of demonstrably irrelevant parameters (e.g., visual appearance for proprioceptive control, or thermal properties for electrical circuits) improves transfer would challenge the task-relevance principle",
+        "Showing that extremely wide randomization covering physically implausible parameter ranges (e.g., negative masses, superluminal speeds) improves transfer would challenge the plausibility constraint",
+        "Finding domains where randomization actively harms transfer (negative transfer) compared to fixed nominal parameters would challenge the generality of the approach",
+        "Demonstrating that randomization cannot compensate for missing fundamental physics (e.g., training without gravity for terrestrial robotics, without diffusion for reaction-diffusion systems) would establish hard limits on randomization sufficiency"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Limited direct evidence from thermodynamics, circuits, and biology domains - most evidence is from robotics/mechanics/vision, with only indirect evidence from other scientific domains",
+            "uuids": [
+                "e1321.8",
+                "e1329.0",
+                "e1329.1",
+                "e1329.2",
+                "e1329.3",
+                "e1329.4",
+                "e1329.8"
+            ]
+        },
+        {
+            "text": "How to determine optimal randomization ranges without extensive real-world experimentation or domain expertise - the theory does not provide a principled method for range selection",
+            "uuids": []
+        },
+        {
+            "text": "The computational cost of training with wide randomization (orders of magnitude more samples required) and whether this cost is justified by transfer benefits in all domains",
+            "uuids": [
+                "e1534.2"
+            ]
+        },
+        {
+            "text": "The relationship between randomization strategy and the specific structure of the reality gap (e.g., whether systematic biases require different randomization than random noise)",
+            "uuids": []
+        },
+        {
+            "text": "How randomization interacts with other sim-to-real techniques (e.g., domain adaptation, residual learning, system identification) - whether they are complementary or redundant",
+            "uuids": []
+        },
+        {
+            "text": "The role of curriculum learning in randomization (starting narrow and widening) vs immediate wide randomization",
+            "uuids": []
+        },
+        {
+            "text": "Whether the benefits of randomization scale with model capacity (larger networks may be better able to learn robust features from randomized data)",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Appearance randomization (lighting/color/intensity) had little effect on transfer for marble maze task when dynamics were the primary gap, suggesting randomization must target the actual gap",
+            "uuids": [
+                "e1493.2"
+            ]
+        },
+        {
+            "text": "Randomization alone could not overcome large modeling errors (missing actuator/latency models) in PyBullet Minitaur experiments; adequate base fidelity was required in addition to randomization",
+            "uuids": [
+                "e1506.2"
+            ]
+        },
+        {
+            "text": "Overly wide randomization in NVIDIA Flex produced infeasible scenarios (peg too large, rope too short) causing learning failure and requiring narrower, informed ranges",
+            "uuids": [
+                "e1305.0"
+            ]
+        },
+        {
+            "text": "Randomization produced conservative policies with lower peak performance in PyBullet experiments, showing a robustness-performance tradeoff",
+            "uuids": [
+                "e1506.2"
+            ]
+        },
+        {
+            "text": "Uniform prior domain randomization failed for open-loop Fetch Slide task in BayesSim experiments, requiring Bayesian posterior over parameters instead",
+            "uuids": [
+                "e1524.0"
+            ]
+        },
+        {
+            "text": "Vanilla PyBullet with randomization still failed for BALLU robot without proper actuator modeling and residual physics learning, showing randomization cannot replace fundamental missing models",
+            "uuids": [
+                "e1327.1"
+            ]
+        },
+        {
+            "text": "Fixed-texture training (FT3, FT9) with limited diversity failed to transfer despite being based on real hallway geometry, but randomized textures succeeded - suggesting diversity threshold exists",
+            "uuids": [
+                "e1497.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Randomization is most effective when combined with correct qualitative physics structure in the base simulator; it cannot compensate for fundamentally wrong or missing physics models",
+        "Vision-based tasks require more appearance randomization (textures, lighting, camera) but may need less dynamics randomization if control is reactive rather than predictive",
+        "Contact-rich manipulation tasks require specific randomization of contact/friction parameters, not just general dynamics randomization",
+        "Open-loop planning tasks (where action sequences are pre-computed) benefit less from randomization than closed-loop reactive control tasks",
+        "Randomization ranges should be constrained to physically plausible values; overly wide ranges produce infeasible scenarios that degrade learning",
+        "Informed/Bayesian randomization (using domain knowledge or limited real data) is more effective than uniform randomization over arbitrary ranges",
+        "The computational cost of randomization (requiring many more training samples) may not be justified for all domains or tasks",
+        "Randomization of task-relevant parameters is critical; randomizing irrelevant parameters provides no benefit and may increase computational cost",
+        "Some domains may require adaptive or curriculum-based randomization (starting narrow, widening over training) rather than immediate wide randomization",
+        "Randomization must include temporal aspects (delays, noise dynamics) not just static parameters for control tasks"
+    ],
+    "existing_theory": {
+        "likely_classification": "existing",
+        "references": [
+            "Tobin et al. (2017) Domain randomization for transferring deep neural networks from simulation to the real world [Original domain randomization paper for vision, established core concept]",
+            "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Extended domain randomization to dynamics/physics parameters for control]",
+            "OpenAI et al. (2018) Learning dexterous in-hand manipulation [Large-scale domain randomization for complex manipulation, demonstrated necessity of randomizing unmodeled effects]",
+            "Muratore et al. (2022) Robot Learning From Randomized Simulations: A Review [Comprehensive review of domain randomization approaches, discusses tradeoffs and limitations]",
+            "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience [SimOpt - adaptive randomization using real data]",
+            "Mehta et al. (2020) Active Domain Randomization [Adaptive selection of randomization parameters during training]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 0,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

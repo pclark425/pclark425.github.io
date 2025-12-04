@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Layer Abstraction Gap Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-90</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-90</p>
+                <p><strong>Name:</strong> Multi-Layer Abstraction Gap Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about faithfulness gaps between natural language descriptions and code implementations in automated experimentation, based on the following results.</p>
+                <p><strong>Description:</strong> Faithfulness gaps arise from mismatches across multiple abstraction layers in the computational stack: natural language descriptions operate at the highest conceptual level, while actual execution involves progressively lower levels (mathematical notation, algorithmic specification, high-level code, library implementations, framework behavior, hardware execution). Each layer transition introduces potential mismatches due to implicit assumptions, default behaviors, implementation choices, and environmental dependencies. The cumulative effect of these layer-wise gaps compounds to create discrepancies between described intent and actual behavior. Critically, gaps can occur at any layer transition, and lower-layer gaps can persist even when higher-layer specifications are complete. The theory posits that the total faithfulness gap is not simply additive but multiplicative across layers, as each layer's assumptions build upon those of the layers above it.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Each abstraction layer transition introduces a probability p_i of mismatch, and faithfulness gaps compound across layers rather than simply adding.</li>
+                <li>Lower-level implementation details (hardware, framework, numerical precision) contribute substantial reproducibility variance even when high-level specifications are complete, as evidenced by framework non-determinism, hardware floating-point differences, and auto-tuning behaviors.</li>
+                <li>The abstraction gap is distributed across multiple transitions: natural language to mathematical notation, notation to algorithmic specification, specification to high-level code, code to library/framework implementation, and framework to hardware execution.</li>
+                <li>Implicit assumptions at each layer compound: what is 'obvious' or 'standard' at one level may be unspecified, contradictory, or implemented differently at another level.</li>
+                <li>Methods that span more abstraction layers (e.g., deep learning with custom hardware and complex preprocessing) have larger faithfulness gaps than methods with fewer layers (e.g., classical algorithms with standard libraries).</li>
+                <li>Heuristic defaults and implementation choices at lower layers (kernel widths, distance metrics, background distributions, smoothing parameters) can fundamentally alter method behavior despite matching high-level descriptions.</li>
+                <li>Mathematical and algorithmic descriptions that omit implementation-critical details (gradient derivations, numerical stability considerations, edge cases) force implementers to make choices that introduce variance.</li>
+                <li>Environmental dependencies (hardware, framework versions, compiler flags) create a moving target where identical high-level code produces different results across execution contexts.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Framework-level non-determinism in PyTorch/cuDNN causes divergence despite identical high-level code due to non-deterministic kernels, algorithm selection, and multithreading. <a href="../results/extraction-result-491.html#e491.1" class="evidence-link">[e491.1]</a> <a href="../results/extraction-result-688.html#e688.4" class="evidence-link">[e688.4]</a> </li>
+    <li>Hardware-induced floating-point non-determinism (NVIDIA Tensor Cores probabilistic rounding) produces bit-level differences across identical runs. <a href="../results/extraction-result-491.html#e491.0" class="evidence-link">[e491.0]</a> </li>
+    <li>Auto-selection of low-level primitives (cuDNN autotune) causes environment-dependent changes in execution mode. <a href="../results/extraction-result-688.html#e688.4" class="evidence-link">[e688.4]</a> </li>
+    <li>Embedding lookup implementation (index-based vs one-hot) differs from tutorial descriptions, affecting gradient computation and preventing gradient-based discrete attacks without explicit one-hot representation. <a href="../results/extraction-result-717.html#e717.0" class="evidence-link">[e717.0]</a> </li>
+    <li>Hessian inversion approximations (conjugate gradients, stochastic estimators) differ from theoretical exact inversion due to computational constraints, introducing approximation error. <a href="../results/extraction-result-722.html#e722.2" class="evidence-link">[e722.2]</a> </li>
+    <li>Non-differentiable loss implementations (hinge loss) require smoothing that differs from theoretical descriptions; naive influence computation overestimates influence without smoothing. <a href="../results/extraction-result-722.html#e722.1" class="evidence-link">[e722.1]</a> </li>
+    <li>Influence function implementations rely on convexity approximations that break in deep non-convex models, producing unreliable attributions despite theoretical guarantees. <a href="../results/extraction-result-432.html#e432.4" class="evidence-link">[e432.4]</a> </li>
+    <li>Perturbation-based explanations (LIME/SHAP) generate off-manifold samples that differ from real data distribution, causing explanations to reflect behavior on OOD synthetic inputs rather than real data. <a href="../results/extraction-result-673.html#e673.0" class="evidence-link">[e673.0]</a> </li>
+    <li>Guided Backpropagation implementation produces input recovery rather than model-sensitive attributions due to modified ReLU backprop rules, remaining invariant to higher-layer weight randomization. <a href="../results/extraction-result-672.html#e672.1" class="evidence-link">[e672.1]</a> </li>
+    <li>LIME/SHAP heuristic defaults (kernel widths, distance metrics, background distributions) differ from theoretical assumptions about locality and faithfulness, enabling adversarial manipulation. <a href="../results/extraction-result-673.html#e673.1" class="evidence-link">[e673.1]</a> </li>
+    <li>Exponent range underflow in FP16-based error correction: theoretical descriptions miss high probability of underflow/gradual underflow for certain exponent ranges, causing accuracy loss. <a href="../results/extraction-result-693.html#e693.3" class="evidence-link">[e693.3]</a> </li>
+    <li>Incorrect mantissa-bit analysis in natural language description (Feng et al.): omission of IEEE-754 implicit leading bit led to wrong bit-indexing in rounding logic implementation. <a href="../results/extraction-result-693.html#e693.1" class="evidence-link">[e693.1]</a> </li>
+    <li>Attention weights described as importance scores in natural language, but implementations compute attention on intermediate hidden states that mix contextual information, not direct input-level contributions. <a href="../results/extraction-result-432.html#e432.0" class="evidence-link">[e432.0]</a> </li>
+    <li>Bag-of-words statistical alignment models described in methods differ from sequence-aware neural implementations, causing misinterpretation of queries and poor retrieval. <a href="../results/extraction-result-684.html#e684.1" class="evidence-link">[e684.1]</a> </li>
+    <li>Environmental differences (hardware, compilers, framework versions) cause divergent computational outcomes even with identical code and seeds. <a href="../results/extraction-result-485.html#e485.6" class="evidence-link">[e485.6]</a> </li>
+    <li>Implementation non-determinism from floating-point operation ordering and library behavior produces measurable run-to-run variance not captured in natural language descriptions. <a href="../results/extraction-result-703.html#e703.1" class="evidence-link">[e703.1]</a> </li>
+    <li>Translation artifacts from independent component translation alter superficial patterns (lexical overlap) that models exploit, causing different behavior on translated test sets. <a href="../results/extraction-result-681.html#e681.1" class="evidence-link">[e681.1]</a> </li>
+    <li>Preprocessing specification gaps: undocumented feature scaling and tokenization choices materially change results (affecting by ~33% in some cases). <a href="../results/extraction-result-454.html#e454.1" class="evidence-link">[e454.1]</a> </li>
+    <li>Data leakage from incorrect train/test split procedures creates distribution shift that confounds evaluation, inflating reported performance. <a href="../results/extraction-result-485.html#e485.7" class="evidence-link">[e485.7]</a> <a href="../results/extraction-result-475.html#e475.0" class="evidence-link">[e475.0]</a> </li>
+    <li>Hyperparameter reporting mismatch: recommended settings from papers often don't transfer across datasets; papers report best settings rather than distributions. <a href="../results/extraction-result-728.html#e728.0" class="evidence-link">[e728.0]</a> <a href="../results/extraction-result-706.html#e706.0" class="evidence-link">[e706.0]</a> </li>
+    <li>Missing gradient derivations force reproducers to re-derive potentially non-trivial expressions, introducing implementation differences. <a href="../results/extraction-result-487.html#e487.2" class="evidence-link">[e487.2]</a> </li>
+    <li>Excessive equations without prose or implementation guidance (overformalization) negatively correlates with reproducibility (p=0.004). <a href="../results/extraction-result-711.html#e711.7" class="evidence-link">[e711.7]</a> </li>
+    <li>Random seed sensitivity: high sensitivity to initialization with large variance (e.g., 8.6%-99.0% accuracy range) when seeds unreported or single-run results reported. <a href="../results/extraction-result-475.html#e475.1" class="evidence-link">[e475.1]</a> <a href="../results/extraction-result-706.html#e706.2" class="evidence-link">[e706.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Providing layer-specific specifications (natural language + pseudo-code + reference implementation + environment specification + numerical precision requirements) will reduce reproduction failures by 50-70% compared to natural language alone.</li>
+                <li>Tools that automatically detect abstraction layer mismatches (e.g., comparing theoretical properties to implementation behavior, checking for non-determinism, validating numerical precision) will identify 40-60% of faithfulness gaps.</li>
+                <li>Standardizing lower-layer implementations (e.g., deterministic frameworks, fixed hardware, containerized environments) will reduce variance by 30-50% but not eliminate it due to remaining higher-layer gaps.</li>
+                <li>Methods with fewer abstraction layers (e.g., classical ML with standard libraries on standard hardware) will have 2-4x higher reproduction rates than deep learning methods with custom implementations and specialized hardware.</li>
+                <li>Explicitly documenting implicit assumptions at each layer (e.g., 'assumes IEEE-754 floating point', 'requires deterministic cuDNN', 'expects specific library versions') will reduce reproduction failures by 20-40%.</li>
+                <li>Providing reference implementations at multiple abstraction levels (pseudo-code, high-level code, optimized code) will improve reproduction success by 30-50% compared to single-level specifications.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether formal verification techniques can bridge abstraction gaps by proving equivalence between layers with >90% success rate for typical ML methods.</li>
+                <li>Whether the abstraction gap follows a predictable mathematical relationship (e.g., exponential, power law) that can be modeled and predicted based on method characteristics.</li>
+                <li>Whether certain abstraction layer transitions are fundamentally more problematic than others across all domains, or whether problematic transitions are domain-specific.</li>
+                <li>Whether AI-assisted tools can automatically generate consistent specifications across all abstraction layers with sufficient accuracy to enable reproduction.</li>
+                <li>Whether the cumulative effect of abstraction gaps follows a multiplicative model (1 - ∏(1 - p_i)) or a more complex interaction pattern.</li>
+                <li>Whether there exists a minimum number of abstraction layers below which faithfulness gaps become negligible.</li>
+                <li>Whether standardizing on specific abstraction layer interfaces (e.g., ONNX for model interchange) can effectively decouple layers and reduce gap propagation.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that low-level implementation details (hardware, framework) account for <10% of reproducibility variance would challenge the theory's emphasis on multi-layer effects.</li>
+                <li>Demonstrating that specifying only the highest abstraction layer (natural language) is sufficient for >90% reproduction success would undermine the theory.</li>
+                <li>Showing that abstraction layer mismatches do not compound (i.e., total gap equals sum of individual gaps rather than multiplicative) would contradict the compounding error model.</li>
+                <li>Finding that methods spanning many layers are no less reproducible than simple methods when controlling for other factors would challenge the theory.</li>
+                <li>Demonstrating that fixing only one abstraction layer (e.g., just providing reference code) achieves >95% reproduction success would suggest layers are independent rather than coupled.</li>
+                <li>Finding that environmental standardization (containers, fixed hardware) achieves near-perfect reproduction would suggest lower layers are the primary source of gaps.</li>
+                <li>Showing that implicit assumptions at different layers do not interact (i.e., an assumption at one layer doesn't affect interpretation at another) would challenge the compounding mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Some high-level specification gaps (missing hyperparameters, unclear method descriptions) cause failures independent of lower-layer issues and may dominate in some cases. <a href="../results/extraction-result-487.html#e487.3" class="evidence-link">[e487.3]</a> <a href="../results/extraction-result-728.html#e728.0" class="evidence-link">[e728.0]</a> <a href="../results/extraction-result-476.html#e476.0" class="evidence-link">[e476.0]</a> <a href="../results/extraction-result-711.html#e711.2" class="evidence-link">[e711.2]</a> </li>
+    <li>Data quality problems (annotation errors, incomplete coverage, outdated documentation) can cause failures orthogonal to abstraction layer issues. <a href="../results/extraction-result-461.html#e461.3" class="evidence-link">[e461.3]</a> <a href="../results/extraction-result-719.html#e719.1" class="evidence-link">[e719.1]</a> <a href="../results/extraction-result-674.html#e674.3" class="evidence-link">[e674.3]</a> <a href="../results/extraction-result-690.html#e690.3" class="evidence-link">[e690.3]</a> </li>
+    <li>Human factors (annotation quality, communication, author responsiveness) affect reproducibility independently of technical layers. <a href="../results/extraction-result-487.html#e487.6" class="evidence-link">[e487.6]</a> <a href="../results/extraction-result-674.html#e674.3" class="evidence-link">[e674.3]</a> <a href="../results/extraction-result-481.html#e481.6" class="evidence-link">[e481.6]</a> </li>
+    <li>Conceptual mismatches (e.g., NLI vs faithfulness, identification vs counting) represent higher-level semantic gaps not fully captured by abstraction layer model. <a href="../results/extraction-result-426.html#e426.1" class="evidence-link">[e426.1]</a> <a href="../results/extraction-result-700.html#e700.2" class="evidence-link">[e700.2]</a> </li>
+    <li>Dataset-level issues (distribution shift, train/test contamination, selection bias) operate at a different level than implementation abstraction layers. <a href="../results/extraction-result-705.html#e705.3" class="evidence-link">[e705.3]</a> <a href="../results/extraction-result-681.html#e681.0" class="evidence-link">[e681.0]</a> <a href="../results/extraction-result-719.html#e719.8" class="evidence-link">[e719.8]</a> </li>
+    <li>Evaluation methodology gaps (metric misalignment, insufficient test coverage) represent measurement issues distinct from implementation layers. <a href="../results/extraction-result-708.html#e708.1" class="evidence-link">[e708.1]</a> <a href="../results/extraction-result-440.html#e440.3" class="evidence-link">[e440.3]</a> <a href="../results/extraction-result-752.html#e752.5" class="evidence-link">[e752.5]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Pham et al. (2020) Problems and opportunities in training deep learning software systems: An analysis of variance [Documents variance from framework and hardware differences but doesn't frame as systematic multi-layer abstraction theory]</li>
+    <li>Gundersen & Kjensmo (2018) State of the Art: Reproducibility in Artificial Intelligence [Discusses multiple reproducibility factors but not explicitly as layered abstractions with compounding effects]</li>
+    <li>Collberg & Proebsting (2016) Repeatability in Computer Systems Research [Discusses build and execution issues but not as systematic layer theory with multiplicative gaps]</li>
+    <li>Henderson et al. (2018) Deep Reinforcement Learning that Matters [Documents implementation sensitivity but doesn't generalize to multi-layer abstraction framework]</li>
+    <li>Pineau et al. (2021) Improving Reproducibility in Machine Learning Research [Discusses reproducibility checklist and factors but not as abstraction layer theory]</li>
+    <li>Raff (2019) A Step Toward Quantifying Independently Reproducible Machine Learning Research [Empirically studies reproducibility factors but doesn't propose multi-layer abstraction model]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Multi-Layer Abstraction Gap Theory",
+    "theory_description": "Faithfulness gaps arise from mismatches across multiple abstraction layers in the computational stack: natural language descriptions operate at the highest conceptual level, while actual execution involves progressively lower levels (mathematical notation, algorithmic specification, high-level code, library implementations, framework behavior, hardware execution). Each layer transition introduces potential mismatches due to implicit assumptions, default behaviors, implementation choices, and environmental dependencies. The cumulative effect of these layer-wise gaps compounds to create discrepancies between described intent and actual behavior. Critically, gaps can occur at any layer transition, and lower-layer gaps can persist even when higher-layer specifications are complete. The theory posits that the total faithfulness gap is not simply additive but multiplicative across layers, as each layer's assumptions build upon those of the layers above it.",
+    "supporting_evidence": [
+        {
+            "text": "Framework-level non-determinism in PyTorch/cuDNN causes divergence despite identical high-level code due to non-deterministic kernels, algorithm selection, and multithreading.",
+            "uuids": [
+                "e491.1",
+                "e688.4"
+            ]
+        },
+        {
+            "text": "Hardware-induced floating-point non-determinism (NVIDIA Tensor Cores probabilistic rounding) produces bit-level differences across identical runs.",
+            "uuids": [
+                "e491.0"
+            ]
+        },
+        {
+            "text": "Auto-selection of low-level primitives (cuDNN autotune) causes environment-dependent changes in execution mode.",
+            "uuids": [
+                "e688.4"
+            ]
+        },
+        {
+            "text": "Embedding lookup implementation (index-based vs one-hot) differs from tutorial descriptions, affecting gradient computation and preventing gradient-based discrete attacks without explicit one-hot representation.",
+            "uuids": [
+                "e717.0"
+            ]
+        },
+        {
+            "text": "Hessian inversion approximations (conjugate gradients, stochastic estimators) differ from theoretical exact inversion due to computational constraints, introducing approximation error.",
+            "uuids": [
+                "e722.2"
+            ]
+        },
+        {
+            "text": "Non-differentiable loss implementations (hinge loss) require smoothing that differs from theoretical descriptions; naive influence computation overestimates influence without smoothing.",
+            "uuids": [
+                "e722.1"
+            ]
+        },
+        {
+            "text": "Influence function implementations rely on convexity approximations that break in deep non-convex models, producing unreliable attributions despite theoretical guarantees.",
+            "uuids": [
+                "e432.4"
+            ]
+        },
+        {
+            "text": "Perturbation-based explanations (LIME/SHAP) generate off-manifold samples that differ from real data distribution, causing explanations to reflect behavior on OOD synthetic inputs rather than real data.",
+            "uuids": [
+                "e673.0"
+            ]
+        },
+        {
+            "text": "Guided Backpropagation implementation produces input recovery rather than model-sensitive attributions due to modified ReLU backprop rules, remaining invariant to higher-layer weight randomization.",
+            "uuids": [
+                "e672.1"
+            ]
+        },
+        {
+            "text": "LIME/SHAP heuristic defaults (kernel widths, distance metrics, background distributions) differ from theoretical assumptions about locality and faithfulness, enabling adversarial manipulation.",
+            "uuids": [
+                "e673.1"
+            ]
+        },
+        {
+            "text": "Exponent range underflow in FP16-based error correction: theoretical descriptions miss high probability of underflow/gradual underflow for certain exponent ranges, causing accuracy loss.",
+            "uuids": [
+                "e693.3"
+            ]
+        },
+        {
+            "text": "Incorrect mantissa-bit analysis in natural language description (Feng et al.): omission of IEEE-754 implicit leading bit led to wrong bit-indexing in rounding logic implementation.",
+            "uuids": [
+                "e693.1"
+            ]
+        },
+        {
+            "text": "Attention weights described as importance scores in natural language, but implementations compute attention on intermediate hidden states that mix contextual information, not direct input-level contributions.",
+            "uuids": [
+                "e432.0"
+            ]
+        },
+        {
+            "text": "Bag-of-words statistical alignment models described in methods differ from sequence-aware neural implementations, causing misinterpretation of queries and poor retrieval.",
+            "uuids": [
+                "e684.1"
+            ]
+        },
+        {
+            "text": "Environmental differences (hardware, compilers, framework versions) cause divergent computational outcomes even with identical code and seeds.",
+            "uuids": [
+                "e485.6"
+            ]
+        },
+        {
+            "text": "Implementation non-determinism from floating-point operation ordering and library behavior produces measurable run-to-run variance not captured in natural language descriptions.",
+            "uuids": [
+                "e703.1"
+            ]
+        },
+        {
+            "text": "Translation artifacts from independent component translation alter superficial patterns (lexical overlap) that models exploit, causing different behavior on translated test sets.",
+            "uuids": [
+                "e681.1"
+            ]
+        },
+        {
+            "text": "Preprocessing specification gaps: undocumented feature scaling and tokenization choices materially change results (affecting by ~33% in some cases).",
+            "uuids": [
+                "e454.1"
+            ]
+        },
+        {
+            "text": "Data leakage from incorrect train/test split procedures creates distribution shift that confounds evaluation, inflating reported performance.",
+            "uuids": [
+                "e485.7",
+                "e475.0"
+            ]
+        },
+        {
+            "text": "Hyperparameter reporting mismatch: recommended settings from papers often don't transfer across datasets; papers report best settings rather than distributions.",
+            "uuids": [
+                "e728.0",
+                "e706.0"
+            ]
+        },
+        {
+            "text": "Missing gradient derivations force reproducers to re-derive potentially non-trivial expressions, introducing implementation differences.",
+            "uuids": [
+                "e487.2"
+            ]
+        },
+        {
+            "text": "Excessive equations without prose or implementation guidance (overformalization) negatively correlates with reproducibility (p=0.004).",
+            "uuids": [
+                "e711.7"
+            ]
+        },
+        {
+            "text": "Random seed sensitivity: high sensitivity to initialization with large variance (e.g., 8.6%-99.0% accuracy range) when seeds unreported or single-run results reported.",
+            "uuids": [
+                "e475.1",
+                "e706.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Each abstraction layer transition introduces a probability p_i of mismatch, and faithfulness gaps compound across layers rather than simply adding.",
+        "Lower-level implementation details (hardware, framework, numerical precision) contribute substantial reproducibility variance even when high-level specifications are complete, as evidenced by framework non-determinism, hardware floating-point differences, and auto-tuning behaviors.",
+        "The abstraction gap is distributed across multiple transitions: natural language to mathematical notation, notation to algorithmic specification, specification to high-level code, code to library/framework implementation, and framework to hardware execution.",
+        "Implicit assumptions at each layer compound: what is 'obvious' or 'standard' at one level may be unspecified, contradictory, or implemented differently at another level.",
+        "Methods that span more abstraction layers (e.g., deep learning with custom hardware and complex preprocessing) have larger faithfulness gaps than methods with fewer layers (e.g., classical algorithms with standard libraries).",
+        "Heuristic defaults and implementation choices at lower layers (kernel widths, distance metrics, background distributions, smoothing parameters) can fundamentally alter method behavior despite matching high-level descriptions.",
+        "Mathematical and algorithmic descriptions that omit implementation-critical details (gradient derivations, numerical stability considerations, edge cases) force implementers to make choices that introduce variance.",
+        "Environmental dependencies (hardware, framework versions, compiler flags) create a moving target where identical high-level code produces different results across execution contexts."
+    ],
+    "new_predictions_likely": [
+        "Providing layer-specific specifications (natural language + pseudo-code + reference implementation + environment specification + numerical precision requirements) will reduce reproduction failures by 50-70% compared to natural language alone.",
+        "Tools that automatically detect abstraction layer mismatches (e.g., comparing theoretical properties to implementation behavior, checking for non-determinism, validating numerical precision) will identify 40-60% of faithfulness gaps.",
+        "Standardizing lower-layer implementations (e.g., deterministic frameworks, fixed hardware, containerized environments) will reduce variance by 30-50% but not eliminate it due to remaining higher-layer gaps.",
+        "Methods with fewer abstraction layers (e.g., classical ML with standard libraries on standard hardware) will have 2-4x higher reproduction rates than deep learning methods with custom implementations and specialized hardware.",
+        "Explicitly documenting implicit assumptions at each layer (e.g., 'assumes IEEE-754 floating point', 'requires deterministic cuDNN', 'expects specific library versions') will reduce reproduction failures by 20-40%.",
+        "Providing reference implementations at multiple abstraction levels (pseudo-code, high-level code, optimized code) will improve reproduction success by 30-50% compared to single-level specifications."
+    ],
+    "new_predictions_unknown": [
+        "Whether formal verification techniques can bridge abstraction gaps by proving equivalence between layers with &gt;90% success rate for typical ML methods.",
+        "Whether the abstraction gap follows a predictable mathematical relationship (e.g., exponential, power law) that can be modeled and predicted based on method characteristics.",
+        "Whether certain abstraction layer transitions are fundamentally more problematic than others across all domains, or whether problematic transitions are domain-specific.",
+        "Whether AI-assisted tools can automatically generate consistent specifications across all abstraction layers with sufficient accuracy to enable reproduction.",
+        "Whether the cumulative effect of abstraction gaps follows a multiplicative model (1 - ∏(1 - p_i)) or a more complex interaction pattern.",
+        "Whether there exists a minimum number of abstraction layers below which faithfulness gaps become negligible.",
+        "Whether standardizing on specific abstraction layer interfaces (e.g., ONNX for model interchange) can effectively decouple layers and reduce gap propagation."
+    ],
+    "negative_experiments": [
+        "Finding that low-level implementation details (hardware, framework) account for &lt;10% of reproducibility variance would challenge the theory's emphasis on multi-layer effects.",
+        "Demonstrating that specifying only the highest abstraction layer (natural language) is sufficient for &gt;90% reproduction success would undermine the theory.",
+        "Showing that abstraction layer mismatches do not compound (i.e., total gap equals sum of individual gaps rather than multiplicative) would contradict the compounding error model.",
+        "Finding that methods spanning many layers are no less reproducible than simple methods when controlling for other factors would challenge the theory.",
+        "Demonstrating that fixing only one abstraction layer (e.g., just providing reference code) achieves &gt;95% reproduction success would suggest layers are independent rather than coupled.",
+        "Finding that environmental standardization (containers, fixed hardware) achieves near-perfect reproduction would suggest lower layers are the primary source of gaps.",
+        "Showing that implicit assumptions at different layers do not interact (i.e., an assumption at one layer doesn't affect interpretation at another) would challenge the compounding mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Some high-level specification gaps (missing hyperparameters, unclear method descriptions) cause failures independent of lower-layer issues and may dominate in some cases.",
+            "uuids": [
+                "e487.3",
+                "e728.0",
+                "e476.0",
+                "e711.2"
+            ]
+        },
+        {
+            "text": "Data quality problems (annotation errors, incomplete coverage, outdated documentation) can cause failures orthogonal to abstraction layer issues.",
+            "uuids": [
+                "e461.3",
+                "e719.1",
+                "e674.3",
+                "e690.3"
+            ]
+        },
+        {
+            "text": "Human factors (annotation quality, communication, author responsiveness) affect reproducibility independently of technical layers.",
+            "uuids": [
+                "e487.6",
+                "e674.3",
+                "e481.6"
+            ]
+        },
+        {
+            "text": "Conceptual mismatches (e.g., NLI vs faithfulness, identification vs counting) represent higher-level semantic gaps not fully captured by abstraction layer model.",
+            "uuids": [
+                "e426.1",
+                "e700.2"
+            ]
+        },
+        {
+            "text": "Dataset-level issues (distribution shift, train/test contamination, selection bias) operate at a different level than implementation abstraction layers.",
+            "uuids": [
+                "e705.3",
+                "e681.0",
+                "e719.8"
+            ]
+        },
+        {
+            "text": "Evaluation methodology gaps (metric misalignment, insufficient test coverage) represent measurement issues distinct from implementation layers.",
+            "uuids": [
+                "e708.1",
+                "e440.3",
+                "e752.5"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some methods with many abstraction layers (e.g., standard deep learning with PyTorch/TensorFlow) achieve high reproducibility when using standard frameworks and documented practices, suggesting layer count alone doesn't determine gap size.",
+            "uuids": [
+                "e445.1"
+            ]
+        },
+        {
+            "text": "Fixing only high-level specifications (providing hyperparameters, clear descriptions) sometimes achieves reproduction without addressing lower layers, suggesting layers may be more independent than the theory suggests.",
+            "uuids": [
+                "e487.6",
+                "e487.3"
+            ]
+        },
+        {
+            "text": "Some low-level implementation details (e.g., specific GPU model) have minimal impact on results in practice, contradicting the theory's emphasis on lower-layer importance.",
+            "uuids": [
+                "e694.4"
+            ]
+        },
+        {
+            "text": "Author-provided code sometimes contains bugs or implements different variants than described, suggesting the code-description gap can be larger than lower-level implementation gaps.",
+            "uuids": [
+                "e445.3",
+                "e677.2"
+            ]
+        },
+        {
+            "text": "Independent reimplementation sometimes succeeds where original code fails, suggesting that abstraction layers can provide robustness rather than only introducing gaps.",
+            "uuids": [
+                "e475.5"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Deterministic algorithms with standard library implementations and no floating-point operations have minimal abstraction gaps across all layers.",
+        "Custom hardware accelerators (TPUs, specialized ASICs) introduce additional abstraction layers with unique gap characteristics not present in CPU/GPU implementations.",
+        "Distributed training introduces synchronization and communication layers that create additional gap opportunities beyond single-machine implementations.",
+        "Quantum computing methods will have fundamentally different abstraction layer structures and gap patterns due to quantum-specific hardware and algorithmic constraints.",
+        "Methods using only integer arithmetic avoid floating-point precision gaps but may still have other layer mismatches.",
+        "Purely symbolic methods (e.g., SAT solvers, constraint programming) have different abstraction layer structures focused on logical rather than numerical correctness.",
+        "Interactive methods (e.g., human-in-the-loop) introduce additional human-computer interface layers with unique gap characteristics.",
+        "Real-time systems introduce timing constraints that create additional abstraction layers related to scheduling and resource allocation.",
+        "Methods with formal specifications (e.g., verified compilers) can have provably minimal gaps at certain layer transitions.",
+        "Domain-specific languages (DSLs) can reduce abstraction gaps by providing higher-level primitives that map more directly to domain concepts."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Pham et al. (2020) Problems and opportunities in training deep learning software systems: An analysis of variance [Documents variance from framework and hardware differences but doesn't frame as systematic multi-layer abstraction theory]",
+            "Gundersen & Kjensmo (2018) State of the Art: Reproducibility in Artificial Intelligence [Discusses multiple reproducibility factors but not explicitly as layered abstractions with compounding effects]",
+            "Collberg & Proebsting (2016) Repeatability in Computer Systems Research [Discusses build and execution issues but not as systematic layer theory with multiplicative gaps]",
+            "Henderson et al. (2018) Deep Reinforcement Learning that Matters [Documents implementation sensitivity but doesn't generalize to multi-layer abstraction framework]",
+            "Pineau et al. (2021) Improving Reproducibility in Machine Learning Research [Discusses reproducibility checklist and factors but not as abstraction layer theory]",
+            "Raff (2019) A Step Toward Quantifying Independently Reproducible Machine Learning Research [Empirically studies reproducibility factors but doesn't propose multi-layer abstraction model]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 1,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Diversity-Efficiency Tradeoff - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-433</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-433</p>
+                <p><strong>Name:</strong> Batch Diversity-Efficiency Tradeoff</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of optimal resource allocation in automated scientific discovery systems, balancing computational cost of evaluation against expected information gain, probability of breakthrough discoveries, and diversity of explored hypotheses under budget constraints, based on the following results.</p>
+                <p><strong>Description:</strong> In parallel/batch experimental settings, optimal batch construction requires explicit diversity mechanisms to avoid redundant evaluations, with the optimal diversity level balancing information gain per batch member against batch size and computational overhead. Methods with explicit diversity mechanisms (LP, qVS, DPP, PDTS, MACE) achieve 1.5-74x better efficiency than naive parallel selection by avoiding redundancy, with gains depending on batch size, problem structure, and evaluation cost. The optimal batch diversity increases with: (1) batch size, (2) surrogate uncertainty, (3) correlation length in the search space. However, diversity mechanisms themselves incur computational costs that must be balanced against evaluation savings.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Batch methods with explicit diversity mechanisms achieve 1.5-74x better efficiency than naive parallel selection, with gains depending on batch size, problem structure, and evaluation cost</li>
+                <li>The optimal batch diversity level increases with: (1) batch size q, (2) surrogate uncertainty σ, (3) correlation length scale l in the search space</li>
+                <li>Diversity can be enforced via: (1) spatial penalization (LP, trust regions), (2) posterior sampling (Thompson sampling), (3) explicit diversity metrics (qVS, DPP), (4) clustering (K-means), (5) information-theoretic criteria (PPES), (6) simulation matching</li>
+                <li>The diversity-efficiency tradeoff: too little diversity wastes batch members on redundant evaluations, too much diversity sacrifices quality for coverage, and diversity mechanisms themselves incur computational costs</li>
+                <li>Batch diversity is most critical when: (1) batch size is large (>5), (2) search space has strong local correlation, (3) surrogate is confident (low uncertainty), (4) evaluation cost is high relative to acquisition cost</li>
+                <li>Asynchronous batch evaluation requires adapted diversity mechanisms (e.g., HLP) that account for pending evaluations to avoid redundancy</li>
+                <li>Computational cost of diversity mechanisms scales differently: LP is O(batch_size × candidates), qEI is exponential in batch size, KMBBO is O(K-means clustering), Thompson sampling is O(posterior samples)</li>
+                <li>For multi-objective batches, diversity should span both input space and objective space (Pareto front coverage)</li>
+                <li>Adaptive batch diversity (adjusting based on surrogate uncertainty and problem phase) outperforms fixed diversity strategies</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>BBO-LP with Lipschitz-based local penalization achieves up to 74x reduction in simulation time vs DE and up to 15x speedup vs WEIBO by avoiding redundancy through spatial penalization <a href="../results/extraction-result-2622.html#e2622.0" class="evidence-link">[e2622.0]</a> </li>
+    <li>qVS-BayesOpt achieves 70-170% more effective discoveries (1.7-2.7x improvement) by explicitly balancing quality and diversity in batch selection using quality-weighted Vendi Score <a href="../results/extraction-result-2422.html#e2422.2" class="evidence-link">[e2422.2]</a> </li>
+    <li>MACE samples from Pareto front of multiple acquisitions achieving diverse batches and up to 74x speedup vs DE, up to 15x vs WEIBO through multi-objective acquisition ensemble <a href="../results/extraction-result-2476.html#e2476.0" class="evidence-link">[e2476.0]</a> </li>
+    <li>PDTS (parallel Thompson sampling) outperforms epsilon-greedy (average rank 2.51 vs 2.86-3.42) by naturally producing diverse batches through posterior sampling without explicit diversity mechanisms <a href="../results/extraction-result-2630.html#e2630.7" class="evidence-link">[e2630.7]</a> </li>
+    <li>Budgeted-Batch BO uses penalization, fantasies, or lookahead to ensure diversity and spread of information across batch, with explicit budget-aware selection <a href="../results/extraction-result-2635.html#e2635.6" class="evidence-link">[e2635.6]</a> </li>
+    <li>KMBBO uses K-means clustering to enforce spatial diversity in batches, outperforming B3O and other methods without diversity enforcement <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+    <li>Review notes batch composition should mix exploitation and exploration points to balance adaptivity loss from parallel evaluation <a href="../results/extraction-result-2635.html#e2635.6" class="evidence-link">[e2635.6]</a> </li>
+    <li>PLAyBOOK with HLP (Hard Local Penalization) addresses asynchronous batch diversity by setting acquisition to zero at busy points, outperforming naive LP in asynchronous settings <a href="../results/extraction-result-2632.html#e2632.2" class="evidence-link">[e2632.2]</a> </li>
+    <li>B3O uses IGMM peak identification to create diverse batches but is intractable in high dimensions due to slice-sampling scalability <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+    <li>PPES (Parallel Predictive Entropy Search) selects batches to maximize expected reduction in entropy about the global optimizer, explicitly optimizing information gain <a href="../results/extraction-result-2630.html#e2630.2" class="evidence-link">[e2630.2]</a> </li>
+    <li>SimulatedMatching creates batches by matching sequential policy behavior, approximating multi-step selection without full marginalization <a href="../results/extraction-result-2630.html#e2630.6" class="evidence-link">[e2630.6]</a> </li>
+    <li>qEI (multi-point Expected Improvement) optimizes joint expected improvement but can be computationally prohibitive in higher dimensions and large batch sizes <a href="../results/extraction-result-2622.html#e2622.2" class="evidence-link">[e2622.2]</a> </li>
+    <li>CBD (Cached Box Decompositions) reduces batch MOBO acquisition time/space complexity from exponential to polynomial in batch size, enabling larger batches <a href="../results/extraction-result-2636.html#e2636.3" class="evidence-link">[e2636.3]</a> </li>
+    <li>DPP-based diversity methods encode repulsion via determinants but can have degeneracy issues with duplicates <a href="../results/extraction-result-2422.html#e2422.5" class="evidence-link">[e2422.5]</a> </li>
+    <li>Submodular batch selection provides 1-1/e approximation guarantees for monotone submodular objectives, encouraging coverage/diversity <a href="../results/extraction-result-2524.html#e2524.3" class="evidence-link">[e2524.3]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Learned batch diversity policies (from meta-learning across problems) would outperform hand-designed diversity mechanisms by 20-40% by adapting to problem-specific correlation structures</li>
+                <li>Hierarchical batch construction (first select diverse regions via clustering, then refine within regions via local optimization) would improve efficiency for large batches (>20) by 30-50%</li>
+                <li>Diversity-aware multi-fidelity batches (diverse low-fidelity exploration, focused high-fidelity exploitation) would achieve 2-3x better cost-efficiency tradeoffs</li>
+                <li>Adaptive batch size (varying based on surrogate uncertainty and diversity opportunities) would improve efficiency by 15-25% by avoiding over-parallelization when diversity is limited</li>
+                <li>Combining multiple diversity mechanisms (e.g., spatial penalization + posterior sampling) would achieve 10-20% better performance than single mechanisms</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether diversity mechanisms remain beneficial for very small batches (q=2-3) where redundancy is less likely - current evidence is mixed</li>
+                <li>Whether there exist problem classes (e.g., highly multimodal with isolated peaks) where naive parallel selection is optimal due to low correlation</li>
+                <li>Whether diversity mechanisms can be effectively combined with safety constraints in high-stakes domains without sacrificing safety guarantees</li>
+                <li>Whether the optimal diversity level can be predicted from problem features (correlation length, dimensionality, noise) without running experiments</li>
+                <li>Whether diversity mechanisms provide benefits in extremely high-dimensional spaces (>1000D) where curse of dimensionality dominates</li>
+                <li>Whether asynchronous diversity mechanisms can match or exceed synchronous methods when evaluation times are highly variable</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding problems where naive parallel selection consistently outperforms diversity-aware methods would challenge the universality of the principle</li>
+                <li>Demonstrating that diversity mechanisms provide no benefit for small batches (q<5) across a wide range of problems would limit the scope significantly</li>
+                <li>Showing that diversity enforcement leads to worse final solutions (not just slower convergence) in optimization tasks would be problematic for the theory</li>
+                <li>Finding that random batch selection performs as well as optimized diversity in low-correlation problems would undermine the need for explicit mechanisms in those settings</li>
+                <li>Demonstrating that computational cost of diversity mechanisms exceeds evaluation savings in certain problem classes would challenge cost-effectiveness claims</li>
+                <li>Finding that diversity mechanisms fail to provide benefits in asynchronous settings despite adaptation would question their robustness</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't fully address how to optimally handle asynchronous parallel evaluation where batch members complete at different times and new selections must be made with pending evaluations <a href="../results/extraction-result-2632.html#e2632.2" class="evidence-link">[e2632.2]</a> </li>
+    <li>Optimal diversity strategies for heterogeneous evaluation costs within a batch (e.g., different fidelities or different experimental complexities) need more analysis <a href="../results/extraction-result-2622.html#e2622.0" class="evidence-link">[e2622.0]</a> <a href="../results/extraction-result-2464.html#e2464.3" class="evidence-link">[e2464.3]</a> </li>
+    <li>The interaction between batch diversity and multi-objective optimization (diversity in both input and objective space) is not fully characterized <a href="../results/extraction-result-2636.html#e2636.3" class="evidence-link">[e2636.3]</a> <a href="../results/extraction-result-2423.html#e2423.0" class="evidence-link">[e2423.0]</a> </li>
+    <li>How to balance computational cost of diversity mechanisms against evaluation savings in different cost regimes is not fully specified <a href="../results/extraction-result-2622.html#e2622.2" class="evidence-link">[e2622.2]</a> <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+    <li>The theory doesn't address how diversity mechanisms interact with constraint handling in constrained optimization <a href="../results/extraction-result-2476.html#e2476.0" class="evidence-link">[e2476.0]</a> </li>
+    <li>How to adapt diversity mechanisms for discrete/combinatorial spaces versus continuous spaces needs more development <a href="../results/extraction-result-2627.html#e2627.2" class="evidence-link">[e2627.2]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Contal et al. (2013) Parallel Gaussian Process Optimization with Upper Confidence Bound and Pure Exploration [Parallel BO with diversity via GP-UCB-PE]</li>
+    <li>González et al. (2016) Batch Bayesian Optimization via Local Penalization [Local penalization for batch diversity, BBO-LP]</li>
+    <li>Desautels et al. (2014) Parallelizing Exploration-Exploitation Tradeoffs in Gaussian Process Bandit Optimization [Parallel GP-UCB]</li>
+    <li>Wang et al. (2018) Batched Large-scale Bayesian Optimization in High-dimensional Spaces [Batch BO with diversity via trust regions]</li>
+    <li>Ginsbourger et al. (2010) Kriging is well-suited to parallelize optimization [Kriging Believer and Constant Liar for batch BO]</li>
+    <li>Azimi et al. (2010) Batch Bayesian optimization via simulation matching [Simulation matching for batch diversity]</li>
+    <li>Kathuria et al. (2016) Batched Gaussian process bandit optimization via determinantal point processes [DPP-based batch diversity]</li>
+    <li>Marmin et al. (2015) Warped Gaussian processes and derivative-based sequential designs for functions with heterogeneous variations [Batch selection with heterogeneous variations]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Batch Diversity-Efficiency Tradeoff",
+    "theory_description": "In parallel/batch experimental settings, optimal batch construction requires explicit diversity mechanisms to avoid redundant evaluations, with the optimal diversity level balancing information gain per batch member against batch size and computational overhead. Methods with explicit diversity mechanisms (LP, qVS, DPP, PDTS, MACE) achieve 1.5-74x better efficiency than naive parallel selection by avoiding redundancy, with gains depending on batch size, problem structure, and evaluation cost. The optimal batch diversity increases with: (1) batch size, (2) surrogate uncertainty, (3) correlation length in the search space. However, diversity mechanisms themselves incur computational costs that must be balanced against evaluation savings.",
+    "supporting_evidence": [
+        {
+            "text": "BBO-LP with Lipschitz-based local penalization achieves up to 74x reduction in simulation time vs DE and up to 15x speedup vs WEIBO by avoiding redundancy through spatial penalization",
+            "uuids": [
+                "e2622.0"
+            ]
+        },
+        {
+            "text": "qVS-BayesOpt achieves 70-170% more effective discoveries (1.7-2.7x improvement) by explicitly balancing quality and diversity in batch selection using quality-weighted Vendi Score",
+            "uuids": [
+                "e2422.2"
+            ]
+        },
+        {
+            "text": "MACE samples from Pareto front of multiple acquisitions achieving diverse batches and up to 74x speedup vs DE, up to 15x vs WEIBO through multi-objective acquisition ensemble",
+            "uuids": [
+                "e2476.0"
+            ]
+        },
+        {
+            "text": "PDTS (parallel Thompson sampling) outperforms epsilon-greedy (average rank 2.51 vs 2.86-3.42) by naturally producing diverse batches through posterior sampling without explicit diversity mechanisms",
+            "uuids": [
+                "e2630.7"
+            ]
+        },
+        {
+            "text": "Budgeted-Batch BO uses penalization, fantasies, or lookahead to ensure diversity and spread of information across batch, with explicit budget-aware selection",
+            "uuids": [
+                "e2635.6"
+            ]
+        },
+        {
+            "text": "KMBBO uses K-means clustering to enforce spatial diversity in batches, outperforming B3O and other methods without diversity enforcement",
+            "uuids": [
+                "e2627.2"
+            ]
+        },
+        {
+            "text": "Review notes batch composition should mix exploitation and exploration points to balance adaptivity loss from parallel evaluation",
+            "uuids": [
+                "e2635.6"
+            ]
+        },
+        {
+            "text": "PLAyBOOK with HLP (Hard Local Penalization) addresses asynchronous batch diversity by setting acquisition to zero at busy points, outperforming naive LP in asynchronous settings",
+            "uuids": [
+                "e2632.2"
+            ]
+        },
+        {
+            "text": "B3O uses IGMM peak identification to create diverse batches but is intractable in high dimensions due to slice-sampling scalability",
+            "uuids": [
+                "e2627.2"
+            ]
+        },
+        {
+            "text": "PPES (Parallel Predictive Entropy Search) selects batches to maximize expected reduction in entropy about the global optimizer, explicitly optimizing information gain",
+            "uuids": [
+                "e2630.2"
+            ]
+        },
+        {
+            "text": "SimulatedMatching creates batches by matching sequential policy behavior, approximating multi-step selection without full marginalization",
+            "uuids": [
+                "e2630.6"
+            ]
+        },
+        {
+            "text": "qEI (multi-point Expected Improvement) optimizes joint expected improvement but can be computationally prohibitive in higher dimensions and large batch sizes",
+            "uuids": [
+                "e2622.2"
+            ]
+        },
+        {
+            "text": "CBD (Cached Box Decompositions) reduces batch MOBO acquisition time/space complexity from exponential to polynomial in batch size, enabling larger batches",
+            "uuids": [
+                "e2636.3"
+            ]
+        },
+        {
+            "text": "DPP-based diversity methods encode repulsion via determinants but can have degeneracy issues with duplicates",
+            "uuids": [
+                "e2422.5"
+            ]
+        },
+        {
+            "text": "Submodular batch selection provides 1-1/e approximation guarantees for monotone submodular objectives, encouraging coverage/diversity",
+            "uuids": [
+                "e2524.3"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Batch methods with explicit diversity mechanisms achieve 1.5-74x better efficiency than naive parallel selection, with gains depending on batch size, problem structure, and evaluation cost",
+        "The optimal batch diversity level increases with: (1) batch size q, (2) surrogate uncertainty σ, (3) correlation length scale l in the search space",
+        "Diversity can be enforced via: (1) spatial penalization (LP, trust regions), (2) posterior sampling (Thompson sampling), (3) explicit diversity metrics (qVS, DPP), (4) clustering (K-means), (5) information-theoretic criteria (PPES), (6) simulation matching",
+        "The diversity-efficiency tradeoff: too little diversity wastes batch members on redundant evaluations, too much diversity sacrifices quality for coverage, and diversity mechanisms themselves incur computational costs",
+        "Batch diversity is most critical when: (1) batch size is large (&gt;5), (2) search space has strong local correlation, (3) surrogate is confident (low uncertainty), (4) evaluation cost is high relative to acquisition cost",
+        "Asynchronous batch evaluation requires adapted diversity mechanisms (e.g., HLP) that account for pending evaluations to avoid redundancy",
+        "Computational cost of diversity mechanisms scales differently: LP is O(batch_size × candidates), qEI is exponential in batch size, KMBBO is O(K-means clustering), Thompson sampling is O(posterior samples)",
+        "For multi-objective batches, diversity should span both input space and objective space (Pareto front coverage)",
+        "Adaptive batch diversity (adjusting based on surrogate uncertainty and problem phase) outperforms fixed diversity strategies"
+    ],
+    "new_predictions_likely": [
+        "Learned batch diversity policies (from meta-learning across problems) would outperform hand-designed diversity mechanisms by 20-40% by adapting to problem-specific correlation structures",
+        "Hierarchical batch construction (first select diverse regions via clustering, then refine within regions via local optimization) would improve efficiency for large batches (&gt;20) by 30-50%",
+        "Diversity-aware multi-fidelity batches (diverse low-fidelity exploration, focused high-fidelity exploitation) would achieve 2-3x better cost-efficiency tradeoffs",
+        "Adaptive batch size (varying based on surrogate uncertainty and diversity opportunities) would improve efficiency by 15-25% by avoiding over-parallelization when diversity is limited",
+        "Combining multiple diversity mechanisms (e.g., spatial penalization + posterior sampling) would achieve 10-20% better performance than single mechanisms"
+    ],
+    "new_predictions_unknown": [
+        "Whether diversity mechanisms remain beneficial for very small batches (q=2-3) where redundancy is less likely - current evidence is mixed",
+        "Whether there exist problem classes (e.g., highly multimodal with isolated peaks) where naive parallel selection is optimal due to low correlation",
+        "Whether diversity mechanisms can be effectively combined with safety constraints in high-stakes domains without sacrificing safety guarantees",
+        "Whether the optimal diversity level can be predicted from problem features (correlation length, dimensionality, noise) without running experiments",
+        "Whether diversity mechanisms provide benefits in extremely high-dimensional spaces (&gt;1000D) where curse of dimensionality dominates",
+        "Whether asynchronous diversity mechanisms can match or exceed synchronous methods when evaluation times are highly variable"
+    ],
+    "negative_experiments": [
+        "Finding problems where naive parallel selection consistently outperforms diversity-aware methods would challenge the universality of the principle",
+        "Demonstrating that diversity mechanisms provide no benefit for small batches (q&lt;5) across a wide range of problems would limit the scope significantly",
+        "Showing that diversity enforcement leads to worse final solutions (not just slower convergence) in optimization tasks would be problematic for the theory",
+        "Finding that random batch selection performs as well as optimized diversity in low-correlation problems would undermine the need for explicit mechanisms in those settings",
+        "Demonstrating that computational cost of diversity mechanisms exceeds evaluation savings in certain problem classes would challenge cost-effectiveness claims",
+        "Finding that diversity mechanisms fail to provide benefits in asynchronous settings despite adaptation would question their robustness"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't fully address how to optimally handle asynchronous parallel evaluation where batch members complete at different times and new selections must be made with pending evaluations",
+            "uuids": [
+                "e2632.2"
+            ]
+        },
+        {
+            "text": "Optimal diversity strategies for heterogeneous evaluation costs within a batch (e.g., different fidelities or different experimental complexities) need more analysis",
+            "uuids": [
+                "e2622.0",
+                "e2464.3"
+            ]
+        },
+        {
+            "text": "The interaction between batch diversity and multi-objective optimization (diversity in both input and objective space) is not fully characterized",
+            "uuids": [
+                "e2636.3",
+                "e2423.0"
+            ]
+        },
+        {
+            "text": "How to balance computational cost of diversity mechanisms against evaluation savings in different cost regimes is not fully specified",
+            "uuids": [
+                "e2622.2",
+                "e2627.2"
+            ]
+        },
+        {
+            "text": "The theory doesn't address how diversity mechanisms interact with constraint handling in constrained optimization",
+            "uuids": [
+                "e2476.0"
+            ]
+        },
+        {
+            "text": "How to adapt diversity mechanisms for discrete/combinatorial spaces versus continuous spaces needs more development",
+            "uuids": [
+                "e2627.2"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Sequential methods can outperform parallel methods by being more adaptive, especially when batch size equals total budget (no advantage to parallelization)",
+            "uuids": [
+                "e2622.0"
+            ]
+        },
+        {
+            "text": "Very small batches (q=2-3) may not require explicit diversity mechanisms as redundancy is naturally limited",
+            "uuids": [
+                "e2630.7"
+            ]
+        },
+        {
+            "text": "qEI and other joint optimization methods can be computationally prohibitive, suggesting diversity mechanisms have costs that may outweigh benefits in some settings",
+            "uuids": [
+                "e2622.2"
+            ]
+        },
+        {
+            "text": "B3O's IGMM-based diversity becomes intractable in high dimensions, suggesting diversity mechanisms don't scale uniformly",
+            "uuids": [
+                "e2627.2"
+            ]
+        },
+        {
+            "text": "PDTS achieves diversity through posterior sampling without explicit mechanisms, suggesting implicit diversity may suffice in some cases",
+            "uuids": [
+                "e2630.7"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For very small batches (q&lt;3), simple heuristics (pick top-k by acquisition) may suffice as redundancy is naturally limited",
+        "When evaluation costs are highly heterogeneous within a batch, diversity should be balanced against cost-efficiency (allocate more budget to high-value evaluations)",
+        "In asynchronous settings, diversity mechanisms must account for pending evaluations using adapted methods like HLP that set acquisition to zero at busy points",
+        "For safety-critical applications, diversity should be constrained to safe regions, potentially using constrained acquisition functions",
+        "In multi-objective settings, diversity should span both input space (to avoid redundancy) and objective space (to cover Pareto front)",
+        "For discrete/combinatorial spaces, diversity mechanisms need adaptation (e.g., Hamming distance instead of Euclidean)",
+        "When computational cost of diversity mechanisms is high relative to evaluation cost, simpler mechanisms (Thompson sampling) may be preferred",
+        "In very high-dimensional spaces (&gt;100D), spatial diversity mechanisms may become less effective due to curse of dimensionality",
+        "For problems with isolated peaks (low correlation), less aggressive diversity may be optimal to allow local exploitation",
+        "When batch size approaches total budget, sequential methods may be preferred for adaptivity despite lack of parallelization"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Contal et al. (2013) Parallel Gaussian Process Optimization with Upper Confidence Bound and Pure Exploration [Parallel BO with diversity via GP-UCB-PE]",
+            "González et al. (2016) Batch Bayesian Optimization via Local Penalization [Local penalization for batch diversity, BBO-LP]",
+            "Desautels et al. (2014) Parallelizing Exploration-Exploitation Tradeoffs in Gaussian Process Bandit Optimization [Parallel GP-UCB]",
+            "Wang et al. (2018) Batched Large-scale Bayesian Optimization in High-dimensional Spaces [Batch BO with diversity via trust regions]",
+            "Ginsbourger et al. (2010) Kriging is well-suited to parallelize optimization [Kriging Believer and Constant Liar for batch BO]",
+            "Azimi et al. (2010) Batch Bayesian optimization via simulation matching [Simulation matching for batch diversity]",
+            "Kathuria et al. (2016) Batched Gaussian process bandit optimization via determinantal point processes [DPP-based batch diversity]",
+            "Marmin et al. (2015) Warped Gaussian processes and derivative-based sequential designs for functions with heterogeneous variations [Batch selection with heterogeneous variations]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 7,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffusion Models for High-Fidelity Long-Horizon World Model Prediction - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-154</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-154</p>
+                <p><strong>Name:</strong> Diffusion Models for High-Fidelity Long-Horizon World Model Prediction</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about what constitutes an optimal world model for AI systems, incorporating fidelity, interpretability, computational efficiency, and task-specific utility, based on the following results.</p>
+                <p><strong>Description:</strong> Diffusion-based world models are optimal for generating high-fidelity, multi-modal long-horizon predictions when computational budget allows and visual fidelity is critical for downstream task performance. The EDM (Elucidating Diffusion Models) formulation with network preconditioning provides superior stability for autoregressive rollouts compared to DDPM, enabling stable generation even with very few denoising steps (NFE=1-3). Key design principles: (1) use EDM preconditioning with adaptive training targets for stable score estimates at high noise levels, (2) limit denoising steps to NFE=3-5 for practical efficiency while maintaining quality (far fewer than the 1000 steps used in image generation), (3) condition on actions, rewards, and other control signals for controllability, (4) use latent diffusion rather than pixel diffusion for 10-100x computational efficiency, and (5) apply diffusion in offline settings or with sufficient computational budget. Diffusion models excel at capturing multi-modal distributions and preventing mode collapse, but require substantially more compute than deterministic models (10-100x) and may be unsuitable for real-time applications. The approach is particularly effective for long-horizon prediction (>20 steps) where compounding errors in deterministic models become problematic, and in stochastic environments where multi-modal future distributions must be captured.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>EDM preconditioning with adaptive training objectives is superior to DDPM for autoregressive world model rollouts, providing stable score estimates at high noise levels</li>
+                <li>Optimal denoising steps for world models is 3-5 (not 1000 as in image generation), balancing quality and computational efficiency</li>
+                <li>Latent diffusion is 10-100x more computationally efficient than pixel diffusion for world modeling while maintaining high perceptual quality</li>
+                <li>Diffusion models capture multi-modal distributions better than deterministic models and prevent mode collapse better than simple stochastic models (e.g., single Gaussian VAEs)</li>
+                <li>The computational cost of diffusion models (10-100x over deterministic models) is justified when high visual fidelity is critical for downstream task performance</li>
+                <li>Diffusion models are particularly effective for long-horizon prediction (>20 steps) where compounding errors in deterministic models become problematic</li>
+                <li>Diffusion models excel in stochastic environments where capturing multi-modal future distributions is essential</li>
+                <li>Action-conditioning and control-signal conditioning (e.g., return-to-go) can be effectively integrated into diffusion models for controllable generation</li>
+                <li>EDM's network preconditioning (c_in, c_out, c_skip, c_noise) prevents learning identity mappings and improves training stability</li>
+                <li>Diffusion models trade increased computational cost for improved sample quality and multi-modal coverage compared to faster alternatives</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>DIAMOND with EDM produces substantially more stable long-horizon rollouts than DDPM, stable even with NFE=1 in Breakout experiments, with default NFE=3 for handling multimodality <a href="../results/extraction-result-1259.html#e1259.0" class="evidence-link">[e1259.0]</a> <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> </li>
+    <li>DIAMOND achieves mean HNS=1.46 across Atari with high visual fidelity, enabling imagination-based policy training and outperforming prior methods <a href="../results/extraction-result-1259.html#e1259.0" class="evidence-link">[e1259.0]</a> </li>
+    <li>Vista achieves FID=12.3, FVD=70.7 on nuScenes validation, substantially better than DriveDreamer (FID=52.6, FVD=452.0) and other baselines <a href="../results/extraction-result-1414.html#e1414.0" class="evidence-link">[e1414.0]</a> <a href="../results/extraction-result-1414.html#e1414.5" class="evidence-link">[e1414.5]</a> </li>
+    <li>EDM formulation enables lower NFE per timestep for comparable or better quality compared to DDPM, reducing inference cost while improving stability <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> <a href="../results/extraction-result-1422.html#e1422.0" class="evidence-link">[e1422.0]</a> </li>
+    <li>EDM's adaptive training objective (mixing signal and noise targets) gives better score estimates in high-noise regimes and improved sampling stability with few denoising steps <a href="../results/extraction-result-1259.html#e1259.4" class="evidence-link">[e1259.4]</a> <a href="../results/extraction-result-1422.html#e1422.0" class="evidence-link">[e1422.0]</a> </li>
+    <li>DWM diffusion world model enables offline RL with multi-step sequence generation in single pass, conditioning on actions and return-to-go <a href="../results/extraction-result-1234.html#e1234.0" class="evidence-link">[e1234.0]</a> </li>
+    <li>DWM achieves better or comparable performance to autoregressive transformers and ensemble baselines on MuJoCo trajectory prediction tasks <a href="../results/extraction-result-1234.html#e1234.0" class="evidence-link">[e1234.0]</a> </li>
+    <li>Denoising Diffusion models achieve state-of-the-art perceptual quality (CIFAR10 FID=3.17) demonstrating high-fidelity generation capability <a href="../results/extraction-result-1408.html#e1408.0" class="evidence-link">[e1408.0]</a> </li>
+    <li>DDPM epsilon-prediction parameterization with fixed isotropic variances provides stable training and high sample quality <a href="../results/extraction-result-1408.html#e1408.0" class="evidence-link">[e1408.0]</a> </li>
+    <li>Diffusion models can capture multi-modal distributions and provide progressive coarse-to-fine generation, with intermediate latents encoding semantic attributes <a href="../results/extraction-result-1408.html#e1408.0" class="evidence-link">[e1408.0]</a> </li>
+    <li>Vista uses latent video diffusion with spatial-temporal attention and achieves high-resolution (400x640) generation with strong controllability <a href="../results/extraction-result-1414.html#e1414.0" class="evidence-link">[e1414.0]</a> </li>
+    <li>PolyGRAD diffusion-based trajectory generation can produce on-policy-like trajectories and outperforms transformer baselines at short horizons <a href="../results/extraction-result-1195.html#e1195.0" class="evidence-link">[e1195.0]</a> </li>
+    <li>Stochastic churn sampling (Algorithm 2 in EDM) can improve FID when appropriately tuned, though requires per-model hyperparameter search <a href="../results/extraction-result-1422.html#e1422.3" class="evidence-link">[e1422.3]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>EDM-based world models will achieve 50-70% lower pixel drift than DDPM-based models in 50-step autoregressive rollouts</li>
+                <li>Latent diffusion world models will be 20-50x faster than pixel diffusion while maintaining >90% of visual quality (measured by FID/FVD)</li>
+                <li>Diffusion world models will enable 10-20% better offline RL performance than deterministic models in stochastic environments with multi-modal dynamics</li>
+                <li>Reducing NFE from 10 to 3 in EDM-based world models will reduce inference time by 70% while maintaining >95% of sample quality</li>
+                <li>Diffusion world models will show smaller performance degradation than deterministic models when extrapolating to longer horizons than seen during training</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether diffusion models can be made efficient enough for real-time control applications (<100ms per action) through architectural innovations or distillation</li>
+                <li>If there exist better sampling algorithms (beyond EDM and stochastic churn) that reduce NFE below 3 without quality loss</li>
+                <li>Whether diffusion models learn more robust or disentangled representations than other generative models when used as world models</li>
+                <li>If diffusion-based world models can scale to very long horizons (>100 steps) without significant degradation in visual quality or action-conditioning fidelity</li>
+                <li>Whether the multi-modal modeling capability of diffusion translates to better exploration or more diverse policy learning in online RL settings</li>
+                <li>If hybrid approaches combining diffusion for long-horizon planning with faster models for short-horizon control can achieve best-of-both-worlds performance</li>
+                <li>Whether diffusion world models can be trained end-to-end with RL objectives (policy gradients) or if they require separate pretraining</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that deterministic models achieve comparable visual fidelity to diffusion models at long horizons would challenge the quality advantage claim</li>
+                <li>Demonstrating that the computational cost of diffusion never translates to better downstream task performance (across multiple domains) would question their practical utility</li>
+                <li>Showing that simpler stochastic models (e.g., VAEs with mixture priors) achieve the same multi-modal coverage as diffusion would challenge the diffusion-specific advantage</li>
+                <li>Finding that diffusion models do not reduce compounding errors compared to deterministic models in long rollouts would undermine a key claimed benefit</li>
+                <li>Demonstrating that latent diffusion loses critical task-relevant information compared to pixel diffusion would challenge the efficiency claim</li>
+                <li>Showing that NFE=1 achieves the same quality as NFE=3-5 across domains would suggest current recommendations are suboptimal</li>
+                <li>Finding that DDPM with appropriate tuning matches EDM performance would challenge the EDM superiority claim</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to automatically determine optimal NFE for a given domain without extensive hyperparameter search </li>
+    <li>The relationship between diffusion model capacity (parameters, layers) and rollout stability at different horizons </li>
+    <li>Whether diffusion models can be effectively trained end-to-end with RL objectives or require separate pretraining phases </li>
+    <li>The trade-offs between different conditioning mechanisms (concatenation, cross-attention, FiLM) for action and control signals in diffusion world models </li>
+    <li>How diffusion world models handle partial observability compared to recurrent deterministic models </li>
+    <li>The sample efficiency of training diffusion world models compared to other approaches (data requirements) </li>
+    <li>Whether stochastic churn sampling provides consistent benefits across different world modeling domains or is dataset-specific <a href="../results/extraction-result-1422.html#e1422.3" class="evidence-link">[e1422.3]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Ho et al. (2020) Denoising Diffusion Probabilistic Models [DDPM - foundational diffusion model work]</li>
+    <li>Karras et al. (2022) Elucidating the Design Space of Diffusion-Based Generative Models [EDM - improved diffusion formulation with preconditioning]</li>
+    <li>Rombach et al. (2022) High-Resolution Image Synthesis with Latent Diffusion Models [Latent diffusion for computational efficiency]</li>
+    <li>Janner et al. (2022) Planning with Diffusion for Flexible Behavior Synthesis [Diffusion for trajectory planning in RL]</li>
+    <li>Mendonca et al. (2023) Structured World Models from Human Videos [Application of diffusion to world modeling]</li>
+    <li>Yang et al. (2024) Diffusion for World Modeling: Visual Details Matter in Atari [DIAMOND - EDM-based world model for Atari, directly relevant]</li>
+    <li>Zhu et al. (2024) Diffusion World Model [DWM - diffusion for offline RL world modeling]</li>
+    <li>Wang et al. (2024) Vista: A Generalizable Driving World Model [Latent video diffusion for autonomous driving]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Diffusion Models for High-Fidelity Long-Horizon World Model Prediction",
+    "theory_description": "Diffusion-based world models are optimal for generating high-fidelity, multi-modal long-horizon predictions when computational budget allows and visual fidelity is critical for downstream task performance. The EDM (Elucidating Diffusion Models) formulation with network preconditioning provides superior stability for autoregressive rollouts compared to DDPM, enabling stable generation even with very few denoising steps (NFE=1-3). Key design principles: (1) use EDM preconditioning with adaptive training targets for stable score estimates at high noise levels, (2) limit denoising steps to NFE=3-5 for practical efficiency while maintaining quality (far fewer than the 1000 steps used in image generation), (3) condition on actions, rewards, and other control signals for controllability, (4) use latent diffusion rather than pixel diffusion for 10-100x computational efficiency, and (5) apply diffusion in offline settings or with sufficient computational budget. Diffusion models excel at capturing multi-modal distributions and preventing mode collapse, but require substantially more compute than deterministic models (10-100x) and may be unsuitable for real-time applications. The approach is particularly effective for long-horizon prediction (&gt;20 steps) where compounding errors in deterministic models become problematic, and in stochastic environments where multi-modal future distributions must be captured.",
+    "supporting_evidence": [
+        {
+            "text": "DIAMOND with EDM produces substantially more stable long-horizon rollouts than DDPM, stable even with NFE=1 in Breakout experiments, with default NFE=3 for handling multimodality",
+            "uuids": [
+                "e1259.0",
+                "e1259.4"
+            ]
+        },
+        {
+            "text": "DIAMOND achieves mean HNS=1.46 across Atari with high visual fidelity, enabling imagination-based policy training and outperforming prior methods",
+            "uuids": [
+                "e1259.0"
+            ]
+        },
+        {
+            "text": "Vista achieves FID=12.3, FVD=70.7 on nuScenes validation, substantially better than DriveDreamer (FID=52.6, FVD=452.0) and other baselines",
+            "uuids": [
+                "e1414.0",
+                "e1414.5"
+            ]
+        },
+        {
+            "text": "EDM formulation enables lower NFE per timestep for comparable or better quality compared to DDPM, reducing inference cost while improving stability",
+            "uuids": [
+                "e1259.4",
+                "e1422.0"
+            ]
+        },
+        {
+            "text": "EDM's adaptive training objective (mixing signal and noise targets) gives better score estimates in high-noise regimes and improved sampling stability with few denoising steps",
+            "uuids": [
+                "e1259.4",
+                "e1422.0"
+            ]
+        },
+        {
+            "text": "DWM diffusion world model enables offline RL with multi-step sequence generation in single pass, conditioning on actions and return-to-go",
+            "uuids": [
+                "e1234.0"
+            ]
+        },
+        {
+            "text": "DWM achieves better or comparable performance to autoregressive transformers and ensemble baselines on MuJoCo trajectory prediction tasks",
+            "uuids": [
+                "e1234.0"
+            ]
+        },
+        {
+            "text": "Denoising Diffusion models achieve state-of-the-art perceptual quality (CIFAR10 FID=3.17) demonstrating high-fidelity generation capability",
+            "uuids": [
+                "e1408.0"
+            ]
+        },
+        {
+            "text": "DDPM epsilon-prediction parameterization with fixed isotropic variances provides stable training and high sample quality",
+            "uuids": [
+                "e1408.0"
+            ]
+        },
+        {
+            "text": "Diffusion models can capture multi-modal distributions and provide progressive coarse-to-fine generation, with intermediate latents encoding semantic attributes",
+            "uuids": [
+                "e1408.0"
+            ]
+        },
+        {
+            "text": "Vista uses latent video diffusion with spatial-temporal attention and achieves high-resolution (400x640) generation with strong controllability",
+            "uuids": [
+                "e1414.0"
+            ]
+        },
+        {
+            "text": "PolyGRAD diffusion-based trajectory generation can produce on-policy-like trajectories and outperforms transformer baselines at short horizons",
+            "uuids": [
+                "e1195.0"
+            ]
+        },
+        {
+            "text": "Stochastic churn sampling (Algorithm 2 in EDM) can improve FID when appropriately tuned, though requires per-model hyperparameter search",
+            "uuids": [
+                "e1422.3"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "EDM preconditioning with adaptive training objectives is superior to DDPM for autoregressive world model rollouts, providing stable score estimates at high noise levels",
+        "Optimal denoising steps for world models is 3-5 (not 1000 as in image generation), balancing quality and computational efficiency",
+        "Latent diffusion is 10-100x more computationally efficient than pixel diffusion for world modeling while maintaining high perceptual quality",
+        "Diffusion models capture multi-modal distributions better than deterministic models and prevent mode collapse better than simple stochastic models (e.g., single Gaussian VAEs)",
+        "The computational cost of diffusion models (10-100x over deterministic models) is justified when high visual fidelity is critical for downstream task performance",
+        "Diffusion models are particularly effective for long-horizon prediction (&gt;20 steps) where compounding errors in deterministic models become problematic",
+        "Diffusion models excel in stochastic environments where capturing multi-modal future distributions is essential",
+        "Action-conditioning and control-signal conditioning (e.g., return-to-go) can be effectively integrated into diffusion models for controllable generation",
+        "EDM's network preconditioning (c_in, c_out, c_skip, c_noise) prevents learning identity mappings and improves training stability",
+        "Diffusion models trade increased computational cost for improved sample quality and multi-modal coverage compared to faster alternatives"
+    ],
+    "new_predictions_likely": [
+        "EDM-based world models will achieve 50-70% lower pixel drift than DDPM-based models in 50-step autoregressive rollouts",
+        "Latent diffusion world models will be 20-50x faster than pixel diffusion while maintaining &gt;90% of visual quality (measured by FID/FVD)",
+        "Diffusion world models will enable 10-20% better offline RL performance than deterministic models in stochastic environments with multi-modal dynamics",
+        "Reducing NFE from 10 to 3 in EDM-based world models will reduce inference time by 70% while maintaining &gt;95% of sample quality",
+        "Diffusion world models will show smaller performance degradation than deterministic models when extrapolating to longer horizons than seen during training"
+    ],
+    "new_predictions_unknown": [
+        "Whether diffusion models can be made efficient enough for real-time control applications (&lt;100ms per action) through architectural innovations or distillation",
+        "If there exist better sampling algorithms (beyond EDM and stochastic churn) that reduce NFE below 3 without quality loss",
+        "Whether diffusion models learn more robust or disentangled representations than other generative models when used as world models",
+        "If diffusion-based world models can scale to very long horizons (&gt;100 steps) without significant degradation in visual quality or action-conditioning fidelity",
+        "Whether the multi-modal modeling capability of diffusion translates to better exploration or more diverse policy learning in online RL settings",
+        "If hybrid approaches combining diffusion for long-horizon planning with faster models for short-horizon control can achieve best-of-both-worlds performance",
+        "Whether diffusion world models can be trained end-to-end with RL objectives (policy gradients) or if they require separate pretraining"
+    ],
+    "negative_experiments": [
+        "Finding that deterministic models achieve comparable visual fidelity to diffusion models at long horizons would challenge the quality advantage claim",
+        "Demonstrating that the computational cost of diffusion never translates to better downstream task performance (across multiple domains) would question their practical utility",
+        "Showing that simpler stochastic models (e.g., VAEs with mixture priors) achieve the same multi-modal coverage as diffusion would challenge the diffusion-specific advantage",
+        "Finding that diffusion models do not reduce compounding errors compared to deterministic models in long rollouts would undermine a key claimed benefit",
+        "Demonstrating that latent diffusion loses critical task-relevant information compared to pixel diffusion would challenge the efficiency claim",
+        "Showing that NFE=1 achieves the same quality as NFE=3-5 across domains would suggest current recommendations are suboptimal",
+        "Finding that DDPM with appropriate tuning matches EDM performance would challenge the EDM superiority claim"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to automatically determine optimal NFE for a given domain without extensive hyperparameter search",
+            "uuids": []
+        },
+        {
+            "text": "The relationship between diffusion model capacity (parameters, layers) and rollout stability at different horizons",
+            "uuids": []
+        },
+        {
+            "text": "Whether diffusion models can be effectively trained end-to-end with RL objectives or require separate pretraining phases",
+            "uuids": []
+        },
+        {
+            "text": "The trade-offs between different conditioning mechanisms (concatenation, cross-attention, FiLM) for action and control signals in diffusion world models",
+            "uuids": []
+        },
+        {
+            "text": "How diffusion world models handle partial observability compared to recurrent deterministic models",
+            "uuids": []
+        },
+        {
+            "text": "The sample efficiency of training diffusion world models compared to other approaches (data requirements)",
+            "uuids": []
+        },
+        {
+            "text": "Whether stochastic churn sampling provides consistent benefits across different world modeling domains or is dataset-specific",
+            "uuids": [
+                "e1422.3"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "MuDreamer achieves strong performance (mean 739.6 on Visual Control Suite) without reconstruction or diffusion, at much lower computational cost than diffusion approaches",
+            "uuids": [
+                "e1244.0",
+                "e1244.1"
+            ]
+        },
+        {
+            "text": "TWM transformer-based world model achieves competitive Atari 100k performance (outperforms prior methods) with deterministic categorical latents, not requiring diffusion",
+            "uuids": [
+                "e1242.0"
+            ]
+        },
+        {
+            "text": "IRIS achieves state-of-the-art Atari 100k results (mean 1.046 human-normalized) with discrete autoregressive transformer, not diffusion, and trains faster than some diffusion approaches",
+            "uuids": [
+                "e1255.0"
+            ]
+        },
+        {
+            "text": "Deterministic models can achieve pixel-perfect predictions in some games (Pong, Breakout) for up to 50 steps, suggesting diffusion may be unnecessary in deterministic or near-deterministic domains",
+            "uuids": [
+                "e1399.1"
+            ]
+        },
+        {
+            "text": "DreamerV3 achieves strong performance across 150+ tasks without diffusion, using RSSM with reconstruction, suggesting diffusion is not necessary for diverse domain mastery",
+            "uuids": [
+                "e1244.1",
+                "e1416.0"
+            ]
+        },
+        {
+            "text": "PolyGRAD requires iterative action sampling (Langevin dynamics) interleaved with denoising, increasing sampling complexity compared to simpler off-policy diffusion approaches",
+            "uuids": [
+                "e1234.6"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For real-time applications requiring &lt;100ms per action, diffusion models may be too slow regardless of quality benefits, necessitating faster alternatives or model distillation",
+        "In deterministic or near-deterministic environments (e.g., some Atari games, board games), diffusion's multi-modal modeling capability may be unnecessary and simpler deterministic models may suffice",
+        "For very short horizons (&lt;5 steps), the compounding error advantage of diffusion may not materialize, making simpler models preferable",
+        "In domains with limited computational budget (embedded systems, mobile devices), the 10-100x computational cost of diffusion may be prohibitive",
+        "For online RL where model training must be fast and frequent, diffusion's training cost may be impractical compared to simpler world models",
+        "In low-dimensional state spaces, the visual fidelity advantage of diffusion may not translate to task performance improvements",
+        "When task-relevant features are easily separable from distractors, simpler models with appropriate inductive biases may outperform diffusion at lower cost",
+        "EDM's superiority over DDPM may be less pronounced in domains where high-noise regime score estimation is less critical",
+        "Stochastic churn sampling benefits are dataset-dependent and may not generalize across all world modeling applications"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Ho et al. (2020) Denoising Diffusion Probabilistic Models [DDPM - foundational diffusion model work]",
+            "Karras et al. (2022) Elucidating the Design Space of Diffusion-Based Generative Models [EDM - improved diffusion formulation with preconditioning]",
+            "Rombach et al. (2022) High-Resolution Image Synthesis with Latent Diffusion Models [Latent diffusion for computational efficiency]",
+            "Janner et al. (2022) Planning with Diffusion for Flexible Behavior Synthesis [Diffusion for trajectory planning in RL]",
+            "Mendonca et al. (2023) Structured World Models from Human Videos [Application of diffusion to world modeling]",
+            "Yang et al. (2024) Diffusion for World Modeling: Visual Details Matter in Atari [DIAMOND - EDM-based world model for Atari, directly relevant]",
+            "Zhu et al. (2024) Diffusion World Model [DWM - diffusion for offline RL world modeling]",
+            "Wang et al. (2024) Vista: A Generalizable Driving World Model [Latent video diffusion for autonomous driving]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 7,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

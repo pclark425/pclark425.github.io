@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-3362 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-3362</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-3362</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-77.html">extraction-schema-77</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models solving puzzle games that require spatial knowledge (such as Sudoku), including details about the models, the puzzles, the methods used, performance, and any analysis of how the models solve these tasks.</div>
+                <p><strong>Paper ID:</strong> paper-e66f0f822d4c4853b39b27daaafa2993005fd55e</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/e66f0f822d4c4853b39b27daaafa2993005fd55e" target="_blank">Large Language Models are few(1)-shot Table Reasoners</a></p>
+                <p><strong>Paper Venue:</strong> Findings</p>
+                <p><strong>Paper TL;DR:</strong> This paper evaluated LLMs on popular table QA and fact verification datasets like WikiTableQuestion, FetaQA, TabFact, and FEVEROUS and found that LLMs are competent at complex reasoning over table structures, though these models are not pre-trained on any table corpus.</p>
+                <p><strong>Paper Abstract:</strong> Recent literature has shown that large language models (LLMs) are generally excellent few-shot reasoners to solve text reasoning tasks. However, the capability of LLMs on table reasoning tasks is yet to be explored. In this paper, we aim at understanding how well LLMs can perform table-related tasks with few-shot in-context learning. Specifically, we evaluated LLMs on popular table QA and fact verification datasets like WikiTableQuestion, FetaQA, TabFact, and FEVEROUS and found that LLMs are competent at complex reasoning over table structures, though these models are not pre-trained on any table corpus. When combined with ‘chain of thoughts’ prompting, LLMs can achieve very strong performance with only a 1-shot demonstration, even on par with some SoTA models. We show that LLMs are even more competent at generating comprehensive long-form answers on FetaQA than tuned T5-large. We further manually studied the reasoning chains elicited from LLMs and found that these reasoning chains are highly consistent with the underlying semantic form. We believe that LLMs can serve as a simple yet generic baseline for future research. The code and data are released in {url{https://github.com/wenhuchen/TableCoT}.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-3362",
+    "paper_id": "paper-e66f0f822d4c4853b39b27daaafa2993005fd55e",
+    "extraction_schema_id": "extraction-schema-77",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.005514,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Large Language Models are few(1)-shot Table Reasoners</h1>
+<p>Wenhu Chen<br>University of Waterloo, Vector Institute<br>wenhuchen@uwaterloo.ca</p>
+<h4>Abstract</h4>
+<p>Recent literature has shown that large language models (LLMs) are generally excellent fewshot reasoners to solve text reasoning tasks. However, the capability of LLMs on table reasoning tasks is yet to be explored. In this paper, we aim at understanding how well LLMs can perform table-related tasks with few-shot in-context learning. Specifically, we evaluated LLMs on popular table QA and fact verification datasets like WikiTableQuestion, FetaQA, TabFact, and FEVEROUS and found that LLMs are competent at complex reasoning over table structures, though these models are not pre-trained on any table corpus. When combined with 'chain of thoughts' prompting, LLMs can achieve very strong performance with only a 1-shot demonstration, even on par with some SoTA models. We show that LLMs are even more competent at generating comprehensive long-form answers on FetaQA than tuned T5-large. We further manually studied the reasoning chains elicited from LLMs and found that these reasoning chains are highly consistent with the underlying semantic form. We believe that LLMs can serve as a simple yet generic baseline for future research. The code and data are released in https://github. com/wenhuchen/TableCoT.</p>
+<h2>1 Introduction</h2>
+<p>The problem of structured knowledge grounding has been extensively studied for many years. Tables, as one of the most popular (semi)-structured forms to store world knowledge receive significant attention from the natural language processing (NLP) community. Traditional approaches mostly rely on synthesizing executable languages like SQL or SPARQL to access the information inside the table. However, these symbolic languages normally make a rigid assumption about the table and cannot capture the semantics of text chunks inside the table. Such issues are even more pronounced with web tables due to their irregular forms. To fully
+understand web tables, both structured reasoning and textual reasoning are required. Such challenges have attracted many researchers to work in the field. Recently, a wide range of table-based tasks have been proposed like table question answering (Pasupat and Liang, 2015; Chen et al., 2020c; Zhu et al., 2021; Chen et al., 2021b; Talmor et al., 2020; Chen et al., 2020a; Nan et al., 2022), table fact verification (Chen et al., 2019; Aly et al., 2021), tablebased generation (Chen et al., 2020b; Parikh et al., 2020; Nan et al., 2021), and table-grounded conversation (Budzianowski et al., 2018; Nakamura et al., 2022). This wide range of table-based tasks all come with different input-output formats and domains. Due to the heterogeneity of these tasks, models achieving the best results on these tasks normally need to be fully fine-tuned on the specific downstream dataset with 10K-100K examples to achieve reasonable performance.</p>
+<p>Recently, there have been efforts like UnifiedSKG (Xie et al., 2022) aiming to unify these heterogeneous table-based tasks as a generic text-totext format. UnifiedSKG has shown that using T5-3B (Raffel et al., 2020) with the text-to-text format can already achieve state-of-the-art performance on almost all the table-based tasks without task-specific designs. However, the proposed text-to-text models still need to be fully fine-tuned on the downstream tasks. UnifiedSKG also identified that T0-style (Sanh et al., 2022) cross-task transfer can only achieve almost random performance.</p>
+<p>Wei et al. (2022); Wang et al. (2022); Zhou et al. (2022); Drozdov et al. (2022) have recently discovered that large language models (Brown et al., 2020; Chowdhery et al., 2022; Ouyang et al., 2022) can be used to solve complex mathematical and commonsense reasoning tasks with few-shot incontext learning. Inspired by this discovery, we aim at understanding whether these LLMs can also solve complex table-based reasoning tasks. Though the LLMs are not specifically designed to encode ta-</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Demonstration</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">round</td>
+<td style="text-align: center;">pick</td>
+<td style="text-align: center;">overall</td>
+<td style="text-align: center;">name</td>
+<td style="text-align: center;">position college</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">brian orakpo</td>
+<td style="text-align: center;">de texas</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">kevin barnes</td>
+<td style="text-align: center;">cb maryland</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">158</td>
+<td style="text-align: center;">cody glenn</td>
+<td style="text-align: center;">lb nebraska</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">186</td>
+<td style="text-align: center;">robert henson</td>
+<td style="text-align: center;">lb texas christian</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">221</td>
+<td style="text-align: center;">eddie williams</td>
+<td style="text-align: center;">te Idaho</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">34</td>
+<td style="text-align: center;">243</td>
+<td style="text-align: center;">marko mitchell</td>
+<td style="text-align: center;">wr nevada</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">washington redskins draft history</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Among the Washington Redskin drafted players in "lb" position, who has a better overall score</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Thoug</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">robert henson has a higher score of 186 than Cody's 158,</td>
+</tr>
+<tr>
+<td style="text-align: center;">therefore, the answer is Robert Henson.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Test Case</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">date</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { resul } \ &amp; \text { t } \end{aligned}$</td>
+<td style="text-align: center;">scar</td>
+<td style="text-align: center;">brazil scorers</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { may } 11 \ &amp; 1919 \end{aligned}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">w</td>
+<td style="text-align: center;">$6-0$</td>
+<td style="text-align: center;">rnedevreich (3), neco (2), harsid american championship</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { may } 18 \ &amp; 1919 \end{aligned}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">w</td>
+<td style="text-align: center;">$3-1$</td>
+<td style="text-align: center;">heitor, amicar, milsoi american championship</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { may } 29 \ &amp; 1919 \end{aligned}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">$2-2$</td>
+<td style="text-align: center;">neco (2) american championship</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { may } 29 \ &amp; 1919 \end{aligned}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">w</td>
+<td style="text-align: center;">$1-0$</td>
+<td style="text-align: center;">rnedevreich american championship</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\begin{aligned} &amp; \text { how } 1 \ &amp; 1919 \end{aligned}$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">$3-3$</td>
+<td style="text-align: center;">harsido, arindo (2) taça roberto cherry</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Brazilian football in 1919</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">How may goals have has Brazilian team player neco scored in 1919 south american championship?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Prompt</td>
+<td style="text-align: center;">Chain of Thoughts</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Language Model</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Neco has scored 2 goals on may 11, and 2 goals on may 26, in total.</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Figure 1: In-context learning for table-related tasks with chain-of-thoughts reasoning.
+bles, given the enormous number of tables present in the pre-training corpus, we believe they are also competent at reasoning over table information.</p>
+<p>In this paper, we experimented with few-shot in-context learning for LLMs as depicted in Figure 1. Instead of fine-tuning the model, we only provide a few examples to showcase the desired input-output format as the condition for the model to follow to solve unseen test examples. We experiment with several prompting variants including (1) direct prediction, (2) Chain of Thoughts (Wei et al., 2022) (CoT), (3) Chains of thoughts with self-consistency (Wang et al., 2022) (CoT+SC). We evaluate these methods on WikiTableQA (Pasupat and Liang, 2015), FetaQA (Nan et al., 2022), TabFact (Chen et al., 2019) and FEVEROUS (Aly et al., 2021). Our results reveal that LLMs (Ouyang et al., 2022; Chen et al., 2021a; Chowdhery et al., 2022) can achieve striking performance with only 1 or 2 demonstrations, e.g. $48.8 \%$ on WikiTableQuestions and $78.8 \%$ on TabFact, which are on par some near-SoTA models (Yu et al., 2021; Eisen-
+schlos et al., 2020). On other datasets like FetaQA with long-form answers, our human evaluation reveals that GPT-3 can significantly outperform the fine-tuned T5-large by more than $30 \%$ in terms of correctness and adequacy.</p>
+<p>Furthermore, we manually studied the chain of thoughts elicited from LLMs and found that the rationale is highly consistent with the 'ground truth' semantic forms when the model predictions are correct. We found that these models are surprisingly competent at performing symbolic operations over the table, like maximum, minimum, counting, comparison, addition, and difference. However, we also identify several issues of the LLMs on these table reasoning tasks: (1) due to the token limitation, the model is unable to generalize to 'huge' tables with 30+ rows, which is the major error source, (2) LLMs can sometimes make simple mistakes when performing symbolic operations.</p>
+<p>Due to the simplicity and generality, we believe LLMs with CoT should be used as an important baseline for any future table-related research.</p>
+<h2>2 Related Work</h2>
+<h3>2.1 Reasoning over Tables</h3>
+<p>Table-based reasoning is traditionally accomplished by semantic parsing to execute commands on tables like WikiTableQuestions (Pasupat and Liang, 2015), WikiSQL (Zhong et al., 2017), and Spider (Yu et al., 2018). These models aim to synthesize SQL/SPARQL to interact with tables. However, these machine languages have a rigorous requirement regarding the tables, e.g. the value in the same column should follow the same data type. Such rigorous assumptions are frequently violated by web tables containing unnormalized freeform text in cells. Therefore, language understanding inside the table is essential to achieve a better score. Recently, Yin et al. (2020); Herzig et al. (2020); Liu et al. (2021); Deng et al. (2022) have proposed to pre-train table and text to learn joint representation. These pre-trained models can use joint representation to perform reasoning implicitly without relying on symbolic execution. By pretraining the model on large-scale crawled or synthesized data, these models can normally achieve the best-known performance on table tasks. However, these models still require a significant amount of fine-tuning on the downstream datasets. Unlike these methods, we are interested in in-context learning, where the model can only learn with a</p>
+<p>few examples (demonstration) without any finetuning. One contemporary work similar to ours is BINDER (Cheng et al., 2022), which utilizes Codex to synthesize SQL to execute logical forms against tables for question answering. One big difference is that BINDER (Cheng et al., 2022) involves logical form execution, if the execution fails, BINDER will fall back to using language models to answer the question, which is more similar to ours.</p>
+<h3>2.2 In-context Learning with LLMs</h3>
+<p>GPT-3 (Brown et al., 2020) and other large language models demonstrated strong abilities to perform few-shot predictions without fine-tuning, where the model is given a description of the task in natural language with few examples. Scaling model size, data, and computing are crucial to enable this learning ability. Recently, (Rae et al., 2021; Smith et al., 2022; Chowdhery et al., 2022; Du et al., 2022) have proposed to train different types of large language models with different training recipes. The LLMs have demonstrated a striking capability utilizing the few-shot prompts to accomplish unseen tasks without any fine-tuning, which is found to be an emergent capability not presented in smaller language models.</p>
+<h3>2.3 Chain of Thoughts Reasoning</h3>
+<p>Although LLMs (Brown et al., 2020; Chowdhery et al., 2022) have demonstrated remarkable success across a range of NLP tasks, their ability to demonstrate reasoning is often seen as a limitation. Such capability cannot be acquired simply by scaling up the model size. Recently, the 'chain of thoughts' prompting (Wei et al., 2022) has been discovered to empower LLMs to perform complex reasoning over text. By providing the model with several exemplars of reasoning chains, LLMs can learn to follow the template to solve difficult unseen tasks. Later, Wang et al. (2022) propose to use self-consistency with CoT to further improve performance. Later on, Kojima et al. (2022) discovered that LLMs can even perform reasoning without any demonstration by using appropriate prompts. These recent findings reveal the strong capability of LLMs to perform complex reasoning. However, the current studies are still heavily focused on text-based tasks like question answering, common sense reasoning, etc. The models' capability to reason over tables is yet unknown. In this paper, we are specifically interested in understanding LLMs' capability to</p>
+<p>Question Answering (WikiTableQA, FeTaQA)
+Read the table below regarding "2008 Clásica de San Sebastián" to answer the following questions.</p>
+<p>Rank | Cyclist | Team | Time | UCI ProTour Points
+1 Alejandro Valverde (ESP) | Caisse d'Epargne | 5h 29' 10|40
+2 Alexandr Kolobnev (RUS) | Team CSC Saxo Bank | s.t. | 30
+3 | Davide Rebellin (ITA) | Gerolsteiner | s.t. | 25</p>
+<p>7 | Samuel Sánchez (ESP) | Euskaltel-Euskadi | s.t. | 7
+8 | Stéphane Goubert (FRA) | Ag2r-La Mondiale | + 2 | 5
+9 | Haimar Zubeldia (ESP) | Euskaltel-Euskadi | + 2 | 3
+10 | David Moncoutié (FRA) | Cofidis | + 2 | 1</p>
+<p>Question: Which country had the most cyclists finish within the top 10? Explanation: ITA occurs three times in the table, more than any others. Therefore, the answer is Italy</p>
+<p>Question: How many cyclist has achieved more or equal than 30 ProTour Points?
+Explanation: Alejandro Valverde and Alexandr Kolobnev obtain at least 30 points, therefore, the answer is 2.</p>
+<p>Fact Verification (TabFact, FEVEROUS)
+Read the table below regarding "2008 Clásica de San Sebastián" to verify whether the provided claims are true or false.</p>
+<p>Rank | Cyclist | Team | Time | UCI ProTour Points
+1 Alejandro Valverde (ESP) | Caisse d'Epargne | 5h 29' 10|40
+2 Alexandr Kolobnev (RUS) | Team CSC Saxo Bank | s.t. | 30
+3 | Davide Rebellin (ITA) | Gerolsteiner | s.t. | 25</p>
+<p>7 | Samuel Sánchez (ESP) | Euskaltel-Euskadi | s.t. | 7
+8 | Stéphane Goubert (FRA) | Ag2r-La Mondiale | + 2 | 5
+9 | Haimar Zubeldia (ESP) | Euskaltel-Euskadi | + 2 | 3
+10 | David Moncoutié (FRA) | Cofidis | + 2 | 1</p>
+<p>Claim: There are three players in 2008 Clásica de San Sebastián obtaining less than 10 points.
+Explanation: Samuel Sánchez (ESP), Stéphane Goubert (FRA), Haimar Zubeldia (ESP) and David Moncoutié (FRA) are all getting less than 10 UCI ProTour points in the game, therefore, there are 4 players instead of 3 players, hence the claim is false</p>
+<p>Claim: Only 2 cyclists have achieved at least 30 UCI ProTour Points. Explanation: Alejandro Valverde and Alexandr Kolobnev are the two cyclists with at least 30 points, therefore the claim is true</p>
+<p>Figure 2: Prompts used for question answering and fact verification tasks.
+reason over web tables with CoT prompting.</p>
+<h2>3 Method</h2>
+<p>We experiment with different in-context learning methods to solve the table-based reasoning tasks. To formulate the prompt, we linearize the table and concatenate it with a few examples as demonstrations of the language model to predict the output from an unseen test example. The format is described in Figure 2. We mainly investigate three different variants for language model prompting, including (1) Direct Prediction, (2) Chain of Thoughts (CoT), and (3) Chain of Thoughts + Self-Consistentcy decoding (CoT+SC). For selfconsistency methods, we use LLMs to generate five diverse reasoning paths and then use majority voting to select the most voted answer.</p>
+<p>To limit the budget and constrain the input token length, we truncate the input tables to contain only</p>
+<p>the first 22 rows and the first 8 columns. For each cell, we truncate the word length to contain only the first 10 words. Through such truncation, we can restrict the input token length to within 2000 tokens. We will talk about the impact of input token length on the final performance.</p>
+<h2>4 Experimental Results</h2>
+<p>For the GPT-3 experiments, we used the four provided models, Ada, Babbage, Curie, and Davinci with $350 \mathrm{M}, 1.3 \mathrm{~B}, 6.7 \mathrm{~B}$, and 175 B parameters respectively. We mainly use Davinci-text002 (Ouyang et al., 2022) in our experiments. We also report results for Codex (Chen et al., 2021a) (Davinci-code-002) on some datasets. We use a temperature of 0.7 without any frequency penalty and without top-k truncation. We found that the model performance is robust to the sampling strategies and the hyper-parameters. These models are mainly trained on web-crawled data and code data, without any specialized training on table corpus.</p>
+<h3>4.1 Datasets</h3>
+<p>Here we list all of our datasets as follows:
+WikiTableQuestions Pasupat and Liang (2015) consists of complex questions annotated based on Wikipedia tables. Crowd Workers are asked to compose a series of complex questions that include comparisons, superlatives, aggregation, or arithmetic operations. The annotated dataset is crossvalidated by other crowd workers. In our experiments, we use the unseen test set for evaluation. We evaluate the standard test set with roughly 4000 questions. In this dataset, we adopt the answer exact match as our evaluation metric.</p>
+<p>FetaQA Nan et al. (2022) consists of free-form table questions. These questions are mostly complex questions that require integrating information from discontinuous chunks in the table. Instead of having short answers, the dataset annotates long free-form answers. Unlike other datasets using copies of short text spans from the source, the questions in FetaQA require a high-level understanding. We adopt sacre-BLEU and human evaluation as our evaluation metrics. The evaluation set contains a total of 2003 examples.</p>
+<p>TabFact Chen et al. (2019) consists of both simple and complex claims annotated by crowd workers based on Wikipedia tables. In the simple
+subset, the claims normally do not involve higherorder operations like max/min/count, etc. While the complex subset mainly contains claims involving higher-order operations. We evaluate the original test set containing 12,779 examples. We report binary classification accuracy on the set.</p>
+<p>FEVEROUS Aly et al. (2021) consists of compositional claims annotated by crowd workers regarding Wikipedia tables. Since the dataset contains both table-supported and text-supported claims. We filter out text-supported claims and only keep the 2,295 table-supported claims as our test set. Different from TabFact, FEVEROUS consists of more complex tables with irregular structures like multi-row, multi-column, multi-table, etc. We report dev-set accuracy.</p>
+<h3>4.2 Baselines</h3>
+<p>In these experiments, we mainly consider the following baseline models.</p>
+<p>Pre-trained Encoder-Decoder Model Pretrained encoder-decoder model is one of our competitors, which aims to encode the table as a plain sequence into the encoder, and then apply the decoder to generate either an answer or a verdict. In this paper, we mainly compare against T5 (Raffel et al., 2020) and BART (Lewis et al., 2020) as our baselines.</p>
+<p>Pre-trained Table Understanding Model This family of models is specifically pre-trained on the table-related corpus, which utilizes specific architecture to encode table structure and handle symbolic computation. In this paper, we mainly consider TAPAS (Herzig et al., 2020), TABERT (Yin et al., 2020), and TAPEX (Liu et al., 2021).</p>
+<p>Neural Symbolic Model This family of models includes a non-pre-trained neural symbolic model, which can synthesize machine language to interact with the table. This line of work includes LogicFactChecker (Zhong et al., 2020), Neural-Symbolic Machine (Liang et al., 2018), etc.</p>
+<h3>4.3 Main Results</h3>
+<p>Here we show our main results for different datasets as follows.</p>
+<p>WikiTableQuestions As can be seen from Table 1, directly asking GPT-3 to generate answers can only lead to $26 \%$ EM score. However, if we prompt the model with the CoT demonstrations,</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Test EM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Pasupat and Liang (2015)</td>
+<td style="text-align: center;">37.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Zhang et al. (2017)</td>
+<td style="text-align: center;">43.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Liang et al. (2018)</td>
+<td style="text-align: center;">43.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Agarwal et al. (2019)</td>
+<td style="text-align: center;">44.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Wang et al. (2019)</td>
+<td style="text-align: center;">44.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">PT + FT</td>
+<td style="text-align: center;">Herzig et al. (2020)</td>
+<td style="text-align: center;">48.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">PT + FT</td>
+<td style="text-align: center;">Yu et al. (2021)</td>
+<td style="text-align: center;">$\mathbf{5 2 . 7}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">24.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">27.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">44.2</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">45.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">Codex CoT</td>
+<td style="text-align: center;">48.8</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Experimental Results on WikiTableQuestions. PT means pre-training and FT means fine-tuning.</p>
+<p>GPT-3 is more likely to follow the logical operation to derive the answers. With two demonstrations, GPT-3 can achieve roughly $46 \%$ EM score. By switching from GPT-3 to Codex, we are able to further improve the EM score to over $48.8 \%$. These results are particularly surprising given that TAPAS has a built-in module to complete symbolic operations, while GPT-3 was not trained on any tablespecific dataset. These results demonstrate GPT-3's built-in capabilities to perform diverse types of reasoning over tables.</p>
+<p>FetaQA As demonstrated in Table 2, we compare GPT-3 with different fine-tuned models from Nan et al. (2022). Unlike the other datasets with short phrase answers, the goal of this dataset is to generate a complete long-form answer. Unlike WikiTableQuestion, the questions normally do not involve complex operations like max, min, compare, average, etc. The long-form answer is similar to the role of CoT. Therefore, we only applied 'direct generation' in this experiment. In terms of BLEU score (Papineni et al., 2002), GPT-3 is still a bit behind the fine-tuned T5-large. However, the BLEU score cannot reflect the faithfulness and correctness of the model generation. Thus, we follow Nan et al. (2021) to do human evaluation over the four aspects: (1) fluency (whether the generated sentence contains the linguistic error), (2) correctness (whether the generated sentence answers the question correctly), (3) faithfulness (whether the generated sentence is grounded on the input table), and (4) adequacy (whether the generated sentence is comprehensive enough to cover all the answers). We list our results in Table 3. Similarly, we also sample 100 model predictions and manually evaluate their quality and adopt binary scores for each</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">sacreBLEU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">Pipeline (Nan et al., 2022)</td>
+<td style="text-align: center;">9.16</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Pipeline (Nan et al., 2022)</td>
+<td style="text-align: center;">11.00</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">T5-small (Nan et al., 2022)</td>
+<td style="text-align: center;">21.60</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">T5-base (Nan et al., 2022)</td>
+<td style="text-align: center;">28.14</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">T5-large (Nan et al., 2022)</td>
+<td style="text-align: center;">$\mathbf{3 0 . 5 4}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">26.88</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">$\mathbf{2 7 . 0 2}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Experimental Results on FetaQA. PT means pre-training and FT means fine-tuning.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: center;">Fluency</th>
+<th style="text-align: center;">Correct</th>
+<th style="text-align: center;">Adequate</th>
+<th style="text-align: center;">Faithful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: center;">85.2</td>
+<td style="text-align: center;">25.4</td>
+<td style="text-align: center;">23.6</td>
+<td style="text-align: center;">23.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5-large</td>
+<td style="text-align: center;">94.6</td>
+<td style="text-align: center;">54.8</td>
+<td style="text-align: center;">50.4</td>
+<td style="text-align: center;">50.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Human</td>
+<td style="text-align: center;">95.0</td>
+<td style="text-align: center;">$\mathbf{9 2 . 4}$</td>
+<td style="text-align: center;">$\mathbf{9 5 . 6}$</td>
+<td style="text-align: center;">$\mathbf{9 5 . 6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPT-3</td>
+<td style="text-align: center;">$\mathbf{9 8 . 0}$</td>
+<td style="text-align: center;">84.0</td>
+<td style="text-align: center;">78.0</td>
+<td style="text-align: center;">90.0</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Human Evaluation Results on FetaQA.
+example. As can be seen, GPT-3 can significantly outperform T5-large over all the aspects, i.e. more than $30 \%$ improvement over correctness, adequacy, and faithfulness. The evaluation indicates that the model output is almost on par with the average human performance on this dataset.</p>
+<p>TabFact As demonstrated in Table 4, we compare GPT-3 against the other pre-trained and finetuned models including TAPAS (Eisenschlos et al., 2020), TAPEX (Liu et al., 2021), etc. We show that GPT-3 direct prediction is already getting a decent accuracy of $72 \%$, which is slightly higher than Logic FactChecker (Zhong et al., 2020). When combined with CoT reasoning, the model accuracy increases to over $77 \%$. Similar to before, we found that Codex can generate more accurate reasoning chains, thus achieving better accuracy of $78.8 \%$, which is only $2 \%$ lower than pre-trained table understanding model TAPAS (Eisenschlos et al., 2020). The more intriguing property about $\mathrm{LLM}+\mathrm{CoT}$ is that the intermediate rationale can be produced without any training. All the existing trained models do not have the capability to produce the intermediate reasoning steps due to the lack of annotation in the dataset.</p>
+<p>FEVEROUS We demonstrate our results on FEVEROUS dev-set in Table 5 and compare different-sized UnifiedSKG models (built with T5). We found that GPT-3's performance with direct prediction is similar to UnifiedSKG-base. Similar to TabFact, we found that the model performance can be boosted with 'chain of thoughts' prompt-</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Chen et al. (2019)</td>
+<td style="text-align: center;">65.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Zhong et al. (2020)</td>
+<td style="text-align: center;">71.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Zhang et al. (2020)</td>
+<td style="text-align: center;">73.2</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Yang et al. (2020)</td>
+<td style="text-align: center;">74.4</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Lewis et al. (2020)</td>
+<td style="text-align: center;">82.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">PT + FT</td>
+<td style="text-align: center;">Eisenschlos et al. (2020)</td>
+<td style="text-align: center;">81.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">PT + FT</td>
+<td style="text-align: center;">Liu et al. (2021)</td>
+<td style="text-align: center;">$\mathbf{8 4 . 2}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">72.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">73.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">75.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">76.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 CoT+SC</td>
+<td style="text-align: center;">77.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">Codex CoT</td>
+<td style="text-align: center;">78.8</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Experimental Results on TabFact. PT means pre-training and FT means fine-tuning.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Dev Set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">Aly et al. (2021)</td>
+<td style="text-align: center;">82.23</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">UnifiedSKG-base (Xie et al., 2022)</td>
+<td style="text-align: center;">75.05</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">UnifiedSKG-large (Xie et al., 2022)</td>
+<td style="text-align: center;">79.81</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">UnifiedSKG-3B (Xie et al., 2022)</td>
+<td style="text-align: center;">$\mathbf{8 2 . 4 0}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">74.20</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 Direct</td>
+<td style="text-align: center;">75.22</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">75.70</td>
+</tr>
+<tr>
+<td style="text-align: center;">2-shot</td>
+<td style="text-align: center;">GPT-3 CoT</td>
+<td style="text-align: center;">76.44</td>
+</tr>
+<tr>
+<td style="text-align: center;">1-shot</td>
+<td style="text-align: center;">GPT-3 CoT+SC</td>
+<td style="text-align: center;">$\mathbf{7 7 . 2 2}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Experimental Results on FEVEROUS. PT means pre-training and FT means fine-tuning.
+ing. The best-performing model is roughly between UnifiedSKG-base and UnifiedSKG-large. Compared to TabFact, the model's overall performance is weaker mainly because the table structure in FEVEROUS is more irregular, containing lots of segments and subtables. Such structural difficulties pose great challenges to GPT-3.</p>
+<p>Model Scaling We investigate the model scaling's impact on the final performance and plot our findings in Figure 3. On the WebTableQuestions dataset, we found that model size is essential for achieving the best performance. As can be seen, the 6.7B GPT-3 model is only achieving half of the performance of the 175B GPT-3 model. Similarly, on TabFact, we found that the smaller models with 6.7B or fewer parameters are almost getting random accuracy, which is even worse than QA tasks. This again suggests that LLMs' reasoning ability over web tables is emergent as the model scales up.</p>
+<h3>4.4 Case Study</h3>
+<p>We demonstrate a few examples in Figure 4 where GPT-3 makes correct predictions. In the first example, GPT-3 is able to first identify all the Belgian
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 3: The model performance with respect to model size on WikiTableQuestions and TabFact.
+riders from the table and then perform the addition of $3+3+1=7$ precisely. In the second example, GPT-3 can identify the players with the position of ' $d$ ' and count the number correctly to refute a false claim. In the third example, we can see that GPT-3 is able to associate multiple blocks of information to generate a comprehensive long-form answer. The elicited 'chain of thoughts' in these examples are highly aligned with the underlying semantic forms. These findings suggest that LLMs like GPT-3 can provide high-quality explanations to justify their decision-making.</p>
+<p>We also provide a few mistakes made by GPT-3 in Figure 5. In the first example, GPT-3 miscounts the 'number of countries above 1 billion box office' because it misidentifies 'world' also as a country. In the second example, GPT-3 misunderstood '2nd highest' as 'highest', which leads to prediction error. In the last example, GPT-3 misunderstands the semantics of the question and answers 'left office time' instead of 'took office time'. These examples show the typical errors of grounding the inputs to the wrong rows or columns of the table.</p>
+<h3>4.5 Analysis</h3>
+<p>Impact of Number of Shots First of all, we conduct an ablation study to understand the impact of a number of shots in the final performance. In order to control the budget, we only sample 200 samples from WikiTableQuestions, TabFact and FEVEROUS for this ablation study. As can be seen from Figure 7, GPT-3 is not quite sensitive to the number of provided demonstrations. Increasing from 1-shot to 2-shot can often benefit the model, however, increasing the shot number further does not yield more performance gain. We conjecture that instruct fine-tuning used in GPT-3 (Ouyang et al., 2022) can easily extrapolate the task meaning, thus, having a single demonstration is already enough for the model to understand the task.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Place</th>
+<th style="text-align: center;">Rider</th>
+<th style="text-align: center;">Country</th>
+<th style="text-align: center;">Team</th>
+<th style="text-align: center;">Points</th>
+<th style="text-align: center;">Wins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Sylvain Geboers</td>
+<td style="text-align: center;">Belgium</td>
+<td style="text-align: center;">Suzuki</td>
+<td style="text-align: center;">3066</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Adolf Weil</td>
+<td style="text-align: center;">Germany</td>
+<td style="text-align: center;">Maico</td>
+<td style="text-align: center;">2331</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Torlief Hansen</td>
+<td style="text-align: center;">Sweden</td>
+<td style="text-align: center;">Husqvarna</td>
+<td style="text-align: center;">2052</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Roger De Costar</td>
+<td style="text-align: center;">Belgium</td>
+<td style="text-align: center;">Suzuki</td>
+<td style="text-align: center;">1865</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Joel Robert</td>
+<td style="text-align: center;">Belgium</td>
+<td style="text-align: center;">Suzuki</td>
+<td style="text-align: center;">1730</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Heikki Mikkola</td>
+<td style="text-align: center;">Finland</td>
+<td style="text-align: center;">Husqvarna</td>
+<td style="text-align: center;">1680</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">Willy Bauer</td>
+<td style="text-align: center;">Germany</td>
+<td style="text-align: center;">Maico</td>
+<td style="text-align: center;">1276</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Gaston Raher</td>
+<td style="text-align: center;">Belgium</td>
+<td style="text-align: center;">ČZ</td>
+<td style="text-align: center;">1112</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Pierre Karsmakers</td>
+<td style="text-align: center;">Netherlands</td>
+<td style="text-align: center;">Husqvarna</td>
+<td style="text-align: center;">1110</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Dave Bickers</td>
+<td style="text-align: center;">United Kingdom</td>
+<td style="text-align: center;">ČZ</td>
+<td style="text-align: center;">1076</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">Question: total wins by belgian riders?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">According to the table, Sylvain Geboers, Roger De and Joel Robert are Belgian riders and they have totally $3+3+1=7$ wins. Therefore, the answer is 7 .</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">name</th>
+<th style="text-align: center;">pos</th>
+<th style="text-align: center;">height</th>
+<th style="text-align: center;">2012 club</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Merrill Moses</td>
+<td style="text-align: center;">gk</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">New York athletic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Peter Varellas</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">the Olympic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Peter Hudnut</td>
+<td style="text-align: center;">cb</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">Los Angeles wp club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Jeff Powers</td>
+<td style="text-align: center;">cf</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">Newport wp foundation</td>
+</tr>
+<tr>
+<td style="text-align: center;">Adam Wright</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">New York athletic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Shea Buckner</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">New York athletic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Layne Beaubien</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">New York athletic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Tony Azavedo</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">New York athletic club</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ryan Bailey</td>
+<td style="text-align: center;">cf</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">Newport wp foundation</td>
+</tr>
+<tr>
+<td style="text-align: center;">Chay Lapin</td>
+<td style="text-align: center;">gk</td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">long beach shore aquatics</td>
+</tr>
+</tbody>
+</table>
+<p>Claim: more players have the position of gk than any other position. There are 2 players with the position of gk and 5 players with the position of d. 2 is less than 5 , therefore, the claim is false.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Year</th>
+<th style="text-align: center;">Title</th>
+<th style="text-align: center;">Role</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1970</td>
+<td style="text-align: center;">House of Dark Shadows.</td>
+<td style="text-align: center;">Willie Loomis</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1971</td>
+<td style="text-align: center;">Daughters of Darkness</td>
+<td style="text-align: center;">Stefan</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1971</td>
+<td style="text-align: center;">Night of Dark Shadows</td>
+<td style="text-align: center;">Alex Jenkins</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1976</td>
+<td style="text-align: center;">A Small Town in Texas</td>
+<td style="text-align: center;">Deputy Lenny Lutz</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1978</td>
+<td style="text-align: center;">Killer's Delight</td>
+<td style="text-align: center;">Danny</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1981</td>
+<td style="text-align: center;">Pennies from Heaven</td>
+<td style="text-align: center;">The Detective</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1984</td>
+<td style="text-align: center;">Racing with the Moon</td>
+<td style="text-align: center;">Mr. Nash</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1984</td>
+<td style="text-align: center;">Impulse</td>
+<td style="text-align: center;">Bob Russell</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1984</td>
+<td style="text-align: center;">Gimme an 'F'</td>
+<td style="text-align: center;">Bucky Berkshire</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1986</td>
+<td style="text-align: center;">Native Son</td>
+<td style="text-align: center;">Max</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1991</td>
+<td style="text-align: center;">The Dark Wind</td>
+<td style="text-align: center;">Jake West</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">1993</td>
+<td style="text-align: center;">Surf Ninjas</td>
+<td style="text-align: center;">Mac</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">2016</td>
+<td style="text-align: center;">The Job Interview</td>
+<td style="text-align: center;">The Applicant</td>
+<td style="text-align: center;">Short film</td>
+</tr>
+</tbody>
+</table>
+<p>Question: What were John Karlen's roles in 1970 and 1978?
+John Karlen's roles in 1970 were Willie Loomis in House of Dark Shadows and Stefan in Daughters of Darkness. His role in 1978 was Danny in Killer's Delight.</p>
+<p>Figure 4: 'Correct' predictions from WikiTableQuestions, TabFact, and FetaQA datasets, where the 'blue' text are the outputs from the GPT-3, 'red' means the correct rows to reference.</p>
+<p>Quality Evaluation of Reasoning Chains We conduct a human evaluation to assess whether GPT3 is making the correct prediction with the correct reasons. Specifically, we sample 100 reasoning paths from the correctly predicted examples and manually study whether these reasoning chains are grounded on the table or simply 'hallucination'. As can be seen from Figure 7, we found that around $90 \%$ of reasoning chains are faithful to the infor-</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Rank</th>
+<th style="text-align: center;">Country</th>
+<th style="text-align: center;">Box Office</th>
+<th style="text-align: center;">Year</th>
+<th style="text-align: center;">office from natione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Canada/United States</td>
+<td style="text-align: center;">\$10.8 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">China</td>
+<td style="text-align: center;">\$3.6 billion</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">59\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Japan</td>
+<td style="text-align: center;">\$1.88 billion</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">61\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">United Kingdom</td>
+<td style="text-align: center;">\$1.7 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">36.1\% (2011)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">France</td>
+<td style="text-align: center;">\$1.7 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">33.3\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">South Korea</td>
+<td style="text-align: center;">\$1.47 billion</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">59.7\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">India</td>
+<td style="text-align: center;">\$1.4 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Germany</td>
+<td style="text-align: center;">\$1.3 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Russia</td>
+<td style="text-align: center;">\$1.2 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Australia</td>
+<td style="text-align: center;">\$1.2 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;">4.1\% (2011)</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">Italy</td>
+<td style="text-align: center;">\$0.84 billion</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">30\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">Brazil</td>
+<td style="text-align: center;">\$0.72 billion</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">17\% (2013)</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">World</td>
+<td style="text-align: center;">\$34.7 billion</td>
+<td style="text-align: center;">2012</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Question: how many countries had at least $\$ 1$ billion in box office? Canada/United States, China, Japan, United Kingdom, France, South Korea, India, Germany and Russia, Australia and world all had at least $\$ 1$ billion in box office. Therefore, the answer is 11.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">no in series</th>
+<th style="text-align: center;">title</th>
+<th style="text-align: center;">directed by</th>
+<th style="text-align: center;">original air date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">47</td>
+<td style="text-align: center;">knight of the drones (part 1)</td>
+<td style="text-align: center;">sidney hayers</td>
+<td style="text-align: center;">september 30,1984</td>
+</tr>
+<tr>
+<td style="text-align: center;">48</td>
+<td style="text-align: center;">knight of the drones (part 2)</td>
+<td style="text-align: center;">sidney hayers</td>
+<td style="text-align: center;">september 30,1984</td>
+</tr>
+<tr>
+<td style="text-align: center;">49</td>
+<td style="text-align: center;">the ice bandits</td>
+<td style="text-align: center;">georg fenady</td>
+<td style="text-align: center;">october 7,1984</td>
+</tr>
+<tr>
+<td style="text-align: center;">...</td>
+<td style="text-align: center;">...</td>
+<td style="text-align: center;">...</td>
+<td style="text-align: center;">...</td>
+</tr>
+<tr>
+<td style="text-align: center;">61</td>
+<td style="text-align: center;">buy out</td>
+<td style="text-align: center;">jeffrey hayden</td>
+<td style="text-align: center;">february 10, 1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">62</td>
+<td style="text-align: center;">knightlines</td>
+<td style="text-align: center;">charles watson sanford</td>
+<td style="text-align: center;">march 3,1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">63</td>
+<td style="text-align: center;">the nineteenth hole</td>
+<td style="text-align: center;">georg fenady</td>
+<td style="text-align: center;">march 10, 1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">knight \&amp; knerd</td>
+<td style="text-align: center;">georg fenady</td>
+<td style="text-align: center;">march 17, 1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">65</td>
+<td style="text-align: center;">ten wheel trouble</td>
+<td style="text-align: center;">bob bralver</td>
+<td style="text-align: center;">march 24, 1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">66</td>
+<td style="text-align: center;">knight in retreat</td>
+<td style="text-align: center;">roy campanella ii</td>
+<td style="text-align: center;">march 29, 1985</td>
+</tr>
+<tr>
+<td style="text-align: center;">67</td>
+<td style="text-align: center;">knight strike</td>
+<td style="text-align: center;">georg fenady</td>
+<td style="text-align: center;">april 5, 1985</td>
+</tr>
+</tbody>
+</table>
+<p>Claim: knight in retreat is the 2nd highest no in series.
+Kight in strike has no of series of 67 , which is the highest no in series, therefore, the claim is false.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Took office</th>
+<th style="text-align: center;">Left office</th>
+<th style="text-align: center;">President</th>
+<th style="text-align: center;">Party</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">7 Oct 1985</td>
+<td style="text-align: center;">2 May 1988</td>
+<td style="text-align: center;">Dick Okeivé</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">2 May 1988</td>
+<td style="text-align: center;">11 June 1989</td>
+<td style="text-align: center;">Albert Etuve</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">28 June 1989</td>
+<td style="text-align: center;">7 July 1995</td>
+<td style="text-align: center;">Simon <br> Loueckhote</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">31 July 1995</td>
+<td style="text-align: center;">16 July 1997</td>
+<td style="text-align: center;">Pierre Frogier</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">16 July 1997</td>
+<td style="text-align: center;">3 June 1998</td>
+<td style="text-align: center;">Harold Martin</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">3 June 1998</td>
+<td style="text-align: center;">9 May 2004</td>
+<td style="text-align: center;">Simon <br> Loueckhote</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">21 May 2004</td>
+<td style="text-align: center;">3 July 2007</td>
+<td style="text-align: center;">Harold Martin</td>
+<td style="text-align: center;">L'Avenir Ensemble</td>
+</tr>
+<tr>
+<td style="text-align: center;">31 July 2007</td>
+<td style="text-align: center;">10 May 2009</td>
+<td style="text-align: center;">Pierre Frogier</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">22 May 2009</td>
+<td style="text-align: center;">5 March 2011</td>
+<td style="text-align: center;">Harold Martin</td>
+<td style="text-align: center;">L'Avenir Ensemble</td>
+</tr>
+<tr>
+<td style="text-align: center;">1 April 2011</td>
+<td style="text-align: center;">29 August 2012</td>
+<td style="text-align: center;">Roch Wicnytan</td>
+<td style="text-align: center;">Kanak and Socialist</td>
+</tr>
+<tr>
+<td style="text-align: center;">29 Aug 2012</td>
+<td style="text-align: center;">7 August 2013</td>
+<td style="text-align: center;">Gérard Poadja</td>
+<td style="text-align: center;">Caledonia Together</td>
+</tr>
+<tr>
+<td style="text-align: center;">23 May 2014</td>
+<td style="text-align: center;">17 July 2015</td>
+<td style="text-align: center;">Gaël Yanno</td>
+<td style="text-align: center;">Popular Caledonian</td>
+</tr>
+<tr>
+<td style="text-align: center;">17 July 2015</td>
+<td style="text-align: center;">30 July 2018</td>
+<td style="text-align: center;">Thierry Santa</td>
+<td style="text-align: center;">The Rally-UMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">30 July 2018</td>
+<td style="text-align: center;">Incumbent</td>
+<td style="text-align: center;">Gaël Yanno</td>
+<td style="text-align: center;">Popular Caledonian</td>
+</tr>
+</tbody>
+</table>
+<p>Question: On which dates did Harold Martin take office as President of the Congress of New Caledonia?
+Harold Martin took office as President of the Congress of New Caledonia on 3 June 1998, 3 July 2007 and 3 March 2011.</p>
+<p>Figure 5: 'Wrong' predictions from WikiTableQuestions, TabFact, and FetaQA datasets, where 'blue' text are the outputs from the GPT-3, 'red' means the region of the correct cell to reference, and 'green' means the reference trusted by GPT-3.
+mation in the table, and only less than $10 \%$ of the reasoning chains are hallucinated. Based on this</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 6: k-shot ablation study over WikiTableQuestions and TabFact and FEVEROUS.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 7: human evaluation of 'reasoning chains' in WikiTableQuestions, TabFact, and FEVEROUS.
+evaluation, we believe that LLMs are not guessing the answers correctly by chance.</p>
+<p>We believe these 'reasoning chains' are useful in many aspects: (1) the chains can provide a rationale to humans to justify the decision-making process. (2) one of the notorious annotation tasks is to annotate the 'underlying' semantic form for many NLP tasks, which require expertise for human annotators, on the other hand, the annotation cost is huge. Using GPT-3 to demonstrate useful natural language 'semantic forms' could potentially greatly lower the annotation burden of these tasks.</p>
+<p>Impact of Table Size An important factor for model performance is the size of the table. Here we want to understand how relevant the model performance is w.r.t the input table length. We group the table token length into different groups like '0-100', '100-200', etc, and plot the group-wise accuracy for WikiTables and TabFact in Figure 8. As can be seen from the table, we found that GPT-3's performance is highly sensitive to the table size. As the table size grows, the accuracy almost decreases monotonically. After the table size exceeds 1000 tokens (e.g. 1500 word pieces), GPT-3's performance almost degrades to random guesses. This ablation study reveals one of the drawbacks of using LLMs for table reasoning. To further enhance</p>
+<p>LLMs' performance, we need to develop better methods to maintain more consistent performance across different-sized tables.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 8: Model performance on WikiTableQuestions and TabFact w.r.t the input table size.</p>
+<p>Discussions In this study, we investigate the possibilities of prompting LLMs to perform complex reasoning tasks over tables. However, we do not believe LLM prompting can replace the existing symbolic methods. LLMs have several favorable properties: (1) no annotation is needed, and (2) the functional coverage is broader than symbolic methods. However, LLM prompting exhibits unpredictable randomness and cannot generalize to large tables. In contrast, symbolic models are (1) agnostic to the table size, and (2) can reliably perform designed functions without much randomness. But they in general require a significant amount of annotated data to learn.</p>
+<p>In conclusion, these two types of models are complementary to each other. To push the limit forward, we need to investigate how to combine the merits of these two types of methods. For example, the symbolic methods can perform certain operations to narrow down to a targeted region in the table, and then LLMs can be used to reason over the limited information.</p>
+<h2>5 Conclusion</h2>
+<p>In this paper, we investigate whether the current LLMs (GPT-3) can be directly utilized to perform table reasoning tasks. Surprisingly, though LLMs are not optimized for table-based tasks, we found these models highly competent in performing complex table reasoning tasks, especially when combined with 'chain of thoughts' prompting. We believe this study can open new possibilities for LLM application in table-related tasks to either directly predict the output or to serve as an auxiliary tool for annotating complex intermediate forms.</p>
+<h2>Limitations</h2>
+<p>Our approach has several limitations: (1) the proposed approach is still far from state-of-the-art performance, and there is still room for improve before it can be used as an alternative. (2) the method is still costly, we show that the model can only achieve superior performance when scaling up. Smaller-sized models are still weak at table reasoning. Therefore, we need to consider how to empower smaller models with such reasoning capabilities.</p>
+<h2>References</h2>
+<p>Rishabh Agarwal, Chen Liang, Dale Schuurmans, and Mohammad Norouzi. 2019. Learning to generalize from sparse and underspecified rewards. In International conference on machine learning, pages 130140. PMLR.</p>
+<p>Rami Aly, Zhijiang Guo, Michael Sejr Schlichtkrull, James Thorne, Andreas Vlachos, Christos Christodoulopoulos, Oana Cocarascu, and Arpit Mittal. 2021. The fact extraction and verification over unstructured and structured information (feverous) shared task. In Proceedings of the Fourth Workshop on Fact Extraction and VERification (FEVER), pages 1-13.</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. 2020. Language models are few-shot learners. Advances in neural information processing systems, 33:1877-1901.</p>
+<p>Paweł Budzianowski, Tsung-Hsien Wen, Bo-Hsiang Tseng, Iñigo Casanueva, Stefan Ultes, Osman Ramadan, and Milica Gasic. 2018. Multiwoz-a largescale multi-domain wizard-of-oz dataset for taskoriented dialogue modelling. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 5016-5026.</p>
+<p>Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde de Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, et al. 2021a. Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374.</p>
+<p>Wenhu Chen, Ming-Wei Chang, Eva Schlinger, William Yang Wang, and William W Cohen. 2020a. Open question answering over tables and text. In International Conference on Learning Representations.</p>
+<p>Wenhu Chen, Jianshu Chen, Yu Su, Zhiyu Chen, and William Yang Wang. 2020b. Logical natural language generation from open-domain tables. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 79297942.</p>
+<p>Wenhu Chen, Hongmin Wang, Jianshu Chen, Yunkai Zhang, Hong Wang, Shiyang Li, Xiyou Zhou, and William Yang Wang. 2019. Tabfact: A large-scale dataset for table-based fact verification. In International Conference on Learning Representations.</p>
+<p>Wenhu Chen, Hanwen Zha, Zhiyu Chen, Wenhan Xiong, Hong Wang, and William Yang Wang. 2020c. Hybridqa: A dataset of multi-hop question answering over tabular and textual data. In Findings of the Association for Computational Linguistics: EMNLP 2020, pages 1026-1036.</p>
+<p>Zhiyu Chen, Wenhu Chen, Charese Smiley, Sameena Shah, Iana Borova, Dylan Langdon, Reema Moussa, Matt Beane, Ting-Hao Huang, Bryan R Routledge, et al. 2021b. Finqa: A dataset of numerical reasoning over financial data. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pages 3697-3711.</p>
+<p>Zhoujun Cheng, Tianbao Xie, Peng Shi, Chengzu Li, Rahul Nadkarni, Yushi Hu, Caiming Xiong, Dragomir Radev, Mari Ostendorf, Luke Zettlemoyer, et al. 2022. Binding language models in symbolic languages. arXiv preprint arXiv:2210.02875.</p>
+<p>Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra, Adam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian Gehrmann, et al. 2022. Palm: Scaling language modeling with pathways. arXiv preprint arXiv:2204.02311.</p>
+<p>Xiang Deng, Huan Sun, Alyssa Lees, You Wu, and Cong Yu. 2022. Turl: Table understanding through representation learning. ACM SIGMOD Record, 51(1):3340 .</p>
+<p>Andrew Drozdov, Nathanael Schärli, Ekin Akyürek, Nathan Scales, Xinying Song, Xinyun Chen, Olivier Bousquet, and Denny Zhou. 2022. Compositional semantic parsing with large language models. arXiv preprint arXiv:2209.15003.</p>
+<p>Nan Du, Yanping Huang, Andrew M Dai, Simon Tong, Dmitry Lepikhin, Yuanzhong Xu, Maxim Krikun, Yanqi Zhou, Adams Wei Yu, Orhan Firat, et al. 2022. Glam: Efficient scaling of language models with mixture-of-experts. In International Conference on Machine Learning, pages 5547-5569. PMLR.</p>
+<p>Julian Eisenschlos, Syrine Krichene, and Thomas Mueller. 2020. Understanding tables with intermediate pre-training. In Findings of the Association for Computational Linguistics: EMNLP 2020, pages 281-296.</p>
+<p>Jonathan Herzig, Pawel Krzysztof Nowak, Thomas Mueller, Francesco Piccinno, and Julian Eisenschlos. 2020. Tapas: Weakly supervised table parsing via pre-training. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 4320-4333.</p>
+<p>Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo, and Yusuke Iwasawa. 2022. Large language models are zero-shot reasoners. arXiv preprint arXiv:2205.11916.</p>
+<p>Mike Lewis, Yinhan Liu, Naman Goyal, Marjan Ghazvininejad, Abdelrahman Mohamed, Omer Levy, Veselin Stoyanov, and Luke Zettlemoyer. 2020. Bart: Denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages $7871-7880$.</p>
+<p>Chen Liang, Mohammad Norouzi, Jonathan Berant, Quoc V Le, and Ni Lao. 2018. Memory augmented policy optimization for program synthesis and semantic parsing. Advances in Neural Information Processing Systems, 31.</p>
+<p>Qian Liu, Bei Chen, Jiaqi Guo, Morteza Ziyadi, Zeqi Lin, Weizhu Chen, and Jian-Guang Lou. 2021. Tapex: Table pre-training via learning a neural sql executor. In International Conference on Learning Representations.</p>
+<p>Kai Nakamura, Sharon Levy, Yi-Lin Tuan, Wenhu Chen, and William Yang Wang. 2022. Hybridialogue: An information-seeking dialogue dataset grounded on tabular and textual data. In Findings of the Association for Computational Linguistics: ACL 2022, pages 481-492.</p>
+<p>Linyong Nan, Chiachun Hsieh, Ziming Mao, Xi Victoria Lin, Neha Verma, Rui Zhang, Wojciech Kryściński, Nick Schoelkopf, Riley Kong, Xiangru Tang, et al. 2022. Fetaqa: Free-form table question answering. Transactions of the Association for Computational Linguistics, 10:35-49.</p>
+<p>Linyong Nan, Dragomir Radev, Rui Zhang, Amrit Rau, Abhinand Sivaprasad, Chiachun Hsieh, Xiangru Tang, Aadit Vyas, Neha Verma, Pranav Krishna, et al. 2021. Dart: Open-domain structured data record to text generation. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 432-447.</p>
+<p>Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll L Wainwright, Pamela Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. 2022. Training language models to follow instructions with human feedback. arXiv preprint arXiv:2203.02155.</p>
+<p>Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing Zhu. 2002. Bleu: a method for automatic evaluation of machine translation. In Proceedings of the 40th annual meeting of the Association for Computational Linguistics, pages 311-318.</p>
+<p>Ankur Parikh, Xuezhi Wang, Sebastian Gehrmann, Manaal Faruqui, Bhuwan Dhingra, Diyi Yang, and Dipanjan Das. 2020. Totto: A controlled table-to-text
+generation dataset. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pages 1173-1186.</p>
+<p>Panupong Pasupat and Percy Liang. 2015. Compositional semantic parsing on semi-structured tables. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), pages 14701480.</p>
+<p>Jack W Rae, Sebastian Borgeaud, Trevor Cai, Katie Millican, Jordan Hoffmann, Francis Song, John Aslanides, Sarah Henderson, Roman Ring, Susannah Young, et al. 2021. Scaling language models: Methods, analysis \&amp; insights from training gopher. arXiv preprint arXiv:2112.11446.</p>
+<p>Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, Peter J Liu, et al. 2020. Exploring the limits of transfer learning with a unified text-to-text transformer. J. Mach. Learn. Res., 21(140):1-67.</p>
+<p>Victor Sanh, Albert Webson, Colin Raffel, Stephen Bach, Lintang Sutawika, Zaid Alyafeai, Antoine Chaffin, Arnaud Stiegler, Teven Le Scao, Arun Raja, et al. 2022. Multitask prompted training enables zeroshot task generalization. In The Tenth International Conference on Learning Representations.</p>
+<p>Shaden Smith, Mostofa Patwary, Brandon Norick, Patrick LeGresley, Samyam Rajbhandari, Jared Casper, Zhun Liu, Shrimai Prabhumoye, George Zerveas, Vijay Korthikanti, et al. 2022. Using deepspeed and megatron to train megatron-turing nlg 530b, a large-scale generative language model. arXiv preprint arXiv:2201.11990.</p>
+<p>Alon Talmor, Ori Yoran, Amnon Catav, Dan Lahav, Yizhong Wang, Akari Asai, Gabriel Ilharco, Hannaneh Hajishirzi, and Jonathan Berant. 2020. Multimodalqa: complex question answering over text, tables and images. In International Conference on Learning Representations.</p>
+<p>Bailin Wang, Ivan Titov, and Mirella Lapata. 2019. Learning semantic parsers from denotations with latent structured alignments and abstract programs. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 3774-3785.</p>
+<p>Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed Chi, and Denny Zhou. 2022. Self-consistency improves chain of thought reasoning in language models. arXiv preprint arXiv:2203.11171.</p>
+<p>Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Ed Chi, Quoc Le, and Denny Zhou. 2022. Chain of thought prompting elicits reasoning in large language models. arXiv preprint arXiv:2201.11903.</p>
+<p>Tianbao Xie, Chen Henry Wu, Peng Shi, Ruiqi Zhong, Torsten Scholak, Michihiro Yasunaga, Chien-Sheng Wu, Ming Zhong, Pengcheng Yin, Sida I. Wang, Victor Zhong, Bailin Wang, Chengzu Li, Connor Boyle, Ansong Ni, Ziyu Yao, Dragomir Radev, Caiming Xiong, Lingpeng Kong, Rui Zhang, Noah A. Smith, Luke Zettlemoyer, and Tao Yu. 2022. Unifiedskg: Unifying and multi-tasking structured knowledge grounding with text-to-text language models. arXiv preprint arXiv:2201.05966.</p>
+<p>Xiaoyu Yang, Feng Nie, Yufei Feng, Quan Liu, Zhigang Chen, and Xiaodan Zhu. 2020. Program enhanced fact verification with verbalization and graph attention network. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pages 7810-7825.</p>
+<p>Pengcheng Yin, Graham Neubig, Wen-tau Yih, and Sebastian Riedel. 2020. Tabert: Pretraining for joint understanding of textual and tabular data. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 8413-8426.</p>
+<p>Tao Yu, Chien-Sheng Wu, Xi Victoria Lin, Bailin Wang, Yi Chern Tan, Xinyi Yang, Dragomir R Radev, Richard Socher, and Caiming Xiong. 2021. Grappa: Grammar-augmented pre-training for table semantic parsing. In $I C L R$.</p>
+<p>Tao Yu, Rui Zhang, Kai Yang, Michihiro Yasunaga, Dongxu Wang, Zifan Li, James Ma, Irene Li, Qingning Yao, Shanelle Roman, et al. 2018. Spider: A large-scale human-labeled dataset for complex and cross-domain semantic parsing and text-to-sql task. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 3911-3921.</p>
+<p>Hongzhi Zhang, Yingyao Wang, Sirui Wang, Xuezhi Cao, Fuzheng Zhang, and Zhongyuan Wang. 2020. Table fact verification with structure-aware transformer. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pages 1624-1629.</p>
+<p>Yuchen Zhang, Panupong Pasupat, and Percy Liang. 2017. Macro grammars and holistic triggering for efficient semantic parsing. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing, pages 1214-1223.</p>
+<p>Victor Zhong, Caiming Xiong, and Richard Socher. 2017. Seq2sql: Generating structured queries from natural language using reinforcement learning. arXiv preprint arXiv:1709.00103.</p>
+<p>Wanjun Zhong, Duyu Tang, Zhangyin Feng, Nan Duan, Ming Zhou, Ming Gong, Linjun Shou, Daxin Jiang, Jiahai Wang, and Jian Yin. 2020. Logicalfactchecker: Leveraging logical operations for fact checking with graph module network. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 6053-6065.</p>
+<p>Denny Zhou, Nathanael Schärli, Le Hou, Jason Wei, Nathan Scales, Xuezhi Wang, Dale Schuurmans, Olivier Bousquet, Quoc Le, and Ed Chi. 2022. Least-to-most prompting enables complex reasoning in large language models. arXiv preprint arXiv:2205.10625.</p>
+<p>Fengbin Zhu, Wenqiang Lei, Youcheng Huang, Chao Wang, Shuo Zhang, Jiancheng Lv, Fuli Feng, and Tat-Seng Chua. 2021. Tat-qa: A question answering benchmark on a hybrid of tabular and textual content in finance. In Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), pages 3277-3287.</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

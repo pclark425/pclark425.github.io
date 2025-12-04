@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchical Tool Composition and Closed-Loop Refinement Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-100</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-100</p>
+                <p><strong>Name:</strong> Hierarchical Tool Composition and Closed-Loop Refinement Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of how agents perform planning with external tools in partially observable text environments, including belief-state updates that incorporate tool outputs and guide shortest-path actions, based on the following results.</p>
+                <p><strong>Description:</strong> Complex planning in partially observable text environments benefits from hierarchical tool composition where high-level planning tools (LLMs, classical planners) generate plans that are refined and executed by lower-level tools (code interpreters, action translators, perception modules, embedding models), with closed-loop feedback enabling iterative refinement. The effectiveness depends on: (1) the quality and granularity of feedback signals (execution results, error traces, success detectors, similarity scores), (2) the agent's ability to use feedback for targeted corrections rather than complete replanning, (3) the compatibility of tool interfaces and output formats, and (4) the appropriate matching of hierarchy depth to task complexity. Different types of hierarchies serve different purposes: code-generation hierarchies for precise execution, translation hierarchies for action-space mapping, perception-action hierarchies for embodied tasks, and retrieval-augmentation hierarchies for knowledge integration.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Hierarchical tool composition enables agents to leverage complementary strengths: LLMs for reasoning and decomposition, classical planners for optimal search, code interpreters for precise execution, embedding models for semantic matching, and perception modules for grounding.</li>
+                <li>Closed-loop feedback from execution (success/failure signals, error traces, intermediate results, similarity scores) is essential for robust planning in partially observable environments; agents with feedback-driven refinement outperform open-loop planners by 20-50 percentage points in complex tasks.</li>
+                <li>The granularity of feedback determines refinement effectiveness: detailed error traces (parsed error types, locations, stack traces) enable targeted debugging, while binary success/failure signals only enable coarse replanning.</li>
+                <li>Iterative refinement with bounded retry limits (typically 3-10 iterations) balances error recovery against computational cost and prevents infinite loops.</li>
+                <li>Tool composition requires interface compatibility: outputs of one tool must be in a format consumable by the next tool (e.g., text → embeddings → similarity scores → action selection).</li>
+                <li>Different hierarchy types serve different purposes: code-generation hierarchies (LLM→code→interpreter) for precise execution, translation hierarchies (generator→embeddings→mapper) for action-space reduction, perception-action hierarchies (vision→LLM→policy) for embodied grounding, and retrieval-augmentation hierarchies (query→retrieval→integration) for knowledge access.</li>
+                <li>The optimal hierarchy depth depends on task complexity: simple tasks may only need 2 levels (planner→executor), while complex tasks benefit from 3+ levels (strategic planner→tactical planner→executor→monitor).</li>
+                <li>Hierarchical composition is most beneficial when: (a) individual tools have complementary strengths and weaknesses, (b) the task requires multiple types of reasoning or processing, (c) intermediate representations are more tractable than end-to-end learning, and (d) feedback can be obtained at multiple levels of abstraction.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>EHRAgent uses LLM planner + code executor + rubber duck debugger, achieving 71.58% SR with interactive coding vs 45.33% without; ablations show removing interactive coding drops SR by 26.25 points <a href="../results/extraction-result-799.html#e799.0" class="evidence-link">[e799.0]</a> </li>
+    <li>ConAgents uses grounding agent (planner) + execution agent (code generator) + review agent (error router), achieving 79% SR on RestBench-TMDB; ablations show removing review agent drops success by ~4 points <a href="../results/extraction-result-800.html#e800.0" class="evidence-link">[e800.0]</a> <a href="../results/extraction-result-800.html#e800.2" class="evidence-link">[e800.2]</a> </li>
+    <li>ConceptAgent combines LLM-MCTS planning + precondition grounding + 3D scene graph perception, achieving 35% success on moderate tasks vs 5% without precondition grounding or MCTS <a href="../results/extraction-result-804.html#e804.0" class="evidence-link">[e804.0]</a> </li>
+    <li>Inner Monologue uses LLM planner + success detectors + scene descriptors + object detectors for closed-loop replanning, substantially improving recovery from failures vs SayCan baseline <a href="../results/extraction-result-875.html#e875.0" class="evidence-link">[e875.0]</a> <a href="../results/extraction-result-875.html#e875.1" class="evidence-link">[e875.1]</a> <a href="../results/extraction-result-875.html#e875.3" class="evidence-link">[e875.3]</a> </li>
+    <li>LLM+P uses LLM to translate to PDDL + Fast-Downward planner + LLM to translate back, achieving 90% success on BlocksWorld vs 0-35% for LLM-only baselines <a href="../results/extraction-result-882.html#e882.0" class="evidence-link">[e882.0]</a> <a href="../results/extraction-result-882.html#e882.1" class="evidence-link">[e882.1]</a> </li>
+    <li>ViperGPT uses Codex to generate programs + Python interpreter + multiple vision modules (GLIP, X-VLM, MiDaS, BLIP-2), achieving 72% IoU on RefCOCO; ablations show individual modules contribute materially <a href="../results/extraction-result-866.html#e866.0" class="evidence-link">[e866.0]</a> </li>
+    <li>KNOWNO uses LLM planner + conformal prediction + human-in-loop for uncertainty, achieving 0.76 plan success vs 0.41 for no-help baseline <a href="../results/extraction-result-876.html#e876.0" class="evidence-link">[e876.0]</a> </li>
+    <li>Voyager uses LLM planner + code generator + execution environment + self-verification + skill library, making progress on open-ended Minecraft where ReAct baseline fails <a href="../results/extraction-result-886.html#e886.1" class="evidence-link">[e886.1]</a> <a href="../results/extraction-result-886.html#e886.4" class="evidence-link">[e886.4]</a> </li>
+    <li>ProAgent uses workflow planner + DataAgent (ReAct-based) for complex data processing in RPA workflows <a href="../results/extraction-result-787.html#e787.1" class="evidence-link">[e787.1]</a> <a href="../results/extraction-result-787.html#e787.3" class="evidence-link">[e787.3]</a> </li>
+    <li>PAL uses LLM to generate programs + Python interpreter for execution, achieving 72% on GSM8K vs 65.6% for CoT; ablation shows LLM-simulated execution only achieves 23.2% <a href="../results/extraction-result-888.html#e888.0" class="evidence-link">[e888.0]</a> </li>
+    <li>Translated LM pipeline uses Planning LM + Translation LM (embeddings) + action bank + autoregressive correction, increasing executability from 7.79% to 73.05% for GPT-3 <a href="../results/extraction-result-867.html#e867.0" class="evidence-link">[e867.0]</a> <a href="../results/extraction-result-867.html#e867.1" class="evidence-link">[e867.1]</a> <a href="../results/extraction-result-877.html#e877.0" class="evidence-link">[e877.0]</a> </li>
+    <li>Q*BERT uses ALBERT QA extractor + KG construction + R-GCN encoder + A2C policy, showing faster learning than OpenIE-based KG construction <a href="../results/extraction-result-797.html#e797.0" class="evidence-link">[e797.0]</a> <a href="../results/extraction-result-797.html#e797.3" class="evidence-link">[e797.3]</a> </li>
+    <li>MPRC-DQN uses spaCy object detection + retrieval + RC-based Q-function, achieving 64% winning percentage on Jericho games <a href="../results/extraction-result-871.html#e871.2" class="evidence-link">[e871.2]</a> </li>
+    <li>DiffG-RL uses AMR parser + Visual Genome retrieval + GIN encoder + action selector, achieving 0.35 normalized score on TWC OUT Hard <a href="../results/extraction-result-778.html#e778.0" class="evidence-link">[e778.0]</a> </li>
+    <li>Text+Commonsense uses spaCy + ConceptNet retrieval + GAT encoder + A2C policy, showing improvements over text-only baselines <a href="../results/extraction-result-782.html#e782.0" class="evidence-link">[e782.0]</a> </li>
+    <li>LangGround uses LLM-generated message embeddings + MARL training, achieving 4.3 steps on Predator-Prey vs longer for baselines <a href="../results/extraction-result-805.html#e805.1" class="evidence-link">[e805.1]</a> </li>
+    <li>SayCan uses LLM + value functions for affordance grounding, enabling language-conditioned robot control <a href="../results/extraction-result-879.html#e879.2" class="evidence-link">[e879.2]</a> <a href="../results/extraction-result-893.html#e893.1" class="evidence-link">[e893.1]</a> </li>
+    <li>Code as Policies uses LLM to generate code + executor for embodied control <a href="../results/extraction-result-884.html#e884.0" class="evidence-link">[e884.0]</a> <a href="../results/extraction-result-884.html#e884.1" class="evidence-link">[e884.1]</a> <a href="../results/extraction-result-884.html#e884.2" class="evidence-link">[e884.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>An agent with a three-level hierarchy (strategic planner → tactical planner → executor) will outperform two-level hierarchies in complex long-horizon tasks (e.g., multi-step scientific reasoning, complex web navigation) by enabling better abstraction and decomposition.</li>
+                <li>Agents that use learned error classifiers to route different error types to specialized debugging tools (syntax errors→parser, semantic errors→validator, execution errors→debugger) will be 15-30% more efficient than agents using a single generic debugging mechanism.</li>
+                <li>In multi-agent settings, hierarchical tool composition with role specialization (one agent plans, another executes, another monitors) will outperform homogeneous agents by 20-40% on coordination tasks.</li>
+                <li>Combining multiple feedback types (execution results + success detection + scene description) will improve robustness more than any single feedback type alone, with diminishing returns after 3-4 feedback channels.</li>
+                <li>Hierarchical composition with learned tool selection (meta-learning which tools to use) will outperform fixed pipelines by 10-20% after sufficient meta-training data.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exists an optimal depth for tool hierarchies, or whether deeper hierarchies always improve performance given sufficient training and computational resources.</li>
+                <li>Whether learned composition strategies (meta-learning which tools to use in which order) can outperform hand-crafted composition pipelines when both are given equal development effort.</li>
+                <li>Whether hierarchical tool composition remains beneficial when individual tools become sufficiently capable (e.g., very large LLMs that can plan and execute, or end-to-end learned policies that can handle partial observability).</li>
+                <li>Whether there are fundamental limits to how much closed-loop feedback can improve performance, or whether performance continues to improve with more granular and diverse feedback signals.</li>
+                <li>Whether hierarchical composition can be learned end-to-end (jointly training all tools) or whether pre-trained tools composed post-hoc will always be more effective.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Demonstrating that flat (non-hierarchical) tool usage performs as well as hierarchical composition when given equal computational budget would challenge the theory.</li>
+                <li>Showing that open-loop planning (without feedback) performs comparably to closed-loop refinement when given more planning time or better prompts would question the value of feedback.</li>
+                <li>Finding that random tool composition orders perform as well as principled hierarchies would challenge the importance of hierarchy structure.</li>
+                <li>Demonstrating that single end-to-end learned models outperform hierarchical tool compositions on a wide range of tasks would suggest the overhead of composition outweighs benefits.</li>
+                <li>Showing that adding more levels to a hierarchy consistently degrades performance would challenge the assumption that deeper hierarchies are better for complex tasks.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to automatically determine the optimal hierarchy structure for a given task without extensive trial and error </li>
+    <li>The computational costs of iterative refinement and principled methods for determining when to terminate refinement loops </li>
+    <li>How to handle cases where feedback is ambiguous, contradictory, or misleading (e.g., false positive success signals) </li>
+    <li>How to compose tools with different latencies, costs, and reliability profiles in a principled way </li>
+    <li>Whether there are fundamental limits to composability (e.g., some tools that cannot be effectively composed) </li>
+    <li>How to handle tool failures or unavailability in hierarchical systems (graceful degradation) </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Sutton et al. (1999) Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning [Options framework for hierarchical RL, foundational work on temporal abstraction]</li>
+    <li>Dietterich (2000) Hierarchical reinforcement learning with the MAXQ value function decomposition [MAXQ framework for hierarchical task decomposition]</li>
+    <li>Huang et al. (2022) Inner Monologue: Embodied reasoning through planning with language models [Closed-loop LLM planning with environment feedback]</li>
+    <li>Ahn et al. (2022) Do As I Can, Not As I Say: Grounding Language in Robotic Affordances [SayCan hierarchical composition of LLM and value functions]</li>
+    <li>Liu et al. (2023) LLM+P: Empowering Large Language Models with Optimal Planning Proficiency [LLM + classical planner composition]</li>
+    <li>Schrittwieser et al. (2020) Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model [MuZero, hierarchical planning with learned models]</li>
+    <li>Andreas et al. (2017) Modular multitask reinforcement learning with policy sketches [Modular policy composition]</li>
+    <li>Gupta et al. (2019) Relay policy learning: Solving long-horizon tasks via imitation and reinforcement learning [Hierarchical policy composition for long-horizon tasks]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Hierarchical Tool Composition and Closed-Loop Refinement Theory",
+    "theory_description": "Complex planning in partially observable text environments benefits from hierarchical tool composition where high-level planning tools (LLMs, classical planners) generate plans that are refined and executed by lower-level tools (code interpreters, action translators, perception modules, embedding models), with closed-loop feedback enabling iterative refinement. The effectiveness depends on: (1) the quality and granularity of feedback signals (execution results, error traces, success detectors, similarity scores), (2) the agent's ability to use feedback for targeted corrections rather than complete replanning, (3) the compatibility of tool interfaces and output formats, and (4) the appropriate matching of hierarchy depth to task complexity. Different types of hierarchies serve different purposes: code-generation hierarchies for precise execution, translation hierarchies for action-space mapping, perception-action hierarchies for embodied tasks, and retrieval-augmentation hierarchies for knowledge integration.",
+    "supporting_evidence": [
+        {
+            "text": "EHRAgent uses LLM planner + code executor + rubber duck debugger, achieving 71.58% SR with interactive coding vs 45.33% without; ablations show removing interactive coding drops SR by 26.25 points",
+            "uuids": [
+                "e799.0"
+            ]
+        },
+        {
+            "text": "ConAgents uses grounding agent (planner) + execution agent (code generator) + review agent (error router), achieving 79% SR on RestBench-TMDB; ablations show removing review agent drops success by ~4 points",
+            "uuids": [
+                "e800.0",
+                "e800.2"
+            ]
+        },
+        {
+            "text": "ConceptAgent combines LLM-MCTS planning + precondition grounding + 3D scene graph perception, achieving 35% success on moderate tasks vs 5% without precondition grounding or MCTS",
+            "uuids": [
+                "e804.0"
+            ]
+        },
+        {
+            "text": "Inner Monologue uses LLM planner + success detectors + scene descriptors + object detectors for closed-loop replanning, substantially improving recovery from failures vs SayCan baseline",
+            "uuids": [
+                "e875.0",
+                "e875.1",
+                "e875.3"
+            ]
+        },
+        {
+            "text": "LLM+P uses LLM to translate to PDDL + Fast-Downward planner + LLM to translate back, achieving 90% success on BlocksWorld vs 0-35% for LLM-only baselines",
+            "uuids": [
+                "e882.0",
+                "e882.1"
+            ]
+        },
+        {
+            "text": "ViperGPT uses Codex to generate programs + Python interpreter + multiple vision modules (GLIP, X-VLM, MiDaS, BLIP-2), achieving 72% IoU on RefCOCO; ablations show individual modules contribute materially",
+            "uuids": [
+                "e866.0"
+            ]
+        },
+        {
+            "text": "KNOWNO uses LLM planner + conformal prediction + human-in-loop for uncertainty, achieving 0.76 plan success vs 0.41 for no-help baseline",
+            "uuids": [
+                "e876.0"
+            ]
+        },
+        {
+            "text": "Voyager uses LLM planner + code generator + execution environment + self-verification + skill library, making progress on open-ended Minecraft where ReAct baseline fails",
+            "uuids": [
+                "e886.1",
+                "e886.4"
+            ]
+        },
+        {
+            "text": "ProAgent uses workflow planner + DataAgent (ReAct-based) for complex data processing in RPA workflows",
+            "uuids": [
+                "e787.1",
+                "e787.3"
+            ]
+        },
+        {
+            "text": "PAL uses LLM to generate programs + Python interpreter for execution, achieving 72% on GSM8K vs 65.6% for CoT; ablation shows LLM-simulated execution only achieves 23.2%",
+            "uuids": [
+                "e888.0"
+            ]
+        },
+        {
+            "text": "Translated LM pipeline uses Planning LM + Translation LM (embeddings) + action bank + autoregressive correction, increasing executability from 7.79% to 73.05% for GPT-3",
+            "uuids": [
+                "e867.0",
+                "e867.1",
+                "e877.0"
+            ]
+        },
+        {
+            "text": "Q*BERT uses ALBERT QA extractor + KG construction + R-GCN encoder + A2C policy, showing faster learning than OpenIE-based KG construction",
+            "uuids": [
+                "e797.0",
+                "e797.3"
+            ]
+        },
+        {
+            "text": "MPRC-DQN uses spaCy object detection + retrieval + RC-based Q-function, achieving 64% winning percentage on Jericho games",
+            "uuids": [
+                "e871.2"
+            ]
+        },
+        {
+            "text": "DiffG-RL uses AMR parser + Visual Genome retrieval + GIN encoder + action selector, achieving 0.35 normalized score on TWC OUT Hard",
+            "uuids": [
+                "e778.0"
+            ]
+        },
+        {
+            "text": "Text+Commonsense uses spaCy + ConceptNet retrieval + GAT encoder + A2C policy, showing improvements over text-only baselines",
+            "uuids": [
+                "e782.0"
+            ]
+        },
+        {
+            "text": "LangGround uses LLM-generated message embeddings + MARL training, achieving 4.3 steps on Predator-Prey vs longer for baselines",
+            "uuids": [
+                "e805.1"
+            ]
+        },
+        {
+            "text": "SayCan uses LLM + value functions for affordance grounding, enabling language-conditioned robot control",
+            "uuids": [
+                "e879.2",
+                "e893.1"
+            ]
+        },
+        {
+            "text": "Code as Policies uses LLM to generate code + executor for embodied control",
+            "uuids": [
+                "e884.0",
+                "e884.1",
+                "e884.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Hierarchical tool composition enables agents to leverage complementary strengths: LLMs for reasoning and decomposition, classical planners for optimal search, code interpreters for precise execution, embedding models for semantic matching, and perception modules for grounding.",
+        "Closed-loop feedback from execution (success/failure signals, error traces, intermediate results, similarity scores) is essential for robust planning in partially observable environments; agents with feedback-driven refinement outperform open-loop planners by 20-50 percentage points in complex tasks.",
+        "The granularity of feedback determines refinement effectiveness: detailed error traces (parsed error types, locations, stack traces) enable targeted debugging, while binary success/failure signals only enable coarse replanning.",
+        "Iterative refinement with bounded retry limits (typically 3-10 iterations) balances error recovery against computational cost and prevents infinite loops.",
+        "Tool composition requires interface compatibility: outputs of one tool must be in a format consumable by the next tool (e.g., text → embeddings → similarity scores → action selection).",
+        "Different hierarchy types serve different purposes: code-generation hierarchies (LLM→code→interpreter) for precise execution, translation hierarchies (generator→embeddings→mapper) for action-space reduction, perception-action hierarchies (vision→LLM→policy) for embodied grounding, and retrieval-augmentation hierarchies (query→retrieval→integration) for knowledge access.",
+        "The optimal hierarchy depth depends on task complexity: simple tasks may only need 2 levels (planner→executor), while complex tasks benefit from 3+ levels (strategic planner→tactical planner→executor→monitor).",
+        "Hierarchical composition is most beneficial when: (a) individual tools have complementary strengths and weaknesses, (b) the task requires multiple types of reasoning or processing, (c) intermediate representations are more tractable than end-to-end learning, and (d) feedback can be obtained at multiple levels of abstraction."
+    ],
+    "new_predictions_likely": [
+        "An agent with a three-level hierarchy (strategic planner → tactical planner → executor) will outperform two-level hierarchies in complex long-horizon tasks (e.g., multi-step scientific reasoning, complex web navigation) by enabling better abstraction and decomposition.",
+        "Agents that use learned error classifiers to route different error types to specialized debugging tools (syntax errors→parser, semantic errors→validator, execution errors→debugger) will be 15-30% more efficient than agents using a single generic debugging mechanism.",
+        "In multi-agent settings, hierarchical tool composition with role specialization (one agent plans, another executes, another monitors) will outperform homogeneous agents by 20-40% on coordination tasks.",
+        "Combining multiple feedback types (execution results + success detection + scene description) will improve robustness more than any single feedback type alone, with diminishing returns after 3-4 feedback channels.",
+        "Hierarchical composition with learned tool selection (meta-learning which tools to use) will outperform fixed pipelines by 10-20% after sufficient meta-training data."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exists an optimal depth for tool hierarchies, or whether deeper hierarchies always improve performance given sufficient training and computational resources.",
+        "Whether learned composition strategies (meta-learning which tools to use in which order) can outperform hand-crafted composition pipelines when both are given equal development effort.",
+        "Whether hierarchical tool composition remains beneficial when individual tools become sufficiently capable (e.g., very large LLMs that can plan and execute, or end-to-end learned policies that can handle partial observability).",
+        "Whether there are fundamental limits to how much closed-loop feedback can improve performance, or whether performance continues to improve with more granular and diverse feedback signals.",
+        "Whether hierarchical composition can be learned end-to-end (jointly training all tools) or whether pre-trained tools composed post-hoc will always be more effective."
+    ],
+    "negative_experiments": [
+        "Demonstrating that flat (non-hierarchical) tool usage performs as well as hierarchical composition when given equal computational budget would challenge the theory.",
+        "Showing that open-loop planning (without feedback) performs comparably to closed-loop refinement when given more planning time or better prompts would question the value of feedback.",
+        "Finding that random tool composition orders perform as well as principled hierarchies would challenge the importance of hierarchy structure.",
+        "Demonstrating that single end-to-end learned models outperform hierarchical tool compositions on a wide range of tasks would suggest the overhead of composition outweighs benefits.",
+        "Showing that adding more levels to a hierarchy consistently degrades performance would challenge the assumption that deeper hierarchies are better for complex tasks."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to automatically determine the optimal hierarchy structure for a given task without extensive trial and error",
+            "uuids": []
+        },
+        {
+            "text": "The computational costs of iterative refinement and principled methods for determining when to terminate refinement loops",
+            "uuids": []
+        },
+        {
+            "text": "How to handle cases where feedback is ambiguous, contradictory, or misleading (e.g., false positive success signals)",
+            "uuids": []
+        },
+        {
+            "text": "How to compose tools with different latencies, costs, and reliability profiles in a principled way",
+            "uuids": []
+        },
+        {
+            "text": "Whether there are fundamental limits to composability (e.g., some tools that cannot be effectively composed)",
+            "uuids": []
+        },
+        {
+            "text": "How to handle tool failures or unavailability in hierarchical systems (graceful degradation)",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some single-tool end-to-end learned policies achieve strong performance without hierarchical composition: LSTM-DQN achieves ~100% on Home world, MAPPO achieves 90 points on bomb defusal",
+            "uuids": [
+                "e872.0",
+                "e773.3"
+            ]
+        },
+        {
+            "text": "Tree-of-Thoughts (ToT) LLM-only approach with deliberative search fails on planning tasks (0-35% success), suggesting hierarchy alone isn't sufficient without appropriate tool selection",
+            "uuids": [
+                "e882.1"
+            ]
+        },
+        {
+            "text": "Some agents achieve good performance with minimal feedback (only final reward): DRRN achieves 13% on Jericho with only sparse game rewards",
+            "uuids": [
+                "e894.0"
+            ]
+        },
+        {
+            "text": "Vanilla LLMs without tool composition can achieve high semantic correctness (77.86% for GPT-3 on VirtualHome) even when executability is low, suggesting planning capability exists without tools",
+            "uuids": [
+                "e867.0"
+            ]
+        },
+        {
+            "text": "Some simple retrieval-based approaches (SimpleSearch TF-IDF) perform reasonably without hierarchical composition, achieving 28.4% recall@40",
+            "uuids": [
+                "e784.1"
+            ]
+        },
+        {
+            "text": "ReAct baseline adapted to embodied tasks makes negligible progress despite interleaving reasoning and acting, suggesting composition structure matters more than just having multiple components",
+            "uuids": [
+                "e886.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In environments with deterministic dynamics and perfect information (e.g., fully observable planning domains), closed-loop feedback may provide minimal benefit over open-loop planning with a good model.",
+        "For very simple tasks (e.g., single-step actions, small action spaces), the overhead of hierarchical composition (multiple tool calls, interface conversions) may outweigh benefits.",
+        "When tools have high latency or cost (e.g., expensive API calls, slow perception modules), the number of refinement iterations must be carefully limited to maintain practical efficiency.",
+        "In domains where end-to-end learning is tractable (small state/action spaces, abundant training data), learned policies may outperform hierarchical composition by avoiding interface losses.",
+        "When individual tools are unreliable or produce noisy outputs, error propagation through hierarchies can amplify mistakes; in such cases, robust error handling or tool redundancy is essential.",
+        "For tasks requiring real-time performance, the sequential nature of hierarchical composition may introduce unacceptable latency compared to direct policies.",
+        "In settings where tools have incompatible assumptions or representations (e.g., discrete vs continuous, symbolic vs neural), the interface conversion overhead may be prohibitive.",
+        "When feedback is delayed or sparse (e.g., only available at episode end), closed-loop refinement within an episode is impossible and hierarchical composition must rely on open-loop planning."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Sutton et al. (1999) Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning [Options framework for hierarchical RL, foundational work on temporal abstraction]",
+            "Dietterich (2000) Hierarchical reinforcement learning with the MAXQ value function decomposition [MAXQ framework for hierarchical task decomposition]",
+            "Huang et al. (2022) Inner Monologue: Embodied reasoning through planning with language models [Closed-loop LLM planning with environment feedback]",
+            "Ahn et al. (2022) Do As I Can, Not As I Say: Grounding Language in Robotic Affordances [SayCan hierarchical composition of LLM and value functions]",
+            "Liu et al. (2023) LLM+P: Empowering Large Language Models with Optimal Planning Proficiency [LLM + classical planner composition]",
+            "Schrittwieser et al. (2020) Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model [MuZero, hierarchical planning with learned models]",
+            "Andreas et al. (2017) Modular multitask reinforcement learning with policy sketches [Modular policy composition]",
+            "Gupta et al. (2019) Relay policy learning: Solving long-horizon tasks via imitation and reinforcement learning [Hierarchical policy composition for long-horizon tasks]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 3,
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

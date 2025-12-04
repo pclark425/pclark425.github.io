@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversarial Curriculum Degeneracy Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-131</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-131</p>
+                <p><strong>Name:</strong> Adversarial Curriculum Degeneracy Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of the fundamental trade-off between environment complexity and environment variation in embodied learning systems, based on the following results.</p>
+                <p><strong>Description:</strong> Adversarial curriculum generation methods (where a teacher/adversary generates training tasks to challenge the student) are prone to degeneracy: the adversary can exploit the student's weaknesses or the task space structure to generate tasks that are either unsolvable (too hard), uninformative (too easy), or unrepresentative of the target distribution. This degeneracy manifests in several forms: (1) Minimax collapse: unconstrained adversaries drive student performance to zero by generating impossible tasks; (2) Exploration failure: in high-dimensional or permutation-invariant spaces, adversaries fail to discover informative task regions; (3) Curriculum drift: adversaries optimize for short-term difficulty rather than long-term learning progress; (4) Exploitability: learned reward functions can be gamed to produce degenerate environments. Degeneracy is particularly severe when: (a) the adversary is unconstrained (pure minimax), (b) the task space is high-dimensional, continuous, or has combinatorial structure, (c) the adversary learns faster than the student can adapt, (d) there is no mechanism to ensure task solvability or relevance. Mitigation strategies include: regret-based constraints (PAIRED) that ensure tasks remain solvable by an antagonist, replay-based curation (PLR, REPAIRED) that maintains a buffer of useful tasks, self-supervised reward signals (asymmetric self-play) that avoid learned discriminator exploitation, and learned task manifolds (CLUTR) that structure the task space. However, even mitigated methods can struggle: PAIRED adapts slowly and can degenerate in permutation-invariant spaces; pure replay without generation may not discover sufficiently challenging tasks. The fundamental trade-off is between adversarial adaptivity (which can find hard tasks) and stability (which prevents degeneracy).</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Unconstrained adversarial curriculum generation (pure minimax) is prone to degeneracy where the adversary generates unsolvable tasks, driving student performance to zero</li>
+                <li>Regret-based constraints (protagonist vs antagonist) mitigate degeneracy by ensuring tasks remain solvable, but may adapt slowly</li>
+                <li>Adversarial methods degenerate more severely in high-dimensional, continuous, or permutation-invariant task spaces due to increased exploration difficulty and combinatorial explosion</li>
+                <li>Combining adversarial generation with replay-based curation provides more stable curricula than pure adversarial methods, achieving better sample efficiency</li>
+                <li>The rate of adversary adaptation relative to student learning affects degeneracy: adversaries that learn too fast can outpace student adaptation, while adversaries that learn too slowly fail to provide sufficient challenge</li>
+                <li>Self-supervised reward signals (e.g., asymmetric self-play) are more robust to exploitation than learned discriminator rewards because they cannot be gamed by the adversary</li>
+                <li>Adversarial methods that simultaneously learn task manifolds and generate curricula suffer from non-stationarity and instability</li>
+                <li>Stateless adversarial teachers (without performance history or task awareness) produce limited variation in task difficulty and worse generalization</li>
+                <li>Structured variation (balancing similarity for transfer and diversity for coverage) outperforms unstructured adversarial selection in curriculum generation</li>
+                <li>The fundamental trade-off in adversarial curriculum learning is between adaptivity (finding hard tasks) and stability (preventing degeneracy)</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Unconstrained minimax adversary in MuJoCo Hopper drove agent reward to zero (complete failure) when adversary strength was unconstrained, demonstrating minimax collapse <a href="../results/extraction-result-1038.html#e1038.1" class="evidence-link">[e1038.1]</a> </li>
+    <li>PAIRED in MiniGrid underperformed replay-based methods (PLR variants), showing mean solve-rate ~0.43-0.44 vs PLR's ~0.5-0.6, indicating slower adaptation and less effective curriculum <a href="../results/extraction-result-1092.html#e1092.2" class="evidence-link">[e1092.2]</a> </li>
+    <li>PAIRED in CarRacing struggled and sometimes discovered curricula that degraded protagonist performance, showing curriculum drift toward unhelpful tasks <a href="../results/extraction-result-1092.html#e1092.2" class="evidence-link">[e1092.2]</a> </li>
+    <li>PAIRED's sequential parameter generation suffered from permutation-invariance combinatorics in MiniGrid, making exploration inefficient in high-dimensional discrete spaces <a href="../results/extraction-result-1033.html#e1033.3" class="evidence-link">[e1033.3]</a> </li>
+    <li>PAIRED required ~3B steps in some prior work vs 250M for PLR variants, showing poor sample efficiency <a href="../results/extraction-result-1092.html#e1092.2" class="evidence-link">[e1092.2]</a> </li>
+    <li>PAIRED adapts slowly (gradient updates) and can lead to emergent curriculum of increasing complexity, but can also exploit relative student strengths causing reductions in effective complexity <a href="../results/extraction-result-1092.html#e1092.2" class="evidence-link">[e1092.2]</a> </li>
+    <li>ADR particles trained with learned discriminator rewards could exploit simulator physics to create impossible environments, demonstrating exploitability of learned rewards <a href="../results/extraction-result-1009.html#e1009.0" class="evidence-link">[e1009.0]</a> </li>
+    <li>SS-ADR using self-supervised (Alice) rewards instead of learned discriminator rewards mitigated ADR exploitability and stabilized curriculum learning <a href="../results/extraction-result-1009.html#e1009.0" class="evidence-link">[e1009.0]</a> </li>
+    <li>REPAIRED (PAIRED + replay curation) mitigated some of PAIRED's degeneracy issues by combining adversarial generation with replay buffer <a href="../results/extraction-result-1092.html#e1092.2" class="evidence-link">[e1092.2]</a> </li>
+    <li>PLR with regret-based scoring outperformed PAIRED in the studied domains, achieving strong performance within 250M steps vs PAIRED's much larger requirements <a href="../results/extraction-result-1092.html#e1092.3" class="evidence-link">[e1092.3]</a> </li>
+    <li>PLR (replay-based curation) is more sample-efficient than PAIRED in the studied domains, demonstrating advantage of curation over pure generation <a href="../results/extraction-result-1092.html#e1092.3" class="evidence-link">[e1092.3]</a> </li>
+    <li>CLUTR baseline (stateless teacher, no performance history) showed limited variation in task difficulty over time and worse generalization than GCL, indicating importance of task-awareness and history <a href="../results/extraction-result-1024.html#e1024.2" class="evidence-link">[e1024.2]</a> </li>
+    <li>PAIRED baseline in CLUTR experiments showed inferior zero-shot generalization compared to CLUTR across 16 held-out MiniGrid tasks, exhibiting less sample-efficient learning and degenerate curricula behavior <a href="../results/extraction-result-1033.html#e1033.3" class="evidence-link">[e1033.3]</a> </li>
+    <li>PAIRED's simultaneous manifold-and-curriculum learning leads to non-stationarity and instability, making it struggle to find effective balance across complexity and variation <a href="../results/extraction-result-1033.html#e1033.3" class="evidence-link">[e1033.3]</a> </li>
+    <li>Genetic Curriculum (GC) using crossover to maintain similarity and mutation for novelty outperformed random failure sampling, showing importance of structured variation vs pure adversarial selection <a href="../results/extraction-result-1088.html#e1088.5" class="evidence-link">[e1088.5]</a> </li>
+    <li>GC ablation: no-crossover or random failure sampling increased mean genetic distance and failure rates, demonstrating that unstructured high variation hurts transfer <a href="../results/extraction-result-1088.html#e1088.5" class="evidence-link">[e1088.5]</a> </li>
+    <li>Asymmetric self-play (Alice/Bob) provides self-supervised measure of curriculum difficulty that, when used to train ADR particles, structures environment variation and prevents exploitability <a href="../results/extraction-result-1009.html#e1009.1" class="evidence-link">[e1009.1]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In any continuous task space with unconstrained minimax adversarial training, the adversary will eventually generate unsolvable tasks and student performance will collapse</li>
+                <li>Regret-based adversarial methods will outperform pure minimax methods in all but the simplest discrete task spaces with small cardinality</li>
+                <li>Combining any adversarial method with replay curation will improve stability and final performance compared to pure adversarial generation</li>
+                <li>Adversarial methods will degenerate faster (require fewer training steps to collapse) in high-dimensional task spaces than in low-dimensional spaces</li>
+                <li>Adversarial methods using self-supervised rewards will be more stable than those using learned discriminator rewards across all domains</li>
+                <li>In permutation-invariant task spaces, adversarial methods will show poor sample efficiency unless the task representation is structured (e.g., via learned manifolds)</li>
+                <li>Adversarial methods that track student performance history will generate more effective curricula than stateless adversaries</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exist adversarial curriculum methods that provably avoid degeneracy without replay or regret constraints in continuous task spaces</li>
+                <li>Whether the degeneracy problem can be solved by better adversary architectures (e.g., hierarchical adversaries, multi-objective adversaries) or training procedures alone</li>
+                <li>Whether adversarial methods can be made sample-efficient enough to compete with replay-based methods in complex, high-dimensional domains</li>
+                <li>Whether multi-agent adversarial methods (multiple adversaries with diversity objectives) could avoid degeneracy through population-based exploration</li>
+                <li>Whether there exists an optimal balance point between adversarial generation and replay curation that maximizes both adaptivity and stability</li>
+                <li>Whether adversarial methods could be combined with other curriculum strategies (e.g., learning progress, novelty search) to avoid degeneracy while maintaining adaptivity</li>
+                <li>Whether the degeneracy problem is fundamental to adversarial training or an artifact of current implementations and reward structures</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding adversarial methods that consistently avoid degeneracy without regret constraints or replay in continuous task spaces would challenge the core degeneracy claim</li>
+                <li>Demonstrating that unconstrained minimax can work well in continuous, high-dimensional task spaces would contradict the minimax collapse prediction</li>
+                <li>Showing that adversarial methods outperform replay-based methods in complex domains without any mitigation strategies would challenge the stability-adaptivity trade-off</li>
+                <li>Finding that adversary adaptation rate does not affect degeneracy (i.e., fast and slow adversaries perform equally) would contradict the relative-learning-rate hypothesis</li>
+                <li>Demonstrating that learned discriminator rewards can be made as robust as self-supervised rewards would challenge the exploitability claim</li>
+                <li>Finding task spaces where permutation invariance does not harm adversarial exploration would challenge the combinatorial explosion prediction</li>
+                <li>Showing that stateless adversaries can generate effective curricula comparable to history-aware adversaries would challenge the importance of performance tracking</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Whether there are specific task structures or properties (beyond discrete/small cardinality) where adversarial methods naturally avoid degeneracy </li>
+    <li>How to automatically detect and recover from degeneracy during training without human intervention </li>
+    <li>Whether adversarial methods could be combined with curriculum strategies beyond replay (e.g., learning progress, novelty search, empowerment) to avoid degeneracy </li>
+    <li>The role of student architecture and capacity in determining susceptibility to adversarial degeneracy </li>
+    <li>Whether curriculum timing and transition points affect adversarial degeneracy (e.g., when to switch from easy to hard tasks) </li>
+    <li>The interaction between task representation quality (raw parameters vs learned manifolds) and adversarial degeneracy </li>
+    <li>Whether there are domain-specific factors that make some environments more susceptible to adversarial degeneracy than others </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Dennis et al. (2020) Emergent Complexity and Zero-shot Transfer via Unsupervised Environment Design [Original PAIRED paper introducing regret-based adversarial curriculum]</li>
+    <li>Jiang et al. (2021) Replay-Guided Adversarial Environment Design [REPAIRED combining adversarial generation with replay curation to address PAIRED limitations]</li>
+    <li>Parker-Holder et al. (2020) Prioritized Level Replay [PLR showing replay-based curation can outperform adversarial generation]</li>
+    <li>Jiang et al. (2021) Prioritized Level Replay (extended) [Theoretical analysis of dual curriculum design and minimax-regret guarantees]</li>
+    <li>OpenAI et al. (2020) Generating Automatic Curricula via Self-Supervised Active Domain Randomization [SS-ADR showing self-supervised rewards mitigate ADR exploitability]</li>
+    <li>Sukhbaatar et al. (2017) Intrinsic Motivation and Automatic Curricula via Asymmetric Self-Play [Asymmetric self-play as alternative to adversarial generation]</li>
+    <li>Portelas et al. (2022) CLUTR: Curriculum Learning via Unsupervised Task Representation Learning [Showing limitations of stateless adversarial teachers]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Adversarial Curriculum Degeneracy Theory",
+    "theory_description": "Adversarial curriculum generation methods (where a teacher/adversary generates training tasks to challenge the student) are prone to degeneracy: the adversary can exploit the student's weaknesses or the task space structure to generate tasks that are either unsolvable (too hard), uninformative (too easy), or unrepresentative of the target distribution. This degeneracy manifests in several forms: (1) Minimax collapse: unconstrained adversaries drive student performance to zero by generating impossible tasks; (2) Exploration failure: in high-dimensional or permutation-invariant spaces, adversaries fail to discover informative task regions; (3) Curriculum drift: adversaries optimize for short-term difficulty rather than long-term learning progress; (4) Exploitability: learned reward functions can be gamed to produce degenerate environments. Degeneracy is particularly severe when: (a) the adversary is unconstrained (pure minimax), (b) the task space is high-dimensional, continuous, or has combinatorial structure, (c) the adversary learns faster than the student can adapt, (d) there is no mechanism to ensure task solvability or relevance. Mitigation strategies include: regret-based constraints (PAIRED) that ensure tasks remain solvable by an antagonist, replay-based curation (PLR, REPAIRED) that maintains a buffer of useful tasks, self-supervised reward signals (asymmetric self-play) that avoid learned discriminator exploitation, and learned task manifolds (CLUTR) that structure the task space. However, even mitigated methods can struggle: PAIRED adapts slowly and can degenerate in permutation-invariant spaces; pure replay without generation may not discover sufficiently challenging tasks. The fundamental trade-off is between adversarial adaptivity (which can find hard tasks) and stability (which prevents degeneracy).",
+    "supporting_evidence": [
+        {
+            "text": "Unconstrained minimax adversary in MuJoCo Hopper drove agent reward to zero (complete failure) when adversary strength was unconstrained, demonstrating minimax collapse",
+            "uuids": [
+                "e1038.1"
+            ]
+        },
+        {
+            "text": "PAIRED in MiniGrid underperformed replay-based methods (PLR variants), showing mean solve-rate ~0.43-0.44 vs PLR's ~0.5-0.6, indicating slower adaptation and less effective curriculum",
+            "uuids": [
+                "e1092.2"
+            ]
+        },
+        {
+            "text": "PAIRED in CarRacing struggled and sometimes discovered curricula that degraded protagonist performance, showing curriculum drift toward unhelpful tasks",
+            "uuids": [
+                "e1092.2"
+            ]
+        },
+        {
+            "text": "PAIRED's sequential parameter generation suffered from permutation-invariance combinatorics in MiniGrid, making exploration inefficient in high-dimensional discrete spaces",
+            "uuids": [
+                "e1033.3"
+            ]
+        },
+        {
+            "text": "PAIRED required ~3B steps in some prior work vs 250M for PLR variants, showing poor sample efficiency",
+            "uuids": [
+                "e1092.2"
+            ]
+        },
+        {
+            "text": "PAIRED adapts slowly (gradient updates) and can lead to emergent curriculum of increasing complexity, but can also exploit relative student strengths causing reductions in effective complexity",
+            "uuids": [
+                "e1092.2"
+            ]
+        },
+        {
+            "text": "ADR particles trained with learned discriminator rewards could exploit simulator physics to create impossible environments, demonstrating exploitability of learned rewards",
+            "uuids": [
+                "e1009.0"
+            ]
+        },
+        {
+            "text": "SS-ADR using self-supervised (Alice) rewards instead of learned discriminator rewards mitigated ADR exploitability and stabilized curriculum learning",
+            "uuids": [
+                "e1009.0"
+            ]
+        },
+        {
+            "text": "REPAIRED (PAIRED + replay curation) mitigated some of PAIRED's degeneracy issues by combining adversarial generation with replay buffer",
+            "uuids": [
+                "e1092.2"
+            ]
+        },
+        {
+            "text": "PLR with regret-based scoring outperformed PAIRED in the studied domains, achieving strong performance within 250M steps vs PAIRED's much larger requirements",
+            "uuids": [
+                "e1092.3"
+            ]
+        },
+        {
+            "text": "PLR (replay-based curation) is more sample-efficient than PAIRED in the studied domains, demonstrating advantage of curation over pure generation",
+            "uuids": [
+                "e1092.3"
+            ]
+        },
+        {
+            "text": "CLUTR baseline (stateless teacher, no performance history) showed limited variation in task difficulty over time and worse generalization than GCL, indicating importance of task-awareness and history",
+            "uuids": [
+                "e1024.2"
+            ]
+        },
+        {
+            "text": "PAIRED baseline in CLUTR experiments showed inferior zero-shot generalization compared to CLUTR across 16 held-out MiniGrid tasks, exhibiting less sample-efficient learning and degenerate curricula behavior",
+            "uuids": [
+                "e1033.3"
+            ]
+        },
+        {
+            "text": "PAIRED's simultaneous manifold-and-curriculum learning leads to non-stationarity and instability, making it struggle to find effective balance across complexity and variation",
+            "uuids": [
+                "e1033.3"
+            ]
+        },
+        {
+            "text": "Genetic Curriculum (GC) using crossover to maintain similarity and mutation for novelty outperformed random failure sampling, showing importance of structured variation vs pure adversarial selection",
+            "uuids": [
+                "e1088.5"
+            ]
+        },
+        {
+            "text": "GC ablation: no-crossover or random failure sampling increased mean genetic distance and failure rates, demonstrating that unstructured high variation hurts transfer",
+            "uuids": [
+                "e1088.5"
+            ]
+        },
+        {
+            "text": "Asymmetric self-play (Alice/Bob) provides self-supervised measure of curriculum difficulty that, when used to train ADR particles, structures environment variation and prevents exploitability",
+            "uuids": [
+                "e1009.1"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Unconstrained adversarial curriculum generation (pure minimax) is prone to degeneracy where the adversary generates unsolvable tasks, driving student performance to zero",
+        "Regret-based constraints (protagonist vs antagonist) mitigate degeneracy by ensuring tasks remain solvable, but may adapt slowly",
+        "Adversarial methods degenerate more severely in high-dimensional, continuous, or permutation-invariant task spaces due to increased exploration difficulty and combinatorial explosion",
+        "Combining adversarial generation with replay-based curation provides more stable curricula than pure adversarial methods, achieving better sample efficiency",
+        "The rate of adversary adaptation relative to student learning affects degeneracy: adversaries that learn too fast can outpace student adaptation, while adversaries that learn too slowly fail to provide sufficient challenge",
+        "Self-supervised reward signals (e.g., asymmetric self-play) are more robust to exploitation than learned discriminator rewards because they cannot be gamed by the adversary",
+        "Adversarial methods that simultaneously learn task manifolds and generate curricula suffer from non-stationarity and instability",
+        "Stateless adversarial teachers (without performance history or task awareness) produce limited variation in task difficulty and worse generalization",
+        "Structured variation (balancing similarity for transfer and diversity for coverage) outperforms unstructured adversarial selection in curriculum generation",
+        "The fundamental trade-off in adversarial curriculum learning is between adaptivity (finding hard tasks) and stability (preventing degeneracy)"
+    ],
+    "new_predictions_likely": [
+        "In any continuous task space with unconstrained minimax adversarial training, the adversary will eventually generate unsolvable tasks and student performance will collapse",
+        "Regret-based adversarial methods will outperform pure minimax methods in all but the simplest discrete task spaces with small cardinality",
+        "Combining any adversarial method with replay curation will improve stability and final performance compared to pure adversarial generation",
+        "Adversarial methods will degenerate faster (require fewer training steps to collapse) in high-dimensional task spaces than in low-dimensional spaces",
+        "Adversarial methods using self-supervised rewards will be more stable than those using learned discriminator rewards across all domains",
+        "In permutation-invariant task spaces, adversarial methods will show poor sample efficiency unless the task representation is structured (e.g., via learned manifolds)",
+        "Adversarial methods that track student performance history will generate more effective curricula than stateless adversaries"
+    ],
+    "new_predictions_unknown": [
+        "Whether there exist adversarial curriculum methods that provably avoid degeneracy without replay or regret constraints in continuous task spaces",
+        "Whether the degeneracy problem can be solved by better adversary architectures (e.g., hierarchical adversaries, multi-objective adversaries) or training procedures alone",
+        "Whether adversarial methods can be made sample-efficient enough to compete with replay-based methods in complex, high-dimensional domains",
+        "Whether multi-agent adversarial methods (multiple adversaries with diversity objectives) could avoid degeneracy through population-based exploration",
+        "Whether there exists an optimal balance point between adversarial generation and replay curation that maximizes both adaptivity and stability",
+        "Whether adversarial methods could be combined with other curriculum strategies (e.g., learning progress, novelty search) to avoid degeneracy while maintaining adaptivity",
+        "Whether the degeneracy problem is fundamental to adversarial training or an artifact of current implementations and reward structures"
+    ],
+    "negative_experiments": [
+        "Finding adversarial methods that consistently avoid degeneracy without regret constraints or replay in continuous task spaces would challenge the core degeneracy claim",
+        "Demonstrating that unconstrained minimax can work well in continuous, high-dimensional task spaces would contradict the minimax collapse prediction",
+        "Showing that adversarial methods outperform replay-based methods in complex domains without any mitigation strategies would challenge the stability-adaptivity trade-off",
+        "Finding that adversary adaptation rate does not affect degeneracy (i.e., fast and slow adversaries perform equally) would contradict the relative-learning-rate hypothesis",
+        "Demonstrating that learned discriminator rewards can be made as robust as self-supervised rewards would challenge the exploitability claim",
+        "Finding task spaces where permutation invariance does not harm adversarial exploration would challenge the combinatorial explosion prediction",
+        "Showing that stateless adversaries can generate effective curricula comparable to history-aware adversaries would challenge the importance of performance tracking"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Whether there are specific task structures or properties (beyond discrete/small cardinality) where adversarial methods naturally avoid degeneracy",
+            "uuids": []
+        },
+        {
+            "text": "How to automatically detect and recover from degeneracy during training without human intervention",
+            "uuids": []
+        },
+        {
+            "text": "Whether adversarial methods could be combined with curriculum strategies beyond replay (e.g., learning progress, novelty search, empowerment) to avoid degeneracy",
+            "uuids": []
+        },
+        {
+            "text": "The role of student architecture and capacity in determining susceptibility to adversarial degeneracy",
+            "uuids": []
+        },
+        {
+            "text": "Whether curriculum timing and transition points affect adversarial degeneracy (e.g., when to switch from easy to hard tasks)",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between task representation quality (raw parameters vs learned manifolds) and adversarial degeneracy",
+            "uuids": []
+        },
+        {
+            "text": "Whether there are domain-specific factors that make some environments more susceptible to adversarial degeneracy than others",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "PAIRED has been successful in some domains (e.g., original PAIRED paper results on simple mazes and some continuous control tasks), suggesting degeneracy may be domain-specific or dependent on task space properties",
+            "uuids": [
+                "e1038.1"
+            ]
+        },
+        {
+            "text": "PAIRED with regret constraints maintained non-zero reward and generalized better to unseen mass/friction parameters in Hopper, showing that regret-based methods can work in some continuous control settings",
+            "uuids": [
+                "e1038.1"
+            ]
+        },
+        {
+            "text": "ADR (without self-supervised rewards) has been reported to work well in some prior work, suggesting that learned discriminator rewards may not always be exploitable or that exploitation may be domain-dependent",
+            "uuids": [
+                "e1009.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Discrete task spaces with small cardinality may not suffer from degeneracy because the adversary can exhaustively explore the space",
+        "Tasks with natural difficulty gradients or hierarchical structure may be more amenable to adversarial methods because the adversary can follow the gradient",
+        "Very simple tasks (low-dimensional, short-horizon) may not require sophisticated adversarial constraints because degeneracy is less likely",
+        "Task spaces with explicit solvability constraints or bounds may prevent minimax collapse by limiting the adversary's ability to generate impossible tasks",
+        "Domains where the student has high capacity relative to task complexity may be less susceptible to degeneracy because the student can adapt quickly",
+        "Environments with dense reward signals may mitigate degeneracy because the student receives more learning signal even from difficult tasks"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Dennis et al. (2020) Emergent Complexity and Zero-shot Transfer via Unsupervised Environment Design [Original PAIRED paper introducing regret-based adversarial curriculum]",
+            "Jiang et al. (2021) Replay-Guided Adversarial Environment Design [REPAIRED combining adversarial generation with replay curation to address PAIRED limitations]",
+            "Parker-Holder et al. (2020) Prioritized Level Replay [PLR showing replay-based curation can outperform adversarial generation]",
+            "Jiang et al. (2021) Prioritized Level Replay (extended) [Theoretical analysis of dual curriculum design and minimax-regret guarantees]",
+            "OpenAI et al. (2020) Generating Automatic Curricula via Self-Supervised Active Domain Randomization [SS-ADR showing self-supervised rewards mitigate ADR exploitability]",
+            "Sukhbaatar et al. (2017) Intrinsic Motivation and Automatic Curricula via Asymmetric Self-Play [Asymmetric self-play as alternative to adversarial generation]",
+            "Portelas et al. (2022) CLUTR: Curriculum Learning via Unsupervised Task Representation Learning [Showing limitations of stateless adversarial teachers]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 4,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

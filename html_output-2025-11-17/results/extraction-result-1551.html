@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-1551 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-1551</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-1551</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-30.html">extraction-schema-30</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of curriculum learning approaches for teaching agents commonsense or science procedures in interactive text environments, including details about the curriculum strategy, task composition, and performance results.</div>
+                <p><strong>Paper ID:</strong> paper-6e90fd78e8a3b98af3954aae5209703aa966603e</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/6e90fd78e8a3b98af3954aae5209703aa966603e" target="_blank">Unifying Count-Based Exploration and Intrinsic Motivation</a></p>
+                <p><strong>Paper Venue:</strong> Neural Information Processing Systems</p>
+                <p><strong>Paper TL;DR:</strong> This work uses density models to measure uncertainty, and proposes a novel algorithm for deriving a pseudo-count from an arbitrary density model, which enables this technique to generalize count-based exploration algorithms to the non-tabular case.</p>
+                <p><strong>Paper Abstract:</strong> We consider an agent's uncertainty about its environment and the problem of generalizing this uncertainty across observations. Specifically, we focus on the problem of exploration in non-tabular reinforcement learning. Drawing inspiration from the intrinsic motivation literature, we use density models to measure uncertainty, and propose a novel algorithm for deriving a pseudo-count from an arbitrary density model. This technique enables us to generalize count-based exploration algorithms to the non-tabular case. We apply our ideas to Atari 2600 games, providing sensible pseudo-counts from raw pixels. We transform these pseudo-counts into intrinsic rewards and obtain significantly improved exploration in a number of hard games, including the infamously difficult Montezuma's Revenge.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-1551",
+    "paper_id": "paper-6e90fd78e8a3b98af3954aae5209703aa966603e",
+    "extraction_schema_id": "extraction-schema-30",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0059805,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Unifying Count-Based Exploration and Intrinsic Motivation</h1>
+<p>Marc G. Bellemare<br>bellemare@google.com</p>
+<p>Tom Schaul<br>schaul@google.com</p>
+<p>Sriram Srinivasan<br>srsrinivasan@google.com<br>David Saxton<br>saxton@google.com<br>Google DeepMind<br>London, United Kingdom</p>
+<h2>Georg Ostrovski<br>ostrovski@google.com<br>Rémi Munos<br>munos@google.com</h2>
+<h2>Abstract</h2>
+<p>We consider an agent's uncertainty about its environment and the problem of generalizing this uncertainty across states. Specifically, we focus on the problem of exploration in non-tabular reinforcement learning. Drawing inspiration from the intrinsic motivation literature, we use density models to measure uncertainty, and propose a novel algorithm for deriving a pseudo-count from an arbitrary density model. This technique enables us to generalize count-based exploration algorithms to the non-tabular case. We apply our ideas to Atari 2600 games, providing sensible pseudo-counts from raw pixels. We transform these pseudo-counts into exploration bonuses and obtain significantly improved exploration in a number of hard games, including the infamously difficult MONTEZUMA's REVENGE.</p>
+<h2>1 Introduction</h2>
+<p>Exploration algorithms for Markov Decision Processes (MDPs) are typically concerned with reducing the agent's uncertainty over the environment's reward and transition functions. In a tabular setting, this uncertainty can be quantified using confidence intervals derived from Chernoff bounds, or inferred from a posterior over the environment parameters. In fact, both confidence intervals and posterior shrink as the inverse square root of the state-action visit count $N(x, a)$, making this quantity fundamental to most theoretical results on exploration.
+Count-based exploration methods directly use visit counts to guide an agent's behaviour towards reducing uncertainty. For example, Model-based Interval Estimation with Exploration Bonuses (MBIE-EB; Strehl and Littman, 2008) solves the augmented Bellman equation</p>
+<p>$$
+V(x)=\max <em _hat_P="\hat{P">{a \in \mathcal{A}}\left[\hat{R}(x, a)+\gamma \mathbb{E}</em>\right]
+$$}}\left[V\left(x^{\prime}\right)\right]+\beta N(x, a)^{-1 / 2</p>
+<p>involving the empirical reward $\hat{R}$, the empirical transition function $\hat{P}$, and an exploration bonus proportional to $N(x, a)^{-1 / 2}$. This bonus accounts for uncertainties in both transition and reward functions and enables a finite-time bound on the agent's suboptimality.
+In spite of their pleasant theoretical guarantees, count-based methods have not played a role in the contemporary successes of reinforcement learning (e.g. Mnih et al., 2015). Instead, most practical methods still rely on simple rules such as $\epsilon$-greedy. The issue is that visit counts are not directly useful in large domains, where states are rarely visited more than once.
+Answering a different scientific question, intrinsic motivation aims to provide qualitative guidance for exploration (Schmidhuber, 1991; Oudeyer et al., 2007; Barto, 2013). This guidance can be summarized as "explore what surprises you". A typical approach guides the agent based on change</p>
+<p>in prediction error, or learning progress. If $e_{n}(A)$ is the error made by the agent at time $n$ over some event A, and $e_{n+1}(A)$ the same error after observing a new piece of information, then learning progress is</p>
+<p>$e_{n}(A)-e_{n+1}(A).$</p>
+<p>Intrinsic motivation methods are attractive as they remain applicable in the absence of the Markov property or the lack of a tabular representation, both of which are required by count-based algorithms. Yet the theoretical foundations of intrinsic motivation remain largely absent from the literature, which may explain its slow rate of adoption as a standard approach to exploration.</p>
+<p>In this paper we provide formal evidence that intrinsic motivation and count-based exploration are but two sides of the same coin. Specifically, we consider a frequently used measure of learning progress, information gain (Cover and Thomas, 1991). Defined as the Kullback-Leibler divergence of a prior distribution from its posterior, information gain can be related to the confidence intervals used in count-based exploration. Our contribution is to propose a new quantity, the pseudo-count, which connects information-gain-as-learning-progress and count-based exploration.</p>
+<p>We derive our pseudo-count from a density model over the state space. This is in departure from more traditional approaches to intrinsic motivation that consider learning progress with respect to a transition model. We expose the relationship between pseudo-counts, a variant of Schmidhuber’s compression progress we call prediction gain, and information gain. Combined to Kolter and Ng’s negative result on the frequentist suboptimality of Bayesian bonuses, our result highlights the theoretical advantages of pseudo-counts compared to many existing intrinsic motivation methods.</p>
+<p>The pseudo-counts we introduce here are best thought of as “function approximation for exploration”. We bring them to bear on Atari 2600 games from the Arcade Learning Environment (Bellemare et al., 2013), focusing on games where myopic exploration fails. We extract our pseudo-counts from a simple density model and use them within a variant of MBIE-EB. We apply them to an experience replay setting and to an actor-critic setting, and find improved performance in both cases. Our approach produces dramatic progress on the reputedly most difficult Atari 2600 game, MONTEZUMA’s REVENGE: within a fraction of the training time, our agent explores a significant portion of the first level and obtains significantly higher scores than previously published agents.</p>
+<h2>2 Notation</h2>
+<p>We consider a countable state space $\mathcal{X}$. We denote a sequence of length $n$ from $\mathcal{X}$ by $x_{1:n}\in\mathcal{X}^{n}$, the set of finite sequences from $\mathcal{X}$ by $\mathcal{X}^{<em>}$, write $x_{1:n}x$ to mean the concatenation of $x_{1:n}$ and a state $x\in\mathcal{X}$, and denote the empty sequence by $\epsilon$. A model over $\mathcal{X}$ is a mapping from $\mathcal{X}^{</em>}$ to probability distributions over $\mathcal{X}$. That is, for each $x_{1:n}\in\mathcal{X}^{n}$ the model provides a probability distribution</p>
+<p>$\rho_{n}(x):=\rho(x;x_{1:n})$</p>
+<p>Note that we do not require $\rho_{n}(x)$ to be strictly positive for all $x$ and $x_{1:n}$. When it is, however, we may understand $\rho_{n}(x)$ to be the usual conditional probability of $X_{n+1}=x$ given $X_{1}\ldots X_{n}=x_{1:n}$.</p>
+<p>We will take particular interest in the empirical distribution $\mu_{n}$ derived from the sequence $x_{1:n}$. If $N_{n}(x):=N(x,x_{1:n})$ is the number of occurrences of a state $x$ in the sequence $x_{1:n}$, then</p>
+<p>$\mu_{n}(x):=\mu(x;x_{1:n}):=\frac{N_{n}(x)}{n}$.</p>
+<p>We call the $N_{n}$ the empirical count function, or simply empirical count. The above notation extends to state-action spaces, and we write $N_{n}(x,a)$ to explicitly refer to the number of occurrences of a state-action pair when the argument requires it. When $x_{1:n}$ is generated by an ergodic Markov chain, for example if we follow a fixed policy in a finite-state MDP, then the limit point of $\mu_{n}$ is the chain’s stationary distribution.</p>
+<p>In our setting, a density model is any model that assumes states are independently (but not necessarily identically) distributed; a density model is thus a particular kind of generative model. We emphasize that a density model differs from a forward model, which takes into account the temporal relationship between successive states. Note that $\mu_{n}$ is itself a density model.</p>
+<h1>3 From Densities to Counts</h1>
+<p>In the introduction we argued that the visit count $N_{n}(x)$ (and consequently, $N_{n}(x, a)$ ) is not directly useful in practical settings, since states are rarely revisited. Specifically, $N_{n}(x)$ is almost always zero and cannot help answer the question "How novel is this state?" Nor is the problem solved by a Bayesian approach: even variable-alphabet models (e.g. Hutter, 2013) must assign a small, diminishing probability to yet-unseen states. To estimate the uncertainty of an agent's knowledge, we must instead look for a quantity which generalizes across states. Guided by ideas from the intrinsic motivation literature, we now derive such a quantity. We call it a pseudo-count as it extends the familiar notion from Bayesian estimation.</p>
+<h3>3.1 Pseudo-Counts and the Recoding Probability</h3>
+<p>We are given a density model $\rho$ over $\mathcal{X}$. This density model may be approximate, biased, or even inconsistent. We begin by introducing the recoding probability of a state $x$ :</p>
+<p>$$
+\rho_{n}^{\prime}(x):=\rho\left(x ; x_{1: n} x\right)
+$$</p>
+<p>This is the probability assigned to $x$ by our density model after observing a new occurrence of $x$. The term "recoding" is inspired from the statistical compression literature, where coding costs are inversely related to probabilities (Cover and Thomas, 1991). When $\rho$ admits a conditional probability distribution,</p>
+<p>$$
+\rho_{n}^{\prime}(x)=\operatorname{Pr}<em n_2="n+2">{\rho}\left(X</em>=x\right)
+$$}=x \mid X_{1} \ldots X_{n}=x_{1: n}, X_{n+1</p>
+<p>We now postulate two unknowns: a pseudo-count function $\hat{N}_{n}(x)$, and a pseudo-count total $\hat{n}$. We relate these two unknowns through two constraints:</p>
+<p>$$
+\rho_{n}(x)=\frac{\hat{N}<em n="n">{n}(x)}{\hat{n}} \quad \rho</em>
+$$}^{\prime}(x)=\frac{\hat{N}_{n}(x)+1}{\hat{n}+1</p>
+<p>In words: we require that, after observing one instance of $x$, the density model's increase in prediction of that same $x$ should correspond to a unit increase in pseudo-count. The pseudo-count itself is derived from solving the linear system (1):</p>
+<p>$$
+\hat{N}<em n="n">{n}(x)=\frac{\rho</em>(x)
+$$}(x)\left(1-\rho_{n}^{\prime}(x)\right)}{\rho_{n}^{\prime}(x)-\rho_{n}(x)}=\hat{n} \rho_{n</p>
+<p>Note that the equations (1) yield $\hat{N}<em n="n">{n}(x)=0$ (with $\hat{n}=\infty$ ) when $\rho</em>(x)=1$. These cases may arise from poorly behaved density models, but are easily accounted for. From here onwards we will assume a consistent system of equations.
+Definition 1 (Learning-positive density model). A density model $\rho$ is learning-positive if for all $x_{1: n} \in \mathcal{X}^{n}$ and all $x \in \mathcal{X}, \rho_{n}^{\prime}(x) \geq \rho_{n}(x)$.
+By inspecting (2), we see that}(x)=\rho_{n}^{\prime}(x)=0$, and are inconsistent when $\rho_{n}(x)&lt;\rho_{n}^{\prime</p>
+<ol>
+<li>$\hat{N}_{n}(x) \geq 0$ if and only if $\rho$ is learning-positive;</li>
+<li>$\hat{N}<em n="n">{n}(x)=0$ if and only if $\rho</em>(x)=0$; and</li>
+<li>$\hat{N}<em n="n">{n}(x)=\infty$ if and only if $\rho</em>(x)$.}(x)=\rho_{n}^{\prime</li>
+</ol>
+<p>In many cases of interest, the pseudo-count $\hat{N}<em n="n">{n}(x)$ matches our intuition. If $\rho</em>}=\mu_{n}$ then $\hat{N<em n="n">{n}=N</em>$ recovers the usual notion of pseudo-count. More importantly, if the model generalizes across states then so do pseudo-counts.}$. Similarly, if $\rho_{n}$ is a Dirichlet estimator then $\hat{N}_{n</p>
+<h3>3.2 Estimating the Frequency of a Salient Event in Freeway</h3>
+<p>As an illustrative example, we employ our method to estimate the number of occurrences of an infrequent event in the Atari 2600 video game Freeway (Figure 1, screenshot). We use the Arcade Learning Environment (Bellemare et al., 2013). We will demonstrate the following:</p>
+<ol>
+<li>Pseudo-counts are roughly zero for novel events,</li>
+</ol>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Pseudo-counts obtained from a CTS density model applied to FreEWAY, along with a frame representative of the salient event (crossing the road). Shaded areas depict periods during which the agent observes the salient event, dotted lines interpolate across periods during which the salient event is not observed. The reported values are 10,000-frame averages.
+2. they exhibit credible magnitudes,
+3. they respect the ordering of state frequency,
+4. they grow linearly (on average) with real counts,
+5. they are robust in the presence of nonstationary data.</p>
+<p>These properties suggest that pseudo-counts provide an appropriate generalized notion of visit counts in non-tabular settings.</p>
+<p>In FreEWAY, the agent must navigate a chicken across a busy road. As our example, we consider estimating the number of times the chicken has reached the very top of the screen. As is the case for many Atari 2600 games, this naturally salient event is associated with an increase in score, which ALE translates into a positive reward. We may reasonably imagine that knowing how certain we are about this part of the environment is useful. After crossing, the chicken is teleported back to the bottom of the screen.</p>
+<p>To highlight the robustness of our pseudo-count, we consider a nonstationary policy which waits for 250,000 frames, then applies the UP action for 250,000 frames, then waits, then goes UP again. The salient event only occurs during UP periods. It also occurs with the cars in different positions, thus requiring generalization. As a point of reference, we record the pseudo-counts for both the salient event and visits to the chicken's start position.</p>
+<p>We use a simplified, pixel-level version of the CTS model for Atari 2600 frames proposed by Bellemare et al. (2014), ignoring temporal dependencies. While the CTS model is rather impoverished in comparison to state-of-the-art density models for images (e.g. Van den Oord et al., 2016), its countbased nature results in extremely fast learning, making it an appealing candidate for exploration. Further details on the model may be found in the appendix.</p>
+<p>Examining the pseudo-counts depicted in Figure 1 confirms that they exhibit the desirable properties listed above. In particular, the pseudo-count is almost zero on the first occurrence of the salient event; it increases slightly during the 3rd period, since the salient and reference events share some common structure; throughout, it remains smaller than the reference pseudo-count. The linearity on average and robustness to nonstationarity are immediate from the graph. Note, however, that the pseudocounts are a fraction of the real visit counts (inasmuch as we can define "real"): by the end of the trial, the start position has been visited about 140,000 times, and the topmost part of the screen, 1285 times. Furthermore, the ratio of recorded pseudo-counts differs from the ratio of real counts. Both effects are quantifiable, as we shall show in Section 5.</p>
+<h1>4 The Connection to Intrinsic Motivation</h1>
+<p>Having argued that pseudo-counts appropriately generalize visit counts, we will now show that they are closely related to information gain, which is commonly used to quantify novelty or curiosity and consequently as an intrinsic reward. Information gain is defined in relation to a mixture model $\xi$ over</p>
+<p>a class of density models $\mathcal{M}$. This model predicts according to a weighted combination from $\mathcal{M}$ :</p>
+<p>$$
+\xi_{n}(x):=\xi\left(x ; x_{1: n}\right):=\int_{\rho \in \mathcal{M}} w_{n}(\rho) \rho\left(x ; x_{1: n}\right) \mathrm{d} \rho
+$$</p>
+<p>with $w_{n}(\rho)$ the posterior weight of $\rho$. This posterior is defined recursively, starting from a prior distribution $w_{0}$ over $\mathcal{M}$ :</p>
+<p>$$
+w_{n+1}(\rho):=w_{n}\left(\rho, x_{n+1}\right) \quad w_{n}(\rho, x):=\frac{w_{n}(\rho) \rho\left(x ; x_{1: n}\right)}{\xi_{n}(x)}
+$$</p>
+<p>Information gain is then the Kullback-Leibler divergence from prior to posterior that results from observing $x$ :</p>
+<p>$$
+\operatorname{IG}<em 1:="1:" n="n">{n}(x):=\operatorname{IG}\left(x ; x</em>\right)
+$$}\right):=\operatorname{KL}\left(w_{n}(\cdot, x) | w_{n</p>
+<p>Computing the information gain of a complex density model is often impractical, if not downright intractable. However, a quantity which we call the prediction gain provides us with a good approximation of the information gain. We define the prediction gain of a density model $\rho$ (and in particular, $\xi)$ as the difference between the recoding log-probability and log-probability of $x$ :</p>
+<p>$$
+\operatorname{PG}<em n="n">{n}(x):=\log \rho</em>(x)
+$$}^{\prime}(x)-\log \rho_{n</p>
+<p>Prediction gain is nonnegative if and only if $\rho$ is learning-positive. It is related to the pseudo-count:</p>
+<p>$$
+\hat{N}<em n="n">{n}(x) \approx\left(e^{\mathrm{PG}</em>
+$$}(x)}-1\right)^{-1</p>
+<p>with equality when $\rho_{n}^{\prime}(x) \rightarrow 0$. As the following theorem shows, prediction gain allows us to relate pseudo-count and information gain.
+Theorem 1. Consider a sequence $x_{1: n} \in \mathcal{X}^{n}$. Let $\xi$ be a mixture model over a class of learningpositive models $\mathcal{M}$. Let $\hat{N}_{n}$ be the pseudo-count derived from $\xi$ (Equation 2). For this model,</p>
+<p>$$
+I G_{n}(x) \leq P G_{n}(x) \leq \hat{N}<em n="n">{n}(x)^{-1} \quad \text { and } \quad P G</em>
+$$}(x) \leq \hat{N}_{n}(x)^{-1 / 2</p>
+<p>Theorem 1 suggests that using an exploration bonus proportional to $\hat{N}<em n="n">{n}(x)^{-1 / 2}$, similar to the MBIE-EB bonus, leads to a behaviour at least as exploratory as one derived from an information gain bonus. Since pseudo-counts correspond to empirical counts in the tabular setting, this approach also preserves known theoretical guarantees. In fact, we are confident pseudo-counts may be used to prove similar results in non-tabular settings.
+On the other hand, it may be difficult to provide theoretical guarantees about existing bonus-based intrinsic motivation approaches. Kolter and Ng (2009) showed that no algorithm based on a bonus upper bounded by $\beta N</em>$.
+Unlike many intrinsic motivation algorithms, pseudo-counts also do not rely on learning a forward (transition and/or reward) model. This point is especially important because a number of powerful density models for images exist (Van den Oord et al., 2016), and because optimality guarantees cannot in general exist for intrinsic motivation algorithms based on forward models.}(x)^{-1}$ for any $\beta&gt;0$ can guarantee PAC-MDP optimality. Again considering the tabular setting and combining their result to Theorem 1, we conclude that bonuses proportional to immediate information (or prediction) gain are insufficient for theoretically near-optimal exploration: to paraphrase Kolter and Ng, these methods produce explore too little in comparison to pseudo-count bonuses. By inspecting (2) we come to a similar negative conclusion for bonuses proportional to the L1 or L2 distance between $\xi_{n}^{\prime}$ and $\xi_{n</p>
+<h1>5 Asymptotic Analysis</h1>
+<p>In this section we analyze the limiting behaviour of the ratio $\hat{N}<em n="n">{n} / N</em>$. We use this analysis to assert the consistency of pseudo-counts derived from tabular density models, i.e. models which maintain per-state visit counts. In the appendix we use the same result to bound the approximation error of pseudo-counts derived from directed graphical models, of which our CTS model is a special case.
+Consider a fixed, infinite sequence $x_{1}, x_{2}, \ldots$ from $\mathcal{X}$. We define the limit of a sequence of functions $\left(f\left(x ; x_{1: n}\right): n \in \mathbb{N}\right)$ with respect to the length $n$ of the subsequence $x_{1: n}$. We additionally assume that the empirical distribution $\mu_{n}$ converges pointwise to a distribution $\mu$, and write $\mu_{n}^{\prime}(x)$ for the recoding probability of $x$ under $\mu_{n}$. We begin with two assumptions on our density model.</p>
+<p>Assumption 1. The limits</p>
+<p>$\text{(a) } r(x):=\lim_{n \rightarrow \infty} \frac{\rho_{n}(x)}{\mu_{n}(x)} \quad \text { (b) } \dot{r}(x):=\lim <em n="n">{n \rightarrow \infty} \frac{\rho</em>$
+exist for all $x$; furthermore, $\dot{r}(x)&gt;0$.
+Assumption (a) states that $\rho$ should eventually assign a probability to $x$ proportional to the limiting empirical distribution $\mu(x)$. In particular there must be a state $x$ for which $r(x)&lt;1$, unless $\rho_{n} \rightarrow \mu$. Assumption (b), on the other hand, imposes a restriction on the learning rate of $\rho$ relative to $\mu$ 's. As both $r(x)$ and $\mu(x)$ exist, Assumption 1 also implies that $\rho_{n}(x)$ and $\rho_{n}^{\prime}(x)$ have a common limit.
+Theorem 2. Under Assumption 1, the limit of the ratio of pseudo-counts $\hat{N}}^{\prime}(x)-\rho_{n}(x)}{\mu_{n}^{\prime}(x)-\mu_{n}(x)<em n="n">{n}(x)$ to empirical counts $N</em>(x)$ exists for all $x$. This limit is</p>
+<p>$$
+\lim <em n="n">{n \rightarrow \infty} \frac{\hat{N}</em>\right)
+$$}(x)}{N_{n}(x)}=\frac{r(x)}{\dot{r}(x)}\left(\frac{1-\mu(x) r(x)}{1-\mu(x)</p>
+<p>The model's relative rate of change, whose convergence to $\dot{r}(x)$ we require, plays an essential role in the ratio of pseudo- to empirical counts. To see this, consider a sequence $\left(x_{n}: n \in \mathbb{N}\right)$ generated i.i.d. from a distribution $\mu$ over a finite state space, and a density model defined from a sequence of nonincreasing step-sizes $\left(\alpha_{n}: n \in \mathbb{N}\right)$ :</p>
+<p>$$
+\rho_{n}(x)=\left(1-\alpha_{n}\right) \rho_{n-1}(x)+\alpha_{n} \mathbb{I}\left{x_{n}=x\right}
+$$</p>
+<p>with initial condition $\rho_{0}(x)=|\mathcal{X}|^{-1}$. For $\alpha_{n}=n^{-1}$, this density model is the empirical distribution. For $\alpha_{n}=n^{-2 / 3}$, we may appeal to well-known results from stochastic approximation (e.g. Bertsekas and Tsitsiklis, 1996) and find that almost surely</p>
+<p>$$
+\lim <em n="n">{n \rightarrow \infty} \rho</em> \quad \lim }(x)=\mu(x) \quad \text { but <em n="n">{n \rightarrow \infty} \frac{\rho</em>=\infty
+$$}^{\prime}(x)-\rho_{n}(x)}{\mu_{n}^{\prime}(x)-\mu_{n}(x)</p>
+<p>Since $\mu_{n}^{\prime}(x)-\mu_{n}(x)=n^{-1}\left(1-\mu_{n}^{\prime}(x)\right)$, we may think of Assumption 1(b) as also requiring $\rho$ to converge at a rate of $\Theta(1 / n)$ for a comparison with the empirical count $N_{n}$ to be meaningful. Note, however, that a density model that does not satisfy Assumption 1(b) may still yield useful (but incommensurable) pseudo-counts.
+Corollary 1. Let $\phi(x)&gt;0$ with $\sum_{x \in \mathcal{X}} \phi(x)&lt;\infty$ and consider the count-based estimator</p>
+<p>$$
+\rho_{n}(x)=\frac{N_{n}(x)+\phi(x)}{n+\sum_{x^{\prime} \in \mathcal{X}} \phi\left(x^{\prime}\right)}
+$$</p>
+<p>If $\hat{N}<em n="n">{n}$ is the pseudo-count corresponding to $\rho</em>}$ then $\hat{N<em n="n">{n}(x) / N</em>(x) \rightarrow 1$ for all $x$ with $\mu(x)&gt;0$.</p>
+<h1>6 Empirical Evaluation</h1>
+<p>In this section we demonstrate the use of pseudo-counts to guide exploration. We return to the Arcade Learning Environment, now using the CTS model to generate an exploration bonus.</p>
+<h3>6.1 Exploration in Hard Atari 2600 Games</h3>
+<p>From 60 games available through the Arcade Learning Environment we selected five "hard" games, in the sense that an $\epsilon$-greedy policy is inefficient at exploring them. We used a bonus of the form</p>
+<p>$$
+R_{n}^{+}(x, a):=\beta\left(\hat{N}_{n}(x)+0.01\right)^{-1 / 2}
+$$</p>
+<p>where $\beta=0.05$ was selected from a coarse parameter sweep. We also compared our method to the optimistic initialization trick proposed by Machado et al. (2015). We trained our agents' Q-functions with Double DQN (van Hasselt et al., 2016), with one important modification: we mixed the Double Q-Learning target with the Monte Carlo return. This modification led to improved results both with and without exploration bonuses (details in the appendix).
+Figure 2 depicts the result of our experiment, averaged across 5 trials. Although optimistic initialization helps in Freeway, it otherwise yields performance similar to DQN. By contrast, the</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Average training score with and without exploration bonus or optimistic initialization in 5 Atari 2600 games. Shaded areas denote inter-quartile range, dotted lines show min/max scores.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: "Known world" of a DQN agent trained for 50 million frames with (right) and without (left) count-based exploration bonuses, in MONTEZUMA's REVENGE.
+count-based exploration bonus enables us to make quick progress on a number of games, most dramatically in Montezuma's REVENge and Venture.
+Montezuma's REVENGE is perhaps the hardest Atari 2600 game available through the ALE. The game is infamous for its hostile, unforgiving environment: the agent must navigate a number of different rooms, each filled with traps. Due to its sparse reward function, most published agents achieve an average score close to zero and completely fail to explore most of the 24 rooms that constitute the first level (Figure 3, top). By contrast, within 50 million frames our agent learns a policy which consistently navigates through 15 rooms (Figure 3, bottom). Our agent also achieves a score higher than anything previously reported, with one run consistently achieving 6600 points by 100 million frames (half the training samples used by Mnih et al. (2015)). We believe the success of our method in this game is a strong indicator of the usefulness of pseudo-counts for exploration. ${ }^{1}$</p>
+<h1>6.2 Exploration for Actor-Critic Methods</h1>
+<p>We next used our exploration bonuses in conjunction with the A3C (Asynchronous Advantage Actor-Critic) algorithm of Mnih et al. (2016). One appeal of actor-critic methods is their explicit separation of policy and Q-function parameters, which leads to a richer behaviour space. This very separation, however, often leads to deficient exploration: to produce any sensible results, the A3C policy must be regularized with an entropy cost. We trained A3C on 60 Atari 2600 games, with and without the exploration bonus (4). We refer to our augmented algorithm as A3C+. Full details and additional results may be found in the appendix.
+We found that A3C fails to learn in $\mathbf{1 5}$ games, in the sense that the agent does not achieve a score $50 \%$ better than random. In comparison, there are only $\mathbf{1 0}$ games for which A3C+ fails to improve on the random agent; of these, $\mathbf{8}$ are games where DQN fails in the same sense. We normalized the two algorithms' scores so that 0 and 1 are respectively the minimum and maximum of the random agent's and A3C's end-of-training score on a particular game. Figure 4 depicts the in-training median score for A3C and A3C+, along with 1st and 3rd quartile intervals. Not only does A3C+ achieve slightly superior median performance, but it also significantly outperforms A3C on at least a quarter of the games. This is particularly important given the large proportion of Atari 2600 games for which an $\epsilon$-greedy policy is sufficient for exploration.</p>
+<h2>7 Related Work</h2>
+<p>Information-theoretic quantities have been repeatedly used to describe intrinsically motivated behaviour. Closely related to prediction gain is Schmidhuber (1991)'s notion of compression progress,</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Median and interquartile performance across 60 Atari 2600 games for A3C and A3C+.
+which equates novelty with an agent's improvement in its ability to compress its past. More recently, Lopes et al. (2012) showed the relationship between time-averaged prediction gain and visit counts in a tabular setting; their result is a special case of Theorem 2. Orseau et al. (2013) demonstrated that maximizing the sum of future information gains does lead to optimal behaviour, even though maximizing immediate information gain does not (Section 4). Finally, there may be a connection between sequential normalized maximum likelihood estimators and our pseudo-count derivation (see e.g. Ollivier, 2015).</p>
+<p>Intrinsic motivation has also been studied in reinforcement learning proper, in particular in the context of discovering skills (Singh et al., 2004; Barto, 2013). Recently, Stadie et al. (2015) used a squared prediction error bonus for exploring in Atari 2600 games. Closest to our work is Houthooft et al. (2016)'s variational approach to intrinsic motivation, which is equivalent to a second order Taylor approximation to prediction gain. Mohamed and Rezende (2015) also considered a variational approach to the different problem of maximizing an agent's ability to influence its environment.
+Aside for Orseau et al.'s above-cited work, it is only recently that theoretical guarantees for exploration have emerged for non-tabular, stateful settings. We note Pazis and Parr (2016)'s PAC-MDP result for metric spaces and Leike et al. (2016)'s asymptotic analysis of Thompson sampling in general environments.</p>
+<h1>8 Future Directions</h1>
+<p>The last few years have seen tremendous advances in learning representations for reinforcement learning. Surprisingly, these advances have yet to carry over to the problem of exploration. In this paper, we reconciled counts, the fundamental unit of uncertainty, with prediction-based heuristics and intrinsic motivation. Combining our work with more ideas from deep learning and better density models seems a plausible avenue for quick progress in practical, efficient exploration. We now conclude by outlining a few research directions we believe are promising.
+Induced metric. We did not address the question of where the generalization comes from. Clearly, the choice of density model induces a particular metric over the state space. A better understanding of this metric should allow us to tailor the density model to the problem of exploration.
+Compatible value function. There may be a mismatch in the learning rates of the density model and the value function: DQN learns much more slowly than our CTS model. As such, it should be beneficial to design value functions compatible with density models (or vice-versa).
+The continuous case. Although we focused here on countable state spaces, we can as easily define a pseudo-count in terms of probability density functions. At present it is unclear whether this provides us with the right notion of counts for continuous spaces.</p>
+<h2>Acknowledgments</h2>
+<p>The authors would like to thank Laurent Orseau, Alex Graves, Joel Veness, Charles Blundell, Shakir Mohamed, Ivo Danihelka, Ian Osband, Matt Hoffman, Greg Wayne, Will Dabney, and Aäron van den Oord for their excellent feedback early and late in the writing, and Pierre-Yves Oudeyer and Yann Ollivier for pointing out additional connections to the literature.</p>
+<h1>References</h1>
+<p>Barto, A. G. (2013). Intrinsic motivation and reinforcement learning. In Intrinsically Motivated Learning in Natural and Artificial Systems, pages 17-47. Springer.</p>
+<p>Bellemare, M., Veness, J., and Talvitie, E. (2014). Skip context tree switching. In Proceedings of the 31st International Conference on Machine Learning, pages 1458-1466.</p>
+<p>Bellemare, M. G., Naddaf, Y., Veness, J., and Bowling, M. (2013). The Arcade Learning Environment: An evaluation platform for general agents. Journal of Artificial Intelligence Research, 47:253-279.</p>
+<p>Bellemare, M. G., Ostrovski, G., Guez, A., Thomas, P. S., and Munos, R. (2016). Increasing the action gap: New operators for reinforcement learning. In Proceedings of the 30th AAAI Conference on Artificial Intelligence.</p>
+<p>Bertsekas, D. P. and Tsitsiklis, J. N. (1996). Neuro-Dynamic Programming. Athena Scientific.
+Cover, T. M. and Thomas, J. A. (1991). Elements of information theory. John Wiley \&amp; Sons.
+Houthooft, R., Chen, X., Duan, Y., Schulman, J., De Turck, F., and Abbeel, P. (2016). Variational information maximizing exploration.</p>
+<p>Hutter, M. (2013). Sparse adaptive dirichlet-multinomial-like processes. In Proceedings of the Conference on Online Learning Theory.</p>
+<p>Kolter, Z. J. and Ng, A. Y. (2009). Near-bayesian exploration in polynomial time. In Proceedings of the 26th International Conference on Machine Learning.</p>
+<p>Leike, J., Lattimore, T., Orseau, L., and Hutter, M. (2016). Thompson sampling is asymptotically optimal in general environments. In Proceedings of the Conference on Uncertainty in Artificial Intelligence.</p>
+<p>Lopes, M., Lang, T., Toussaint, M., and Oudeyer, P.-Y. (2012). Exploration in model-based reinforcement learning by empirically estimating learning progress. In Advances in Neural Information Processing Systems 25.</p>
+<p>Machado, M. C., Srinivasan, S., and Bowling, M. (2015). Domain-independent optimistic initialization for reinforcement learning. AAAI Workshop on Learning for General Competency in Video Games.</p>
+<p>Mnih, V., Badia, A. P., Mirza, M., Graves, A., Lillicrap, T. P., Harley, T., Silver, D., and Kavukcuoglu, K. (2016). Asynchronous methods for deep reinforcement learning. In Proceedings of the International Conference on Machine Learning.</p>
+<p>Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare, M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G., et al. (2015). Human-level control through deep reinforcement learning. Nature, 518(7540):529-533.</p>
+<p>Mohamed, S. and Rezende, D. J. (2015). Variational information maximisation for intrinsically motivated reinforcement learning. In Advances in Neural Information Processing Systems 28.</p>
+<p>Ollivier, Y. (2015). Laplace's rule of succession in information geometry. arXiv preprint arXiv:1503.04304.
+Orseau, L., Lattimore, T., and Hutter, M. (2013). Universal knowledge-seeking agents for stochastic environments. In Proceedings of the Conference on Algorithmic Learning Theory.</p>
+<p>Oudeyer, P., Kaplan, F., and Hafner, V. (2007). Intrinsic motivation systems for autonomous mental development. IEEE Transactions on Evolutionary Computation, 11(2):265-286.</p>
+<p>Pazis, J. and Parr, R. (2016). Efficient PAC-optimal exploration in concurrent, continuous state MDPs with delayed updates. In Proceedings of the 30th AAAI Conference on Artificial Intelligence.</p>
+<p>Schmidhuber, J. (1991). A possibility for implementing curiosity and boredom in model-building neural controllers. In From animals to animats: proceedings of the first international conference on simulation of adaptive behavior.</p>
+<p>Schmidhuber, J. (2008). Driven by compression progress. In Knowledge-Based Intelligent Information and Engineering Systems. Springer.</p>
+<p>Singh, S., Barto, A. G., and Chentanez, N. (2004). Intrinsically motivated reinforcement learning. In Advances in Neural Information Processing Systems 16.</p>
+<p>Stadie, B. C., Levine, S., and Abbeel, P. (2015). Incentivizing exploration in reinforcement learning with deep predictive models. arXiv preprint arXiv:1507.00814.</p>
+<p>Strehl, A. L. and Littman, M. L. (2008). An analysis of model-based interval estimation for Markov decision processes. Journal of Computer and System Sciences, 74(8):1309 - 1331.</p>
+<p>Van den Oord, A., Kalchbrenner, N., and Kavukcuoglu, K. (2016). Pixel recurrent neural networks. In Proceedings of the 33rd International Conference on Machine Learning.
+van Hasselt, H., Guez, A., and Silver, D. (2016). Deep reinforcement learning with double Q-learning. In Proceedings of the 30th AAAI Conference on Artificial Intelligence.</p>
+<p>Veness, J., Bellemare, M. G., Hutter, M., Chua, A., and Desjardins, G. (2015). Compress and control. In Proceedings of the 29th AAAI Conference on Artificial Intelligence.</p>
+<p>Wainwright, M. J. and Jordan, M. I. (2008). Graphical models, exponential families, and variational inference. Foundations and Trends in Machine Learning, 1(1-2):1-305.</p>
+<h1>A The Connection to Intrinsic Motivation</h1>
+<p>The following provides an identity connecting information gain and prediction gain.
+Lemma 1. Consider a mixture model $\xi$ over $\mathcal{M}$ with prediction gain $P G_{n}$ and information gain $I G_{n}$, a fixed $x \in \mathcal{X}$, and let $w_{n}^{\prime}(x):=w_{n}(\rho, x)$ be the posterior of $\xi$ over $\mathcal{M}$ after observing $x$. Let $w_{n}^{\prime \prime}(x):=w_{n}^{\prime}(\rho, x)$ be the same posterior after observing $x$ a second time, and let $P G_{n}^{\rho}(x)$ denote the prediction gain of $\rho \in \mathcal{M}$. Then</p>
+<p>$$
+P G_{n}(x)=K L\left(w_{n}^{\prime} | w_{n}\right)+K L\left(w_{n}^{\prime} | w_{n}^{\prime \prime}\right)=I G_{n}(x)+K L\left(w_{n}^{\prime} | w_{n}^{\prime \prime}\right)+\mathbb{E}<em n="n">{w</em>(x)\right]
+$$}^{\prime}}\left[P G_{n}^{\rho</p>
+<p>In particular, if $\mathcal{M}$ is a class of non-adaptive models in the sense that $\rho_{n}(x)=\rho(x)$ for all $x_{1: n}$, then</p>
+<p>$$
+P G_{n}(x)=K L\left(w_{n}^{\prime} | w_{n}\right)+K L\left(w_{n}^{\prime} | w_{n}^{\prime \prime}\right)=I G_{n}(x)+K L\left(w_{n}^{\prime} | w_{n}^{\prime \prime}\right)
+$$</p>
+<p>A model which is non-adaptive is also learning-positive in the sense of Definition 1. Many common mixture models, for example Dirichlet-multinomial estimators, are mixtures over non-adaptive models.</p>
+<p>Proof. We rewrite the posterior update rule (3) to show that for any $\rho \in \mathcal{M}$ and any $x \in \mathcal{X}$,</p>
+<p>$$
+\xi_{n}(x)=\frac{\rho_{n}(x) w_{n}(\rho)}{w_{n}(\rho, x)}
+$$</p>
+<p>Write $\mathbb{E}<em n="n">{w</em>}^{\prime}}:=\mathbb{E<em n="n">{\rho \sim w</em>$. Now}^{\prime}(\cdot)</p>
+<p>$$
+\begin{aligned}
+P G_{n}(x)=\log \frac{\xi_{n}^{\prime}(x)}{\xi_{n}(x)} &amp; =\mathbb{E}<em n="n">{w</em>\right] \
+&amp; =\mathbb{E}}^{\prime}}\left[\log \frac{\xi_{n}^{\prime}(x)}{\xi_{n}(x)<em n="n">{w</em>\right] \
+&amp; =\mathbb{E}}^{\prime}}\left[\log \frac{w_{n}^{\prime}(\rho)}{w_{n}^{\prime \prime}(\rho)} \frac{w_{n}^{\prime}(\rho)}{w_{n}^{\prime}(\rho)} \frac{\rho_{n}^{\prime}(x)}{\rho_{n}(x)<em n="n">{w</em>}^{\prime}}\left[\log \frac{w_{n}^{\prime}(\rho)}{w_{n}(\rho)}\right]+\mathbb{E<em n="n">{w</em>}^{\prime}}\left[\log \frac{w_{n}^{\prime}(\rho)}{w_{n}^{\prime \prime}(\rho)}\right]+\mathbb{E<em n="n">{w</em>\right] \
+&amp; =\operatorname{IG}}^{\prime}}\left[\log \frac{\rho_{n}^{\prime}(x)}{\rho_{n}(x)<em n="n">{n}(x)+\operatorname{KL}\left(w</em>}^{\prime} | w_{n}^{\prime \prime}\right)+\mathbb{E<em n="n">{w</em>(x)\right]
+\end{aligned}
+$$}^{\prime}}\left[\mathrm{PG}_{n}^{\rho</p>
+<p>The second statement follows immediately.
+Lemma 2. The functions $f(x):=e^{x}-1-x$ and $g(x):=e^{x}-1-x^{2}$ are nonnegative on $x \in[0, \infty)$.
+Proof. The statement regarding $f(x)$ follows directly from the Taylor expansion for $e^{x}$. Now, the first derivative of $g(x)$ is $e^{x}-2 x$. It is clearly positive for $x \geq 1$. For $x \in[0,1]$,</p>
+<p>$$
+e^{x}-2 x=\sum_{i=0}^{\infty} \frac{x^{i}}{i!}-2 x \geq 1-x \geq 0
+$$</p>
+<p>Since $g(0)=0$, the second result follows.</p>
+<p>Proof(Theorem 1). The inequality $\mathrm{IG}<em n="n">{n}(x) \leq \mathrm{PG}</em>}(x)$ follows directly from Lemma 1, the nonnegativity of the Kullback-Leibler divergence, and the fact that all models in $\mathcal{M}$ are learning-positive. For the inequality $\mathrm{PG<em n="n">{n}(x) \leq \hat{N}</em>$, we write}(x)^{-1</p>
+<p>$$
+\begin{aligned}
+\hat{N}<em n="n">{n}(x)^{-1} &amp; =\left(1-\xi</em> \
+&amp; =\left(1-\xi_{n}^{\prime}(x)\right)^{-1}\left(\frac{\xi_{n}^{\prime}(x)}{\xi_{n}(x)}-1\right) \
+&amp; \stackrel{(a)}{=}\left(1-\xi_{n}^{\prime}(x)\right)^{-1}\left(e^{\mathrm{PG}}^{\prime}(x)\right)^{-1} \frac{\xi_{n}^{\prime}(x)-\xi_{n}(x)}{\xi_{n}(x)<em n="n">{n}(x)}-1\right) \
+&amp; \stackrel{(b)}{\geq} e^{\mathrm{PG}</em>-1 \
+&amp; \stackrel{(c)}{\geq} \mathrm{PG}_{n}(x)
+\end{aligned}
+$$}(x)</p>
+<p>where (a) follows by definition of prediction gain, (b) from $\xi_{n}^{\prime}(x) \in[0,1)$, and (c) from Lemma 2. Using the second part of Lemma 2 in (c) yields the inequality $\hat{N}<em n="n">{n}(x)^{-1 / 2} \geq \mathrm{PG}</em>(x)$.</p>
+<h1>B Asymptotic Analysis</h1>
+<p>We begin with a simple lemma which will prove useful throughout.
+Lemma 3. The rate of change of the empirical distribution, $\mu_{n}^{\prime}(x)-\mu_{n}(x)$, is such that</p>
+<p>$$
+n\left(\mu_{n}^{\prime}(x)-\mu_{n}(x)\right)=1-\mu_{n}^{\prime}(x)
+$$</p>
+<p>Proof. We expand the definition of $\mu_{n}$ and $\mu_{n}^{\prime}$ :</p>
+<p>$$
+\begin{aligned}
+n\left(\mu_{n}^{\prime}(x)-\mu_{n}(x)\right) &amp; =n\left[\frac{N_{n}(x)+1}{n+1}-\frac{N_{n}(x)}{n}\right] \
+&amp; =\left[\frac{n}{n+1}\left(N_{n}(x)+1\right)-N_{n}(x)\right] \
+&amp; =\left[1-\frac{N_{n}(x)+1}{n+1}\right] \
+&amp; =1-\mu_{n}^{\prime}(x)
+\end{aligned}
+$$</p>
+<p>Using this lemma, we derive an asymptotic relationship between $N_{n}$ and $\hat{N}<em n="n">{n}$.
+Proof(Theorem 2). We expand the definition of $\hat{N}</em>(x)$ :}(x)$ and $N_{n</p>
+<p>$$
+\begin{aligned}
+\frac{\hat{N}<em n="n">{n}(x)}{N</em> \
+&amp; =\frac{\rho_{n}(x)\left(1-\rho_{n}^{\prime}(x)\right)}{n \mu_{n}(x)\left(\rho_{n}^{\prime}(x)-\rho_{n}(x)\right)} \
+&amp; =\frac{\rho_{n}(x)\left(\mu_{n}^{\prime}(x)-\mu_{n}(x)\right)}{\mu_{n}(x)\left(\rho_{n}^{\prime}(x)-\rho_{n}(x)\right)} \frac{1-\rho_{n}^{\prime}(x)}{n\left(\mu_{n}^{\prime}(x)-\mu_{n}(x)\right)} \
+&amp; =\frac{\rho_{n}(x)}{\mu_{n}(x)} \frac{\mu_{n}^{\prime}(x)-\mu_{n}(x)}{\rho_{n}^{\prime}(x)-\rho_{n}(x)} \frac{1-\rho_{n}^{\prime}(x)}{1-\mu_{n}^{\prime}(x)}
+\end{aligned}
+$$}(x)} &amp; =\frac{\rho_{n}(x)\left(1-\rho_{n}^{\prime}(x)\right)}{N_{n}(x)\left(\rho_{n}^{\prime}(x)-\rho_{n}(x)\right)</p>
+<p>with the last line following from Lemma 3. Under Assumption 1, all terms of the right-hand side converge as $n \rightarrow \infty$. Taking the limit on both sides,</p>
+<p>$$
+\begin{aligned}
+\lim <em n="n">{n \rightarrow \infty} \frac{\hat{N}</em> \lim }(x)}{N_{n}(x)} &amp; \stackrel{(a)}{=} \frac{r(x)}{\hat{r}(x)<em n="n">{n \rightarrow \infty} \frac{1-\rho</em> \
+&amp; \stackrel{(b)}{=} \frac{r(x)}{\hat{r}(x)} \frac{1-\mu(x) r(x)}{1-\mu(x)}
+\end{aligned}
+$$}^{\prime}(x)}{1-\mu_{n}^{\prime}(x)</p>
+<p>where (a) is justified by the existence of the relevant limits and $\dot{r}(x)&gt;0$, and (b) follows from writing $\rho_{n}^{\prime}(x)$ as $\mu_{n}(x) \rho_{n}^{\prime}(x) / \mu_{n}(x)$, where all limits involved exist.</p>
+<h1>B. 1 Directed Graphical Models</h1>
+<p>We say that $\mathcal{X}$ is a factored state space if it is the Cartesian product of $k$ subspaces, i.e. $\mathcal{X}:=$ $\mathcal{X}<em k="k">{1} \times \cdots \times \mathcal{X}</em>$.
+We will show that directed graphical models (Wainwright and Jordan, 2008) satisfy Assumption 1. A directed graphical model describes a probability distribution over a factored state space. To the $i^{\text {th }}$ factor $x^{i}$ is associated a parent set $\pi(i) \subseteq{1, \ldots, i-1}$. Let $x^{\pi(i)}$ denote the value of the factors in the parent set. The $i^{\text {th }}$ factor model is $\rho_{n}^{\prime}\left(x^{i} ; x^{\pi(i)}\right):=\rho^{i}\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)$, with the understanding that $\rho^{i}$ is allowed to make a different prediction for each value of $x^{\pi(i)}$. The state $x$ is assigned the joint probability}$. This factored structure allows us to construct approximate density models over $\mathcal{X}$, for example by modelling the joint density as a product of marginals. We write the $i^{\text {th }}$ factor of a state $x \in \mathcal{X}$ as $x^{i}$, and write the sequence of the $i^{\text {th }}$ factor across $x_{1: n}$ as $x_{1: n}^{i</p>
+<p>$$
+\rho_{\mathrm{GM}}\left(x ; x_{1: n}\right):=\prod_{i=1}^{k} \rho_{n}^{i}\left(x^{i} ; x^{\pi(i)}\right)
+$$</p>
+<p>Common choices for $\rho_{n}^{i}$ include the conditional empirical distribution and the Dirichlet estimator.
+Proposition 1. Suppose that each factor model $\rho_{n}^{i}$ converges to the conditional probability distribution $\mu\left(x^{i} \mid x^{\pi(i)}\right)$ and that for each $x^{i}$ with $\mu\left(x^{i} \mid x^{\pi(i)}\right)$,</p>
+<p>$$
+\lim <em 1:="1:" n="n">{n \rightarrow \infty} \frac{\rho^{i}\left(x^{i} ; x</em>=1
+$$} x, x^{\pi(i)}\right)-\rho^{i}\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)}{\mu\left(x^{i} ; x_{1: n} x, x^{\pi(i)}\right)-\mu\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)</p>
+<p>Then for all $x$ with $\mu(x)&gt;0$, the density model $\rho_{\mathrm{GM}}$ satisfies Assumption 1 with</p>
+<p>$$
+r(x)=\frac{\prod_{i=1}^{k} \mu\left(x^{i} \mid x^{\pi(i)}\right)}{\mu(x)} \quad \text { and } \quad \dot{r}(x)=\frac{\sum_{i=1}^{k}\left(1-\mu\left(x^{i} \mid x^{\pi(i)}\right)\right) \prod_{j \neq i} \mu\left(x^{j} \mid x^{\pi(j)}\right)}{1-\mu(x)}
+$$</p>
+<p>The CTS density model used in our experiments is in fact a particular kind of induced graphical model. The result above thus describes how the pseudo-counts computed in Section 3.2 are asymptotically related to the empirical counts.</p>
+<p>Proof. By hypothesis, $\rho_{n}^{i} \rightarrow \mu\left(x^{i} \mid x^{\pi(i)}\right)$. Combining this with $\mu_{n}(x) \rightarrow \mu(x)&gt;0$,</p>
+<p>$$
+\begin{aligned}
+r(x) &amp; =\lim <em _mathrm_DGM="\mathrm{DGM">{n \rightarrow \infty} \frac{\rho</em> \
+&amp; =\lim }}\left(x ; x_{1: n}\right)}{\mu_{n}(x)<em i="1">{n \rightarrow \infty} \frac{\prod</em> \
+&amp; =\frac{\prod_{i=1}^{k} \mu\left(x^{i} \mid x^{\pi(i)}\right)}{\mu(x)}
+\end{aligned}
+$$}^{k} \rho_{n}^{i}\left(x^{i} ; x^{\pi(i)}\right)}{\mu_{n}(x)</p>
+<p>Similarly,</p>
+<p>$$
+\begin{aligned}
+\dot{r}(x) &amp; =\lim <em _mathrm_DGM="\mathrm{DGM">{n \rightarrow \infty} \frac{\rho</em> \
+&amp; \stackrel{(a)}{=} \lim }}^{\prime}\left(x ; x_{1: n}\right)-\rho_{\mathrm{DGM}}\left(x ; x_{1: n}\right)}{\mu_{n}^{\prime}(x)-\mu_{n}(x)<em _mathrm_DGM="\mathrm{DGM">{n \rightarrow \infty} \frac{\left(\rho</em> \
+&amp; =\lim }}^{\prime}\left(x ; x_{1: n}\right)-\rho_{\mathrm{DGM}}\left(x ; x_{1: n}\right)\right) n}{1-\mu_{n}^{\prime}(x)<em _mathrm_DGM="\mathrm{DGM">{n \rightarrow \infty} \frac{\left(\rho</em>
+\end{aligned}
+$$}}^{\prime}\left(x ; x_{1: n}\right)-\rho_{\mathrm{DGM}}\left(x ; x_{1: n}\right)\right) n}{1-\mu(x)</p>
+<p>where in (a) we used the identity $n\left(\mu_{n}^{\prime}(x)-\mu_{n}(x)\right)=1-\mu_{n}^{\prime}(x)$ derived in the proof of Theorem 2. Now</p>
+<p>$$
+\begin{aligned}
+\dot{r}(x) &amp; =(1-\mu(x))^{-1} \lim <em _mathrm_DGM="\mathrm{DGM">{n \rightarrow \infty}\left(\rho</em>\right)\right) n \
+&amp; =(1-\mu(x))^{-1} \lim }}^{\prime}\left(x ; x_{1: n}\right)-\rho_{\mathrm{DGM}}\left(x ; x_{1: n<em i="1">{n \rightarrow \infty}\left(\prod</em>\right)\right) n
+\end{aligned}
+$$}^{k} \rho^{i}\left(x^{i} ; x_{1: n} x, x^{\pi(i)}\right)-\prod_{i=1}^{k} \rho^{i}\left(x^{i} ; x_{1: n}, x^{\pi(i)</p>
+<p>Let $c_{i}:=\rho^{i}\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)$ and $c_{i}^{\prime}:=\rho^{i}\left(x^{i} ; x_{1: n} x, x^{\pi(i)}\right)$. The difference of products above is</p>
+<p>$$
+\begin{aligned}
+\left(\prod_{i=1}^{k} \rho^{i}\left(x^{i} ; x_{1: n} x, x^{\pi(i)}\right)-\prod_{i=1}^{k} \rho^{i}\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)\right) &amp; =\left(c_{1}^{\prime} c_{2}^{\prime} \ldots c_{k}^{\prime}-c_{1} c_{2} \ldots c_{k}\right) \
+&amp; =\left(c_{1}^{\prime}-c_{1}\right)\left(c_{2}^{\prime} \ldots c_{k}^{\prime}\right)+c_{1}\left(c_{2}^{\prime} \ldots c_{k}^{\prime}-c_{2} \ldots c_{k}\right) \
+&amp; =\sum_{i=1}^{k}\left(c_{i}^{\prime}-c_{i}\right)\left(\prod_{j<i} c_{j}\right)\left(\prod_{j>i} c_{j}^{\prime}\right)
+\end{aligned}
+$$</p>
+<p>and</p>
+<p>$$
+\dot{r}(x)=(1-\mu(x))^{-1} \lim <em i="1">{n \rightarrow \infty} \sum</em>\right)
+$$}^{k} n\left(c_{i}^{\prime}-c_{i}\right)\left(\prod_{j<i} c_{j}\right)\left(\prod_{j>i} c_{j}^{\prime</p>
+<p>By the hypothesis on the rate of change of $\rho^{i}$ and the identity $n\left(\mu\left(x^{i} ; x_{1: n} x, x^{\pi(i)}\right)-\mu\left(x^{i} ; x_{1: n}, x^{\pi(i)}\right)\right)=1-\mu\left(x^{i} \mid x^{\pi(i)}\right)$, we have</p>
+<p>$$
+\lim <em i="i">{n \rightarrow \infty} n\left(c</em>\right)
+$$}^{\prime}-c_{i}\right)=1-\mu\left(x^{i} \mid x^{\pi(i)</p>
+<p>Since the limits of $c_{i}^{\prime}$ and $c_{i}$ are both $\mu\left(x^{i} \mid x^{\pi(i)}\right)$, we deduce that</p>
+<p>$$
+\dot{r}(x)=\frac{\sum_{i=1}^{k}\left(1-\mu\left(x^{i} \mid x^{\pi(i)}\right) \prod_{j \neq i} \mu\left(x^{j} \mid x^{\pi_{j}(x)}\right)\right.}{1-\mu(x)}
+$$</p>
+<p>Now, if $\mu(x)&gt;0$ then also $\mu\left(x^{i} ; x^{\pi(i)}\right)&gt;0$ for each factor $x^{i}$. Hence $\dot{r}(x)&gt;0$.</p>
+<h1>B. 2 Tabular Density Models (Corollary 1)</h1>
+<p>We shall prove the following, which includes Corollary 1 as a special case.
+Lemma 4. Consider $\phi: \mathcal{X} \times \mathcal{X}^{*} \rightarrow \mathbb{R}^{+}$. Suppose that for all $\left(x_{n}: n \in \mathbb{N}\right)$ and every $x \in \mathcal{X}$</p>
+<ol>
+<li>$\lim <em _in="\in" _mathcal_X="\mathcal{X" x="x">{n \rightarrow \infty} \frac{1}{n} \sum</em>\right)=0$, and}} \phi\left(x, x_{1: n</li>
+<li>$\lim <em 1:="1:" n="n">{n \rightarrow \infty}\left(\phi\left(x, x</em>\right)\right)=0$.} x\right)-\phi\left(x, x_{1: n</li>
+</ol>
+<p>Let $\rho_{n}(x)$ be the count-based estimator</p>
+<p>$$
+\rho_{n}(x)=\frac{N_{n}(x)+\phi\left(x, x_{1: n}\right)}{n+\sum_{x \in \mathcal{X}} \phi\left(x, x_{1: n}\right)}
+$$</p>
+<p>If $\hat{N}<em n="n">{n}$ is the pseudo-count corresponding to $\rho</em>}$ then $\hat{N<em n="n">{n}(x) / N</em>(x) \rightarrow 1$ for all $x$ with $\mu(x)&gt;0$.
+Condition 2 is satisfied if $\phi_{n}\left(x, x_{1: n}\right)=u_{n}(x) \phi_{n}$ with $\phi_{n}$ monotonically increasing in $n$ (but not too quickly!) and $u_{n}(x)$ converging to some distribution $u(x)$ for all sequences $\left(x_{n}: n \in \mathbb{N}\right)$. This is the case for most tabular density models.</p>
+<p>Proof. We will show that the condition on the rate of change required by Proposition 1 is satisfied under the stated conditions. Let $\phi_{n}(x):=\phi\left(x, x_{1: n}\right), \phi_{n}^{\prime}(x):=\phi\left(x, x_{1: n} x\right), \phi_{n}:=\sum_{x \in \mathcal{X}} \phi_{n}(x)$ and $\phi_{n}^{\prime}:=\sum_{x \in \mathcal{X}} \phi_{n}^{\prime}(x)$. By hypothesis,</p>
+<p>$$
+\rho_{n}(x)=\frac{N_{n}(x)+\phi_{n}(x)}{n+\phi_{n}} \quad \rho_{n}^{\prime}(x)=\frac{N_{n}(x)+\phi_{n}^{\prime}(x)+1}{n+\phi_{n}^{\prime}+1}
+$$</p>
+<p>Note that we do not require $\phi_{n}(x)=\phi_{n}^{\prime}(x)$. Now</p>
+<p>$$
+\begin{aligned}
+\rho_{n}^{\prime}(x)-\rho_{n}(x) &amp; =\frac{n+\phi_{n}}{n+\phi_{n}} \rho_{n}^{\prime}(x)-\rho_{n}(x) \
+&amp; =\frac{n+1+\phi_{n}^{\prime}}{n+\phi_{n}} \rho_{n}^{\prime}(x)-\rho_{n}(x)-\frac{\left(1+\left(\phi_{n}^{\prime}-\phi_{n}\right)\right) \rho_{n}^{\prime}(x)}{n+\phi_{n}} \
+&amp; =\frac{1}{n+\phi_{n}}\left[\left(N_{n}(x)+1+\phi_{n}^{\prime}(x)-\left(N_{n}(x)+\phi_{n}(x)\right)-\left(1+\left(\phi_{n}^{\prime}-\phi_{n}\right)\right) \rho_{n}^{\prime}(x)\right]\right. \
+&amp; =\frac{1}{n+\phi_{n}}\left[1-\rho_{n}^{\prime}(x)+\left(\phi_{n}^{\prime}(x)-\phi_{n}(x)\right)-\rho_{n}^{\prime}(x)\left(\phi_{n}^{\prime}-\phi_{n}\right)\right]
+\end{aligned}
+$$</p>
+<p>Using Lemma 3 we deduce that</p>
+<p>$$
+\frac{\rho_{n}^{\prime}(x)-\rho_{n}(x)}{\mu_{n}^{\prime}(x)-\mu_{n}(x)}=\frac{n}{n+\phi_{n}} \frac{1-\rho_{n}^{\prime}(x)+\phi_{n}^{\prime}(x)-\phi_{n}(x)+\rho_{n}^{\prime}(x)\left(\phi_{n}^{\prime}-\phi_{n}\right)}{1-\mu_{n}^{\prime}(x)}
+$$</p>
+<p>Since $\phi_{n}=\sum_{x} \phi_{n}(x)$ and similarly for $\phi_{n}^{\prime}$, then $\phi_{n}^{\prime}(x)-\phi_{n}(x) \rightarrow 0$ pointwise implies that $\phi_{n}^{\prime}-\phi_{n} \rightarrow 0$ also. For any $\mu(x)&gt;0$,</p>
+<p>$$
+\begin{aligned}
+0 \leq \lim <em n="n">{n \rightarrow \infty} \frac{\phi</em> &amp; \leq \lim }(x)}{N_{n}(x)<em _in="\in" _mathcal_X="\mathcal{X" x="x">{n \rightarrow \infty} \frac{\sum</em> \
+&amp; =\lim }} \phi_{n}(x)}{N_{n}(x)<em _in="\in" _mathcal_X="\mathcal{X" x="x">{n \rightarrow \infty} \frac{\sum</em> \
+&amp; \stackrel{(b)}{=} 0
+\end{aligned}
+$$}} \phi_{n}(x)}{n} \frac{n}{N_{n}(x)</p>
+<p>where a) follows from $\phi_{n}(x) \geq 0$ and b) is justified by $n / N_{n}(x) \rightarrow \mu(x)^{-1}&gt;0$ and the hypothesis that $\sum_{x \in \mathcal{X}} \phi_{n}(x) / n \rightarrow 0$. Therefore $\rho_{n}(x) \rightarrow \mu(x)$. Hence</p>
+<p>$$
+\lim <em n="n">{n \rightarrow \infty} \frac{\rho</em>=\lim }^{\prime}(x)-\rho_{n}(x)}{\mu_{n}^{\prime}(x)-\mu_{n}(x)<em n="n">{n \rightarrow \infty} \frac{n}{n+\phi</em>=1
+$$}} \frac{1-\rho_{n}^{\prime}(x)}{1-\mu_{n}^{\prime}(x)</p>
+<p>Since $\rho_{n}(x) \rightarrow \mu(x)$, we further deduce from Theorem 2 that</p>
+<p>$$
+\lim <em n="n">{n \rightarrow \infty} \frac{\bar{N}</em>=1
+$$}(x)}{N_{n}(x)</p>
+<p>The condition $\mu(x)&gt;0$, which was also needed in Proposition 1, is necessary for the ratio to converge to 1: for example, if $N_{n}(x)$ grows as $O(\log n)$ but $\phi_{n}(x)$ grows as $O(\sqrt{n})$ (with $|\mathcal{X}|$ finite) then $\bar{N}_{n}(x)$ will grow as the larger $\sqrt{n}$.</p>
+<h1>C Experimental Methods</h1>
+<h2>C. 1 CTS Density Model</h2>
+<p>Our state space $\mathcal{X}$ is the set of all preprocessed Atari 2600 frames. ${ }^{2}$ Each raw frame is composed of $210 \times 160$ 7-bit NTSC pixels (Bellemare et al., 2013). We preprocess these frames by first converting them to grayscale (luminance), then downsampling to $42 \times 42$ by averaging over pixel values (Figure 5).</p>
+<p>Aside from this preprocessing, our model is very similar to the model used by Bellemare et al. (2014) and Veness et al. (2015). The CTS density model treats $x \in \mathcal{X}$ as a factored state, where each $(i, j)$ pixel corresponds to a factor $x^{i, j}$. The parents of this factor are its upper-left neighbours, i.e. pixels $(i-1, j),(i, j-1),(i-1, j-1)$ and $(i+1, j-1)$ (in this order). The probability of $x$ is then the product of the probability assigned to its factors. Each factor is modelled using a location-dependent CTS model, which predicts the pixel's colour value conditional on some, all, or possibly none, of the pixel's parents (Figure 6).</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Sample preprocessed image provided to the CTS model (right), along with the original frame (left). Although details are lost, objects can still be made out.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: Depiction of the CTS "filter". Each downsampled pixel is predicted by a location-specific model which can condition on the pixel's immediate neighbours (in blue).</p>
+<h1>C. 2 A Taxonomy of Exploration</h1>
+<p>We provide in Table 1 a rough taxonomy of the Atari 2600 games available through the ALE in terms of the difficulty of exploration.
+We first divided the games into two groups: those for which local exploration (e.g. $\epsilon$-greedy) is sufficient to achieve a high scoring policy (easy), and those for which it is not (hard). For example, Space Invaders versus Pitfall!. We further divided the easy group based on whether an $\epsilon$-greedy scheme finds a score exploit, that is maximizes the score without achieving the game's stated objective. For example, Kung-Fu Master versus Boxing. While this distinction is not directly used here, score exploits lead to behaviours which are optimal from an ALE perspective but uninteresting to humans. We divide the games in the hard category into dense reward games (Ms. PAC-MAN) and sparse reward games (MONTEZUMA's REVENGE).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Easy Exploration</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Hard Exploration</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Human-Optimal</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Score Exploit</td>
+<td style="text-align: center;">Dense Reward</td>
+<td style="text-align: center;">Sparse Reward</td>
+</tr>
+<tr>
+<td style="text-align: center;">ASSAULT</td>
+<td style="text-align: center;">ASTERIX</td>
+<td style="text-align: center;">BEAM RIDER</td>
+<td style="text-align: center;">AlIEN</td>
+<td style="text-align: center;">FREEWAY</td>
+</tr>
+<tr>
+<td style="text-align: center;">ASTEROIDS</td>
+<td style="text-align: center;">ATLANTIS</td>
+<td style="text-align: center;">KANGAROO</td>
+<td style="text-align: center;">AMIDAR</td>
+<td style="text-align: center;">GRANTtAR</td>
+</tr>
+<tr>
+<td style="text-align: center;">Battle Zone</td>
+<td style="text-align: center;">Berzerk</td>
+<td style="text-align: center;">Krull</td>
+<td style="text-align: center;">BANK HEIST</td>
+<td style="text-align: center;">Montezuma's REVENGE</td>
+</tr>
+<tr>
+<td style="text-align: center;">Bowling</td>
+<td style="text-align: center;">Boxing</td>
+<td style="text-align: center;">Kung-Fu MaStER</td>
+<td style="text-align: center;">Frostbite</td>
+<td style="text-align: center;">Pitfall!</td>
+</tr>
+<tr>
+<td style="text-align: center;">Breakout</td>
+<td style="text-align: center;">Centipede</td>
+<td style="text-align: center;">Road Runner</td>
+<td style="text-align: center;">H.E.R.O.</td>
+<td style="text-align: center;">Private Eye</td>
+</tr>
+<tr>
+<td style="text-align: center;">ChePPER CMD</td>
+<td style="text-align: center;">CRAZY CLIMBER</td>
+<td style="text-align: center;">Seaquest</td>
+<td style="text-align: center;">Ms. PAC-MAN</td>
+<td style="text-align: center;">Solaris</td>
+</tr>
+<tr>
+<td style="text-align: center;">Defender</td>
+<td style="text-align: center;">Demon Attack</td>
+<td style="text-align: center;">UP n Down</td>
+<td style="text-align: center;">Q*BERT</td>
+<td style="text-align: center;">Venture</td>
+</tr>
+<tr>
+<td style="text-align: center;">Double Dunk</td>
+<td style="text-align: center;">Enduro</td>
+<td style="text-align: center;">Tutankham</td>
+<td style="text-align: center;">Surround</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Fishing Derry</td>
+<td style="text-align: center;">Gopher</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Wizard of WOR</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Ice Hockey</td>
+<td style="text-align: center;">James Bond</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Zaxxon</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Name this Game</td>
+<td style="text-align: center;">Phoenix</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Pong</td>
+<td style="text-align: center;">River Raid</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Robotank</td>
+<td style="text-align: center;">Skiing</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Space Invaders</td>
+<td style="text-align: center;">Stargunner</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: A rough taxonomy of Atari 2600 games according to their exploration difficulty.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Figure 7: Layout of levels in Montezuma's REVENGE, with rooms numbered from 0 to 23. The agent begins in room 1 and completes the level upon reaching room 15 (depicted).</p>
+<h1>C. 3 Exploration in Montezuma's REVENGE</h1>
+<p>Montezuma's REVENGE is divided into three levels, each composed of 24 rooms arranged in a pyramidal shape (Figure 7). As discussed above, each room poses a number of challenges: to escape the very first room, the agent must climb ladders, dodge a creature, pick up a key, then backtrack to open one of two doors. The number of rooms reached by an agent is therefore a good measure of its ability. By accessing the game RAM, we recorded the location of the agent at each step during the course of training. ${ }^{3}$ We computed the visit count to each room, averaged over epochs each lasting one million frames. From this information we constructed a map of the agent's "known world", that is, all rooms visited at least once. The agent's current room number ranges from 0 to 23 (Figure 7) and is stored at RAM location 0x83. Figure 8 shows the set of rooms explored by our DQN agents at different points during training.
+Figure 8 paints a clear picture: after 50 million frames, the agent using exploration bonuses has seen a total of 15 rooms, while the no-bonus agent has seen two. At that point in time, our agent achieves an average score of $\mathbf{2 4 6 1}$; by 100 million frames, this figure stands at $\mathbf{3 4 3 9}$, higher than anything previously reported. We believe the success of our method in this game is a strong indicator of the usefulness of pseudo-counts for exploration.
+We remark that without mixing in the Monte-Carlo return, our bonus-based agent still explores significantly more than the no-bonus agent. However, the deep network seems unable to maintain a sufficiently good approximation to the value function, and performance quickly deteriorates. Comparable results using the A3C method provide another example of the practical importance of eligibility traces and return-based methods in reinforcement learning.</p>
+<h2>C. 4 Improving Exploration for Actor-Critic Methods</h2>
+<p>Our implementation of A3C was along the lines mentioned in Mnih et al. (2016) and uses 16 threads. Each thread corresponds to an actor learner and maintains a copy of the density model. All the threads are synchronized with the master thread at regular intervals of 250,000 steps. We followed the same training procedure as that reported in the A3C paper with the following additional steps: We update our density model with the states generated by following the policy. During the policy gradient step, we compute the intrinsic rewards by querying the density model and add it to the extrinsic rewards before clipping them in the range $[-1,1]$ as was done in the A3C paper. This resulted in minimal overhead in computation costs and the memory footprint was manageable ( $&lt;$ 32 GB ) for most of the Atari games. Our training times were almost the same as the ones reported in the A3C paper. We picked $\beta=0.01$ after performing a short parameter sweep over the training games. The choice of training games is the same as mentioned in the A3C paper.
+The games on which DQN achieves a score of $150 \%$ or less of the random score are: ASTEROIDS, Double Dunk, Gravitar, Ice Hockey, Montezuma's REVENGE, Pitfall!, Skiing, Surround, Tennis, Time Pilot.
+The games on which A3C achieves a score of $150 \%$ or less of the random score are: BATtle Zone, Bowling, Enduro, Freeway, Gravitar, Kangaroo, Pitfall!, Robotank, Skiing, Solaris, Surround, Tennis, Time Pilot, Venture.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 8: "Known world" of a DQN agent trained over time, with (bottom) and without (top) count-based exploration bonuses, in Montezuma's REVENGE.</p>
+<p>The games on which A3C+ achieves a score of 150\% or less of the random score are: Double Dunk, Gravitar, Ice Hockey, Pitfall!, Skiing, Solaris, Surround, Tennis, Time Pilot, Venture.</p>
+<p>Our experiments involved the stochastic version of the Arcade Learning Environment (ALE) without a terminal signal for life loss, which is now the default ALE setting. Briefly, the stochasticity is achieved by accepting the agent action at each frame with probability $1-p$ and using the agents previous action during rejection. We used the ALE's default value of $p=0.25$ as has been previously used in Bellemare et al. (2016). For comparison, Table 2 also reports the deterministic + life loss setting also used in the literature.</p>
+<p>Anecdotally, we found that using the life loss signal, while helpful in achieving high scores in some games, is detrimental in Montezuma's REVENGE. Recall that the life loss signal was used by Mnih et al. (2015) to treat each of the agent' lives as a separate episode. For comparison, after 200 million frames A3C+ achieves the following average scores: 1) Stochastic + Life Loss: 142.50; 2) Deterministic + Life Loss: 273.70 3) Stochastic without Life Loss: 1127.05 4) Deterministic without Life Loss: 273.70. The maximum score achieved by 3) is 3600, in comparison to the maximum of 500 achieved by 1) and 3). This large discrepancy is not unsurprising when one considers that losing a life in Montezuma's REVENGE, and in fact in most games, is very different from restarting a new episode.</p>
+<h1>C. 5 Comparing Exploration Bonuses</h1>
+<p>In this section we compare the effect of using different exploration bonuses derived from our density model. We consider the following variants:</p>
+<ul>
+<li>no exploration bonus,</li>
+<li>$\tilde{N}_{n}(x)^{-1 / 2}$, as per MBIE-EB (Strehl and Littman, 2008);</li>
+<li>$\tilde{N}_{n}(x)^{-1}$, as per BEB (Kolter and Ng, 2009); and</li>
+<li>$\mathrm{PG}_{n}(x)$, related to compression progress (Schmidhuber, 2008).</li>
+</ul>
+<p>The exact form of these bonuses is analogous to (4). We compare these variants after 10, 50, 100, and 200 million frames of training, again in the A3C setup. To compare scores across 60 games, we use</p>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 9: Average A3C+ score (solid line) over 200 million training frames, for all Atari 2600 games, normalized relative to the A3C baseline. Dotted lines denote min/max over seeds, interquartile range is shaded, and the median is dashed.</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 10: Inter-algorithm score distribution for exploration bonus variants. For all methods the point $f(0)=1$ is omitted for clarity. See text for details.
+inter-algorithm score distributions (Bellemare et al., 2013). Inter-algorithm scores are normalized so that 0 corresponds to the worst score on a game, and 1 , to the best. If $g \in{1, \ldots, m}$ is a game and $z_{g, a}$ the inter-algorithm score on $g$ for algorithm $a$, then the score distribution function is</p>
+<p>$$
+f(x):=\frac{\left|\left{g: z_{g, a} \geq x\right}\right|}{m}
+$$</p>
+<p>The score distribution effectively depicts a kind of cumulative distribution, with a higher overall curve implying better scores across the gamut of Atari 2600 games. A higher curve at $x=1$ implies top performance on more games; a higher curve at $x=0$ indicates the algorithm does not perform poorly on many games. The scale parameter $\beta$ was optimized to $\beta=0.01$ for each variant separately.
+Figure 10 shows that, while prediction gain initially achieves strong performance, by 50 million frames all three algorithms perform equally well. By 200 million frames, the $\hat{N}^{-1 / 2}$ exploration bonus outperforms both prediction gain and no bonus. The prediction gain achieves a decent, but not top-performing score on all games. This matches our earlier argument that using prediction gain results in too little exploration. We hypothesize that the poor performance of the $\hat{N}^{-1}$ bonus stems from too abrupt a decay from a large to small intrinsic reward, although more experiments are needed. As a whole, these results show how using PG offers an advantage over the baseline A3C algorithm, which is furthered by using our count-based exploration bonus.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Stochastic ALE</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Deterministic ALE</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">A3C</td>
+<td style="text-align: center;">A3C+</td>
+<td style="text-align: center;">DQN</td>
+<td style="text-align: center;">A3C</td>
+<td style="text-align: center;">A3C+</td>
+<td style="text-align: center;">DQN</td>
+</tr>
+<tr>
+<td style="text-align: center;">Alien</td>
+<td style="text-align: center;">1968.40</td>
+<td style="text-align: center;">1848.33</td>
+<td style="text-align: center;">1802.08</td>
+<td style="text-align: center;">1658.25</td>
+<td style="text-align: center;">1945.66</td>
+<td style="text-align: center;">1418.47</td>
+</tr>
+<tr>
+<td style="text-align: center;">Amidar</td>
+<td style="text-align: center;">1065.24</td>
+<td style="text-align: center;">964.77</td>
+<td style="text-align: center;">781.76</td>
+<td style="text-align: center;">1034.15</td>
+<td style="text-align: center;">861.14</td>
+<td style="text-align: center;">654.40</td>
+</tr>
+<tr>
+<td style="text-align: center;">Assault</td>
+<td style="text-align: center;">2660.55</td>
+<td style="text-align: center;">2607.28</td>
+<td style="text-align: center;">1246.83</td>
+<td style="text-align: center;">2881.69</td>
+<td style="text-align: center;">2584.40</td>
+<td style="text-align: center;">1707.87</td>
+</tr>
+<tr>
+<td style="text-align: center;">Asterix</td>
+<td style="text-align: center;">7212.45</td>
+<td style="text-align: center;">7262.77</td>
+<td style="text-align: center;">3256.07</td>
+<td style="text-align: center;">9546.96</td>
+<td style="text-align: center;">7922.70</td>
+<td style="text-align: center;">4062.55</td>
+</tr>
+<tr>
+<td style="text-align: center;">Asteroids</td>
+<td style="text-align: center;">2680.72</td>
+<td style="text-align: center;">2257.92</td>
+<td style="text-align: center;">525.09</td>
+<td style="text-align: center;">3946.22</td>
+<td style="text-align: center;">2406.57</td>
+<td style="text-align: center;">735.05</td>
+</tr>
+<tr>
+<td style="text-align: center;">Atlantis</td>
+<td style="text-align: center;">1752259.74</td>
+<td style="text-align: center;">1733528.71</td>
+<td style="text-align: center;">77670.03</td>
+<td style="text-align: center;">1634837.98</td>
+<td style="text-align: center;">1801392.35</td>
+<td style="text-align: center;">281448.80</td>
+</tr>
+<tr>
+<td style="text-align: center;">Bank Heist</td>
+<td style="text-align: center;">1071.89</td>
+<td style="text-align: center;">991.96</td>
+<td style="text-align: center;">419.50</td>
+<td style="text-align: center;">1301.51</td>
+<td style="text-align: center;">1182.89</td>
+<td style="text-align: center;">315.93</td>
+</tr>
+<tr>
+<td style="text-align: center;">Battle Zone</td>
+<td style="text-align: center;">3142.95</td>
+<td style="text-align: center;">7428.99</td>
+<td style="text-align: center;">16757.88</td>
+<td style="text-align: center;">3393.84</td>
+<td style="text-align: center;">7969.06</td>
+<td style="text-align: center;">17927.46</td>
+</tr>
+<tr>
+<td style="text-align: center;">Beam Rider</td>
+<td style="text-align: center;">6129.51</td>
+<td style="text-align: center;">5992.08</td>
+<td style="text-align: center;">4653.24</td>
+<td style="text-align: center;">7004.58</td>
+<td style="text-align: center;">6723.89</td>
+<td style="text-align: center;">7949.08</td>
+</tr>
+<tr>
+<td style="text-align: center;">Berzerk</td>
+<td style="text-align: center;">1203.09</td>
+<td style="text-align: center;">1720.56</td>
+<td style="text-align: center;">416.03</td>
+<td style="text-align: center;">1233.47</td>
+<td style="text-align: center;">1863.60</td>
+<td style="text-align: center;">471.76</td>
+</tr>
+<tr>
+<td style="text-align: center;">Bowling</td>
+<td style="text-align: center;">32.91</td>
+<td style="text-align: center;">68.72</td>
+<td style="text-align: center;">29.07</td>
+<td style="text-align: center;">35.00</td>
+<td style="text-align: center;">75.97</td>
+<td style="text-align: center;">30.34</td>
+</tr>
+<tr>
+<td style="text-align: center;">Boxing</td>
+<td style="text-align: center;">4.48</td>
+<td style="text-align: center;">13.82</td>
+<td style="text-align: center;">66.13</td>
+<td style="text-align: center;">3.07</td>
+<td style="text-align: center;">15.75</td>
+<td style="text-align: center;">80.17</td>
+</tr>
+<tr>
+<td style="text-align: center;">Breakout</td>
+<td style="text-align: center;">322.04</td>
+<td style="text-align: center;">323.21</td>
+<td style="text-align: center;">85.82</td>
+<td style="text-align: center;">432.42</td>
+<td style="text-align: center;">473.93</td>
+<td style="text-align: center;">259.40</td>
+</tr>
+<tr>
+<td style="text-align: center;">Centipede</td>
+<td style="text-align: center;">4488.43</td>
+<td style="text-align: center;">5338.24</td>
+<td style="text-align: center;">4698.76</td>
+<td style="text-align: center;">5184.76</td>
+<td style="text-align: center;">5442.94</td>
+<td style="text-align: center;">1184.46</td>
+</tr>
+<tr>
+<td style="text-align: center;">Chopper Command</td>
+<td style="text-align: center;">4377.91</td>
+<td style="text-align: center;">5388.22</td>
+<td style="text-align: center;">1927.50</td>
+<td style="text-align: center;">3324.24</td>
+<td style="text-align: center;">5088.17</td>
+<td style="text-align: center;">1569.84</td>
+</tr>
+<tr>
+<td style="text-align: center;">Crazy Climber</td>
+<td style="text-align: center;">108896.28</td>
+<td style="text-align: center;">104083.51</td>
+<td style="text-align: center;">86126.17</td>
+<td style="text-align: center;">111493.76</td>
+<td style="text-align: center;">112885.03</td>
+<td style="text-align: center;">102736.12</td>
+</tr>
+<tr>
+<td style="text-align: center;">Defender</td>
+<td style="text-align: center;">42147.48</td>
+<td style="text-align: center;">36377.60</td>
+<td style="text-align: center;">4593.79</td>
+<td style="text-align: center;">39388.08</td>
+<td style="text-align: center;">38976.66</td>
+<td style="text-align: center;">6225.82</td>
+</tr>
+<tr>
+<td style="text-align: center;">Demon Attack</td>
+<td style="text-align: center;">26803.86</td>
+<td style="text-align: center;">19589.95</td>
+<td style="text-align: center;">4831.12</td>
+<td style="text-align: center;">39293.17</td>
+<td style="text-align: center;">30930.33</td>
+<td style="text-align: center;">6183.58</td>
+</tr>
+<tr>
+<td style="text-align: center;">Double Dunk</td>
+<td style="text-align: center;">0.53</td>
+<td style="text-align: center;">$-8.88$</td>
+<td style="text-align: center;">$-11.57$</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">$-7.84$</td>
+<td style="text-align: center;">$-13.99$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Enduro</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">749.11</td>
+<td style="text-align: center;">348.30</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">694.83</td>
+<td style="text-align: center;">441.24</td>
+</tr>
+<tr>
+<td style="text-align: center;">Fishing Derby</td>
+<td style="text-align: center;">30.42</td>
+<td style="text-align: center;">29.46</td>
+<td style="text-align: center;">$-27.83$</td>
+<td style="text-align: center;">32.00</td>
+<td style="text-align: center;">31.11</td>
+<td style="text-align: center;">$-8.68$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Freeway</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">27.33</td>
+<td style="text-align: center;">30.59</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">30.48</td>
+<td style="text-align: center;">30.12</td>
+</tr>
+<tr>
+<td style="text-align: center;">Frostbite</td>
+<td style="text-align: center;">290.02</td>
+<td style="text-align: center;">506.61</td>
+<td style="text-align: center;">707.41</td>
+<td style="text-align: center;">283.99</td>
+<td style="text-align: center;">325.42</td>
+<td style="text-align: center;">506.10</td>
+</tr>
+<tr>
+<td style="text-align: center;">Gopher</td>
+<td style="text-align: center;">5724.01</td>
+<td style="text-align: center;">5948.40</td>
+<td style="text-align: center;">3946.13</td>
+<td style="text-align: center;">6872.60</td>
+<td style="text-align: center;">6611.28</td>
+<td style="text-align: center;">4946.39</td>
+</tr>
+<tr>
+<td style="text-align: center;">Gravitar</td>
+<td style="text-align: center;">204.65</td>
+<td style="text-align: center;">246.02</td>
+<td style="text-align: center;">43.04</td>
+<td style="text-align: center;">201.29</td>
+<td style="text-align: center;">238.68</td>
+<td style="text-align: center;">219.39</td>
+</tr>
+<tr>
+<td style="text-align: center;">H.E.R.O.</td>
+<td style="text-align: center;">32612.96</td>
+<td style="text-align: center;">15077.42</td>
+<td style="text-align: center;">12140.76</td>
+<td style="text-align: center;">34880.51</td>
+<td style="text-align: center;">15210.62</td>
+<td style="text-align: center;">11419.16</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ice Hockey</td>
+<td style="text-align: center;">$-5.22$</td>
+<td style="text-align: center;">$-7.05$</td>
+<td style="text-align: center;">$-9.78$</td>
+<td style="text-align: center;">$-5.13$</td>
+<td style="text-align: center;">$-6.45$</td>
+<td style="text-align: center;">$-10.34$</td>
+</tr>
+<tr>
+<td style="text-align: center;">James Bond</td>
+<td style="text-align: center;">424.11</td>
+<td style="text-align: center;">1024.16</td>
+<td style="text-align: center;">511.76</td>
+<td style="text-align: center;">422.42</td>
+<td style="text-align: center;">1001.19</td>
+<td style="text-align: center;">465.76</td>
+</tr>
+<tr>
+<td style="text-align: center;">Kangaroo</td>
+<td style="text-align: center;">47.19</td>
+<td style="text-align: center;">5475.73</td>
+<td style="text-align: center;">4170.09</td>
+<td style="text-align: center;">46.63</td>
+<td style="text-align: center;">4883.53</td>
+<td style="text-align: center;">5972.64</td>
+</tr>
+<tr>
+<td style="text-align: center;">Krull</td>
+<td style="text-align: center;">7263.37</td>
+<td style="text-align: center;">7587.58</td>
+<td style="text-align: center;">5775.23</td>
+<td style="text-align: center;">7603.84</td>
+<td style="text-align: center;">8605.27</td>
+<td style="text-align: center;">6140.24</td>
+</tr>
+<tr>
+<td style="text-align: center;">Kung-Fu Master</td>
+<td style="text-align: center;">26878.72</td>
+<td style="text-align: center;">26593.67</td>
+<td style="text-align: center;">15125.08</td>
+<td style="text-align: center;">29369.90</td>
+<td style="text-align: center;">28615.43</td>
+<td style="text-align: center;">11187.13</td>
+</tr>
+<tr>
+<td style="text-align: center;">Montezuma's Revenge</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">142.50</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">273.70</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ms. Pac-Man</td>
+<td style="text-align: center;">2163.43</td>
+<td style="text-align: center;">2380.58</td>
+<td style="text-align: center;">2480.39</td>
+<td style="text-align: center;">2327.80</td>
+<td style="text-align: center;">2401.04</td>
+<td style="text-align: center;">2391.89</td>
+</tr>
+<tr>
+<td style="text-align: center;">Name This Game</td>
+<td style="text-align: center;">6202.67</td>
+<td style="text-align: center;">6427.51</td>
+<td style="text-align: center;">3631.90</td>
+<td style="text-align: center;">6087.31</td>
+<td style="text-align: center;">7021.30</td>
+<td style="text-align: center;">6565.41</td>
+</tr>
+<tr>
+<td style="text-align: center;">Phoenix</td>
+<td style="text-align: center;">12169.75</td>
+<td style="text-align: center;">20300.72</td>
+<td style="text-align: center;">3015.64</td>
+<td style="text-align: center;">13893.06</td>
+<td style="text-align: center;">23818.47</td>
+<td style="text-align: center;">7835.20</td>
+</tr>
+<tr>
+<td style="text-align: center;">Pitfall</td>
+<td style="text-align: center;">$-8.83$</td>
+<td style="text-align: center;">$-155.97$</td>
+<td style="text-align: center;">$-84.40$</td>
+<td style="text-align: center;">$-6.98$</td>
+<td style="text-align: center;">$-259.09$</td>
+<td style="text-align: center;">$-86.85$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Pooyan</td>
+<td style="text-align: center;">3706.93</td>
+<td style="text-align: center;">3943.37</td>
+<td style="text-align: center;">2817.36</td>
+<td style="text-align: center;">4198.61</td>
+<td style="text-align: center;">4305.57</td>
+<td style="text-align: center;">2992.56</td>
+</tr>
+<tr>
+<td style="text-align: center;">Pong</td>
+<td style="text-align: center;">18.21</td>
+<td style="text-align: center;">17.33</td>
+<td style="text-align: center;">15.10</td>
+<td style="text-align: center;">20.84</td>
+<td style="text-align: center;">20.75</td>
+<td style="text-align: center;">19.17</td>
+</tr>
+<tr>
+<td style="text-align: center;">Private Eye</td>
+<td style="text-align: center;">94.87</td>
+<td style="text-align: center;">100.00</td>
+<td style="text-align: center;">69.53</td>
+<td style="text-align: center;">97.36</td>
+<td style="text-align: center;">99.32</td>
+<td style="text-align: center;">$-12.86$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Q*BERT</td>
+<td style="text-align: center;">15007.55</td>
+<td style="text-align: center;">15804.72</td>
+<td style="text-align: center;">5259.18</td>
+<td style="text-align: center;">19175.72</td>
+<td style="text-align: center;">19257.55</td>
+<td style="text-align: center;">7094.91</td>
+</tr>
+<tr>
+<td style="text-align: center;">River Raid</td>
+<td style="text-align: center;">10559.82</td>
+<td style="text-align: center;">10331.56</td>
+<td style="text-align: center;">8934.68</td>
+<td style="text-align: center;">11902.24</td>
+<td style="text-align: center;">10712.54</td>
+<td style="text-align: center;">2365.18</td>
+</tr>
+<tr>
+<td style="text-align: center;">Road Runner</td>
+<td style="text-align: center;">36933.62</td>
+<td style="text-align: center;">49029.74</td>
+<td style="text-align: center;">31613.83</td>
+<td style="text-align: center;">41059.12</td>
+<td style="text-align: center;">50645.74</td>
+<td style="text-align: center;">24933.39</td>
+</tr>
+<tr>
+<td style="text-align: center;">Robotank</td>
+<td style="text-align: center;">2.13</td>
+<td style="text-align: center;">6.68</td>
+<td style="text-align: center;">50.80</td>
+<td style="text-align: center;">2.22</td>
+<td style="text-align: center;">7.68</td>
+<td style="text-align: center;">40.53</td>
+</tr>
+<tr>
+<td style="text-align: center;">Seaquest</td>
+<td style="text-align: center;">1680.84</td>
+<td style="text-align: center;">2274.06</td>
+<td style="text-align: center;">1180.70</td>
+<td style="text-align: center;">1697.19</td>
+<td style="text-align: center;">2015.55</td>
+<td style="text-align: center;">3035.32</td>
+</tr>
+<tr>
+<td style="text-align: center;">Skiing</td>
+<td style="text-align: center;">$-23669.98$</td>
+<td style="text-align: center;">$-20066.65$</td>
+<td style="text-align: center;">$-26402.39$</td>
+<td style="text-align: center;">$-20958.97$</td>
+<td style="text-align: center;">$-22177.50$</td>
+<td style="text-align: center;">$-27972.63$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Solaris</td>
+<td style="text-align: center;">2156.96</td>
+<td style="text-align: center;">2175.70</td>
+<td style="text-align: center;">805.66</td>
+<td style="text-align: center;">2102.13</td>
+<td style="text-align: center;">2270.15</td>
+<td style="text-align: center;">1752.72</td>
+</tr>
+<tr>
+<td style="text-align: center;">Space Invaders</td>
+<td style="text-align: center;">1653.59</td>
+<td style="text-align: center;">1466.01</td>
+<td style="text-align: center;">1428.94</td>
+<td style="text-align: center;">1741.27</td>
+<td style="text-align: center;">1531.64</td>
+<td style="text-align: center;">1101.43</td>
+</tr>
+<tr>
+<td style="text-align: center;">Star Gunner</td>
+<td style="text-align: center;">55221.64</td>
+<td style="text-align: center;">52466.84</td>
+<td style="text-align: center;">47557.16</td>
+<td style="text-align: center;">59218.08</td>
+<td style="text-align: center;">55233.43</td>
+<td style="text-align: center;">40171.44</td>
+</tr>
+<tr>
+<td style="text-align: center;">Surround</td>
+<td style="text-align: center;">$-7.79$</td>
+<td style="text-align: center;">$-6.99$</td>
+<td style="text-align: center;">$-8.77$</td>
+<td style="text-align: center;">$-7.10$</td>
+<td style="text-align: center;">$-7.21$</td>
+<td style="text-align: center;">$-8.19$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Tennis</td>
+<td style="text-align: center;">$-12.44$</td>
+<td style="text-align: center;">$-20.49$</td>
+<td style="text-align: center;">$-12.98$</td>
+<td style="text-align: center;">$-16.18$</td>
+<td style="text-align: center;">$-23.06$</td>
+<td style="text-align: center;">$-8.00$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Time Pilot</td>
+<td style="text-align: center;">7417.08</td>
+<td style="text-align: center;">3816.38</td>
+<td style="text-align: center;">2808.92</td>
+<td style="text-align: center;">9000.91</td>
+<td style="text-align: center;">4103.00</td>
+<td style="text-align: center;">4067.51</td>
+</tr>
+<tr>
+<td style="text-align: center;">Tutankham</td>
+<td style="text-align: center;">250.03</td>
+<td style="text-align: center;">132.67</td>
+<td style="text-align: center;">70.84</td>
+<td style="text-align: center;">273.66</td>
+<td style="text-align: center;">112.14</td>
+<td style="text-align: center;">75.21</td>
+</tr>
+<tr>
+<td style="text-align: center;">Up and Down</td>
+<td style="text-align: center;">34362.80</td>
+<td style="text-align: center;">8705.64</td>
+<td style="text-align: center;">4139.20</td>
+<td style="text-align: center;">44883.40</td>
+<td style="text-align: center;">23106.24</td>
+<td style="text-align: center;">5208.67</td>
+</tr>
+<tr>
+<td style="text-align: center;">Venture</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">54.86</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr>
+<td style="text-align: center;">Video Pinball</td>
+<td style="text-align: center;">53488.73</td>
+<td style="text-align: center;">35515.91</td>
+<td style="text-align: center;">55326.08</td>
+<td style="text-align: center;">68287.63</td>
+<td style="text-align: center;">97372.80</td>
+<td style="text-align: center;">52995.08</td>
+</tr>
+<tr>
+<td style="text-align: center;">Wizard Of Wor</td>
+<td style="text-align: center;">4402.10</td>
+<td style="text-align: center;">3657.65</td>
+<td style="text-align: center;">1231.23</td>
+<td style="text-align: center;">4347.76</td>
+<td style="text-align: center;">3355.09</td>
+<td style="text-align: center;">378.70</td>
+</tr>
+<tr>
+<td style="text-align: center;">Yar's Revenge</td>
+<td style="text-align: center;">19039.24</td>
+<td style="text-align: center;">12317.49</td>
+<td style="text-align: center;">14236.94</td>
+<td style="text-align: center;">20006.02</td>
+<td style="text-align: center;">13398.73</td>
+<td style="text-align: center;">15042.75</td>
+</tr>
+<tr>
+<td style="text-align: center;">Zaxxon</td>
+<td style="text-align: center;">121.35</td>
+<td style="text-align: center;">7956.05</td>
+<td style="text-align: center;">2333.52</td>
+<td style="text-align: center;">152.11</td>
+<td style="text-align: center;">7451.25</td>
+<td style="text-align: center;">2481.40</td>
+</tr>
+<tr>
+<td style="text-align: center;">Times Best</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">9</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Average score after 200 million training frames for A3C and A3C+ (with $\bar{N}_{n}^{-1 / 2}$ bonus), with a DQN baseline for comparison.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{3}$ We emphasize that the game RAM is not made available to the agent, and is solely used here in our behavioural analysis.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

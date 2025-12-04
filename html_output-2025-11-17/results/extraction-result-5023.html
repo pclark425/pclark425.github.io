@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-5023 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-5023</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-5023</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-106.html">extraction-schema-106</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models (LLMs or neural language models) being used to solve puzzle games that require spatial knowledge (such as Sudoku or other spatial reasoning tasks). Include details about the models, the puzzles, the mechanisms or strategies used, performance metrics, evidence of spatial reasoning, limitations, and comparisons.</div>
+                <p><strong>Paper ID:</strong> paper-1f45b6d800108a277f4b2866420eefee3d2581e0</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/1f45b6d800108a277f4b2866420eefee3d2581e0" target="_blank">Deeply Learning the Messages in Message Passing Inference</a></p>
+                <p><strong>Paper Venue:</strong> Neural Information Processing Systems</p>
+                <p><strong>Paper TL;DR:</strong> A new, efficient deep structured model learning scheme, in which deep Convolutional Neural Networks can be used to directly estimate the messages in message passing inference for structured prediction with Conditional Random Fields (CRFs).</p>
+                <p><strong>Paper Abstract:</strong> Deep structured output learning shows great promise in tasks like semantic image segmentation. We proffer a new, efficient deep structured model learning scheme, in which we show how deep Convolutional Neural Networks (CNNs) can be used to directly estimate the messages in message passing inference for structured prediction with Conditional Random Fields (CRFs). With such CNN message estimators, we obviate the need to learn or evaluate potential functions for message calculation. This confers significant efficiency for learning, since otherwise when performing structured learning for a CRF with CNN potentials it is necessary to undertake expensive inference for every stochastic gradient iteration. The network output dimension of message estimators is the same as the number of classes, rather than exponentially growing in the order of the potentials. Hence it is more scalable for cases that involve a large number of classes. We apply our method to semantic image segmentation and achieve impressive performance, which demonstrates the effectiveness and usefulness of our CNN message learning method.</p>
+                <p><strong>Cost:</strong> 0.003</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-5023",
+    "paper_id": "paper-1f45b6d800108a277f4b2866420eefee3d2581e0",
+    "extraction_schema_id": "extraction-schema-106",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00347125,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Deeply Learning the Messages in Message Passing Inference</h1>
+<p>Guosheng Lin Chunhua Shen Ian Reid Anton van den Hengel<br>The University of Adelaide, Australia; and Australian Centre for Robotic Vision<br>E-mail: {firstname.lastname}@adelaide.edu.au</p>
+<h4>Abstract</h4>
+<p>Deep structured output learning shows great promise in tasks like semantic image segmentation. We proffer a new, efficient deep structured model learning scheme, in which we show how deep Convolutional Neural Networks (CNNs) can be used to directly estimate the messages in message passing inference for structured prediction with Conditional Random Fields (CRFs). With such CNN message estimators, we obviate the need to learn or evaluate potential functions for message calculation. This confers significant efficiency for learning, since otherwise when performing structured learning for a CRF with CNN potentials it is necessary to undertake expensive inference for every stochastic gradient iteration. The network output dimension of message estimators is the same as the number of classes, rather than exponentially growing in the order of the potentials. Hence it is more scalable for cases that a large number of classes are involved. We apply our method to semantic image segmentation and achieve impressive performance, which demonstrates the effectiveness and usefulness of our CNN message learning method.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h1>Contents</h1>
+<p>1 Introduction ..... 3
+1.1 Related work ..... 3
+2 Learning CRF with CNN potentials ..... 4
+3 Learning CNN message estimators ..... 5
+3.1 CNN message estimators ..... 6
+3.2 Details for message estimator networks ..... 7
+3.3 Training CNN message estimators ..... 8
+3.4 Message learning with inference-time budgets ..... 8
+4 Experiments ..... 9
+5 Conclusion ..... 10</p>
+<h1>1 Introduction</h1>
+<p>Learning deep structured models has attracted considerable research attention recently. One popular approach to deep structured model is formulating conditional random fields (CRFs) using deep Convolutional Neural Networks (CNNs) for the potential functions. This combines the power of CNNs for feature representation learning and of the ability for CRFs to model complex relations. The typical approach for the joint learning of CRFs and CNNs $[1,2,3,4,5]$, is to learn the CNN potential functions by optimizing the CRF objective, e.g., maximizing the log-likelihood. The CNN and CRF joint learning has shown impressive performance for semantic image segmentation.</p>
+<p>For the joint learning of CNNs and CRFs, stochastic gradient descent (SGD) is typically applied for optimizing the conditional likelihood. This approach requires the marginal inference for calculating the gradient. For loopy graphs, marginal inference is generally expensive even when using approximate solutions. Given that learning the CNN potential functions typically requires a large number of gradient iterations, repeated marginal inference would make the training intractably slow. Applying an approximate training objective is a solution to avoid repeat inference; pseudo-likelihood learning [6] and piecewise learning [7, 3] are examples of this kind of approach. In this work, we advocate a new direction for efficient deep structured model learning.</p>
+<p>In conventional CRF approaches, the final prediction is the result of inference based on the learned potentials. However, our ultimate goal is the final prediction (not the potentials themselves), so we propose to directly optimize the inference procedure for the final prediction. Our focus here is on the extensively studied message passing based inference algorithms. As discussed in [8], we can directly learn message estimators to output the required messages in the inference procedure, rather than learning the potential functions as in conventional CRF learning approaches. With the learned message estimators, we then obtain the final prediction by performing message passing inference.</p>
+<p>Our main contributions are as follows.</p>
+<ul>
+<li>We explore a new direction for efficient deep structured learning. We propose to directly learn the messages in message passing inference as training deep CNNs in an end-to-end learning fashion. Message learning does not require any inference step for the gradient calculation, which allows efficient training. It can be cast into traditional classification problems.
+The network output dimension for message estimation is the same as the number of classes $(K)$, while the network output for general CNN potential functions in CRFs is $K^{a}$, which is exponential in the order $(a)$ of the potentials (for example, $a=2$ for pairwise potentials, $a=3$ for triple-cliques, etc). Hence CNN based message learning has significantly fewer network parameters and thus is more scalable, especially in the cases of a large number of classes involved.</li>
+<li>The number of iterations in message passing inference can be explicitly taken into consideration in the message learning procedure. In this paper, we are particularly interested in learning messages that are able to offer high-quality CRF prediction results with only one message passing iteration, making the message passing inference very fast.</li>
+<li>We apply our method to semantic image segmentation on the PASCAL VOC 2012 dataset and achieve impressive performance.</li>
+</ul>
+<h3>1.1 Related work</h3>
+<p>Combining the strengths of CNNs and CRFs for segmentation has been explored in several recent methods. Some methods resort to a simple combination of CNN classifiers and CRFs without joint learning. DeepLab-CRF in [9] first train fully CNN for pixel classification and applies a dense CRF [10] method as a post-processing step. Later the method in [2] extends DeepLab by jointly learning the dense CRFs and CNNs. RNN-CRF in [1] also performs joint learning of CNNs and the dense CRFs. They implement the mean-field inference</p>
+<p>as Recurrent Neural Networks which facilitates the end-to-end learning. These methods usually use CNNs for modelling the unary potentials only. The work in [3] trains CNNs to model both the unary and pairwise potentials in order to capture contextual information. Jointly learning CNNs and CRFs has also been explored for other applications like depth estimation [4, 11]. The work in [5] explores joint training of Markov random fields and deep networks for predicting words from noisy images and image classification.</p>
+<p>All these above-mentioned methods that combine CNNs and CRFs are based upon conventional CRF approaches. They aim to jointly learn or incorporate pre-trained CNN potential functions, and then perform inference/prediction using the potentials. In contrast, our method here directly learns CNN message estimators for the message passing inference, rather than learning the potentials.</p>
+<p>The inference machine proposed in [8] is relevant to our work in that it has discussed the idea of directly learning message estimators instead of learning potential functions for structured prediction. They train traditional logistic regressors with hand-crafted features as message estimators. Motivated by the tremendous success of CNNs, we propose to train deep CNNs based message estimators in an end-to-end learning style without using handcrafted features. Unlike the approach in [8] which aims to learn variable-to-factor message estimators, our proposed method aims to learn the factor-to-variable message estimators. Thus we are able to naturally formulate the variable marginals, which is the ultimate goal for CRF inference, as the training objective (see Sec. 3.3). The approach in [12] jointly learns CNNs and CRFs for pose estimation, in which they learn the marginal likelihood of body parts but ignore the partition function in the likelihood. Message learning is not discussed in this work, and the exact relation between this pose estimation approach and message learning remains unclear.</p>
+<h1>2 Learning CRF with CNN potentials</h1>
+<p>Before describing our message learning method, we review the CRF-CNN joint learning approach and discuss limitations. An input image is denoted by $\boldsymbol{x} \in \mathcal{X}$ and the corresponding labeling mask is denoted by $\boldsymbol{y} \in \mathcal{Y}$. The energy function is denoted by $E(\boldsymbol{y}, \boldsymbol{x})$, which measures the score of the prediction $\boldsymbol{y}$ given the input image $\boldsymbol{x}$. We consider the following form of conditional likelihood:</p>
+<p>$$
+P(\boldsymbol{y} \mid \boldsymbol{x})=\frac{1}{Z(\boldsymbol{x})} \exp [-E(\boldsymbol{y}, \boldsymbol{x})]=\frac{\exp [-E(\boldsymbol{y}, \boldsymbol{x})]}{\sum_{\boldsymbol{y}^{\prime}} \exp \left[-E\left(\boldsymbol{y}^{\prime}, \boldsymbol{x}\right)\right]}
+$$</p>
+<p>Here $Z$ is the partition function. The CRF model is decomposed by a factor graph over a set of factors $\mathcal{F}$. Generally, the energy function is written as a sum of potential functions (factor functions):</p>
+<p>$$
+E(\boldsymbol{y}, \boldsymbol{x})=\sum_{F \in \mathcal{F}} E_{F}\left(\boldsymbol{y}<em F="F">{F}, \boldsymbol{x}</em>\right)
+$$</p>
+<p>Here $F$ indexes one factor in the factor graph; $\boldsymbol{y}<em F="F">{F}$ denotes the variable nodes which are connected to the factor $F ; E</em>$ is the (log-) potential function (factor function). The potential function can be a unary, pairwise, or high-order potential function. The recent method in [3] describes examples of constructing general CNN based unary and pairwise potentials.</p>
+<p>Take semantic image segmentation as an example. To predict the pixel labels of a test image, we can find the mode of the joint label distribution by solving the maximum a posteriori (MAP) inference problem: $\boldsymbol{y}^{\star}=\operatorname{argmax}_{\boldsymbol{y}} P(\boldsymbol{y} \mid \boldsymbol{x})$. We can also obtain the final prediction by calculating the label marginal distribution of each variable, which requires to solve a marginal inference problem:</p>
+<p>$$
+\forall p \in \mathcal{N}: \quad P\left(y_{p} \mid \boldsymbol{x}\right)=\sum_{\boldsymbol{y} \backslash y_{p}} P(\boldsymbol{y} \mid \boldsymbol{x})
+$$</p>
+<p>Here $\boldsymbol{y} \backslash y_{p}$ indicates the output variables $\boldsymbol{y}$ excluding $y_{p}$. For a general CRF graph with cycles, the above inference problems is known to be NP-hard, thus approximate inference algorithms are applied. Message passing is a type of widely applied algorithms for approximate inference: loopy belief propagation (BP) [13], tree-reweighted message passing [14] and mean-field approximation [13] are examples of the message passing methods.</p>
+<p>CRF-CNN joint learning is to learn CNN potential functions by optimizing the CRF objective, typically, the negative conditional log-likelihood, which is:</p>
+<p>$$
+-\log P(\boldsymbol{y} \mid \boldsymbol{x} ; \boldsymbol{\theta})=E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta})+\log Z(\boldsymbol{x} ; \boldsymbol{\theta})
+$$</p>
+<p>The energy function $E(\boldsymbol{y}, \boldsymbol{x})$ is constructed by CNNs, for which all the network parameters are denoted by $\boldsymbol{\theta}$. Adding regularization, minimizing negative log-likelihood for CRF learning is:</p>
+<p>$$
+\min <em 2="2">{\boldsymbol{\theta}} \frac{\lambda}{2}|\boldsymbol{\theta}|</em>\right)\right]
+$$}^{2}+\sum_{i=1}^{N}\left[E\left(\boldsymbol{y}^{(i)}, \boldsymbol{x}^{(i)} ; \boldsymbol{\theta}\right)+\log Z\left(\boldsymbol{x}^{(i)} ; \boldsymbol{\theta</p>
+<p>Here $\boldsymbol{x}^{(i)}, \boldsymbol{y}^{(i)}$ denote the $i$-th training image and its segmentation mask; $N$ is the number of training images; $\lambda$ is the weight decay parameter. We can apply stochastic gradient descent (SGD) to optimize the above problem for learning $\boldsymbol{\theta}$. The energy function $E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta})$ is constructed from CNNs, and its gradient $\nabla_{\boldsymbol{\theta}} E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta})$ can be easily computed by applying the chain rule as in conventional CNNs. However, the partition function $Z$ brings difficulties for optimization. Its gradient is:</p>
+<p>$$
+\begin{aligned}
+\nabla_{\boldsymbol{\theta}} \log Z(\boldsymbol{x} ; \boldsymbol{\theta}) &amp; =\sum_{\boldsymbol{y}} \frac{\exp [-E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta})]}{\sum_{\boldsymbol{y}^{\prime}} \exp \left[-E\left(\boldsymbol{y}^{\prime}, \boldsymbol{x} ; \boldsymbol{\theta}\right)\right]} \nabla_{\boldsymbol{\theta}}[-E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta})] \
+&amp; =-\mathbb{E}<em _boldsymbol_theta="\boldsymbol{\theta">{\boldsymbol{y} \sim P(\boldsymbol{y} \mid \boldsymbol{x} ; \boldsymbol{\theta})} \nabla</em>)
+\end{aligned}
+$$}} E(\boldsymbol{y}, \boldsymbol{x} ; \boldsymbol{\theta</p>
+<p>Direct calculation of the above gradients is computationally infeasible for general CRF graphs. Usually it is necessary to perform approximate marginal inference to calculate the gradients at each SGD iteration [13]. However, repeated marginal inference can be extremely expensive, as discussed in [3]. CNN training usually requires a huge number of SGD iterations (hundreds of thousands, or even millions), hence this inference based learning approach is in general not scalable or even infeasible.</p>
+<h1>3 Learning CNN message estimators</h1>
+<p>In conventional CRF approaches, the potential functions are first learned, and then inference is performed based on the learned potential functions in order to generate the final prediction. In contrast, our approach directly optimizes the inference procedure for final prediction. We propose to learn CNN estimators to directly output the required intermediate values in an inference algorithm.</p>
+<p>Here we focus on the message passing based inference algorithm which has been extensively studied and widely applied. In the CRF prediction procedure, the "message" vectors are recursively calculated based on the learned potentials. We propose to construct and learn CNNs to directly estimate these messages in the message passing procedure, rather than learning the potential functions. In particular, we directly learn factor-to-variable message estimators. Our message learning framework is general and can accommodate all message passing based algorithms such as loopy belief propagation (BP) [13], mean-field approximation [13] and their variants. Here we discuss using loopy BP for calculating variable marginals. As shown by Yedidia et al. [15], loopy BP has a close relation with Bethe free energy approximation.</p>
+<p>Typically, the message is a $K$-dimensional vector ( $K$ is the number of classes) which encodes the information of the label distribution. For each variable-factor connection, we need to recursively compute the variable-to-factor message: $\boldsymbol{\beta}<em F="F" _rightarrow="\rightarrow" p="p">{p \rightarrow F} \in \mathbb{R}^{K}$, and the factor-to-variable message: $\boldsymbol{\beta}</em>$. For numerical reasons, the log operation is applied to the marginals before deriving message passing algorithms. The unnormalized variable-to-factor message is computed as:} \in \mathbb{R}^{K</p>
+<p>$$
+\tilde{\boldsymbol{\beta}}<em p="p">{p \rightarrow F}\left(y</em>}\right)=\sum_{F^{\prime} \in \mathcal{F<em F_prime="F^{\prime">{p} \backslash F} \boldsymbol{\beta}</em>\right)
+$$} \rightarrow p}\left(y_{p</p>
+<p>Here $\mathcal{F}<em p="p">{p}$ is a set of factors connected to the variable $p ; \mathcal{F}</em>$ excluding the factor $F$. For loopy graph, the variable-to-factor message is normalized in each iteration:} \backslash F$ is the set of factors $\mathcal{F}_{p</p>
+<p>$$
+\boldsymbol{\beta}<em p="p">{p \rightarrow F}\left(y</em>}\right)=\log \frac{\exp \tilde{\boldsymbol{\beta}<em p="p">{p \rightarrow F}\left(y</em>}\right)}{\sum_{y_{p}^{\prime}} \exp \tilde{\boldsymbol{\beta}<em p="p">{p \rightarrow F}\left(y</em>
+$$}^{\prime}\right)</p>
+<p>The factor-to-variable message is computed as:</p>
+<p>$$
+\boldsymbol{\beta}<em p="p">{F \rightarrow p}\left(y</em>}\right)=\log \sum_{\boldsymbol{y<em p="p">{F}^{\prime} \backslash y</em>}^{\prime}, y_{p}^{\prime}=y_{p}} \exp \left[-E_{F}\left(\boldsymbol{y<em _in="\in" _mathcal_N="\mathcal{N" q="q">{F}^{\prime}\right)+\sum</em><em F="F" _rightarrow="\rightarrow" q="q">{F} \backslash p} \boldsymbol{\beta}</em>\right)\right]
+$$}\left(y_{q}^{\prime</p>
+<p>Here $\mathcal{N}<em F="F">{F}$ is a set of variables connected to the factor $F ; \mathcal{N}</em>$ excluding the variable $p$. Once we get all the factor-to-variable messages of one variable node, we are able to calculate the marginal distribution (beliefs) of that variable:} \backslash p$ is the set of variables $\mathcal{N}_{F</p>
+<p>$$
+P\left(y_{p} \mid \boldsymbol{x}\right)=\sum_{\boldsymbol{y}^{\prime} \backslash y_{p}} P(\boldsymbol{y} \mid \boldsymbol{x})=\frac{1}{Z_{p}} \exp \left[\sum_{F \in \mathcal{F}<em F="F" _rightarrow="\rightarrow" p="p">{p}} \boldsymbol{\beta}</em>\right)\right]
+$$}\left(y_{p</p>
+<p>in which $Z_{p}$ is a normalizer: $Z_{p}=\sum_{y_{p}} \exp \left[\sum_{F \in \mathcal{F}<em F="F" _rightarrow="\rightarrow" p="p">{p}} \boldsymbol{\beta}</em>\right)\right]$.}\left(y_{p</p>
+<h1>3.1 CNN message estimators</h1>
+<p>The calculation of factor-to-variable message $\boldsymbol{\beta}<em F="F" _rightarrow="\rightarrow" p="p">{F \rightarrow p}$ depends on the variable-to-factor messages $\boldsymbol{\beta}</em>}$. Substituting the definition of $\boldsymbol{\beta<em F="F" _rightarrow="\rightarrow" p="p">{p \rightarrow F}$ in (8), $\boldsymbol{\beta}</em>$ can be re-written as:</p>
+<p>$$
+\begin{aligned}
+\boldsymbol{\beta}<em p="p">{F \rightarrow p}\left(y</em>}\right) &amp; =\log \sum_{\boldsymbol{y<em p="p">{F}^{\prime} \backslash y</em>}^{\prime}, y_{p}^{\prime}=y_{p}} \exp \left{-E_{F}\left(\boldsymbol{y<em _in="\in" _mathcal_N="\mathcal{N" q="q">{F}^{\prime}\right)+\sum</em><em F="F" _rightarrow="\rightarrow" q="q">{F} \backslash p}\left[\log \frac{\exp \bar{\beta}</em>}\left(y_{q}^{\prime}\right)}{\sum_{y_{q}^{\prime \prime}} \exp \bar{\beta<em q="q">{q \rightarrow F}\left(y</em>\right]\right} \
+&amp; =\log \sum_{\boldsymbol{y}}^{\prime \prime}\right)<em q="q">{F}^{\prime} \backslash y</em>}^{\prime}, y_{p}^{\prime}=y_{p}} \exp \left{-E_{F}\left(\boldsymbol{y<em _in="\in" _mathcal_N="\mathcal{N" q="q">{F}^{\prime}\right)+\sum</em><em F_prime="F^{\prime">{F} \backslash p}\left[\log \frac{\exp \sum</em>} \in \mathcal{F<em F_prime="F^{\prime">{q} \backslash F} \boldsymbol{\beta}</em>} \rightarrow q}\left(y_{q}^{\prime}\right)}{\sum_{y_{q}^{\prime \prime}} \exp \sum_{F^{\prime} \in \mathcal{F<em F_prime="F^{\prime">{q} \backslash F} \boldsymbol{\beta}</em>\right]\right}
+\end{aligned}
+$$} \rightarrow q}\left(y_{q}^{\prime \prime}\right)</p>
+<p>Here $q$ denotes the variable node which is connected to the node $p$ by the factor $F$ in the factor graph. We refer to the variable node $q$ as a neighboring node of $q . \mathcal{N}<em F="F">{F} \backslash p$ is a set of variables connected to the factor $F$ excluding the node $p$. Clearly, for a pairwise factor which only connects to two variables, the set $\mathcal{N}</em>} \backslash p$ only contains one variable node. The above equations show that the factor-to-variable message $\boldsymbol{\beta<em F="F">{F \rightarrow p}$ depends on the potential $E</em>}$ and $\boldsymbol{\beta<em F_prime="F^{\prime">{F^{\prime} \rightarrow q}$. Here $\boldsymbol{\beta}</em> \neq F$.
+Conventional CRF learning approaches learn the potential function then follow the above equations to compute the messages for calculating marginals. As discussed in [8], given that the goal is to estimate the marginals, it is not necessary to exactly follow the above equations, which involve learning potential functions, to calculate messages. We can directly learn message estimators, rather than indirectly learning the potential functions as in conventional methods.} \rightarrow q}$ is the factor-to-variable message which is calculated from a neighboring node $q$ and a factor $F^{\prime</p>
+<p>Consider the calculation in (11). The message $\boldsymbol{\beta}<em F="F" p="p">{F \rightarrow p}$ depends on the observation $\boldsymbol{x}</em>}$ and the messages $\boldsymbol{\beta<em F="F" p="p">{F^{\prime} \rightarrow q}$. Here $\boldsymbol{x}</em>}$ denotes the observations that correspond to the node $p$ and the factor $F$. We are able to formulate a factor-to-variable message estimator which takes $\boldsymbol{x<em F_prime="F^{\prime">{p F}$ and $\boldsymbol{\beta}</em>} \rightarrow q}$ as inputs and outputs the message vector, and we directly learn such estimators. Since one message $\boldsymbol{\beta<em F_prime="F^{\prime">{F \rightarrow p}$ depends on a number of previous messages $\boldsymbol{\beta}</em>$, we can formulate a sequence of message estimators to model the dependence. Thus the output from a previous message estimator will be the input of the following message estimator.} \rightarrow q</p>
+<p>There are two message passing strategies for loopy BP: synchronous and asynchronous passing. We here focus on the synchronous message passing, for which all messages are computed before passing them to the neighbors. The synchronous passing strategy results in much simpler message dependences than the asynchronous strategy, which simplifies the training procedure. We define one inference iteration as one pass of the graph with the synchronous passing strategy.
+We propose to learn CNN based factor-to-variable message estimator. The message estimator models the interaction between neighboring variable nodes. We denote by $M$ a message estimator. The factor-to-variable message is calculated as:</p>
+<p>$$
+\boldsymbol{\beta}<em p="p">{F \rightarrow p}\left(y</em>}\right)=M_{F}\left(\boldsymbol{x<em F="F" p="p">{p F}, \mathbf{d}</em>\right)
+$$}, y_{p</p>
+<p>We refer to $\mathbf{d}<em F="F">{p F}$ as the dependent message feature vector which encodes all dependent messages from the neighboring nodes that are connected to the node $p$ by $F$. Note that the dependent messages are the output of message estimators at the previous inference iteration. In the case of running only one message passing iteration, there is no dependent messages for $M</em>$. To have a general exposition, we here describe the case of running arbitrarily many inference iterations.}$, and thus we do not need to incorporate $\mathbf{d}_{p F</p>
+<p>We can choose any effective strategy to generate the feature vector $\mathbf{d}<em F="F" p="p">{p F}$ from the dependent messages. Here we discuss a simple example. According to (11), we define the feature vector $\mathbf{d}</em>$ is computed as:}$ as a $K$-dimensional vector which aggregates all dependent messages. In this case, $\mathbf{d}_{p F</p>
+<p>$$
+\mathbf{d}<em _in="\in" _mathcal_N="\mathcal{N" q="q">{p F}(y)=\sum</em><em F_prime="F^{\prime">{F} \backslash p}\left[\log \frac{\exp \sum</em>} \in \mathcal{F<em F_prime="F^{\prime">{q} \backslash F} M</em>}}\left(\boldsymbol{x<em F_prime="F^{\prime" q="q">{q F^{\prime}}, \mathbf{d}</em>}}, y\right)}{\sum_{y^{\prime}} \exp \sum_{F^{\prime} \in \mathcal{F<em F_prime="F^{\prime">{q} \backslash F} M</em>}}\left(\boldsymbol{x<em F_prime="F^{\prime" q="q">{q F^{\prime}}, \mathbf{d}</em>\right]
+$$}}, y^{\prime}\right)</p>
+<p>With the definition of $\mathbf{d}<em F="F" _rightarrow="\rightarrow" p="p">{p F}$ in (13) and $\boldsymbol{\beta}</em>$.}$ in (12), it clearly shows that the message estimation requires evaluating a sequence of message estimators. Another example is to concatenate all dependent messages to construct the feature vector $\mathbf{d}_{p F</p>
+<p>There are different strategies to formulate the message estimators in different iterations. The simple strategy is using the same message estimator across all inference iteration. In this case the message estimator becomes a recursive function, and thus the CNN based estimator becomes a recurrent neural network (RNN). Another strategy is to formulate different estimator for each inference iteration.</p>
+<h1>3.2 Details for message estimator networks</h1>
+<p>We formulate the estimator $M_{F}$ as a CNN, thus the estimation is the network outputs:</p>
+<p>$$
+\boldsymbol{\beta}<em p="p">{F \rightarrow p}\left(y</em>}\right)=M_{F}\left(\boldsymbol{x<em F="F" p="p">{p F}, \mathbf{d}</em>}, y_{p} ; \boldsymbol{\theta<em k="1">{F}\right)=\sum</em>}^{K} \delta\left(k=y_{p}\right) z_{p F, k}\left(\boldsymbol{x}, \mathbf{d<em F="F">{p F} ; \boldsymbol{\theta}</em>\right)
+$$</p>
+<p>Here $\boldsymbol{\theta}<em F="F" p="p">{F}$ denotes the network parameter which we need to learn. $\delta(\cdot)$ is the indicator function, which equals 1 if the input is true and 0 otherwise. We denote by $\boldsymbol{z}</em>$ corresponding to the $k$-th class.} \in \mathbb{R}^{K}$ as the $K$-dimensional output vector ( $K$ is the number of classes) of the message estimator network for the node $p$ and the factor $F ; z_{p F, k}$ is the $k$-th value in the network output $\boldsymbol{z}_{p F</p>
+<p>We can consider any possible strategies for implementing $\boldsymbol{z}<em 1="1">{p F}$ with CNNs. For example, we here describe a strategy which is analogous to the network design in [3]. We denote by $C^{(1)}$ as a fully convolutional network (FCNN) [16] for convolutional feature generation, and $C^{(2)}$ as a traditional fully connected network for message estimation.
+Given an input image $\boldsymbol{x}$, the network output $C^{(1)}(\boldsymbol{x}) \in \mathbb{R}^{N</em>} \times N_{2} \times r}$ is a convolutional feature map, in which $N_{1} \times N_{2}=N$ is the feature map size and $r$ is the dimension of one feature vector. Each spatial position (each feature vector) in the feature map $C^{(1)}(\boldsymbol{x})$ corresponds to one variable node in the CRF graph. We denote by $C^{(1)}(\boldsymbol{x}, p) \in \mathbb{R}^{r}$ as the feature vector corresponding to the variable node $p$. Likewise, $C^{(1)}\left(\boldsymbol{x}, \mathcal{N<em F="F">{F} \backslash p\right) \in \mathbb{R}^{r}$ is the averaged vector of the feature vectors that correspond to the set of nodes $\mathcal{N}</em>} \backslash p$. Recall that $\mathcal{N<em F="F">{F} \backslash p$ is a set of nodes connected by the factor $F$ excluding the node $p$. For pairwise factors, $\mathcal{N}</em> \backslash p$ contains only one node.</p>
+<p>We construct the feature vector $\boldsymbol{z}<em F="F">{p F}^{C^{(1)}} \in \mathbb{R}^{2 r}$ for the node-factor pair $(p, F)$ by concatenating $C^{(1)}(\boldsymbol{x}, p)$ and $C^{(1)}\left(\boldsymbol{x}, \mathcal{N}</em>} \backslash p\right)$. Finally, we concatenate the node-factor feature vector $\boldsymbol{z<em F="F" p="p">{p F}^{C^{(1)}}$ and the dependent message feature vector $\mathbf{d}</em>}$ as the input for the second network $C^{(2)}$. Thus the input dimension for $C^{(2)}$ is $(2 r+K)$. For running only one inference iteration, the input for $C^{(2)}$ is $\boldsymbol{z<em F="F" p="p">{p F}^{C^{(1)}}$ alone. The final output from the second network $C^{(2)}$ is the $K$-dimensional message vector $\boldsymbol{z}</em>$ as:}$. To sum up, we generate the final message vector $\boldsymbol{z}_{p F</p>
+<p>$$
+\boldsymbol{z}<em F="F">{p F}=C^{(2)}\left{\left[C^{(1)}(\boldsymbol{x}, p)^{\top} ; C^{(1)}\left(\boldsymbol{x}, \mathcal{N}</em>\right}
+$$} \backslash p\right)^{\top} ; \mathbf{d}_{p F}^{\top}\right]^{\top</p>
+<p>For a general CNN based potential function in conventional CRFs, the potential network is usually required to have a large number of output units (exponential in the order of the potentials). For example, it requires $K^{2}$ ( $K$ is the number of classes) outputs for the pairwise potentials [3]. A large number of output units would significantly increase the number of network parameters. It leads to expensive computations and tend to over-fit the training data. In contrast, for learning our CNN message estimator, we only need to formulate $K$ output units for the network. Clearly it is more scalable in the cases of a large number of classes.</p>
+<h1>3.3 Training CNN message estimators</h1>
+<p>Our goal is to estimate the variable marginals in (3), which can be re-written with the estimators:</p>
+<p>$$
+P\left(y_{p} \mid \boldsymbol{x}\right)=\sum_{\boldsymbol{y} \backslash y_{p}} P(\boldsymbol{y} \mid \boldsymbol{x})=\frac{1}{Z_{p}} \exp \left[\sum_{F \in \mathcal{F}<em F="F" _rightarrow="\rightarrow" p="p">{p}} \boldsymbol{\beta}</em>}\left(y_{p}\right)\right]=\frac{1}{Z_{p}} \exp \sum_{F \in \mathcal{F<em F="F">{p}} M</em>}\left(\boldsymbol{x<em F="F" p="p">{p F}, \mathbf{d}</em>\right)
+$$}, y_{p} ; \boldsymbol{\theta}_{F</p>
+<p>Here $Z_{p}$ is the normalizer. The ideal variable marginal has the probability of 1 for the ground truth class and 0 for the remaining classes. Here we consider the cross entropy loss between the ideal marginal and the estimated marginal.</p>
+<p>$$
+\begin{aligned}
+J(\boldsymbol{x}, \hat{\boldsymbol{y}} ; \boldsymbol{\theta}) &amp; =-\sum_{p \in \mathcal{N}} \sum_{y_{p}=1}^{K} \delta\left(y_{p}=\hat{y}<em p="p">{p}\right) \log P\left(y</em>\right) \
+&amp; =-\sum_{p \in \mathcal{N}} \sum_{y_{p}=1}^{K} \delta\left(y_{p}=\hat{y}} \mid \boldsymbol{x} ; \boldsymbol{\theta<em F="F" _in="\in" _mathcal_F="\mathcal{F">{p}\right) \log \frac{\exp \sum</em><em F="F">{p}} M</em>}\left(\boldsymbol{x<em F="F" p="p">{p F}, \mathbf{d}</em>}, y_{p} ; \boldsymbol{\theta<em y__p="y_{p">{F}\right)}{\sum</em>}^{\prime}} \exp \sum_{F \in \mathcal{F<em F="F">{p}} M</em>}\left(\boldsymbol{x<em F="F" p="p">{p F}, \mathbf{d}</em>
+\end{aligned}
+$$}, y_{p}^{\prime} ; \boldsymbol{\theta}_{F}\right)</p>
+<p>in which $\hat{y}_{p}$ is the ground truth label for the variable node $p$. Given a set of $N$ training images and label masks, the optimization problem for learning the message estimator network is:</p>
+<p>$$
+\min <em 2="2">{\boldsymbol{\theta}} \frac{\lambda}{2}|\boldsymbol{\theta}|</em>\right)
+$$}^{2}+\sum_{i=1}^{N} J\left(\boldsymbol{x}^{(i)}, \hat{\boldsymbol{y}}^{(i)} ; \boldsymbol{\theta</p>
+<p>The work in [8] propose to learn the variable-to-factor message $\left(\boldsymbol{\beta}<em F="F" _rightarrow="\rightarrow" p="p">{p \rightarrow F}\right)$. Unlike their approach, we aim to learn the factor-to-variable message $\left(\boldsymbol{\beta}</em>}\right)$, for which we are able to naturally formulate the variable marginals, which is the ultimate goal for prediction, as the training objective. Moreover, for learning $\boldsymbol{\beta<em F="F" _rightarrow="\rightarrow" p="p">{p \rightarrow F}$ in their approach, the message estimator will depend on all neighboring nodes (connected by any factors). Given that variable nodes will have different number of neighboring nodes, they only consider a fixed number of neighboring nodes (e.g., 20) and concatenate their features to generate a fixed-length feature vector for classification. In our case for learning $\boldsymbol{\beta}</em>$, the message estimator only depends a fixed number of neighboring nodes (connected by one factor), thus we do not have this problem. Most importantly, they learn message estimators by training traditional probabilistic classifiers (e.g., simple logistic regressors) with hand-craft features, and in contrast, we train deep CNNs in an end-to-end learning style without using hand-craft features.</p>
+<h3>3.4 Message learning with inference-time budgets</h3>
+<p>One advantage of message learning is that we are able to explicitly incorporate the expected number of inference iteration into the learning procedure. The number of inference iteration defines the learning sequence of message estimators. This is particular useful if we aim to learn the estimators which are able to have high-quality prediction for only running a few number of inference iterations. In contrast, the conventional potential function learning in CRFs are not able to directly incorporate the expected number of inference iterations.
+We are particularly interested in learning message estimators for using only one message passing iteration, for which the inference can be very fast. In this case it might be preferable to have large-range neighborhood connections, for which the large range interaction can be captured by running one inference pass.</p>
+<p>Table 1: Segmentation results on the PASCAL VOC 2012 "val" set. We compare with several recent CNN based methods with available results on the "val" set. Our method performs the best.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">method</th>
+<th style="text-align: center;">training set</th>
+<th style="text-align: center;">$Z$ train (approx.)</th>
+<th style="text-align: center;">IoU val set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">ContextDCRF [3]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">70.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">Zoom-out [17]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">63.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">Deep-struct [2]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">64.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">DeepLab-CRF [9]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">63.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">DeepLap-MCL [9]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">68.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">BoxSup [18]</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">63.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">BoxSup [18]</td>
+<td style="text-align: center;">VOC extra + COCO</td>
+<td style="text-align: center;">133k</td>
+<td style="text-align: center;">68.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">ours</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">71.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">ours+</td>
+<td style="text-align: center;">VOC extra</td>
+<td style="text-align: center;">10k</td>
+<td style="text-align: center;">73.3</td>
+</tr>
+</tbody>
+</table>
+<h1>4 Experiments</h1>
+<p>We evaluate the proposed CNN message learning method for semantic image segmentation. We use the publicly available PASCAL VOC 2012 dataset [19]. There are 20 object categories and one background category in the dataset. Its contains 1464 images in the training set, 1449 images in the "val" set and 1456 images in the test set. Following the common setting in [20, 9], the training set is augmented to 10582 images by including the extra annotations provided in [21] for the VOC images. We use intersection-over-union (IoU) score [19] to evaluate the segmentation performance. For the learning and prediction of our method, we only use one message passing iteration.
+The recent work in [3] (referred to as ContextDCRF) learns multi-scale fully convolutional CNNs (FCNNs) for unary and pairwise potential functions to capture contextual information. We follow this CRF learning method and replace the potential functions by the proposed message estimators. We consider 2 types of spatial relations for constructing the pairwise connections of variable nodes. One is the "surrounding" spatial relation, for which one node is connected to its surround nodes. The other one is the "above/below" spatial relation, for which one node is connected to the nodes that lie above. For the pairwise connections, the neighborhood size is defined by a range box. We learn one type of unary message estimator and 3 types of pairwise message estimators in total. One type of pairwise message estimator is for the "surrounding" spatial relations, and the other two are for the "above/below" spatial relations. We formulate one network for one type of message estimator.</p>
+<p>We formulate our message estimators as multi-scale FCNNs, for which we apply a similar network configuration as in [3]. The network $C^{(1)}$ (see Sec.3.2 for details) has 6 convolution blocks and $C^{(2)}$ has 2 fully connected layers (with $K$ output units). Our networks are initialized using the VGG-16 model [22]. We train all layers using back-propagation.</p>
+<p>We first evaluate our method on the VOC 2012 "val" set. We compare with several recent CNN based methods with available results on the "val" set. Results are shown in Table 1. Our method achieves the best performance. As mentioned, ContextDCRF learns CNN based potential functions in CRFs to capture contextual information. ContextDCRF follows a conventional CRF learning and prediction scheme: They first learn potentials and then perform inference based on the learned potentials to output final predictions. The result shows that learning the CNN message estimators is able to achieve similar performance compared to learning CNN potential functions in CRFs. Note that here we only use one message passing iteration for the training and prediction, the inference time cost is almost negligible. Hence our method enables much more efficient inference.</p>
+<p>To further improve the performance, we perform simple data augmentation in training. We generate extra 4 scales ( $[0.8,0.9,1.1,1.2])$ of the training images and their flipped images for training. This result is denoted by "ours+" in the result table.</p>
+<p>We further evaluate our method on the VOC 2012 test set. We compare with recent state-of-the-art CNN methods with competitive performance. The results are described in Table 3. Since the ground truth labels are not available for the test set, we evaluate our method through the VOC evaluation server. We achieve impressive performance on the test set:</p>
+<p>Table 2: Category results on the PASCAL VOC 2012 test set. Our method performs the best.</p>
+<table>
+<thead>
+<tr>
+<th>method</th>
+<th>training set</th>
+<th># train (approx.)</th>
+<th>IoU test set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ContextDCRF [3]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>70.7</td>
+</tr>
+<tr>
+<td>Zoom-out [17]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>64.4</td>
+</tr>
+<tr>
+<td>FCN-8s [16]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>62.2</td>
+</tr>
+<tr>
+<td>SDS [20]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>51.6</td>
+</tr>
+<tr>
+<td>DeconvNet-CRF [23]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>72.5</td>
+</tr>
+<tr>
+<td>DeepLab-CRF [9]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>66.4</td>
+</tr>
+<tr>
+<td>DeepLab-MCL [9]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>71.6</td>
+</tr>
+<tr>
+<td>CRF-RNN [1]</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>72.0</td>
+</tr>
+<tr>
+<td>DeepLab-CRF [24]</td>
+<td>VOC extra + COCO</td>
+<td>133k</td>
+<td>70.4</td>
+</tr>
+<tr>
+<td>DeepLab-MCL [24]</td>
+<td>VOC extra + COCO</td>
+<td>133k</td>
+<td>72.7</td>
+</tr>
+<tr>
+<td>BoxSup (semi) [18]</td>
+<td>VOC extra + COCO</td>
+<td>133k</td>
+<td>71.0</td>
+</tr>
+<tr>
+<td>CRF-RNN [1]</td>
+<td>VOC extra + COCO</td>
+<td>133k</td>
+<td>74.7</td>
+</tr>
+<tr>
+<td>ours</td>
+<td>VOC extra</td>
+<td>10k</td>
+<td>73.4</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Segmentation results on the PASCAL VOC 2012 test set. Compared to methods that use the same augmented VOC dataset, our method has the best performance.</p>
+<p>73.4 IoU score, which is the so far best performance compared to the methods that use the same augmented VOC dataset [21] (marked as "VOC extra" in the table). These results validate the effectiveness of direct message learning with CNNs.</p>
+<p>We also include the comparison with the methods which are trained on the much larger COCO dataset (around 133K training images). Our performance is comparable with these methods, while our method uses much less number of training images.</p>
+<p>The results for each category is shown in Table 2. We compare with several recent methods which transfer layers from the same VGG-16 model and use the same training data. Our method performs the best for most categories.</p>
+<h2>5 Conclusion</h2>
+<p>We have proposed a new deep message learning framework for structured CRF prediction. Learning deep message estimators for the message passing inference reveals a new direction for learning deep structured model. Learning CNN message estimators is efficient, which does not involve expensive inference steps for gradient calculation. The network output dimension for message estimation is the same as the number of classes, which does not increase with the order of the potentials, and thus CNN message learning has less network parameters and is more scalable in the number of classes compared to conventional potential function learning. Our impressive performance for semantic segmentation demonstrates the effectiveness and usefulness of the proposed deep message learning. Our framework is general and can be readily applied to other structured prediction applications.</p>
+<h2>References</h2>
+<p>[1] S. Zheng, S. Jayasumana, B. Romera-Paredes, V. Vineet, Z. Su, D. Du, C. Huang, and P. Torr, "Conditional random fields as recurrent neural networks," 2015. [Online]. Available: http://arxiv.org/abs/1502.03240
+[2] A. Schwing and R. Urtasun, "Fully connected deep structured networks," 2015. [Online]. Available: http://arxiv.org/abs/1503.02351</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>[3] G. Lin, C. Shen, I. Reid, and A. van den Hengel, "Efficient piecewise training of deep structured models for semantic segmentation," 2015. [Online]. Available: http://arxiv.org/abs/1504.01013
+[4] F. Liu, C. Shen, and G. Lin, "Deep convolutional neural fields for depth estimation from a single image," in Proc. IEEE Conf. Comp. Vis. Pattern Recogn., 2015.
+[5] L. Chen, A. Schwing, A. Yuille, and R. Urtasun, "Learning deep structured models," 2014. [Online]. Available: http://arxiv.org/abs/1407.2538
+[6] J. Besag, "Efficiency of pseudolikelihood estimation for simple Gaussian fields," Biometrika, 1977.
+[7] C. Sutton and A. McCallum, "Piecewise training for undirected models," in Proc. Conf. Uncertainty Artificial Intelli, 2005.
+[8] S. Ross, D. Munoz, M. Hebert, and J. Bagnell, "Learning message-passing inference machines for structured prediction," in Proc. IEEE Conf. Comp. Vis. Pattern Recogn., 2011.
+[9] L. Chen, G. Papandreou, I. Kokkinos, K. Murphy, and A. Yuille, "Semantic image segmentation with deep convolutional nets and fully connected CRFs," 2014. [Online]. Available: http://arxiv.org/abs/1412.7062
+[10] P. Krähenbühl and V. Koltun, "Efficient inference in fully connected CRFs with Gaussian edge potentials," in Proc. Adv. Neural Info. Process. Syst., 2012.
+[11] F. Liu, C. Shen, G. Lin, and I. Reid, "Learning depth from single monocular images using deep convolutional neural fields," 2015. [Online]. Available: http://arxiv.org/abs/1502.07411
+[12] J. Tompson, A. Jain, Y. LeCun, and C. Bregler, "Joint training of a convolutional network and a graphical model for human pose estimation," in Proc. Adv. Neural Info. Process. Syst., 2014.
+[13] S. Nowozin and C. Lampert, "Structured learning and prediction in computer vision," Found. Trends. Comput. Graph. Vis., 2011.
+[14] V. Kolmogorov, "Convergent tree-reweighted message passing for energy minimization," IEEE T. Pattern Analysis $\mathcal{E}$ Machine Intelligence, 2006.
+[15] J. S. Yedidia, W. T. Freeman, Y. Weiss et al., "Generalized belief propagation," in Proc. Adv. Neural Info. Process. Syst., 2000.
+[16] J. Long, E. Shelhamer, and T. Darrell, "Fully convolutional networks for semantic segmentation," in Proc. IEEE Conf. Comp. Vis. Pattern Recogn., 2015.
+[17] M. Mostajabi, P. Yadollahpour, and G. Shakhnarovich, "Feedforward semantic segmentation with zoom-out features," 2014. [Online]. Available: http://arxiv.org/abs/1412.0774
+[18] J. Dai, K. He, and J. Sun, "BoxSup: exploiting bounding boxes to supervise convolutional networks for semantic segmentation," 2015. [Online]. Available: http://arxiv.org/abs/1503.01640
+[19] M. Everingham, L. V. Gool, C. Williams, J. Winn, and A. Zisserman, "The pascal visual object classes (VOC) challenge," Int. J. Comp. Vis., 2010.
+[20] B. Hariharan, P. Arbeláez, R. Girshick, and J. Malik, "Simultaneous detection and segmentation," in Proc. European Conf. Computer Vision, 2014.
+[21] B. Hariharan, P. Arbelaez, L. Bourdev, S. Maji, and J. Malik, "Semantic contours from inverse detectors," in Proc. Int. Conf. Comp. Vis., 2011.
+[22] K. Simonyan and A. Zisserman, "Very deep convolutional networks for large-scale image recognition," 2014. [Online]. Available: http://arxiv.org/abs/1409.1556
+[23] H. Noh, S. Hong, and B. Han, "Learning deconvolution network for semantic segmentation," in Proc. IEEE Conf. Comp. Vis. Pattern Recogn., 2015.
+[24] G. Papandreou, L. Chen, K. Murphy, and A. Yuille, "Weakly-and semi-supervised learning of a DCNN for semantic image segmentation," 2015. [Online]. Available: http://arxiv.org/abs/1502.02734</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{1}$ The result link provided by VOC evaluation server: http://host.robots.ox.ac.uk:8080/anonymous/DBDOSI.html&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

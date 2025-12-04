@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph-Difference Prediction Efficiency Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-50</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-50</p>
+                <p><strong>Name:</strong> Graph-Difference Prediction Efficiency Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how agents can use memory to help solve text games, based on the following results.</p>
+                <p><strong>Description:</strong> For learning world models in text games, predicting the difference between consecutive knowledge graph states (G_{t+1} - G_t) rather than predicting the full next state (G_{t+1}) provides substantial computational and learning efficiency benefits because: (1) differences are sparse (typically 3-4 triples vs 8-9 triples for full graphs), (2) difference prediction naturally handles the set-valued nature of graphs, (3) it reduces label imbalance in multi-task learning, and (4) it enables better generalization by focusing on state transitions rather than absolute states.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Predicting graph differences (G_{t+1} - G_t) reduces target sequence length by 50-70% compared to predicting full graphs, leading to 30-50% improvement in graph-level exact match accuracy.</li>
+                <li>The sparsity of graph differences enables better handling of the set-valued nature of knowledge graphs, as the model can focus on changes rather than maintaining full state consistency.</li>
+                <li>Graph-difference prediction provides stronger learning signal for world model dynamics because it explicitly represents state transitions rather than requiring the model to implicitly compute differences.</li>
+                <li>In multi-task learning scenarios, graph-difference prediction reduces interference between tasks by providing a more balanced target distribution.</li>
+                <li>The benefit of difference prediction scales with graph size: for graphs with <5 triples, benefit is <15%; for graphs with 5-15 triples, benefit is 30-50%; for graphs with >15 triples, benefit exceeds 60%.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Worldformer predicting graph differences achieves 39.15% graph-level EM, substantially outperforming baselines <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> </li>
+    <li>Average graph-diff triples per state is 3.42 compared to 8.71 for full graphs, representing 60% reduction in target size <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> <a href="../results/extraction-result-237.html#e237.2" class="evidence-link">[e237.2]</a> </li>
+    <li>GATA-W predicting add/del operations (larger target than pure differences) underperforms Worldformer <a href="../results/extraction-result-235.html#e235.1" class="evidence-link">[e235.1]</a> </li>
+    <li>Seq2Seq predicting full graphs struggles with large vocabularies and achieves only 14.29% graph-level EM <a href="../results/extraction-result-237.html#e237.2" class="evidence-link">[e237.2]</a> </li>
+    <li>Graph-difference formulation produces the largest ablation loss when removed from Worldformer <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> </li>
+    <li>Worldformer's multi-task learning benefits from graph-difference prediction reducing label imbalance in action prediction <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a text game domain with larger knowledge graphs (average 20+ triples per state), difference prediction will show >70% improvement in graph-level EM compared to full-graph prediction.</li>
+                <li>For rapidly changing environments where >50% of graph triples change each step, difference prediction will show reduced advantage (<20% improvement) compared to slower-changing environments.</li>
+                <li>Applying difference prediction to other structured prediction tasks (e.g., scene graphs in vision) will yield similar 30-50% improvements in exact match accuracy.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>For environments with very sparse changes (<2 triples per step), it's unclear whether difference prediction still provides benefits or whether the overhead of computing differences negates advantages - effect could range from -5% to +15%.</li>
+                <li>In highly stochastic environments where the same action produces different graph changes, difference prediction might struggle more than full-state prediction - performance difference unknown, possibly -10% to +20%.</li>
+                <li>For tasks requiring reasoning about cumulative effects over many steps, difference prediction might lose global consistency - impact on downstream task performance unclear.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding domains where full-graph prediction consistently outperforms difference prediction would challenge the efficiency claim.</li>
+                <li>Demonstrating that difference prediction provides no benefit for small graphs (<5 triples) would challenge the scalability claim.</li>
+                <li>Showing that difference prediction leads to error accumulation over long trajectories (>100 steps) that exceeds the benefits would challenge the approach.</li>
+                <li>Finding that difference prediction provides no advantage in multi-task learning scenarios would challenge the label-balance mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to handle cases where computing the difference is ambiguous (e.g., entity renaming vs. deletion+addition) is not fully addressed <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> </li>
+    <li>The optimal encoding scheme for representing differences (explicit add/delete vs. implicit) is not systematically compared <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> <a href="../results/extraction-result-235.html#e235.1" class="evidence-link">[e235.1]</a> </li>
+    <li>How difference prediction interacts with different graph update frequencies (every step vs. every N steps) is not explored <a href="../results/extraction-result-235.html#e235.0" class="evidence-link">[e235.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Sutskever et al. (2014) Sequence to sequence learning with neural networks [Seq2seq foundation, but not difference prediction]</li>
+    <li>Kipf & Welling (2017) Semi-supervised classification with graph convolutional networks [Graph neural networks, but not for difference prediction]</li>
+    <li>Ammanabrolu et al. (2021) Learning Knowledge Graph-based World Models of Textual Environments [Introduces graph-difference prediction for text games, this theory formalizes their contribution]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Graph-Difference Prediction Efficiency Theory",
+    "theory_description": "For learning world models in text games, predicting the difference between consecutive knowledge graph states (G_{t+1} - G_t) rather than predicting the full next state (G_{t+1}) provides substantial computational and learning efficiency benefits because: (1) differences are sparse (typically 3-4 triples vs 8-9 triples for full graphs), (2) difference prediction naturally handles the set-valued nature of graphs, (3) it reduces label imbalance in multi-task learning, and (4) it enables better generalization by focusing on state transitions rather than absolute states.",
+    "supporting_evidence": [
+        {
+            "text": "Worldformer predicting graph differences achieves 39.15% graph-level EM, substantially outperforming baselines",
+            "uuids": [
+                "e235.0"
+            ]
+        },
+        {
+            "text": "Average graph-diff triples per state is 3.42 compared to 8.71 for full graphs, representing 60% reduction in target size",
+            "uuids": [
+                "e235.0",
+                "e237.2"
+            ]
+        },
+        {
+            "text": "GATA-W predicting add/del operations (larger target than pure differences) underperforms Worldformer",
+            "uuids": [
+                "e235.1"
+            ]
+        },
+        {
+            "text": "Seq2Seq predicting full graphs struggles with large vocabularies and achieves only 14.29% graph-level EM",
+            "uuids": [
+                "e237.2"
+            ]
+        },
+        {
+            "text": "Graph-difference formulation produces the largest ablation loss when removed from Worldformer",
+            "uuids": [
+                "e235.0"
+            ]
+        },
+        {
+            "text": "Worldformer's multi-task learning benefits from graph-difference prediction reducing label imbalance in action prediction",
+            "uuids": [
+                "e235.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Predicting graph differences (G_{t+1} - G_t) reduces target sequence length by 50-70% compared to predicting full graphs, leading to 30-50% improvement in graph-level exact match accuracy.",
+        "The sparsity of graph differences enables better handling of the set-valued nature of knowledge graphs, as the model can focus on changes rather than maintaining full state consistency.",
+        "Graph-difference prediction provides stronger learning signal for world model dynamics because it explicitly represents state transitions rather than requiring the model to implicitly compute differences.",
+        "In multi-task learning scenarios, graph-difference prediction reduces interference between tasks by providing a more balanced target distribution.",
+        "The benefit of difference prediction scales with graph size: for graphs with &lt;5 triples, benefit is &lt;15%; for graphs with 5-15 triples, benefit is 30-50%; for graphs with &gt;15 triples, benefit exceeds 60%."
+    ],
+    "new_predictions_likely": [
+        "In a text game domain with larger knowledge graphs (average 20+ triples per state), difference prediction will show &gt;70% improvement in graph-level EM compared to full-graph prediction.",
+        "For rapidly changing environments where &gt;50% of graph triples change each step, difference prediction will show reduced advantage (&lt;20% improvement) compared to slower-changing environments.",
+        "Applying difference prediction to other structured prediction tasks (e.g., scene graphs in vision) will yield similar 30-50% improvements in exact match accuracy."
+    ],
+    "new_predictions_unknown": [
+        "For environments with very sparse changes (&lt;2 triples per step), it's unclear whether difference prediction still provides benefits or whether the overhead of computing differences negates advantages - effect could range from -5% to +15%.",
+        "In highly stochastic environments where the same action produces different graph changes, difference prediction might struggle more than full-state prediction - performance difference unknown, possibly -10% to +20%.",
+        "For tasks requiring reasoning about cumulative effects over many steps, difference prediction might lose global consistency - impact on downstream task performance unclear."
+    ],
+    "negative_experiments": [
+        "Finding domains where full-graph prediction consistently outperforms difference prediction would challenge the efficiency claim.",
+        "Demonstrating that difference prediction provides no benefit for small graphs (&lt;5 triples) would challenge the scalability claim.",
+        "Showing that difference prediction leads to error accumulation over long trajectories (&gt;100 steps) that exceeds the benefits would challenge the approach.",
+        "Finding that difference prediction provides no advantage in multi-task learning scenarios would challenge the label-balance mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How to handle cases where computing the difference is ambiguous (e.g., entity renaming vs. deletion+addition) is not fully addressed",
+            "uuids": [
+                "e235.0"
+            ]
+        },
+        {
+            "text": "The optimal encoding scheme for representing differences (explicit add/delete vs. implicit) is not systematically compared",
+            "uuids": [
+                "e235.0",
+                "e235.1"
+            ]
+        },
+        {
+            "text": "How difference prediction interacts with different graph update frequencies (every step vs. every N steps) is not explored",
+            "uuids": [
+                "e235.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "GATA-GTP using discrete graph updates with ground-truth pretraining sometimes underperforms continuous belief graphs, suggesting difference-based updates can be brittle",
+            "uuids": [
+                "e236.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For environments with complete state resets (e.g., teleportation to entirely new areas), difference prediction may not be meaningful and full-state prediction might be preferable.",
+        "In cases where the graph structure itself changes (e.g., new relation types discovered), difference prediction requires special handling.",
+        "For very small graphs (&lt;3 triples), the overhead of difference computation may exceed benefits."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Sutskever et al. (2014) Sequence to sequence learning with neural networks [Seq2seq foundation, but not difference prediction]",
+            "Kipf & Welling (2017) Semi-supervised classification with graph convolutional networks [Graph neural networks, but not for difference prediction]",
+            "Ammanabrolu et al. (2021) Learning Knowledge Graph-based World Models of Textual Environments [Introduces graph-difference prediction for text games, this theory formalizes their contribution]"
+        ]
+    },
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

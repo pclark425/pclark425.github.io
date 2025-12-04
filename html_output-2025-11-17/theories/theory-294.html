@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Test Calibration and Weighting Theory for Constraint-Based Discovery - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-294</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-294</p>
+                <p><strong>Name:</strong> Statistical Test Calibration and Weighting Theory for Constraint-Based Discovery</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of distractor-robust causal discovery in open-ended virtual labs, including methods to detect, downweight, and refute spurious signals during inquiry.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> This theory proposes that constraint-based causal discovery algorithms can be made robust to distractors and spurious correlations through a principled framework of test calibration and adaptive weighting. The core premise is that different independence tests have varying reliability depending on the data characteristics, sample size, presence of confounders, and the complexity of conditioning sets. By dynamically calibrating significance thresholds based on the local structure of the search space and weighting test results by their estimated reliability, the algorithm can systematically downweight spurious signals while preserving true causal relationships. The theory integrates four key mechanisms: (1) context-dependent threshold calibration that adjusts α-levels based on the number of conditioning sets tested, local graph density, and the statistical power available given sample size; (2) reliability-based weighting that assigns confidence scores to independence tests based on statistical power, effect size, conditioning set complexity, and test type characteristics; (3) evidence accumulation across multiple related tests to distinguish systematic patterns from noise through consistency checking; and (4) adaptive distractor identification that flags variables showing inconsistent independence patterns across structurally related tests. This approach enables the discovery algorithm to maintain high precision in the presence of many irrelevant variables while avoiding excessive false negatives, addressing a critical challenge in open-ended virtual laboratory environments where the ratio of distractor to causally-relevant variables may be very high.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>The reliability of a conditional independence test decreases as the size of the conditioning set increases, following approximately R(test|Z,n) = R_base × exp(-β|Z|/√n) where |Z| is the conditioning set size, n is sample size, β is a data-dependent decay parameter (typically β ∈ [0.1, 0.5]), and R_base is the baseline reliability for unconditional tests.</li>
+                <li>Spurious independence test results can be identified by inconsistency with structurally related tests; specifically, if X⊥Y|Z but X⊥̸Y|Z' for multiple supersets Z' ⊃ Z (at least 2 out of 3 tested supersets), the initial test is likely spurious with probability > 0.7.</li>
+                <li>The optimal significance threshold α* for a given independence test should be calibrated based on: (a) the number of tests performed in the local neighborhood (m_local), (b) the estimated prior probability of independence based on graph density (π_0), and (c) the statistical power of the test given sample size and effect size (power(n, δ)). Specifically: α* = α_base × (m_local/m_total)^(-γ) × (π_0)^(η) × max(power(n, δ_min), 0.1) where γ ∈ [0.3, 0.7] and η ∈ [0.5, 1.5] are adaptation parameters.</li>
+                <li>Test results should be weighted by a reliability score W(test) that combines: statistical power (function of sample size and effect size), consistency with related tests, and inverse complexity of the conditioning set. Formally: W(test) = w_power × power(n, δ) + w_consistency × consistency_score(test) + w_complexity × exp(-λ|Z|) where w_power + w_consistency + w_complexity = 1 and λ is a complexity penalty parameter.</li>
+                <li>For constraint-based discovery in the presence of distractors, the effective significance threshold should follow α_eff = α_base × (1 + κ × density_local)^(-1) where density_local is the estimated local graph density in the neighborhood of the tested relationship and κ ∈ [0.5, 2.0] is an adaptation parameter that increases threshold stringency in dense regions.</li>
+                <li>Evidence for or against an edge should accumulate across multiple related independence tests using a weighted voting scheme: E(X-Y) = Σ_i W_i × sign(I_i - α_i) where W_i is the reliability weight, I_i is the test p-value, and α_i is the calibrated threshold. An edge is retained if E(X-Y) > θ_edge where θ_edge is an evidence threshold (typically θ_edge ∈ [0.3, 0.7]).</li>
+                <li>Distractor variables can be identified by having high test inconsistency scores: variables that show independence in some conditioning sets but dependence in others without systematic pattern (inconsistency > 0.6) are likely distractors. Inconsistency is measured as: inconsist(X) = (1/|Tests_X|) × Σ_t |I_t - median(I_Tests_X)| / MAD(I_Tests_X) where MAD is median absolute deviation.</li>
+                <li>The false discovery rate in constraint-based causal discovery can be controlled by requiring that edge decisions be supported by a minimum weighted evidence threshold rather than single test results. The expected FDR is approximately: FDR ≈ (π_0 × α_eff × m) / max(R, 1) where R is the number of edges retained and m is the total number of tests.</li>
+                <li>Statistical power for detecting true edges should be preserved by using less stringent thresholds (higher α) for tests with high reliability scores (W > 0.7) and more stringent thresholds (lower α) for tests with low reliability scores (W < 0.3), with the adjustment factor ranging from 0.5× to 2.0× the base threshold.</li>
+                <li>The calibration parameters (β, γ, η, κ, λ, w_power, w_consistency, w_complexity, θ_edge) can be estimated from data through k-fold cross-validation (k ∈ [3,10]) on subsamples or through bootstrap resampling (B ≥ 100 resamples) to assess test stability and optimize precision-recall tradeoff.</li>
+                <li>For tests involving conditioning sets of size |Z| ≥ 3, the minimum sample size required to maintain reliability R > 0.5 is approximately n_min ≈ 10 × 2^|Z| × (1/δ^2) where δ is the minimum effect size of interest.</li>
+                <li>The consistency score for a test can be computed as: consistency_score(test_i) = (1/|Related_i|) × Σ_{j∈Related_i} agreement(test_i, test_j) where agreement(test_i, test_j) = 1 if both tests agree on dependence/independence, and 0 otherwise, and Related_i includes all tests that share at least one variable with test_i.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Constraint-based causal discovery methods like PC and FCI algorithms rely heavily on conditional independence tests, which are susceptible to errors from multiple testing and finite sample sizes. The PC algorithm's performance degrades significantly in high-dimensional settings with many variables. </li>
+    <li>Multiple testing corrections like Bonferroni are often too conservative for causal discovery, leading to high false negative rates, while uncorrected tests produce too many false positives. Conservative approaches that require unanimous agreement across tests can improve precision but at the cost of recall. </li>
+    <li>The reliability of independence tests varies with sample size, dimensionality of conditioning sets, and the strength of relationships being tested. Tests with larger conditioning sets require exponentially more samples to maintain statistical power. </li>
+    <li>In open-ended experimental environments, many measured variables may be irrelevant distractors that create spurious correlations through chance or indirect pathways. High-dimensional settings amplify this problem. </li>
+    <li>Adaptive significance testing that accounts for the structure of the hypothesis space can improve power while controlling false discovery rates. Methods that use side information about test characteristics can outperform uniform threshold approaches. </li>
+    <li>Consistency checks across related conditional independence tests can help identify unreliable test results and improve robustness. Bayesian approaches can aggregate evidence across multiple tests to improve inference. </li>
+    <li>Different types of independence tests (parametric, non-parametric, kernel-based) have different strengths and weaknesses depending on the data distribution and sample size. Non-parametric tests can be more robust but may require larger samples. </li>
+    <li>Variable selection and screening methods can help identify relevant variables before full causal discovery, but may miss important relationships if applied too aggressively. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a virtual lab with 50 variables where 10 are causally relevant and 40 are distractors, applying reliability-weighted testing with adaptive thresholds will reduce false positive edges by 60-80% compared to fixed-threshold testing (α = 0.05) while maintaining similar recall (>85% of true edges retained). Specifically, precision should improve from ~0.20 to ~0.60-0.75.</li>
+                <li>When sample size is limited (n = 200-500), weighting tests inversely by conditioning set size will improve the precision-recall F1 score by 15-30% compared to unweighted testing, with the largest gains (25-30% improvement) for conditioning sets of size 3 or larger.</li>
+                <li>In scenarios where true causal relationships have medium effect sizes (partial correlation ≈ 0.3), consistency-based filtering that requires agreement across at least 2 out of 3 related tests will eliminate 70-90% of spurious edges while retaining 85-95% of true edges, resulting in precision improvement from ~0.30 to ~0.70.</li>
+                <li>Adaptive threshold calibration based on local graph density will show the largest improvements (40-60% reduction in false positives) in high-density regions of the causal graph (density > 0.3) where multiple testing burden is highest, compared to 10-20% improvement in sparse regions (density < 0.1).</li>
+                <li>Cross-validation based estimation of reliability weights will converge to stable values (coefficient of variation < 0.15) with 5-fold cross-validation for sample sizes n > 300, enabling practical implementation without extensive parameter tuning. For n < 300, 3-fold cross-validation should be used to maintain sufficient samples per fold.</li>
+                <li>In settings with 100 variables where 20 are causally relevant, the theory's methods will identify distractor variables with 75-85% accuracy (measured by area under ROC curve) based on inconsistency scores, allowing for effective variable filtering before full causal discovery.</li>
+                <li>When comparing tests with conditioning set size |Z| = 0 vs |Z| = 3, the reliability ratio R(|Z|=0)/R(|Z|=3) will be approximately 2.5-4.0 for sample sizes n = 500, validating the exponential decay model of reliability with conditioning set size.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether reliability-weighted constraint-based discovery can successfully identify causal structure in domains with >1000 variables where <5% are causally relevant remains uncertain, as the signal-to-noise ratio may be too low even with optimal weighting. The computational burden of computing all pairwise and conditional tests may also become prohibitive (O(p^2 × 2^k) where p is number of variables and k is max conditioning set size).</li>
+                <li>It is unclear whether the theory's predictions hold for non-linear causal relationships where independence tests based on correlation may fundamentally lack power regardless of calibration and weighting schemes. Non-parametric tests may help but their reliability decay with conditioning set size may be even more severe.</li>
+                <li>The extent to which this approach can handle time-varying causal structures in open-ended virtual labs where the true causal graph changes during exploration is unknown and could either fail catastrophically (if changes are rapid) or adapt naturally (if changes are gradual and detectable through consistency score degradation over time).</li>
+                <li>Whether the weighted evidence accumulation scheme can distinguish between genuine causal relationships and stable spurious correlations induced by unmeasured confounders is uncertain and may require additional assumptions or integration with methods that explicitly model latent confounders (like FCI algorithm extensions).</li>
+                <li>The scalability of computing consistency scores across all related tests may become computationally prohibitive for very large graphs (>500 variables, requiring >125,000 pairwise tests), and whether approximation schemes (e.g., sampling subsets of related tests) can maintain theoretical guarantees on FDR control is unknown but critical for practical application.</li>
+                <li>Whether this framework can be extended to handle selection bias and missing data mechanisms in virtual lab settings, where data collection may be non-random and missingness may be informative, is uncertain but would be highly impactful if successful. The reliability weights may need to account for missing data patterns.</li>
+                <li>The interaction between this theory's methods and active learning strategies for experimental design is unknown - it's unclear whether reliability-weighted discovery would suggest different experiments than standard approaches, and whether such experiments would be more informative.</li>
+                <li>Whether the theory can be extended to handle mixed data types (continuous, discrete, ordinal) in a principled way is uncertain, as different independence tests may be required for different variable type combinations, and their reliability characteristics may differ substantially.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If applying reliability weighting to independence tests does not improve precision by at least 10% over unweighted tests in controlled simulations with known ground truth (50 variables, 10 causal, 40 distractors, n=500), the core premise of differential test reliability would be questioned.</li>
+                <li>If adaptive threshold calibration based on local graph density performs worse than fixed Bonferroni correction (in terms of F1 score) in high-dimensional settings (p > 100), the theory's approach to multiple testing correction would be invalidated.</li>
+                <li>If consistency checks across related tests fail to identify spurious results better than random selection (AUC < 0.55) in scenarios with known spurious correlations (induced by random common causes), the evidence accumulation mechanism would be called into question.</li>
+                <li>If the reliability decay with conditioning set size does not follow an exponential or power-law pattern (R² < 0.5 when fitting the proposed model to empirical reliability estimates) in empirical data across multiple domains, the theoretical model of test degradation would need substantial revision.</li>
+                <li>If cross-validation based parameter estimation produces unstable estimates (coefficient of variation > 0.5) or biased estimates that harm performance (>10% worse F1 score) compared to theoretically-motivated fixed default parameters, the practical applicability of the theory would be severely limited.</li>
+                <li>If the weighted voting scheme for edge decisions shows no improvement (< 5% F1 improvement) over simple majority voting across tests in settings with mixed reliable and unreliable tests, the complexity of the weighting framework would not be justified.</li>
+                <li>If the theory's methods fail to outperform simple variable pre-screening based on marginal correlations (using top-k selection by correlation strength) in distractor-heavy scenarios (>80% distractors), the sophisticated calibration approach would be unnecessarily complex.</li>
+                <li>If the predicted relationship between sample size, conditioning set size, and reliability (n_min ≈ 10 × 2^|Z| × (1/δ^2)) is violated by more than 50% in empirical tests, the theory's guidance on minimum sample requirements would be unreliable.</li>
+                <li>If in scenarios where all variables are genuinely causally connected (no true distractors), the distractor identification mechanism incorrectly flags more than 30% of variables as distractors, the inconsistency-based detection would be too aggressive and harm recall.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not fully address how to handle feedback loops and cyclic causal structures that may arise in interactive virtual lab environments. The consistency checking mechanism may behave unpredictably in the presence of cycles. </li>
+    <li>The computational complexity of computing all consistency scores and reliability weights for very large graphs is not fully characterized. The theory needs explicit complexity analysis showing whether the approach is O(p^2), O(p^3), or higher order in the number of variables p. </li>
+    <li>How the theory integrates with active learning strategies for experimental design in virtual labs is not specified. It's unclear whether reliability weights should influence which experiments to perform next. </li>
+    <li>The theory does not address how to handle measurement error and noise in the observed variables, which could affect test reliability in ways not captured by the current framework. Measurement error may inflate conditioning set complexity effects. </li>
+    <li>The theory does not specify how to handle different types of independence tests (parametric vs non-parametric, correlation-based vs kernel-based) in a unified framework. Different test types may have different reliability characteristics that require separate calibration. </li>
+    <li>The theory does not address how to integrate interventional data when available. Interventional data may have different reliability characteristics than observational data and may require different weighting schemes. </li>
+    <li>The theory does not specify how to handle temporal data or time-series where temporal ordering provides additional constraints on causal relationships. The reliability weighting may need to account for temporal autocorrelation. </li>
+    <li>The theory does not address how to handle mixed continuous and discrete variables, which may require different independence tests with different reliability characteristics. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Spirtes et al. (2000) Causation, Prediction, and Search [Foundational work on constraint-based causal discovery, but does not propose adaptive test calibration or reliability weighting]</li>
+    <li>Colombo & Maathuis (2014) Order-independent constraint-based causal structure learning [Addresses order-dependence in PC algorithm but not test reliability weighting or adaptive thresholds]</li>
+    <li>Ramsey et al. (2006) Adjacency-faithfulness and conservative causal inference [Proposes conservative approaches requiring unanimous agreement but not adaptive weighting schemes or reliability-based calibration]</li>
+    <li>Claassen & Heskes (2012) A Bayesian approach to constraint based causal inference [Uses Bayesian scoring to aggregate test results but not the specific calibration and weighting framework proposed here with conditioning set complexity penalties]</li>
+    <li>Lei & Fithian (2018) AdaPT: an interactive procedure for multiple testing with side information [Adaptive multiple testing framework but not specifically designed for causal discovery with reliability weighting based on conditioning set size]</li>
+    <li>Shah & Peters (2020) The hardness of conditional independence testing [Analyzes test difficulty and sample complexity but does not propose the integrated calibration framework with consistency checking]</li>
+    <li>Strobl et al. (2019) Approximate kernel-based conditional independence tests [Develops efficient non-parametric tests but does not propose reliability weighting or adaptive threshold calibration]</li>
+    <li>Benjamini & Hochberg (1995) Controlling the false discovery rate [Proposes FDR control for multiple testing but not adapted to causal discovery with structural consistency checks]</li>
+    <li>Triantafillou & Tsamardinos (2015) Constraint-based causal discovery from multiple interventions [Handles multiple data sources but not reliability weighting based on test characteristics]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Statistical Test Calibration and Weighting Theory for Constraint-Based Discovery",
+    "theory_description": "This theory proposes that constraint-based causal discovery algorithms can be made robust to distractors and spurious correlations through a principled framework of test calibration and adaptive weighting. The core premise is that different independence tests have varying reliability depending on the data characteristics, sample size, presence of confounders, and the complexity of conditioning sets. By dynamically calibrating significance thresholds based on the local structure of the search space and weighting test results by their estimated reliability, the algorithm can systematically downweight spurious signals while preserving true causal relationships. The theory integrates four key mechanisms: (1) context-dependent threshold calibration that adjusts α-levels based on the number of conditioning sets tested, local graph density, and the statistical power available given sample size; (2) reliability-based weighting that assigns confidence scores to independence tests based on statistical power, effect size, conditioning set complexity, and test type characteristics; (3) evidence accumulation across multiple related tests to distinguish systematic patterns from noise through consistency checking; and (4) adaptive distractor identification that flags variables showing inconsistent independence patterns across structurally related tests. This approach enables the discovery algorithm to maintain high precision in the presence of many irrelevant variables while avoiding excessive false negatives, addressing a critical challenge in open-ended virtual laboratory environments where the ratio of distractor to causally-relevant variables may be very high.",
+    "supporting_evidence": [
+        {
+            "text": "Constraint-based causal discovery methods like PC and FCI algorithms rely heavily on conditional independence tests, which are susceptible to errors from multiple testing and finite sample sizes. The PC algorithm's performance degrades significantly in high-dimensional settings with many variables.",
+            "citations": [
+                "Spirtes et al. (2000) Causation, Prediction, and Search",
+                "Colombo & Maathuis (2014) Order-independent constraint-based causal structure learning, Journal of Machine Learning Research"
+            ]
+        },
+        {
+            "text": "Multiple testing corrections like Bonferroni are often too conservative for causal discovery, leading to high false negative rates, while uncorrected tests produce too many false positives. Conservative approaches that require unanimous agreement across tests can improve precision but at the cost of recall.",
+            "citations": [
+                "Ramsey et al. (2006) Adjacency-faithfulness and conservative causal inference, UAI",
+                "Zhang (2008) On the completeness of orientation rules for causal discovery in the presence of latent confounders and selection bias, Artificial Intelligence",
+                "Ramsey et al. (2012) A million variables and more: the Fast Greedy Equivalence Search algorithm for learning high-dimensional graphical causal models, International Journal of Data Science and Analytics"
+            ]
+        },
+        {
+            "text": "The reliability of independence tests varies with sample size, dimensionality of conditioning sets, and the strength of relationships being tested. Tests with larger conditioning sets require exponentially more samples to maintain statistical power.",
+            "citations": [
+                "Shah & Peters (2020) The hardness of conditional independence testing and the generalised covariance measure, Annals of Statistics",
+                "Strobl et al. (2019) Approximate kernel-based conditional independence tests for fast non-parametric causal discovery, Journal of Causal Inference"
+            ]
+        },
+        {
+            "text": "In open-ended experimental environments, many measured variables may be irrelevant distractors that create spurious correlations through chance or indirect pathways. High-dimensional settings amplify this problem.",
+            "citations": [
+                "Janzing et al. (2012) Causal inference using the algorithmic Markov condition, IEEE Transactions on Information Theory",
+                "Sgouritsa et al. (2015) Inference of cause and effect with unsupervised inverse regression, AISTATS"
+            ]
+        },
+        {
+            "text": "Adaptive significance testing that accounts for the structure of the hypothesis space can improve power while controlling false discovery rates. Methods that use side information about test characteristics can outperform uniform threshold approaches.",
+            "citations": [
+                "Benjamini & Hochberg (1995) Controlling the false discovery rate: a practical and powerful approach to multiple testing, Journal of the Royal Statistical Society",
+                "Lei & Fithian (2018) AdaPT: an interactive procedure for multiple testing with side information, Journal of the Royal Statistical Society"
+            ]
+        },
+        {
+            "text": "Consistency checks across related conditional independence tests can help identify unreliable test results and improve robustness. Bayesian approaches can aggregate evidence across multiple tests to improve inference.",
+            "citations": [
+                "Claassen & Heskes (2012) A Bayesian approach to constraint based causal inference, UAI",
+                "Triantafillou & Tsamardinos (2015) Constraint-based causal discovery from multiple interventions over overlapping variable sets, Journal of Machine Learning Research"
+            ]
+        },
+        {
+            "text": "Different types of independence tests (parametric, non-parametric, kernel-based) have different strengths and weaknesses depending on the data distribution and sample size. Non-parametric tests can be more robust but may require larger samples.",
+            "citations": [
+                "Strobl et al. (2019) Approximate kernel-based conditional independence tests for fast non-parametric causal discovery, Journal of Causal Inference",
+                "Shah & Peters (2020) The hardness of conditional independence testing and the generalised covariance measure, Annals of Statistics"
+            ]
+        },
+        {
+            "text": "Variable selection and screening methods can help identify relevant variables before full causal discovery, but may miss important relationships if applied too aggressively.",
+            "citations": [
+                "Bühlmann et al. (2010) CAM: Causal additive models, high-dimensional order search and penalized regression, Annals of Statistics"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "The reliability of a conditional independence test decreases as the size of the conditioning set increases, following approximately R(test|Z,n) = R_base × exp(-β|Z|/√n) where |Z| is the conditioning set size, n is sample size, β is a data-dependent decay parameter (typically β ∈ [0.1, 0.5]), and R_base is the baseline reliability for unconditional tests.",
+        "Spurious independence test results can be identified by inconsistency with structurally related tests; specifically, if X⊥Y|Z but X⊥̸Y|Z' for multiple supersets Z' ⊃ Z (at least 2 out of 3 tested supersets), the initial test is likely spurious with probability &gt; 0.7.",
+        "The optimal significance threshold α* for a given independence test should be calibrated based on: (a) the number of tests performed in the local neighborhood (m_local), (b) the estimated prior probability of independence based on graph density (π_0), and (c) the statistical power of the test given sample size and effect size (power(n, δ)). Specifically: α* = α_base × (m_local/m_total)^(-γ) × (π_0)^(η) × max(power(n, δ_min), 0.1) where γ ∈ [0.3, 0.7] and η ∈ [0.5, 1.5] are adaptation parameters.",
+        "Test results should be weighted by a reliability score W(test) that combines: statistical power (function of sample size and effect size), consistency with related tests, and inverse complexity of the conditioning set. Formally: W(test) = w_power × power(n, δ) + w_consistency × consistency_score(test) + w_complexity × exp(-λ|Z|) where w_power + w_consistency + w_complexity = 1 and λ is a complexity penalty parameter.",
+        "For constraint-based discovery in the presence of distractors, the effective significance threshold should follow α_eff = α_base × (1 + κ × density_local)^(-1) where density_local is the estimated local graph density in the neighborhood of the tested relationship and κ ∈ [0.5, 2.0] is an adaptation parameter that increases threshold stringency in dense regions.",
+        "Evidence for or against an edge should accumulate across multiple related independence tests using a weighted voting scheme: E(X-Y) = Σ_i W_i × sign(I_i - α_i) where W_i is the reliability weight, I_i is the test p-value, and α_i is the calibrated threshold. An edge is retained if E(X-Y) &gt; θ_edge where θ_edge is an evidence threshold (typically θ_edge ∈ [0.3, 0.7]).",
+        "Distractor variables can be identified by having high test inconsistency scores: variables that show independence in some conditioning sets but dependence in others without systematic pattern (inconsistency &gt; 0.6) are likely distractors. Inconsistency is measured as: inconsist(X) = (1/|Tests_X|) × Σ_t |I_t - median(I_Tests_X)| / MAD(I_Tests_X) where MAD is median absolute deviation.",
+        "The false discovery rate in constraint-based causal discovery can be controlled by requiring that edge decisions be supported by a minimum weighted evidence threshold rather than single test results. The expected FDR is approximately: FDR ≈ (π_0 × α_eff × m) / max(R, 1) where R is the number of edges retained and m is the total number of tests.",
+        "Statistical power for detecting true edges should be preserved by using less stringent thresholds (higher α) for tests with high reliability scores (W &gt; 0.7) and more stringent thresholds (lower α) for tests with low reliability scores (W &lt; 0.3), with the adjustment factor ranging from 0.5× to 2.0× the base threshold.",
+        "The calibration parameters (β, γ, η, κ, λ, w_power, w_consistency, w_complexity, θ_edge) can be estimated from data through k-fold cross-validation (k ∈ [3,10]) on subsamples or through bootstrap resampling (B ≥ 100 resamples) to assess test stability and optimize precision-recall tradeoff.",
+        "For tests involving conditioning sets of size |Z| ≥ 3, the minimum sample size required to maintain reliability R &gt; 0.5 is approximately n_min ≈ 10 × 2^|Z| × (1/δ^2) where δ is the minimum effect size of interest.",
+        "The consistency score for a test can be computed as: consistency_score(test_i) = (1/|Related_i|) × Σ_{j∈Related_i} agreement(test_i, test_j) where agreement(test_i, test_j) = 1 if both tests agree on dependence/independence, and 0 otherwise, and Related_i includes all tests that share at least one variable with test_i."
+    ],
+    "new_predictions_likely": [
+        "In a virtual lab with 50 variables where 10 are causally relevant and 40 are distractors, applying reliability-weighted testing with adaptive thresholds will reduce false positive edges by 60-80% compared to fixed-threshold testing (α = 0.05) while maintaining similar recall (&gt;85% of true edges retained). Specifically, precision should improve from ~0.20 to ~0.60-0.75.",
+        "When sample size is limited (n = 200-500), weighting tests inversely by conditioning set size will improve the precision-recall F1 score by 15-30% compared to unweighted testing, with the largest gains (25-30% improvement) for conditioning sets of size 3 or larger.",
+        "In scenarios where true causal relationships have medium effect sizes (partial correlation ≈ 0.3), consistency-based filtering that requires agreement across at least 2 out of 3 related tests will eliminate 70-90% of spurious edges while retaining 85-95% of true edges, resulting in precision improvement from ~0.30 to ~0.70.",
+        "Adaptive threshold calibration based on local graph density will show the largest improvements (40-60% reduction in false positives) in high-density regions of the causal graph (density &gt; 0.3) where multiple testing burden is highest, compared to 10-20% improvement in sparse regions (density &lt; 0.1).",
+        "Cross-validation based estimation of reliability weights will converge to stable values (coefficient of variation &lt; 0.15) with 5-fold cross-validation for sample sizes n &gt; 300, enabling practical implementation without extensive parameter tuning. For n &lt; 300, 3-fold cross-validation should be used to maintain sufficient samples per fold.",
+        "In settings with 100 variables where 20 are causally relevant, the theory's methods will identify distractor variables with 75-85% accuracy (measured by area under ROC curve) based on inconsistency scores, allowing for effective variable filtering before full causal discovery.",
+        "When comparing tests with conditioning set size |Z| = 0 vs |Z| = 3, the reliability ratio R(|Z|=0)/R(|Z|=3) will be approximately 2.5-4.0 for sample sizes n = 500, validating the exponential decay model of reliability with conditioning set size."
+    ],
+    "new_predictions_unknown": [
+        "Whether reliability-weighted constraint-based discovery can successfully identify causal structure in domains with &gt;1000 variables where &lt;5% are causally relevant remains uncertain, as the signal-to-noise ratio may be too low even with optimal weighting. The computational burden of computing all pairwise and conditional tests may also become prohibitive (O(p^2 × 2^k) where p is number of variables and k is max conditioning set size).",
+        "It is unclear whether the theory's predictions hold for non-linear causal relationships where independence tests based on correlation may fundamentally lack power regardless of calibration and weighting schemes. Non-parametric tests may help but their reliability decay with conditioning set size may be even more severe.",
+        "The extent to which this approach can handle time-varying causal structures in open-ended virtual labs where the true causal graph changes during exploration is unknown and could either fail catastrophically (if changes are rapid) or adapt naturally (if changes are gradual and detectable through consistency score degradation over time).",
+        "Whether the weighted evidence accumulation scheme can distinguish between genuine causal relationships and stable spurious correlations induced by unmeasured confounders is uncertain and may require additional assumptions or integration with methods that explicitly model latent confounders (like FCI algorithm extensions).",
+        "The scalability of computing consistency scores across all related tests may become computationally prohibitive for very large graphs (&gt;500 variables, requiring &gt;125,000 pairwise tests), and whether approximation schemes (e.g., sampling subsets of related tests) can maintain theoretical guarantees on FDR control is unknown but critical for practical application.",
+        "Whether this framework can be extended to handle selection bias and missing data mechanisms in virtual lab settings, where data collection may be non-random and missingness may be informative, is uncertain but would be highly impactful if successful. The reliability weights may need to account for missing data patterns.",
+        "The interaction between this theory's methods and active learning strategies for experimental design is unknown - it's unclear whether reliability-weighted discovery would suggest different experiments than standard approaches, and whether such experiments would be more informative.",
+        "Whether the theory can be extended to handle mixed data types (continuous, discrete, ordinal) in a principled way is uncertain, as different independence tests may be required for different variable type combinations, and their reliability characteristics may differ substantially."
+    ],
+    "negative_experiments": [
+        "If applying reliability weighting to independence tests does not improve precision by at least 10% over unweighted tests in controlled simulations with known ground truth (50 variables, 10 causal, 40 distractors, n=500), the core premise of differential test reliability would be questioned.",
+        "If adaptive threshold calibration based on local graph density performs worse than fixed Bonferroni correction (in terms of F1 score) in high-dimensional settings (p &gt; 100), the theory's approach to multiple testing correction would be invalidated.",
+        "If consistency checks across related tests fail to identify spurious results better than random selection (AUC &lt; 0.55) in scenarios with known spurious correlations (induced by random common causes), the evidence accumulation mechanism would be called into question.",
+        "If the reliability decay with conditioning set size does not follow an exponential or power-law pattern (R² &lt; 0.5 when fitting the proposed model to empirical reliability estimates) in empirical data across multiple domains, the theoretical model of test degradation would need substantial revision.",
+        "If cross-validation based parameter estimation produces unstable estimates (coefficient of variation &gt; 0.5) or biased estimates that harm performance (&gt;10% worse F1 score) compared to theoretically-motivated fixed default parameters, the practical applicability of the theory would be severely limited.",
+        "If the weighted voting scheme for edge decisions shows no improvement (&lt; 5% F1 improvement) over simple majority voting across tests in settings with mixed reliable and unreliable tests, the complexity of the weighting framework would not be justified.",
+        "If the theory's methods fail to outperform simple variable pre-screening based on marginal correlations (using top-k selection by correlation strength) in distractor-heavy scenarios (&gt;80% distractors), the sophisticated calibration approach would be unnecessarily complex.",
+        "If the predicted relationship between sample size, conditioning set size, and reliability (n_min ≈ 10 × 2^|Z| × (1/δ^2)) is violated by more than 50% in empirical tests, the theory's guidance on minimum sample requirements would be unreliable.",
+        "If in scenarios where all variables are genuinely causally connected (no true distractors), the distractor identification mechanism incorrectly flags more than 30% of variables as distractors, the inconsistency-based detection would be too aggressive and harm recall."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not fully address how to handle feedback loops and cyclic causal structures that may arise in interactive virtual lab environments. The consistency checking mechanism may behave unpredictably in the presence of cycles.",
+            "citations": [
+                "Hyttinen et al. (2012) Discovery of linear acyclic models from multiple experimental data sets, UAI",
+                "Richardson (1996) A discovery algorithm for directed cyclic graphs, UAI"
+            ]
+        },
+        {
+            "text": "The computational complexity of computing all consistency scores and reliability weights for very large graphs is not fully characterized. The theory needs explicit complexity analysis showing whether the approach is O(p^2), O(p^3), or higher order in the number of variables p.",
+            "citations": [
+                "Chickering (2002) Optimal structure identification with greedy search, Journal of Machine Learning Research"
+            ]
+        },
+        {
+            "text": "How the theory integrates with active learning strategies for experimental design in virtual labs is not specified. It's unclear whether reliability weights should influence which experiments to perform next.",
+            "citations": [
+                "Tong & Koller (2001) Active learning for structure in Bayesian networks, IJCAI",
+                "Eberhardt (2010) Causal discovery as a game, NIPS Workshop on Causality"
+            ]
+        },
+        {
+            "text": "The theory does not address how to handle measurement error and noise in the observed variables, which could affect test reliability in ways not captured by the current framework. Measurement error may inflate conditioning set complexity effects.",
+            "citations": [
+                "Kummerfeld & Ramsey (2016) Causal clustering for 1-factor measurement models, KDD"
+            ]
+        },
+        {
+            "text": "The theory does not specify how to handle different types of independence tests (parametric vs non-parametric, correlation-based vs kernel-based) in a unified framework. Different test types may have different reliability characteristics that require separate calibration.",
+            "citations": [
+                "Strobl et al. (2019) Approximate kernel-based conditional independence tests for fast non-parametric causal discovery, Journal of Causal Inference",
+                "Shah & Peters (2020) The hardness of conditional independence testing and the generalised covariance measure, Annals of Statistics"
+            ]
+        },
+        {
+            "text": "The theory does not address how to integrate interventional data when available. Interventional data may have different reliability characteristics than observational data and may require different weighting schemes.",
+            "citations": [
+                "Triantafillou & Tsamardinos (2015) Constraint-based causal discovery from multiple interventions over overlapping variable sets, Journal of Machine Learning Research",
+                "Eberhardt (2010) Causal discovery as a game, NIPS Workshop on Causality"
+            ]
+        },
+        {
+            "text": "The theory does not specify how to handle temporal data or time-series where temporal ordering provides additional constraints on causal relationships. The reliability weighting may need to account for temporal autocorrelation.",
+            "citations": [
+                "Hyttinen et al. (2012) Discovery of linear acyclic models from multiple experimental data sets, UAI"
+            ]
+        },
+        {
+            "text": "The theory does not address how to handle mixed continuous and discrete variables, which may require different independence tests with different reliability characteristics.",
+            "citations": [
+                "Strobl et al. (2019) Approximate kernel-based conditional independence tests for fast non-parametric causal discovery, Journal of Causal Inference"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some recent work suggests that conservative approaches to causal discovery (requiring unanimous agreement across multiple tests) may be preferable to adaptive methods in high-dimensional settings, which could conflict with the theory's emphasis on adaptive calibration and weighted voting. However, conservative methods may be too stringent when test reliability varies.",
+            "citations": [
+                "Ramsey et al. (2012) A million variables and more: the Fast Greedy Equivalence Search algorithm for learning high-dimensional graphical causal models, International Journal of Data Science and Analytics",
+                "Ramsey et al. (2006) Adjacency-faithfulness and conservative causal inference, UAI"
+            ]
+        },
+        {
+            "text": "Evidence that simple marginal screening can be highly effective for variable selection in causal discovery might suggest that sophisticated weighting schemes provide limited additional benefit in some settings. However, marginal screening may miss important relationships that only appear conditionally.",
+            "citations": [
+                "Bühlmann et al. (2010) CAM: Causal additive models, high-dimensional order search and penalized regression, Annals of Statistics"
+            ]
+        },
+        {
+            "text": "Some work on causal discovery suggests that order-independent algorithms that avoid making sequential decisions based on potentially unreliable tests may be more robust than adaptive approaches. This could conflict with the theory's sequential evidence accumulation.",
+            "citations": [
+                "Colombo & Maathuis (2014) Order-independent constraint-based causal structure learning, Journal of Machine Learning Research"
+            ]
+        }
+    ],
+    "special_cases": [
+        "When sample size is very large (n &gt; 10,000), the reliability differences between tests with different conditioning set sizes may become negligible (all reliabilities &gt; 0.9), and simpler fixed-threshold approaches may be sufficient and computationally more efficient.",
+        "In cases where all variables are genuinely causally connected (no true distractors, complete graph), the theory's distractor-detection mechanisms may incorrectly flag weak but real relationships as spurious, leading to false negatives. The inconsistency threshold should be raised (&gt; 0.8) in such settings.",
+        "For very sparse causal graphs (density &lt; 0.01), the local density-based threshold adaptation may not provide benefits over global thresholds, as most local neighborhoods will have similar low density. A global threshold may be more stable.",
+        "When using non-parametric independence tests with adaptive bandwidth selection, the reliability scoring may need to account for the bandwidth selection procedure's own variability, which can be substantial for small samples (n &lt; 200).",
+        "In the presence of strong unmeasured confounders affecting many variables (&gt;30% of variable pairs), consistency checks may systematically fail as the faithfulness assumption is violated, requiring integration with methods that explicitly model latent confounders (e.g., FCI algorithm).",
+        "For time-series data in virtual labs, the theory's assumptions about i.i.d. samples may be violated due to temporal autocorrelation, requiring extensions to handle temporal dependencies. The reliability weights may need to account for effective sample size rather than nominal sample size.",
+        "When the true causal graph has very high degree nodes (hub nodes with &gt;10 connections), the local density around these nodes will be high, and the adaptive threshold may become too stringent, causing false negatives. Special handling of hub nodes may be required.",
+        "In settings where interventional data is available alongside observational data, interventional tests should receive higher reliability weights (1.5-2.0× observational weights) as they are less susceptible to confounding.",
+        "For very small sample sizes (n &lt; 100), all conditional tests with |Z| ≥ 2 may have reliability &lt; 0.3, making the weighting scheme less useful. In such cases, the algorithm should primarily rely on marginal and first-order conditional tests.",
+        "When variables have very different scales or distributions (e.g., mixing binary and continuous variables), the reliability of tests may depend on variable types, requiring type-specific calibration parameters."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Spirtes et al. (2000) Causation, Prediction, and Search [Foundational work on constraint-based causal discovery, but does not propose adaptive test calibration or reliability weighting]",
+            "Colombo & Maathuis (2014) Order-independent constraint-based causal structure learning [Addresses order-dependence in PC algorithm but not test reliability weighting or adaptive thresholds]",
+            "Ramsey et al. (2006) Adjacency-faithfulness and conservative causal inference [Proposes conservative approaches requiring unanimous agreement but not adaptive weighting schemes or reliability-based calibration]",
+            "Claassen & Heskes (2012) A Bayesian approach to constraint based causal inference [Uses Bayesian scoring to aggregate test results but not the specific calibration and weighting framework proposed here with conditioning set complexity penalties]",
+            "Lei & Fithian (2018) AdaPT: an interactive procedure for multiple testing with side information [Adaptive multiple testing framework but not specifically designed for causal discovery with reliability weighting based on conditioning set size]",
+            "Shah & Peters (2020) The hardness of conditional independence testing [Analyzes test difficulty and sample complexity but does not propose the integrated calibration framework with consistency checking]",
+            "Strobl et al. (2019) Approximate kernel-based conditional independence tests [Develops efficient non-parametric tests but does not propose reliability weighting or adaptive threshold calibration]",
+            "Benjamini & Hochberg (1995) Controlling the false discovery rate [Proposes FDR control for multiple testing but not adapted to causal discovery with structural consistency checks]",
+            "Triantafillou & Tsamardinos (2015) Constraint-based causal discovery from multiple interventions [Handles multiple data sources but not reliability weighting based on test characteristics]"
+        ]
+    },
+    "theory_type_general_specific": "general",
+    "reflected_from_theory_index": 0,
+    "theory_query": "Build a theory of distractor-robust causal discovery in open-ended virtual labs, including methods to detect, downweight, and refute spurious signals during inquiry.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-122",
+    "original_theory_name": "Statistical Test Calibration and Weighting Theory for Constraint-Based Discovery",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

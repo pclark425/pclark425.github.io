@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt-Order Entropy Selection Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-79</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-79</p>
+                <p><strong>Name:</strong> Prompt-Order Entropy Selection Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about variability and reproducibility in language model-driven scientific experimentation, based on the following results.</p>
+                <p><strong>Description:</strong> In few-shot in-context learning, the order of examples in the prompt creates a distribution over possible outputs, and this distribution's entropy predicts the stability of the model's predictions across different orderings. High-entropy orderings (where the model is uncertain about which pattern to follow) lead to high variance across different orderings, while low-entropy orderings (where the model confidently identifies a pattern) lead to stable predictions. The theory proposes that entropy-based selection methods (GlobalE, LocalE) work by identifying example orderings that minimize this uncertainty, effectively finding 'consensus' orderings where the model's interpretation is unambiguous. This mechanism operates through the autoregressive nature of language models, where each token's prediction depends on all previous tokens, making order a critical determinant of the context trajectory. The theory explains why entropy-based selection outperforms random selection and why the effect is consistent across model sizes and tasks, while also accounting for why the optimal ordering is model-specific due to different inductive biases.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For a given prompt ordering O, the model's output distribution has entropy H(O) that predicts variance across different orderings: high H(O) → high variance in accuracy across orderings.</li>
+                <li>Entropy-based selection (GlobalE/LocalE) works by identifying orderings with low H(O), where the model's interpretation is unambiguous and predictions are stable.</li>
+                <li>The effectiveness of entropy selection is proportional to the diversity of the example pool: more diverse pools have larger entropy differences between orderings, enabling better discrimination.</li>
+                <li>Prompt order effects arise because autoregressive models build context incrementally, and different orders create different context trajectories that lead to different output distributions at each token position.</li>
+                <li>The optimal ordering is model-specific because different models have different inductive biases (learned from pretraining) that interact with order differently, explaining the low cross-model correlation (r≈0.05).</li>
+                <li>Entropy-based selection is more effective than content-based selection (e.g., similarity) because it directly measures the model's uncertainty rather than assuming what makes examples 'good' based on surface features.</li>
+                <li>The entropy-variance relationship is mediated by the probing set: entropy computed on a representative probing set (even unlabeled, LM-generated) predicts variance on the actual task.</li>
+                <li>Position-specific effects (index effects) contribute to entropy: examples at different positions have different influences on the output distribution, and entropy captures the aggregate uncertainty from these position-dependent effects.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>GlobalE and LocalE selection methods, which use entropy to score prompt orderings, improve average accuracy by 13% and 9.6% respectively over random baseline, with reduced variance (e.g., SST-2 4-shot GPT-2 0.1B: baseline 59.1±10.2 → GlobalE 63.8±5.8, LocalE 65.2±3.9). <a href="../results/extraction-result-638.html#e638.0" class="evidence-link">[e638.0]</a> <a href="../results/extraction-result-638.html#e638.3" class="evidence-link">[e638.3]</a> </li>
+    <li>Prompt order sensitivity is extreme: accuracy can vary from near-chance to near-SOTA depending on permutation, with SST-2 showing 54.3% to 93.4% range for GPT-3 2.7B 4-shot. <a href="../results/extraction-result-644.html#e644.0" class="evidence-link">[e644.0]</a> </li>
+    <li>Entropy-based selection is robust across model sizes (0.1B to 175B) and multiple tasks (SST-2, BoolQ, Subj, Scicite, AGNews), suggesting it captures a fundamental property of in-context learning. <a href="../results/extraction-result-638.html#e638.0" class="evidence-link">[e638.0]</a> </li>
+    <li>Performant permutations do not transfer across models (Spearman correlation 0.05 between 175B and 2.7B models), indicating that entropy must be computed per-model and reflects model-specific inductive biases. <a href="../results/extraction-result-638.html#e638.5" class="evidence-link">[e638.5]</a> </li>
+    <li>LM-generated probing sets with entropy-based selection (using temperature=2 and block n-gram repetition) outperform using split training data for dev selection, showing entropy captures task-relevant uncertainty without requiring labeled data. <a href="../results/extraction-result-638.html#e638.3" class="evidence-link">[e638.3]</a> <a href="../results/extraction-result-638.html#e638.2" class="evidence-link">[e638.2]</a> </li>
+    <li>Datamodels that capture index effects (position-specific influences) can predict LLM outcomes with high correlation (up to 0.96 Pearson correlation for GPTJ-6B SST-2), showing order creates systematic, predictable patterns in model behavior. <a href="../results/extraction-result-634.html#e634.1" class="evidence-link">[e634.1]</a> </li>
+    <li>CondAcc selection, which scores examples by their conditional accuracy over many sampled prompts, reduces variance and improves worst-case accuracy (e.g., GPTJ-6B SST-2: All 77.8%±11.2 min 50.8 → CondAcc 86.7%±5.9 min 68.2), suggesting stable examples create low-entropy contexts. <a href="../results/extraction-result-634.html#e634.3" class="evidence-link">[e634.3]</a> <a href="../results/extraction-result-634.html#e634.0" class="evidence-link">[e634.0]</a> </li>
+    <li>Prompt-sampling variability is substantial: different sampled prompts produce widely different accuracies, with standard deviations often >10 percentage points, demonstrating the high-entropy nature of random prompt selection. <a href="../results/extraction-result-634.html#e634.0" class="evidence-link">[e634.0]</a> </li>
+    <li>The effectiveness of entropy-based selection persists across different prompt templates, indicating it captures a property of the example ordering rather than template-specific effects. <a href="../results/extraction-result-638.html#e638.0" class="evidence-link">[e638.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Computing entropy on a small probing set (e.g., 100-1000 examples) will be sufficient to rank orderings, with diminishing returns beyond this size, as suggested by the datamodels requiring ~10k prompts for stable estimates.</li>
+                <li>Entropy-based selection will show larger improvements for tasks with more ambiguous patterns (e.g., sentiment analysis, subjective classification) than tasks with clear, deterministic patterns (e.g., arithmetic, factual QA).</li>
+                <li>Combining entropy-based selection with example-level selection (e.g., CondAcc) will show super-additive improvements compared to either alone, as they address complementary sources of variance (order vs. example quality).</li>
+                <li>Entropy computed on a validation set will transfer to test set performance with high correlation (r>0.8), enabling practical deployment without test-set access.</li>
+                <li>For models with lower base entropy (more aligned/instruction-tuned), entropy-based selection will show smaller absolute improvements but still outperform random selection.</li>
+                <li>Entropy-based selection will be more effective when using larger numbers of in-context examples (e.g., 8-shot vs 2-shot), as more examples create more opportunities for order-dependent ambiguity.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether entropy-based selection works for very long contexts (e.g., 100+ examples) or whether order effects diminish with more examples due to saturation of the context window.</li>
+                <li>Whether there exist tasks where high-entropy orderings are actually beneficial (e.g., by encouraging exploration or creativity in open-ended generation tasks).</li>
+                <li>Whether entropy-based selection transfers across different prompting paradigms (e.g., chain-of-thought vs direct answering, or instruction-following vs completion-style prompts).</li>
+                <li>Whether the relationship between entropy and variance is linear or whether there are threshold effects where very high entropy causes catastrophic failures (e.g., complete breakdown of in-context learning).</li>
+                <li>Whether entropy-based selection works for structured outputs (e.g., JSON, code, mathematical expressions) or only natural language classification/generation.</li>
+                <li>Whether the optimal probing set size scales with model size, or whether a fixed probing set size works across all model scales.</li>
+                <li>Whether entropy-based selection interacts with other sources of variability (e.g., temperature, top-p sampling) in predictable ways, or whether these effects are independent.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding tasks where entropy-based selection performs worse than random selection would challenge the universality of the theory and suggest task-specific boundary conditions.</li>
+                <li>Demonstrating that orderings with high entropy can still produce stable predictions (low variance across runs) would challenge the fundamental entropy-variance link.</li>
+                <li>Showing that entropy computed on one task doesn't predict variance on that same task (low correlation between H(O) and observed variance) would challenge the causal mechanism.</li>
+                <li>Finding that entropy-based selection doesn't improve worst-case performance (only mean) would challenge its claimed robustness benefits and suggest it only shifts the distribution rather than reducing variance.</li>
+                <li>Demonstrating that entropy computed on a probing set doesn't correlate with entropy computed on the actual task would challenge the probing methodology.</li>
+                <li>Finding that entropy-based selection fails for models with very different architectures (e.g., non-autoregressive models) would challenge the generality of the mechanism.</li>
+                <li>Showing that manually-designed orderings based on linguistic or semantic principles consistently outperform entropy-based selection would suggest entropy is not the primary mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Why some orderings have much higher entropy than others (what specific properties of example sequences make an ordering ambiguous?) - the theory describes the effect but not the underlying causes of high/low entropy. </li>
+    <li>How to efficiently compute entropy for very large example pools (e.g., thousands of examples) without exhaustive evaluation of all permutations, which is computationally infeasible. </li>
+    <li>Whether entropy-based selection works for structured outputs (e.g., JSON, code) or only natural language, and how to adapt the entropy computation for non-text outputs. </li>
+    <li>The interaction between entropy-based selection and other prompt engineering techniques (e.g., chain-of-thought, instruction formatting, system messages) is not addressed. </li>
+    <li>How model alignment and instruction-tuning affect the entropy-variance relationship - aligned models may have different entropy profiles that affect selection effectiveness. </li>
+    <li>The computational cost and practical feasibility of entropy-based selection for real-world deployment, including the number of probing queries required and the latency implications. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Lu et al. (2021) Fantastically Ordered Prompts and Where to Find Them [Proposes GlobalE and LocalE entropy-based selection methods but doesn't formalize the entropy-variance relationship or provide a mechanistic explanation]</li>
+    <li>Zhao et al. (2021) Calibrate Before Use [Addresses prompt sensitivity and proposes calibration to reduce bias, but focuses on output bias rather than entropy and doesn't explain order effects]</li>
+    <li>Liu et al. (2022) What Makes Good In-Context Examples for GPT-3? [Studies example selection based on similarity and other features, but doesn't focus on order or entropy]</li>
+    <li>Rubin et al. (2022) Learning To Retrieve Prompts for In-Context Learning [Proposes learning-based prompt selection but doesn't use entropy as the selection criterion]</li>
+    <li>Min et al. (2022) Rethinking the Role of Demonstrations [Studies the role of example content vs. format in ICL, but doesn't focus on order-entropy relationship]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Prompt-Order Entropy Selection Theory",
+    "theory_description": "In few-shot in-context learning, the order of examples in the prompt creates a distribution over possible outputs, and this distribution's entropy predicts the stability of the model's predictions across different orderings. High-entropy orderings (where the model is uncertain about which pattern to follow) lead to high variance across different orderings, while low-entropy orderings (where the model confidently identifies a pattern) lead to stable predictions. The theory proposes that entropy-based selection methods (GlobalE, LocalE) work by identifying example orderings that minimize this uncertainty, effectively finding 'consensus' orderings where the model's interpretation is unambiguous. This mechanism operates through the autoregressive nature of language models, where each token's prediction depends on all previous tokens, making order a critical determinant of the context trajectory. The theory explains why entropy-based selection outperforms random selection and why the effect is consistent across model sizes and tasks, while also accounting for why the optimal ordering is model-specific due to different inductive biases.",
+    "supporting_evidence": [
+        {
+            "text": "GlobalE and LocalE selection methods, which use entropy to score prompt orderings, improve average accuracy by 13% and 9.6% respectively over random baseline, with reduced variance (e.g., SST-2 4-shot GPT-2 0.1B: baseline 59.1±10.2 → GlobalE 63.8±5.8, LocalE 65.2±3.9).",
+            "uuids": [
+                "e638.0",
+                "e638.3"
+            ]
+        },
+        {
+            "text": "Prompt order sensitivity is extreme: accuracy can vary from near-chance to near-SOTA depending on permutation, with SST-2 showing 54.3% to 93.4% range for GPT-3 2.7B 4-shot.",
+            "uuids": [
+                "e644.0"
+            ]
+        },
+        {
+            "text": "Entropy-based selection is robust across model sizes (0.1B to 175B) and multiple tasks (SST-2, BoolQ, Subj, Scicite, AGNews), suggesting it captures a fundamental property of in-context learning.",
+            "uuids": [
+                "e638.0"
+            ]
+        },
+        {
+            "text": "Performant permutations do not transfer across models (Spearman correlation 0.05 between 175B and 2.7B models), indicating that entropy must be computed per-model and reflects model-specific inductive biases.",
+            "uuids": [
+                "e638.5"
+            ]
+        },
+        {
+            "text": "LM-generated probing sets with entropy-based selection (using temperature=2 and block n-gram repetition) outperform using split training data for dev selection, showing entropy captures task-relevant uncertainty without requiring labeled data.",
+            "uuids": [
+                "e638.3",
+                "e638.2"
+            ]
+        },
+        {
+            "text": "Datamodels that capture index effects (position-specific influences) can predict LLM outcomes with high correlation (up to 0.96 Pearson correlation for GPTJ-6B SST-2), showing order creates systematic, predictable patterns in model behavior.",
+            "uuids": [
+                "e634.1"
+            ]
+        },
+        {
+            "text": "CondAcc selection, which scores examples by their conditional accuracy over many sampled prompts, reduces variance and improves worst-case accuracy (e.g., GPTJ-6B SST-2: All 77.8%±11.2 min 50.8 → CondAcc 86.7%±5.9 min 68.2), suggesting stable examples create low-entropy contexts.",
+            "uuids": [
+                "e634.3",
+                "e634.0"
+            ]
+        },
+        {
+            "text": "Prompt-sampling variability is substantial: different sampled prompts produce widely different accuracies, with standard deviations often &gt;10 percentage points, demonstrating the high-entropy nature of random prompt selection.",
+            "uuids": [
+                "e634.0"
+            ]
+        },
+        {
+            "text": "The effectiveness of entropy-based selection persists across different prompt templates, indicating it captures a property of the example ordering rather than template-specific effects.",
+            "uuids": [
+                "e638.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For a given prompt ordering O, the model's output distribution has entropy H(O) that predicts variance across different orderings: high H(O) → high variance in accuracy across orderings.",
+        "Entropy-based selection (GlobalE/LocalE) works by identifying orderings with low H(O), where the model's interpretation is unambiguous and predictions are stable.",
+        "The effectiveness of entropy selection is proportional to the diversity of the example pool: more diverse pools have larger entropy differences between orderings, enabling better discrimination.",
+        "Prompt order effects arise because autoregressive models build context incrementally, and different orders create different context trajectories that lead to different output distributions at each token position.",
+        "The optimal ordering is model-specific because different models have different inductive biases (learned from pretraining) that interact with order differently, explaining the low cross-model correlation (r≈0.05).",
+        "Entropy-based selection is more effective than content-based selection (e.g., similarity) because it directly measures the model's uncertainty rather than assuming what makes examples 'good' based on surface features.",
+        "The entropy-variance relationship is mediated by the probing set: entropy computed on a representative probing set (even unlabeled, LM-generated) predicts variance on the actual task.",
+        "Position-specific effects (index effects) contribute to entropy: examples at different positions have different influences on the output distribution, and entropy captures the aggregate uncertainty from these position-dependent effects."
+    ],
+    "new_predictions_likely": [
+        "Computing entropy on a small probing set (e.g., 100-1000 examples) will be sufficient to rank orderings, with diminishing returns beyond this size, as suggested by the datamodels requiring ~10k prompts for stable estimates.",
+        "Entropy-based selection will show larger improvements for tasks with more ambiguous patterns (e.g., sentiment analysis, subjective classification) than tasks with clear, deterministic patterns (e.g., arithmetic, factual QA).",
+        "Combining entropy-based selection with example-level selection (e.g., CondAcc) will show super-additive improvements compared to either alone, as they address complementary sources of variance (order vs. example quality).",
+        "Entropy computed on a validation set will transfer to test set performance with high correlation (r&gt;0.8), enabling practical deployment without test-set access.",
+        "For models with lower base entropy (more aligned/instruction-tuned), entropy-based selection will show smaller absolute improvements but still outperform random selection.",
+        "Entropy-based selection will be more effective when using larger numbers of in-context examples (e.g., 8-shot vs 2-shot), as more examples create more opportunities for order-dependent ambiguity."
+    ],
+    "new_predictions_unknown": [
+        "Whether entropy-based selection works for very long contexts (e.g., 100+ examples) or whether order effects diminish with more examples due to saturation of the context window.",
+        "Whether there exist tasks where high-entropy orderings are actually beneficial (e.g., by encouraging exploration or creativity in open-ended generation tasks).",
+        "Whether entropy-based selection transfers across different prompting paradigms (e.g., chain-of-thought vs direct answering, or instruction-following vs completion-style prompts).",
+        "Whether the relationship between entropy and variance is linear or whether there are threshold effects where very high entropy causes catastrophic failures (e.g., complete breakdown of in-context learning).",
+        "Whether entropy-based selection works for structured outputs (e.g., JSON, code, mathematical expressions) or only natural language classification/generation.",
+        "Whether the optimal probing set size scales with model size, or whether a fixed probing set size works across all model scales.",
+        "Whether entropy-based selection interacts with other sources of variability (e.g., temperature, top-p sampling) in predictable ways, or whether these effects are independent."
+    ],
+    "negative_experiments": [
+        "Finding tasks where entropy-based selection performs worse than random selection would challenge the universality of the theory and suggest task-specific boundary conditions.",
+        "Demonstrating that orderings with high entropy can still produce stable predictions (low variance across runs) would challenge the fundamental entropy-variance link.",
+        "Showing that entropy computed on one task doesn't predict variance on that same task (low correlation between H(O) and observed variance) would challenge the causal mechanism.",
+        "Finding that entropy-based selection doesn't improve worst-case performance (only mean) would challenge its claimed robustness benefits and suggest it only shifts the distribution rather than reducing variance.",
+        "Demonstrating that entropy computed on a probing set doesn't correlate with entropy computed on the actual task would challenge the probing methodology.",
+        "Finding that entropy-based selection fails for models with very different architectures (e.g., non-autoregressive models) would challenge the generality of the mechanism.",
+        "Showing that manually-designed orderings based on linguistic or semantic principles consistently outperform entropy-based selection would suggest entropy is not the primary mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Why some orderings have much higher entropy than others (what specific properties of example sequences make an ordering ambiguous?) - the theory describes the effect but not the underlying causes of high/low entropy.",
+            "uuids": []
+        },
+        {
+            "text": "How to efficiently compute entropy for very large example pools (e.g., thousands of examples) without exhaustive evaluation of all permutations, which is computationally infeasible.",
+            "uuids": []
+        },
+        {
+            "text": "Whether entropy-based selection works for structured outputs (e.g., JSON, code) or only natural language, and how to adapt the entropy computation for non-text outputs.",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between entropy-based selection and other prompt engineering techniques (e.g., chain-of-thought, instruction formatting, system messages) is not addressed.",
+            "uuids": []
+        },
+        {
+            "text": "How model alignment and instruction-tuning affect the entropy-variance relationship - aligned models may have different entropy profiles that affect selection effectiveness.",
+            "uuids": []
+        },
+        {
+            "text": "The computational cost and practical feasibility of entropy-based selection for real-world deployment, including the number of probing queries required and the latency implications.",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Calibration improves mean accuracy but doesn't eliminate high variance across permutations, suggesting some order effects operate through mechanisms other than output bias that entropy alone doesn't capture.",
+            "uuids": [
+                "e638.4"
+            ]
+        },
+        {
+            "text": "Some high-performing orderings don't transfer across models (correlation 0.05), yet entropy-based selection does transfer, suggesting the selection mechanism may be capturing something more general than just the entropy of specific orderings.",
+            "uuids": [
+                "e638.5"
+            ]
+        },
+        {
+            "text": "Similarity-based and content-based selection methods (not mentioned in the theory) also reduce variance, suggesting entropy is not the only mechanism for stable prompt selection.",
+            "uuids": [
+                "e615.3"
+            ]
+        },
+        {
+            "text": "Common token bias affects predictions independently of order, suggesting there are multiple sources of variance that entropy-based selection may not fully address.",
+            "uuids": [
+                "e644.3"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For tasks with very few examples (e.g., 2-shot), entropy may not be reliably estimated due to insufficient data, requiring alternative selection methods or larger probing sets.",
+        "For tasks where all orderings produce similar entropy (e.g., highly constrained tasks with clear patterns), selection may not provide benefits, and the computational cost may not be justified.",
+        "For models with very low base entropy (highly aligned, instruction-tuned models), order effects may be minimal regardless of selection method, reducing the benefit of entropy-based selection.",
+        "When the probing set is too small (e.g., &lt;100 examples), entropy estimates may be unreliable and lead to poor selection, requiring a minimum probing set size.",
+        "For very long contexts (e.g., &gt;32 examples), the computational cost of entropy estimation may become prohibitive, and approximation methods may be needed.",
+        "When using chain-of-thought or other complex prompting techniques, the entropy computation may need to be adapted to account for the multi-step reasoning process.",
+        "For tasks with highly imbalanced label distributions, entropy-based selection may need to be combined with label-balancing strategies to avoid selecting orderings that reinforce the imbalance."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Lu et al. (2021) Fantastically Ordered Prompts and Where to Find Them [Proposes GlobalE and LocalE entropy-based selection methods but doesn't formalize the entropy-variance relationship or provide a mechanistic explanation]",
+            "Zhao et al. (2021) Calibrate Before Use [Addresses prompt sensitivity and proposes calibration to reduce bias, but focuses on output bias rather than entropy and doesn't explain order effects]",
+            "Liu et al. (2022) What Makes Good In-Context Examples for GPT-3? [Studies example selection based on similarity and other features, but doesn't focus on order or entropy]",
+            "Rubin et al. (2022) Learning To Retrieve Prompts for In-Context Learning [Proposes learning-based prompt selection but doesn't use entropy as the selection criterion]",
+            "Min et al. (2022) Rethinking the Role of Demonstrations [Studies the role of example content vs. format in ICL, but doesn't focus on order-entropy relationship]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 3,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

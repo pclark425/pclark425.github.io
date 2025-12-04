@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-4687 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-4687</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-4687</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-102.html">extraction-schema-102</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <p><strong>Paper ID:</strong> paper-cf36236015c9f93f15bfafbf282f69e08bdc9c16</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/cf36236015c9f93f15bfafbf282f69e08bdc9c16" target="_blank">Transformer Feed-Forward Layers Build Predictions by Promoting Concepts in the Vocabulary Space</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> This work reverse-engineering the operation of the feed-forward network layers, one of the building blocks of transformer models, shows that each update can be decomposed to sub-updates corresponding to single FFN parameter vectors, each promoting concepts that are often human-interpretable.</p>
+                <p><strong>Paper Abstract:</strong> Transformer-based language models (LMs) are at the core of modern NLP, but their internal prediction construction process is opaque and largely not understood. In this work, we make a substantial step towards unveiling this underlying prediction process, by reverse-engineering the operation of the feed-forward network (FFN) layers, one of the building blocks of transformer models. We view the token representation as a changing distribution over the vocabulary, and the output from each FFN layer as an additive update to that distribution. Then, we analyze the FFN updates in the vocabulary space, showing that each update can be decomposed to sub-updates corresponding to single FFN parameter vectors, each promoting concepts that are often human-interpretable. We then leverage these findings for controlling LM predictions, where we reduce the toxicity of GPT2 by almost 50%, and for improving computation efficiency with a simple early exit rule, saving 20% of computation on average.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-4687",
+    "paper_id": "paper-cf36236015c9f93f15bfafbf282f69e08bdc9c16",
+    "extraction_schema_id": "extraction-schema-102",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0050295,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Transformer Feed-Forward Layers Build Predictions by Promoting Concepts in the Vocabulary Space</h1>
+<p>Mor Geva ${ }^{<em>, 1} \quad$ Avi Caciularu ${ }^{</em>, 2, \dagger} \quad$ Kevin Ro Wang ${ }^{3} \quad$ Yoav Goldberg ${ }^{1,2}$<br>${ }^{1}$ Allen Institute for AI ${ }^{2}$ Bar-Ilan University ${ }^{3}$ Independent Researcher<br>morp@allenai.org,(avi.c33,kevinrowang, yoav.goldberg)@gmail.com</p>
+<h4>Abstract</h4>
+<p>Transformer-based language models (LMs) are at the core of modern NLP, but their internal prediction construction process is opaque and largely not understood. In this work, we make a substantial step towards unveiling this underlying prediction process, by reverseengineering the operation of the feed-forward network (FFN) layers, one of the building blocks of transformer models. We view the token representation as a changing distribution over the vocabulary, and the output from each FFN layer as an additive update to that distribution. Then, we analyze the FFN updates in the vocabulary space, showing that each update can be decomposed to sub-updates corresponding to single FFN parameter vectors, each promoting concepts that are often human-interpretable. We then leverage these findings for controlling LM predictions, where we reduce the toxicity of GPT2 by almost $50 \%$, and for improving computation efficiency with a simple early exit rule, saving $20 \%$ of computation on average. ${ }^{\dagger}$</p>
+<h2>1 Introduction</h2>
+<p>How do transformer-based language models (LMs) construct predictions? We study this question through the lens of the feed-forward network (FFN) layers, one of the core components in transformers (Vaswani et al., 2017). Recent work showed that these layers play an important role in LMs, acting as memories that encode factual and linguistic knowledge (Geva et al., 2021; Da et al., 2021; Meng et al., 2022). In this work, we investigate how outputs from the FFN layers are utilized internally to build predictions.</p>
+<p>We begin by making two observations with respect to the representation of a single token in the input, depicted in Fig. 1. First, each FFN layer</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Illustration of our findings. Feed-forward layers apply additive updates (A) to the token representation $\mathbf{x}$, which can be interpreted as a distribution over the vocabulary (B). An update is a set of sub-updates induced by parameter vectors $\mathbf{v}<em d__m="d_{m" t="t">{1}, \ldots, \mathbf{v}</em>)$, each can be interpreted as a concept in the vocabulary space (D).
+induces an additive update to the token representation (Fig. 1,A). Second, the token representation across the layers can be translated at any stage to a distribution over the output vocabulary (Geva et al., 2021) (Fig. 1,B). We reason that the additive component in the update changes this distribution (§2), namely, FFN layers compute updates that can be interpreted in terms of the output vocabulary.}}(\mathrm{C</p>
+<p>We then decompose the FFN update (§3), interpreting it as a collection of sub-updates, each corresponding to a column in the second FFN matrix (Fig. 1,C) that scales the token probabilities in the output distribution. Through a series of experiments, we find that (a) sub-update vectors across the entire network often encode a small-set of human-interpretable well-defined concepts, e.g. "breakfast" or "pronouns" (§4, Fig. 1,D), and (b) FFN updates rely primarily on token promotion</p>
+<p>(rather than elimination), namely, tokens in the top of the output distribution are those pushed strong enough by sub-updates (§5). Overall, these findings allow fine-grained interpretation of the FFN operation, providing better understanding of the prediction construction process in LMs.</p>
+<p>Beyond interpretation, our findings also have practical utility. In $\S 6.1$, we show how we can intervene in the prediction process, in order to manipulate the output distribution in a direction of our choice. Specifically, we show that increasing the weight of only 10 sub-updates in GPT2 reduces toxicity in its generations by almost $50 \%$. Also, in $\S 6.2$, we show that dominant sub-updates provide a useful signal for predicting an early exit point, saving $20 \%$ of the computation on average.</p>
+<p>In conclusion, we investigate the mechanism in which FFN layers update the inner representations of transformer-based LMs. We propose that the FFN output can be viewed as a collection of updates that promote concrete concepts in the vocabulary space, and that these concepts are often interpretable for humans. Our findings shed light on the prediction construction process in modern LMs, suggesting promising research directions for interpretability, control, and efficiency.</p>
+<h2>2 Token Representations as Evolving Distributions Over the Vocabulary</h2>
+<p>Modern LMs (Baevski and Auli, 2019; Radford et al., 2019; Brown et al., 2020) are transformer models primarily trained to predict the next token probability for a given input. Such LMs are composed of intertwined multi-head self-attention (MHSA) layers and FFN layers (Vaswani et al., 2017), with residual connections (He et al., 2016) between each pair of consecutive layers. The LM prediction is obtained by projecting the output vector from the final layer to an embedding matrix $E \in \mathbb{R}^{|\mathcal{V}| \times d}$, with a hidden dimension $d$, to get a distribution over a vocabulary $\mathcal{V}$ (after softmax).</p>
+<p>Given a sequence $\mathbf{w}=\left\langle w_{1}, \ldots, w_{t}\right\rangle$ of input tokens, the model creates a contextualized representation $\mathbf{x}<em i="i">{i} \in \mathbb{R}^{d}$ for each token $w</em>} \in \mathbf{w}$, that is being updated throughout the layers. In this work, we analyze the updates applied by the FFN layers and how they construct the model prediction. Concretely, each FFN layer $\ell=1, \ldots, L$ processes $\mathbf{x<em i="i">{i}^{\ell}$ and produces an output $\mathbf{o}</em>}^{\ell}$, which is then added to $\mathbf{x<em i="i">{i}^{\ell}$ to
+yield an updated representation $\tilde{\mathbf{x}}</em>$ :}^{\ell</p>
+<p>$$
+\begin{aligned}
+&amp; \mathbf{o}<em i="i">{i}^{\ell}=\operatorname{FFN}^{\ell}\left(\mathbf{x}</em>\right) \
+&amp; \tilde{\mathbf{x}}}^{\ell<em i="i">{i}^{\ell}=\mathbf{x}</em>
+\end{aligned}
+$$}^{\ell}+\mathbf{o}_{i}^{\ell</p>
+<p>The updated representation $\tilde{\mathbf{x}}<em i="i">{i}^{\ell}$ then goes through a MHSA layer, ${ }^{2}$ yielding the input $\mathbf{x}</em>}^{\ell+1}$ for the next FFN layer. The evolving representation in this process (i.e. $\mathbf{x<em i="i">{i}^{\ell} \rightarrow \tilde{\mathbf{x}}</em>, \forall \ell$ ) can be viewed as an information stream that is being processed and updated by the layers (Elhage et al., 2021). The output probability distribution is obtained from the final representation of the token, i.e.,}^{\ell</p>
+<p>$$
+\mathbf{y}=\operatorname{softmax}\left(E \tilde{\mathbf{x}}_{i}^{\ell}\right)
+$$</p>
+<p>To analyze the FFN updates, we read from the representation at any layer a distribution over the output vocabulary, by applying the same projection as in Eq. 1 (Geva et al., 2021):</p>
+<p>$$
+\begin{aligned}
+&amp; \mathbf{p}<em i="i">{i}^{\ell}=\operatorname{softmax}\left(E \mathbf{x}</em>\right) \
+&amp; \tilde{\mathbf{p}}}^{\ell<em i="i">{i}^{\ell}=\operatorname{softmax}\left(E \tilde{\mathbf{x}}</em>\right)
+\end{aligned}
+$$}^{\ell</p>
+<p>Note that $\tilde{\mathbf{p}}_{i}^{\ell}=\mathbf{y}$. Importantly, by linearity:</p>
+<p>$$
+E \tilde{\mathbf{x}}<em i="i">{i}^{\ell}=E \mathbf{x}</em>
+$$}^{\ell}+E \mathbf{o}_{i}^{\ell</p>
+<p>implying that $\mathbf{o}<em i="i">{i}^{\ell}$ can be interpreted as an additive update in the vocabulary space. However, we find that the projection of the FFN output $E \mathbf{o}</em>$ into a set of smaller sub-updates. By projecting the sub-updates to the vocabulary we find that they often express human-interpretable concepts.}^{\ell}$ to the vocabulary is not interpretable (§4). In this work, we take this a step further, and decompose the update $\mathbf{o}_{i}^{\ell</p>
+<p>In the rest of the paper, we focus on FFN updates to the representation of a single token in the sequence, and omit the token index for brevity, i.e. $\mathbf{x}^{\ell}:=\mathbf{x}<em i="i">{i}^{\ell}$ and $\mathbf{p}^{\ell}:=\mathbf{p}</em>$.}^{\ell</p>
+<h2>3 The FFN Output as a Collection of Updates to the Output Distribution</h2>
+<p>We now decompose the FFN output, and interpret it as a set of sub-updates in the vocabulary space.</p>
+<h2>FFN Outputs as Linear Vector Combinations.</h2>
+<p>Each FFN at layer $\ell$ consists of two linear transformations with a point-wise activation function in between (bias terms are omitted):</p>
+<p>$$
+\operatorname{FFN}^{\ell}\left(\mathbf{x}^{\ell}\right)=f\left(W_{K}^{\ell} \mathbf{x}^{\ell}\right) W_{V}^{\ell}
+$$</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>where $W_{K}^{\ell}, W_{V}^{\ell} \in \mathbb{R}^{d_{m} \times d}$ are parameter matrices, and $f$ is a non-linearity function. Previous work proposed this module can be cast as an emulated neural key-value memory (Sukhbaatar et al., 2015, 2019), where rows in $W_{K}^{\ell}$ and columns in $W_{V}^{\ell}$ are viewed as keys and values, respectively (Geva et al., 2021). For an input $\mathbf{x}^{\ell}$, the keys produce a vector of coefficients $\mathbf{m}^{\ell}:=f\left(W_{K}^{\ell} \mathbf{x}^{\ell}\right) \in \mathbb{R}^{d_{m}}$, that weighs the corresponding values in $W_{V}^{\ell}$. Denoting by $\mathbf{k}<em K="K">{i}^{\ell}$ the $i$-th row of $W</em>}^{\ell}$ and by $\mathbf{v<em V="V">{i}^{\ell}$ the $i$-th column of $W</em>$, we can then use the following formulation:}^{\ell</p>
+<p>$$
+\operatorname{FFN}^{\ell}\left(\mathbf{x}^{\ell}\right)=\sum_{i=1}^{d_{m}} f\left(\mathbf{x}^{\ell} \cdot \mathbf{k}<em i="i">{i}^{\ell}\right) \mathbf{v}</em>
+$$}^{\ell}=\sum_{i=1}^{d_{m}} m_{i}^{\ell} \mathbf{v}_{i}^{\ell</p>
+<p>Therefore, a FFN update can be viewed as a collection of sub-updates, each corresponding to a weighted value vector in the FFN output.</p>
+<p>Terminology. In the rest of the paper, we refer to the vectors $\mathbf{v}<em i="i">{i}^{\ell}$ as value vectors, and to their weighted form $m</em>}^{\ell} \mathbf{v<em m="m">{i}^{\ell}$ as sub-updates. A transformer LM with $L=10, d</em>=3000$ will have 30,000 value vectors, and every token that passes through the transformer will weight these value vectors differently, resulting in 30,000 sub-updates, where only a few of the sub-updates have high weights.</p>
+<p>Interpreting Sub-Updates in the Vocabulary Space. Consider a sub-update $m_{i}^{\ell} \mathbf{v}<em i="i">{i}^{\ell}$ for a given input, we can estimate its influence on the representation $\mathbf{x}^{\ell}$ (before the FFN update) by analyzing the change it induces on the output distribution. Concretely, we isolate the effect of $m</em>}^{\ell} \mathbf{v<em w="w">{i}^{\ell}$ on the probability $\mathbf{p}</em>$}^{\ell}$ of $w \in \mathcal{V}:^{3</p>
+<p>$$
+\begin{aligned}
+&amp; p\left(w \mid \mathbf{x}^{\ell}+m_{i}^{\ell} \mathbf{v}<em w="w">{i}^{\ell}, E\right) \
+&amp; \quad=\frac{\exp \left(\mathbf{e}</em>} \cdot \mathbf{x}^{\ell}+\mathbf{e<em i="i">{w} \cdot m</em>}^{\ell} \mathbf{v<em i="i">{i}^{\ell}\right)}{Z\left(E\left(\mathbf{x}^{\ell}+m</em>}^{\ell} \mathbf{v<em w="w">{i}^{\ell}\right)\right)} \
+&amp; \quad \propto \exp \left(\mathbf{e}</em>} \cdot \mathbf{x}^{\ell}\right) \cdot \exp \left(\mathbf{e<em i="i">{w} \cdot m</em>\right)
+\end{aligned}
+$$}^{\ell} \mathbf{v}_{i}^{\ell</p>
+<p>where $\mathbf{e}_{w}$ is the embedding of $w$, and $Z(\cdot)$ is the constant softmax normalization factor.</p>
+<p>This implies that each sub-update $m_{i}^{\ell} \mathbf{v}<em w="w">{i}^{\ell}$ introduces a scaling factor to the probability of every token $w$ based on its dot product with $\mathbf{e}</em>}$. Specifically, having $\mathbf{e<em i="i">{w} \cdot m</em>}^{\ell} \mathbf{v<em w="w">{i}^{\ell}&gt;0$ increases the probability of $w$, and having $\mathbf{e}</em>&lt;0$ decreases it. This scaling factor can be split into two parts:} \cdot m_{i}^{\ell} \mathbf{v}_{i}^{\ell</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup>- The term $\mathbf{e}<em i="i">{w} \cdot \mathbf{v}</em>}^{\ell}$ can be viewed as a static score of $w$ that is independent of the input to the model. Thus, the projection $\mathbf{r<em i="i">{i}^{\ell}=E \mathbf{v}</em>}^{\ell} \in \mathbb{R}^{|\mathcal{V}|}$ induces a ranking over the vocabulary that allows comparing the scores by $\mathbf{v<em i="i">{i}^{\ell}$ w.r.t different tokens.
+- The term $m</em>}^{\ell}$ is the dynamic coefficient of $\mathbf{v<em w="w">{i}^{\ell}$, which is fixed for all tokens for a given input. Thus, these coefficients allow comparing the contribution of value vectors in a specific update.
+Overall, the scaling factor $\mathbf{e}</em>} \cdot m_{i}^{\ell} \mathbf{v<em i="i">{i}^{\ell}$ can be viewed as the effective score given by a value vector $\mathbf{v}</em>$ to a token $w$ for a given input.}^{\ell</p>
+<p>In the next sections, we use these observations to answer two research questions of (a) What information is encoded in sub-updates and what tokens do they promote? (§4) and (b) How do FFN updates build the output probability distribution? (§5)</p>
+<h2>4 Sub-Updates Encode Concepts in the Vocabulary Space</h2>
+<p>We evaluate whether projection to the vocabulary provides a meaningful way to "read" FFN updates, and the extent to which sub-updates are interpretable based on their projections. To this end, we manually inspect the top-scoring tokens by value vectors and check if they express interpretable concepts. Concretely, we consider two representative LMs (details below), and for each vector $\mathbf{v}<em i="i">{i}^{\ell}$ compute a ranking over the vocabulary by sorting the projection $\mathbf{r}</em>$ (§3). Then, we try to detect patterns in the top-scoring tokens of each value vector.}^{\ell</p>
+<p>Concepts Annotation Task. We let experts (NLP graduate students) annotate concepts by identifying common patterns among the top-30 scoring tokens of each value vector. For a set of tokens, the annotation protocol includes three steps of: (a) Identifying patterns that occur in at least 4 tokens, (b) describing each recognized pattern, and (c) classifying each pattern as either "semantic" (e.g., mammals), "syntactic" (e.g., past-tense verbs), or "names". The last class was added only for WiKiLM (see below), following the observation that a large portion of the model's vocabulary consists of names. Further details, including the complete instructions and a fully annotated example can be found in App. A.2.</p>
+<p>Models. We conduct our experiments over two auto-regressive decoder LMs: The model of Baevski and Auli (2019) (dubbed WiKiLM), a 16-layer LM trained on the WikiText-103</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Portion of top-scoring tokens by value vectors in WIKILM and GPT2, that were associated with a semantic or syntactic concept, a name, or could not be matched to any concept ("N/A").</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Concept</th>
+<th style="text-align: center;">Sub-update top-scoring tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">GPT2</td>
+<td style="text-align: center;">$\mathbf{v}_{1018}^{S}$</td>
+<td style="text-align: center;">Measurement semantic</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathbf{v}_{1900}^{S}$</td>
+<td style="text-align: center;">WH-relativizers syntactic</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathbf{v}_{2601}^{11}$</td>
+<td style="text-align: center;">Food and drinks semantic</td>
+</tr>
+<tr>
+<td style="text-align: center;">WIKILM</td>
+<td style="text-align: center;">$\mathbf{v}_{1}^{1}$</td>
+<td style="text-align: center;">Pronouns syntactic</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathbf{v}_{3025}^{0}$</td>
+<td style="text-align: center;">Adverbs syntactic</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathbf{v}_{3516}^{13}$</td>
+<td style="text-align: center;">Groups of people semantic</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Example value vectors in GPT2 and WIKILM promoting human-interpretable concepts.
+corpus (Merity et al., 2017) with word-level tokenization $(|\mathcal{V}|=267,744)$, and GPT2 (Radford et al., 2019), a 12-layer LM trained on WEBText (Radford et al., 2019) with sub-word tokenization $(|\mathcal{V}|=50,257)$. GPT2 uses the GeLU activation function (Hendrycks and Gimpel, 2016), while WIKILM uses ReLU, and in contrast to GPT2, WIKILM does not apply layer normalization after FFN updates. WIKILM defines $d=1024, d_{m}=4096$ and GPT2 defines $d=768, d_{m}=3072$, resulting in a total of $65 k$ and $36 k$ value vectors, respectively. For our experiments, we sample 10 random vectors per layer from each model, yielding a total of 160 and 120 vectors to analyze from WIKILM and GPT2, respectively.</p>
+<h3>4.1 Projection of Sub-Updates is Meaningful</h3>
+<p>Real vs. Random Sub-Updates. We validate our approach by comparing concepts in top-tokens of value vectors and 10 random vectors from a normal distribution with the empirical mean and standard deviation of the real vectors. We observe that a substantially higher portion of top-tokens were associated to a concept in value vectors compared to the random ones (Tab. 2): $55.1 \%$ vs. $22.7 \%$ in WIKILM, and $37 \%$ vs. $16 \%$ in GPT2. Also, in both models, the average number of concepts per vector
+was $&gt;1$ in the value vectors compared to $\sim 0.5$ in the random ones. Notably, no semantic nor syntactic concepts were identified in WIKILM's random vectors, and in GPT2, only $4 \%$ of the tokens were marked as semantic concepts in the random vectors versus $24.9 \%$ in the value vectors.</p>
+<p>Updates vs. Sub-Updates. We justify the FFN output decomposition by analyzing concepts in the top-tokens of 10 random FFN outputs per layer (Tab. 2). In WIKILM (GPT2), $39.4 \%$ ( $46 \%$ ) of the tokens were associated with concepts, but for $19.7 \%(34.2 \%)$ the concept was "stopwords/punctuation". Also, we observe very few concepts $(&lt;4 \%)$ in the last two layers of WIKILM. We account this to extreme sub-updates that dominate the layer's output (§5.2). Excluding these concepts results in a considerably lower token coverage in projections of updates compared to those of subupdates: $19.7 \%$ vs. $55.1 \%$ in WIKILM, and $11.8 \%$ vs. $36.7 \%$ in GPT2.</p>
+<p>Overall, this shows that projecting sub-updates to the vocabulary provides a meaningful interface to the information they encode. Moreover, decomposing the FFN outputs is necessary for finegrained interpretation of sub-updates.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">GPT2</th>
+<th style="text-align: center;">WIKILM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">FFN sub-updates</td>
+<td style="text-align: center;">$\mathbf{3 6 . 7 \%}$</td>
+<td style="text-align: center;">$\mathbf{5 5 . 1 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">+ stopwords concepts</td>
+<td style="text-align: center;">$37 \%$</td>
+<td style="text-align: center;">$55.1 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Random sub-updates</td>
+<td style="text-align: center;">$16 \%$</td>
+<td style="text-align: center;">$22.7 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">FFN updates</td>
+<td style="text-align: center;">$11.8 \%$</td>
+<td style="text-align: center;">$19.7 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">+ stopwords concepts</td>
+<td style="text-align: center;">$46 \%$</td>
+<td style="text-align: center;">$39.4 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Portion of top-scoring tokens associated with a concept, for FFN updates and sub-updates in WiKiLM and GPT2, and for random vectors. For FFN updates/sub-updates, we show results with and without counting concepts marked as stopwords.</p>
+<h3>4.2 Sub-Update Projections are Interpretable</h3>
+<p>Fig. 2 shows a breakdown of the annotations across layers, for WiKiLM and GPT2. In both models and across all layers, a substantial portion ( $40 \%$ $70 \%$ in WiKiLM and $20 \%-65 \%$ in GPT2) of the top-tokens were associated with well-defined concepts, most of which were classified as "semantic". Also, we observe that the top-tokens of a single value vector were associated with 1.5 (WIKILM) and 1.1 (GPT2) concepts on average, showing that sub-updates across all layers encode a small-set of well-defined concepts. Examples are in Tab. 1.</p>
+<p>These findings expand on previous results by Geva et al. (2021), who observed that value vectors in the upper layers represent next-token distributions that follow specific patterns. Our results, which hold across all the layers, suggest that these vectors represent general concepts rather than prioritizing specific tokens.</p>
+<p>Underestimation of Concept Frequency. In practice, we find that this task is hard for humans, ${ }^{4}$ as it requires reasoning over a set of tokens without any context, while tokens often correspond to uncommon words, homonyms, or sub-words. Moreover, some patterns necessitate world knowledge (e.g. "villages in Europe near rivers") or linguistic background (e.g. negative polarity items). This often leads to undetectable patterns, suggesting that the overall results are an underestimation of the true concept frequency. Providing additional context and token-related information are possible future directions for improving the annotation protocol.</p>
+<p>Implication for Controlled Generation. If subupdates indeed encode concepts, then we can not only interpret their contribution to the prediction, but also intervene in this process, by increasing the</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 3: Example saturation and elimination events, after a FFN update (reference tokens are in bold text).
+weights of value vectors that promote tendencies of our choice. We demonstrate this in $\S 6.1$.</p>
+<h2>5 FFN Updates Promote Tokens in the Output Distribution</h2>
+<p>We showed that sub-updates often encode interpretable concepts (§4), but how do these concepts construct the output distribution? In this section, we show that sub-updates systematically configure the prediction via promotion of candidate tokens.</p>
+<h3>5.1 Promoted Versus Eliminated Candidates</h3>
+<p>Every sub-update $m_{i}^{\ell} \mathbf{v}<em w="w">{i}^{\ell}$ either increases, decreases, or does not change the probability of a token $w$, according to the score $\mathbf{e}</em>} \cdot m_{i}^{\ell} \mathbf{v<em i="i">{i}^{\ell}$ (§3). This suggests three mechanisms by which tokens are pushed to the top of the output distribution - promotion, where sub-updates increase the probability of favorable tokens, elimination, where sub-updates decrease candidate probabilities, or a mixture of both. To test what mechanism holds in practice, we analyze the scores sub-updates assign to top-candidate tokens by the representation. To simplify the analysis, we focus on changes induced by the 10 most dominant sub-updates in each layer, that is, the 10 sub-updates $m</em>}^{\ell} \mathbf{v<em i="i">{i}^{\ell}$ with the largest contribution to the representation, as measured by $\left|m</em>\right|$ (see details in App. A.3).}^{\ell}\right| \cdot\left|\mathbf{v}_{i}^{\ell</p>
+<p>For the experiments, we use a random sample of 2000 examples from the validation set of WiKiTEXT-103, ${ }^{5}$ which both WiKiLM and GPT2 did not observe during training. As the experiments do not involve human annotations, we use a larger GPT2 model with $L=24, d=1024, d_{m}=4096$.</p>
+<p>We start by comparing the sub-updates' scores to a reference token in two types of events:</p>
+<ul>
+<li>Saturation (Tab. 3, up): The update $\mathbf{p}^{\ell} \rightarrow \tilde{\mathbf{p}}^{\ell}$ where the final token predicted by the model (i.e., $w=\operatorname{argmax}(\mathbf{y})$ ) was promoted to be the top can-</li>
+</ul>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Mean, maximum and minimum scores assigned by the 10 most dominant sub-updates in each layer to the top-candidate token, in GPT2 (left) and WIKILM (right). Solid (dashed) lines exclude (include) functional value vector groups. The y-axis in both plots is cut for readability, as the max. (min.) scores reach 100 (-6).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Sub-updates</th>
+<th style="text-align: center;">Event</th>
+<th style="text-align: center;">Max.</th>
+<th style="text-align: center;">Mean</th>
+<th style="text-align: center;">Min.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">WIKILM, dominant</td>
+<td style="text-align: center;">saturation</td>
+<td style="text-align: center;">1.2</td>
+<td style="text-align: center;">$&lt;0.01$</td>
+<td style="text-align: center;">$-0.8$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">elimination</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">$-0.01$</td>
+<td style="text-align: center;">$-0.5$</td>
+</tr>
+<tr>
+<td style="text-align: center;">WIKILM, random</td>
+<td style="text-align: center;">saturation</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">$&lt;0.01$</td>
+<td style="text-align: center;">$-0.02$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">elimination</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">$&lt;0.01$</td>
+<td style="text-align: center;">$-0.02$</td>
+</tr>
+<tr>
+<td style="text-align: center;">GPT2, dominant</td>
+<td style="text-align: center;">saturation</td>
+<td style="text-align: center;">8.5</td>
+<td style="text-align: center;">1.3</td>
+<td style="text-align: center;">$-4.9$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">elimination</td>
+<td style="text-align: center;">4.0</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">$-3.6$</td>
+</tr>
+<tr>
+<td style="text-align: center;">GPT2, random</td>
+<td style="text-align: center;">saturation</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">$-0.2$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">elimination</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">$&lt;0.01$</td>
+<td style="text-align: center;">$-0.1$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Maximum, mean, and minimum scores of reference tokens in saturation and elimination events, by the 10 most dominant and 10 random sub-updates.
+didate until the last layer. We analyze saturation events induced by the FFN before the last layer, covering 1184 and 1579 events in WIKILM and GPT2, respectively.</p>
+<ul>
+<li>Elimination (Tab. 3, bottom): The update $\mathbf{p}^{\ell} \rightarrow$ $\tilde{\mathbf{p}}^{\ell}$ with the largest increase in the top candidate's rank, i.e. where the top candidate was dropped behind other candidates to have a rank $&gt;1$. Overall, our analysis covers 1909 (WIKILM) and 1996 (GPT2) elimination events.</li>
+</ul>
+<p>We compute the mean, maximum, and minimum scores of the reference token by the 10 most dominant sub-updates in each event, and average over all the events. As a baseline, we compute the scores by 10 random sub-updates from the same layer.</p>
+<p>Tab. 4 shows the results. In both models, tokens promoted to the top of the distribution receive higher maximum scores than tokens eliminated from the top position ( $1.2 \rightarrow 0.5$ in WIKILM and $8.5 \rightarrow 4.0$ in GPT2), indicating they are pushed strongly by a few dominant sub-updates. Moreover, tokens eliminated from the top of the distribution receive near-zero mean scores, by both dominant and
+random sub-updates, suggesting they are not being eliminated directly. In contrast to promoted tokens, where the maximum scores are substantially higher than the minimal scores ( 1.2 vs. -0.8 in WIKILM and 8.5 vs. -4.9 in GPT2), for eliminated tokens, the scores are similar in their magnitude ( $\pm 0.5$ in WIKILM and 4.0 vs. -3.6 in GPT2). Last, scores by random sub-updates are dramatically lower in magnitude, showing that our choice of sub-updates is meaningful and that higher coefficients translate to greater influence on the output distribution.</p>
+<p>This suggests that FFN updates work in a promotion mechanism, where top-candidate tokens are those being pushed by dominant sub-updates.</p>
+<h3>5.2 Sub-Updates Across Layers</h3>
+<p>To analyze the FFN operation in different layers, we break down the top-candidate scores per layer. Formally, let $w^{\ell}=\operatorname{argmax}\left(\mathbf{p}^{\ell}\right)$ be the top candidate at layer $\ell$ (before the FFN update) for a given input, we extract the scores $\mathbf{e}<em i="i">{w^{\ell}} \cdot m</em>$ by the 10 most dominant sub-updates and compute the mean, minimum and maximum scores over that set.}^{\ell} \mathbf{v}_{i}^{\ell</p>
+<p>Fig. 3 shows that, in both models, until the last few layers (23-24 in GPT2 and 14-16 in WIKILM), maximum and minimum scores are distributed around non-negative mean scores, with prominent peaks in maximum scores (layers 3-5 in GPT2 and layers 4-11 in WiKiLM). This suggests that the token promotion mechanism generally holds across layers. However, scores diverge in the last layers of both models, with strong negative minimum scores, indicating that the probability of the top-candidate is pushed down by dominant sub-updates. We next show that these large deviations in positive and negative scores (Fig. 3, dashed lines) result from the operation of small sets of functional value vectors.</p>
+<p>Extreme Sub-Updates. To analyze the extreme FFN updates, we first cluster the value vectors to discover high-level trends. We use agglomerative clustering (Müllner, 2011) to learn 10k clusters for each model, based on the cosine distance matrix $D$, where $D_{\left(\ell_{1}, i_{1}\right),\left(\ell_{2}, i_{2}\right)}=1-\cos \left(\mathbf{v}<em 1="1">{i</em>}}^{\ell_{1}}, \mathbf{v<em 2="2">{i</em>$ Then, we search for clusters that are frequently active in extreme updates, by (a) extracting subupdates where the scores for the top-candidate pass a certain threshold ( $\pm 10$ for GPT2 and $\pm 5$ for WikiLM), and (b) counting the appearances of each cluster in the layer sub-updates.}}^{\ell_{2}}\right)$, $\forall i_{1}, i_{2} \in\left{1, \cdots, d_{m}\right}, \forall \ell_{1}, \ell_{2} \in{1, \cdots, L} .{ }^{6</p>
+<p>In both models, a small set of homogeneous clusters account for the extreme sub-updates shown in Fig. 3, which can be divided into two main groups of value vectors: Vectors in the upper layers that promote generally unlikely tokens (e.g. rare tokens), and vectors that are spread over all the layers and promote common tokens (e.g. stopwords). These clusters, which cover only a small fraction of the value vectors ( $1.7 \%$ in GPT2 and $1.1 \%$ in WikiLM), are mostly active for examples where the input sequence has $\leq 3$ tokens or when the target token can be easily inferred from the context (e.g. end-of-sentence period), suggesting that these value vectors might configure "easy" model predictions. More interestingly, the value vectors that promote unlikely tokens can be viewed as "saturation vectors", which propagate the distribution without changing the top tokens. Indeed, these vectors are in the last layers, where often the model already stores its final prediction (Geva et al., 2021).</p>
+<h2>6 Applications</h2>
+<p>We leverage our findings for controlled text generation (§6.1) and computation efficiency (§6.2).</p>
+<h3>6.1 Zero-Shot Toxic Language Suppression</h3>
+<p>LMs are known to generate toxic, harmful language that damages their usefulness (Bender et al., 2021; McGuffie and Newhouse, 2020; Wallace et al., 2019). We utilize our findings to create a simple, intuitive method for toxic language suppression.</p>
+<p>Method. If LMs indeed operate in a promotion mechanism, we reason that we can decrease toxicity by "turning on" non-toxic sub-updates. We find value vectors that promote safe, harmless concepts by extracting the top-tokens in the projections of all</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup>the value vectors and either (a) manually searching for vectors that express a coherent set of positive words (e.g. "safe" and "thank"), or (b) grading the tokens with the Perspective API and selecting non-toxic value vectors (see details in App. A.4). We turn on these value vectors by setting their coefficients to 3 , a relatively high value according to Fig. 3. We compare our method with two baselines:</p>
+<ol>
+<li>Self-Debiasing (SD) (Schick et al., 2021): SD generates a list of undesired words for a given prompt by appending a self-debiasing input, which encourages toxic completions, and calculating which tokens are promoted compared to the original prompt. These undesired words' probability are then decreased according to a decay constant $\lambda$, which we set to 50 (default).</li>
+<li>WordFilter: We prevent GPT2 from generating words from a list of banned words by setting any logits that would result in a banned word completion to $-\infty$ (Gehman et al., 2020).</li>
+</ol>
+<p>Evaluation. We evaluate our method on the challenging subset of REALTOXICPROMPTS (Gehman et al., 2020), a collection of 1,225 prompts that tend to yield extremely toxic completions in LMs, using the Perspective API, which grades text according to six toxicity attributes. A score of $&gt;0.5$ indicates a toxic text w.r.t to the attribute. Additionally, we compute perplexity to account for changes in LM performance. We use GPT2 and, following Schick et al. (2021), generate continuations of 20 tokens.</p>
+<p>Results. Finding the non-toxic sub-updates manually was intuitive and efficient (taking $&lt;5$ minutes). Tab. 5 shows that activation of only 10 value vectors ( $0.01 \%$ ) substantially decreases toxicity ( $147 \%$ ), outperforming both SD ( $137 \%$ ) and WordFilter ( $120 \%$ ). Moreover, inducing subupdates that promote "safety" related concepts is more effective than promoting generally non-toxic sub-updates. However, our method resulted in a perplexity increase greater than this induced by SD, though the increase was still relatively small.</p>
+<h3>6.2 Self-Supervised Early Exit Prediction</h3>
+<p>The recent success of transformer-based LMs in NLP tasks has resulted in major production cost increases (Schwartz et al., 2020a), and thus has spurred interest in early-exit methods that reduce the incurred costs (Xu et al., 2021). Such methods often use small neural models to determine when to stop the execution process (Schwartz et al., 2020b;</p>
+<p>| Model | Toxicity | Severe <br> toxicity | Sexually <br> explicit | Threat | Profanity | Identity <br> attack | PPL |
+| :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: |
+| GPT2 | $58.5 \%$ | $49.2 \%$ | $34.1 \%$ | $16.4 \%$ | $52.5 \%$ | $16.8 \%$ | 21.7 |
+| $\uparrow 10$ Manual Pick | $\downarrow 47 \% 30.8 \%$ | $\downarrow 50 \% 24.8 \%$ | $\downarrow 40 \% 20.4 \%$ | $\downarrow 63 \% 6.0 \%$ | $\downarrow 47 \% 27.9 \%$ | $\downarrow 48 \% 8.8 \%$ | 25.3 |
+| $\uparrow 10$ API Graded | $\downarrow 10 \% 52.7 \%$ | $\downarrow 11 \% 44 \%$ | $\downarrow 3 \% 33.2 \%$ | $\downarrow 19 \% 13.3 \%$ | $\downarrow 9 \% 47.6 \%$ | $\downarrow 9 \% 15.3 \%$ | 23.8 |
+| SD | $\downarrow 37 \% 37.2 \%$ | $\downarrow 46 \% 26.4 \%$ | $\downarrow 36 \% 21.7 \%$ | $\downarrow 52 \% 7.8 \%$ | $\downarrow 39 \% 32 \%$ | $\downarrow 50 \% 8.4 \%$ | 23.9 |
+| WORDFILTER | $\downarrow 20 \% 46.9 \%$ | $\downarrow 34 \% 32.4 \%$ | $\downarrow 36 \% 21.9 \%$ | $\downarrow&lt;1 \% 16.3 \%$ | $\downarrow 38 \% 32.3 \%$ | $\downarrow 13 \% 14.7 \%$ | - |</p>
+<p>Table 5: Evaluation results on the challenging subset of RealToxicPrompts, showing the percentage of toxic completions for 6 toxicity attributes, as well as language model perplexity ("PPL").</p>
+<p>Elbayad et al., 2020; Hou et al., 2020; Xin et al., 2020, 2021; Li et al., 2021; Schuster et al., 2021).</p>
+<p>In this section, we test our hypothesis that dominant FFN sub-updates can signal a saturation event (§5.2), to create a simple and effective early exiting method that does not involve any external model training. For the experiments, we use WIKILM, where saturation events occur across all layers (statistics for WIKILM and GPT2 are in App. A.5).</p>
+<p>Method. We devise a simple prediction rule based on a nearest-neighbours approach, using 10k validation examples from WIKITEXT-103. First, for every example, we map the top-10 dominant sub-updates at each layer to their corresponding clusters. Then, for every layer $\ell$, we split all the sets of clusters at that layer into two sets, $T^{\ell}$ and $N^{\ell}$, based on whether saturation occurred or not (e.g., $T^{5}$ stores all the sets that were active in a saturation event at layer 5). Given the top-10 clusters of an unseen example at some layer $\ell$, we consider a higher overlap with $T^{\ell}$ than with $N^{\ell^{\prime}}, \forall \ell^{\prime}&gt;\ell$ as a signal for early exit. Thus, during inference, we propagate the input example through the layers, and compute at each layer $\ell$ the intersection size between its top-10 active clusters and each of $T^{\ell}$ and $N^{\ell^{\prime}}, \forall \ell^{\prime}&gt;\ell$. If the average and maximal intersection with $T^{\ell}$ exceeds those with $N^{\ell^{\prime}}, \forall \ell^{\prime}&gt;\ell$, we halt the computation and declare early exiting. ${ }^{7}$</p>
+<p>Baselines. We train layer-wise binary classifiers over the representation and FFN updates $\mathbf{x}^{\ell}, \mathbf{o}^{\ell}$, and $\tilde{\mathbf{x}}^{\ell}$, using logistic regression. As in our method, the labels are determined according to saturation events in the training data (see App. A.5). During inference, we execute the computation through the layers, and halt according to the layer classifier.</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 6: Early exit evaluation results on WIKILM.
+Evaluation. Each method is evaluated by accuracy, i.e., the portion of examples for which exiting at the predicted layer yields the final model prediction, and by computation efficiency, measured by the amount of saved layers for examples with correct prediction. We run each method with five random seeds and report the average scores.</p>
+<p>Results. Tab. 6 shows that our method obtains a high accuracy of $94.1 \%$, while saving $20 \%$ of computation on average without changing the prediction. Moreover, just by observing the dominant FFN sub-updates, it performs on-par with the prediction rules relying on the representation and FFN output vectors. This demonstrates the utility of sub-updates for predicting saturation events, and further supports our hypothesis that FFN updates play a functional role in the prediction (§5.2).</p>
+<h2>7 Related Work</h2>
+<p>The lack of interpretability of modern LMs has led to a wide interest in understanding their prediction construction process. Previous works mostly focused on analyzing the evolution of hidden representations across layers (Voita et al., 2019), and probing the model with target tasks (Yang et al., 2020; Clark et al., 2019; Tenney et al., 2019; Saphra and Lopez, 2019). In contrast, our approach aims to interpret the model parameters and their utilization in the prediction process.</p>
+<p>More recently, a surge of works have investigated the knowledge captured by the FFN layers (Da et al., 2021; Jiang et al., 2020; Dai et al., 2022;</p>
+<p>Yao et al., 2022; Meng et al., 2022; Wallat et al., 2020). These works show that the FFN layers store various types of knowledge, which can be located in specific neurons and edited. Unlike these works, we focus on the FFN outputs and their contribution in the prediction construction process.</p>
+<p>Last, our interpretation of FFN outputs as updates to the output distribution relates to recent works that interpreted groups of LM parameters in the discrete vocabulary space (Geva et al., 2021; Khashabi et al., 2022), or viewed the representation as an information stream (Elhage et al., 2021).</p>
+<h2>8 Conclusions</h2>
+<p>Understanding the inner workings of transformers is valuable for explainability to end-users, for debugging predictions, for eliminating undesirable behavior, and for understanding the strengths and limitations of NLP models. The FFN is an understudied core component of transformer-based LMs, which we focus on in this work.</p>
+<p>We study the FFN output as a linear combination of parameter vectors, termed values, and the mechanism by which these vectors update the token representations. We show that value vectors often encode human-interpretable concepts and that these concepts are promoted in the output distribution.</p>
+<p>Our analysis of transformer-based LMs provides a more detailed understanding of their internal prediction process, and suggests new research directions for interpretability, control, and efficiency, at the level of individual vectors.</p>
+<h2>Limitations</h2>
+<p>Our study focused on the operation of FFN layers in building model predictions. Future work should further analyze the interplay between these layers and other components in the network, such as attention-heads.</p>
+<p>In our analysis, we decomposed the computation of FFN layers into smaller units, corresponding to single value vectors. However, it is possible that value vectors are compositional in the sense that combinations of them may produce new meanings. Still, we argue that analyzing individual value vectors is an important first step, since (a) the space of possible combinations is exponential, and (b) our analysis suggests that aggregation of value vectors is less interpretable than individual value vectors (§4.1). Thus, this approach opens new directions
+for interpreting the contribution of FFN layers to the prediction process in transformer LMs.</p>
+<p>In addition, we chose to examine the broad family of decoder-based, auto-regressive LMs, which have been shown to be extremely effective for many NLP tasks, including few- and zero-shot tasks (Wang et al., 2022). While these models share the same building blocks of all transformer-based LMs, it will be valuable to ensure that our findings still hold for other models, such as encoder-only LMs (e.g. RoBERTa (Liu et al., 2019)) and models trained with different objective functions (e.g. masked language modeling (Devlin et al., 2019)).</p>
+<p>Finally, our annotation effort was made for the evaluation of our hypothesis that sub-updates encode human-interpretable concepts. Scaling our annotation protocol would enable a more refined map of the concepts, knowledge and structure captured by LMs. Furthermore, since our concept interpretation approach relies on manual inspection of sets of tokens, its success might depend on the model's tokenization method. In this work, we analyzed models with two different commonly-used tokenizers, and future research could verify our method over other types of tokenizations as well.</p>
+<h2>Ethics Statement</h2>
+<p>Our work in understanding the role that singlevalues play in the inference that transformer-based LMs perform potentially improves their transparency, while also providing useful control applications that save energy (early-exit prediction) and increase model harmlessness (toxic language suppression). It should be made clear that our method for toxic language suppression only reduces the probability of toxic language generation and does not eliminate it. As such, this method (as well as our early-exit method) should not be used in the real world without further work and caution.</p>
+<p>More broadly, our work suggests a general approach for modifying LM predictions in particular directions, by changing the weights of FFN subupdates. While this is useful for mitigating biases, it also has the potential for abuse. It should be made clear that, as in the toxic language suppression application, our approach does not modify the information encoded in LMs, but only changes the intensity in which this information is exposed in the model's predictions. Moreover, our work primarily proposes an interpretation for FFN sub-updates, which also could be used to identify abusive inter-</p>
+<p>ventions. Regardless, we stress that LMs should not be integrated into critical systems without caution and monitoring.</p>
+<h2>Acknowledgements</h2>
+<p>We thank Shauli Ravfogel, Tal Schuster, and Jonathan Berant for helpful feedback and constructive suggestions. This project has received funding from the Computer Science Scholarship granted by the Séphora Berrebi Foundation, the PBC fellowship for outstanding PhD candidates in Data Science, and the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme, grant agreement No. 802774 (iEXTRACT).</p>
+<h2>References</h2>
+<p>Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinton. 2016. Layer normalization. arXiv preprint arXiv:1607.06450.</p>
+<p>Alexei Baevski and Michael Auli. 2019. Adaptive input representations for neural language modeling. In International Conference on Learning Representations (ICLR).</p>
+<p>Emily M Bender, Timnit Gebru, Angelina McMillanMajor, and Shmargaret Shmitchell. 2021. On the dangers of stochastic parrots: Can language models be too big? In Proceedings of the ACM Conference on Fairness, Accountability, and Transparency (FAccT).</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei. 2020. Language models are few-shot learners. In Advances in Neural Information Processing Systems (NeurIPS).</p>
+<p>Kevin Clark, Urvashi Khandelwal, Omer Levy, and Christopher D. Manning. 2019. What does BERT look at? an analysis of BERT's attention. In Proceedings of the 2019 ACL Workshop BlackboxNLP: Analyzing and Interpreting Neural Networks for NLP, pages 276-286, Florence, Italy. Association for Computational Linguistics.</p>
+<p>Jeff Da, Ronan Le Bras, Ximing Lu, Yejin Choi, and Antoine Bosselut. 2021. Analyzing commonsense emergence in few-shot knowledge models. In 3rd Conference on Automated Knowledge Base Construction.</p>
+<p>Damai Dai, Li Dong, Yaru Hao, Zhifang Sui, Baobao Chang, and Furu Wei. 2022. Knowledge neurons in pretrained transformers. In Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 84938502, Dublin, Ireland. Association for Computational Linguistics.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In North American Association for Computational Linguistics (NAACL), pages 4171-4186, Minneapolis, Minnesota.</p>
+<p>Maha Elbayad, Jiatao Gu, Edouard Grave, and Michael Auli. 2020. Depth-adaptive transformer. In International Conference on Learning Representations (ICLR).</p>
+<p>Nelson Elhage, Neel Nanda, Catherine Olsson, Tom Henighan, Nicholas Joseph, Ben Mann, Amanda Askell, Yuntao Bai, Anna Chen, Tom Conerly, Nova DasSarma, Dawn Drain, Deep Ganguli, Zac Hatfield-Dodds, Danny Hernandez, Andy Jones, Jackson Kernion, Liane Lovitt, Kamal Ndousse, Dario Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Chris Olah. 2021. A mathematical framework for transformer circuits. Transformer Circuits Thread. Https://transformercircuits.pub/2021/framework/index.html.</p>
+<p>Samuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah A. Smith. 2020. RealToxicityPrompts: Evaluating neural toxic degeneration in language models. In Findings of the Association for Computational Linguistics: EMNLP 2020, pages 3356-3369, Online. Association for Computational Linguistics.</p>
+<p>Mor Geva, Roei Schuster, Jonathan Berant, and Omer Levy. 2021. Transformer feed-forward layers are keyvalue memories. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pages 5484-5495, Online and Punta Cana, Dominican Republic. Association for Computational Linguistics.</p>
+<p>Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2016. Deep residual learning for image recognition. In Proceedings of the conference on computer vision and pattern recognition (CVPR).</p>
+<p>Dan Hendrycks and Kevin Gimpel. 2016. Gaussian error linear units (gelus). arXiv preprint arXiv:1606.08415.</p>
+<p>Arthur E Hoerl and Robert W Kennard. 1970. Ridge regression: Biased estimation for nonorthogonal problems. Technometrics, 12(1):55-67.</p>
+<p>Lu Hou, Zhiqi Huang, Lifeng Shang, Xin Jiang, Xiao Chen, and Qun Liu. 2020. Dynabert: Dynamic bert with adaptive width and depth. Advances in Neural Information Processing Systems (NeurIPS).</p>
+<p>Zhengbao Jiang, Frank F. Xu, Jun Araki, and Graham Neubig. 2020. How can we know what language models know? Transactions of the Association for Computational Linguistics, 8:423-438.</p>
+<p>Daniel Khashabi, Xinxi Lyu, Sewon Min, Lianhui Qin, Kyle Richardson, Sean Welleck, Hannaneh Hajishirzi, Tushar Khot, Ashish Sabharwal, Sameer Singh, and Yejin Choi. 2022. Prompt waywardness: The curious case of discretized interpretation of continuous prompts. In Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 3631-3643, Seattle, United States. Association for Computational Linguistics.</p>
+<p>Lei Li, Yankai Lin, Deli Chen, Shuhuai Ren, Peng Li, Jie Zhou, and Xu Sun. 2021. CascadeBERT: Accelerating inference of pre-trained language models via calibrated complete models cascade. In Findings of the Association for Computational Linguistics: EMNLP 2021, pages 475-486, Punta Cana, Dominican Republic. Association for Computational Linguistics.</p>
+<p>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. 2019. RoBERTa: A robustly optimized bert pretraining approach. arXiv preprint arXiv:1907.11692.</p>
+<p>Kris McGuffie and Alex Newhouse. 2020. The radicalization risks of gpt-3 and advanced neural language models. arXiv preprint arXiv:2009.06807.</p>
+<p>Kevin Meng, David Bau, Alex Andonian, and Yonatan Belinkov. 2022. Locating and editing factual knowledge in gpt. arXiv preprint arXiv:2202.05262.</p>
+<p>Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher. 2017. Pointer sentinel mixture models. International Conference on Learning Representations (ICLR).</p>
+<p>Daniel Müllner. 2011. Modern hierarchical, agglomerative clustering algorithms. arXiv preprint arXiv:1109.2378.</p>
+<p>Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et al. 2019. Language models are unsupervised multitask learners. OpenAI blog, 1(8):9.</p>
+<p>Naomi Saphra and Adam Lopez. 2019. Understanding learning dynamics of language models with SVCCA. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pages 3257-3267, Minneapolis, Minnesota. Association for Computational Linguistics.</p>
+<p>Timo Schick, Sahana Udupa, and Hinrich Schütze. 2021. Self-diagnosis and self-debiasing: A proposal for reducing corpus-based bias in NLP. Transactions of the</p>
+<p>Association for Computational Linguistics, 9:14081424 .</p>
+<p>Tal Schuster, Adam Fisch, Tommi Jaakkola, and Regina Barzilay. 2021. Consistent accelerated inference via confident adaptive transformers. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pages 4962-4979, Online and Punta Cana, Dominican Republic. Association for Computational Linguistics.</p>
+<p>Roy Schwartz, Jesse Dodge, Noah A Smith, and Oren Etzioni. 2020a. Green AI. Communications of the ACM, 63(12):54-63.</p>
+<p>Roy Schwartz, Gabriel Stanovsky, Swabha Swayamdipta, Jesse Dodge, and Noah A. Smith. 2020b. The right tool for the job: Matching model and instance complexities. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 6640-6651, Online. Association for Computational Linguistics.</p>
+<p>Noam M. Shazeer. 2020. Glu variants improve transformer. ArXiv, abs/2002.05202.
+S. Sukhbaatar, J. Weston, and R. Fergus. 2015. End-to-end memory networks. In Advances in Neural Information Processing Systems (NIPS).</p>
+<p>Sainbayar Sukhbaatar, Edouard Grave, Guillaume Lample, Herve Jegou, and Armand Joulin. 2019. Augmenting self-attention with persistent memory. arXiv preprint arXiv:1907.01470.</p>
+<p>Ian Tenney, Dipanjan Das, and Ellie Pavlick. 2019. BERT rediscovers the classical NLP pipeline. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages 45934601, Florence, Italy. Association for Computational Linguistics.</p>
+<p>Robert Tibshirani. 1996. Regression shrinkage and selection via the lasso. Journal of the Royal Statistical Society: Series B (Methodological), 58(1):267-288.</p>
+<p>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in Neural Information Processing Systems (NIPS), pages 5998-6008.</p>
+<p>Elena Voita, Rico Sennrich, and Ivan Titov. 2019. The bottom-up evolution of representations in the transformer: A study with machine translation and language modeling objectives. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 4396-4406, Hong Kong, China. Association for Computational Linguistics.</p>
+<p>Eric Wallace, Shi Feng, Nikhil Kandpal, Matt Gardner, and Sameer Singh. 2019. Universal adversarial triggers for attacking and analyzing NLP. In Proceedings of the 2019 Conference on Empirical Methods</p>
+<p>in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 2153-2162, Hong Kong, China. Association for Computational Linguistics.</p>
+<p>Jonas Wallat, Jaspreet Singh, and Avishek Anand. 2020. BERTnesia: Investigating the capture and forgetting of knowledge in BERT. In Proceedings of the Third BlackboxNLP Workshop on Analyzing and Interpreting Neural Networks for NLP, pages 174-183, Online. Association for Computational Linguistics.</p>
+<p>Thomas Wang, Adam Roberts, Daniel Hesslow, Teven Le Scao, Hyung Won Chung, Iz Beltagy, Julien Launay, and Colin Raffel. 2022. What language model architecture and pretraining objective works best for zero-shot generalization? In Proceedings of the 39th International Conference on Machine Learning, volume 162 of Proceedings of Machine Learning Research, pages 22964-22984. PMLR.</p>
+<p>Ji Xin, Rodrigo Nogueira, Yaoliang Yu, and Jimmy Lin. 2020. Early exiting BERT for efficient document ranking. In Proceedings of SustaiNLP: Workshop on Simple and Efficient Natural Language Processing, pages 83-88, Online. Association for Computational Linguistics.</p>
+<p>Ji Xin, Raphael Tang, Yaoliang Yu, and Jimmy Lin. 2021. BERxiT: Early exiting for BERT with better fine-tuning and extension to regression. In Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume, pages 91-104, Online. Association for Computational Linguistics.</p>
+<p>Jingjing Xu, Wangchunshu Zhou, Zhiyi Fu, Hao Zhou, and Lei Li. 2021. A survey on green deep learning. arXiv preprint arXiv:2111.05193.</p>
+<p>Yilin Yang, Longyue Wang, Shuming Shi, Prasad Tadepalli, Stefan Lee, and Zhaopeng Tu. 2020. On the sub-layer functionalities of transformer decoder. In Findings of the Association for Computational Linguistics: EMNLP 2020, pages 4799-4811, Online. Association for Computational Linguistics.</p>
+<p>Yunzhi Yao, Shaohan Huang, Ningyu Zhang, Li Dong, Furu Wei, and Huajun Chen. 2022. Kformer: Knowledge injection in transformer feed-forward layers. arXiv preprint arXiv:2201.05742.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Similarity of projections to $E$, of GPT2 value vectors with and without layer normalization, and of value vectors and randomly-initialized vectors. We measure similarity of the top-30 tokens in each projection with IoU.</p>
+<h2>A Appendix</h2>
+<h2>A. 1 Value Vectors Projection Method</h2>
+<p>Our interpretation method of sub-updates is based on directly projecting value vectors to the embedding matrix, i.e. for a value $\mathbf{v}$ and embedding matrix $E$, we calculate $E \mathbf{v}(\$ 4)$. However, in some LMs like GPT2, value vectors in each layer are added to the token representation followed by a layer normalization (LN) (Ba et al., 2016). This raises the question whether "reading" vectors that are normalized in the same manner as the representation would yield different concepts.</p>
+<p>To test that, we compare the top-30 scoring tokens by $E \mathbf{v}<em i="i">{i}^{\ell}$ and by $E \cdot \operatorname{LayerNorm}\left(\mathbf{v}</em>$ with random vectors, initialized from a normal distribution with the empirical mean and standard deviation of the value vectors. Fig. 4 shows that LN does not change the projection substantially, with an overlap of $64.5 \%$ of the top-30 tokens on average, suggesting that the same concepts are promoted in both cases. This is in contrast to random values, which produce a $\sim 0 \%$ overlap on average.}^{\ell}\right)$, for $i=1, \ldots, d_{m}$ and $\ell=1, \ldots, L$, using Intersection over Union (IoU). As a baseline, we also compare $E \mathbf{v}_{i}^{\ell</p>
+<h2>A. 2 Concepts Annotation</h2>
+<p>We analyze the concepts encoded in sub-updates, by projecting their corresponding value vectors to the embedding matrix and identifying repeating patterns in the top-scoring 30 tokens (\$3). Pattern identification was performed by experts (NLP graduate students), following the instructions presented in Fig. 5. Please note these are the instructions provided for annotations of WiKiLM, which uses word-level tokenization. Thus, the terms "words" and "tokens" are equivalent in this case.</p>
+<p>For value vectors in WiKiLM, which uses a word-level vocabulary with many uncommon words, we additionally attached a short description field for each token that provides context about the meaning of the word. For the description of a token $w$, we first try to extract the definition of $w$ from Wordnet. ${ }^{8}$ If $w$ does not exist in Wordnet, as often happens for names of people and places, we then search for $w$ in Wikipedia ${ }^{9}$ and extract a short (possibly noisy) description if the query was successful. A complete annotation example Tab. 7.</p>
+<h2>A. 3 Sub-Update Contribution in FFN Outputs</h2>
+<p>In this section, we justify our choice along the paper of looking at the top-10 dominant sub-updates. The contribution of a sub-update $m_{i}^{\ell} \mathbf{v}_{i}^{\ell}$ to the FFN output is:</p>
+<p>$$
+\operatorname{contrib}\left(m_{i}^{\ell} \mathbf{v}<em i="i">{i}^{\ell}\right):=\frac{\left|m</em>}^{\ell}\right|\left|\left|\mathbf{v<em j="1">{i}^{\ell}\right|\right|}{\sum</em>
+$$}^{d_{m}}\left|m_{j}^{\ell}\right|\left|\left|\mathbf{v}_{j}^{\ell}\right|\right|</p>
+<p>namely, its relative weight compared to the overall sum of weights of all sub-updates. The overall contribution of the top-10 dominant sub-updates is computed by summing their contributions. Note that we take the absolute value of the coefficients $\left|m_{i}^{\ell}\right|$, since some activation functions (e.g. GeLU (Hendrycks and Gimpel, 2016) in GPT2), can result in negative values of $m_{i}^{\ell}$.</p>
+<p>Empirically, we observe that in some cases subupdates with negative coefficients do appear as part of the 10 most dominant sub-updates in GPT2. We further attribute this to the success of GeLU in transformer models (Shazeer, 2020), as it increases the expressiveness of the model by allowing reversing the scores value vectors induce over the vocabulary.</p>
+<p>Fig. 6 depicts the contribution of the top-10 dominant sub-updates per layer for WiKiLM and GPT2, using 2000 random examples from the WikiText-103 validation set. Clearly, for all the layers, the contribution of the dominant subupdates exceeds the contribution of random subupdates. Observe that, even though they cover only $0.24 \%$ of the value vectors, the contribution of dominant sub-updates is typically around $5 \%$, and in some layers (e.g. layers 8-16 in WiKiLM and layer 1 in GPT2) it reaches over $10 \%$ of the total</p>
+<p><sup id="fnref7:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>In this task, you are given a list of 30 words in English, and the goal is to identify repetitive patterns occurring in the words.
+Patterns can be semantic (e.g. animals, 3-digit numbers, names of Indian actors, and time-related words) or syntactic (e.g. connectives, plurals, words starting with "dis-", and verbs in present progressive tense). You should only count patterns that occur in at least 4 words (i.e. if you notice a pattern that occurs only in 3 words, then please ignore it).</p>
+<p>To complete the task, please do the following:</p>
+<ol>
+<li>Give an ID to every identified pattern (1,2,...)</li>
+<li>Assign a pattern ID to every word in the list, or -1/leave empty if no pattern applies to the word.</li>
+<li>For every identified pattern specify whether the pattern is semantic or syntactic and (optional) write a short description of the pattern.</li>
+</ol>
+<p>Please note that some of the words might be uncommon words that you are not familiar with. In such cases, you will need to do a quick search over the Web to understand the meaning of words.</p>
+<p>Figure 5: Annotation instructions for the concepts identification task.
+contribution. This demonstrates that analyzing the top-10 dominant sub-updates can shed light on the way predictions are built through the layers.</p>
+<h2>A. 4 Toxic Language Suppression Details</h2>
+<p>The 10 manually selected value vectors were found by searching for non-toxic words, such as "safe" and "peace", among the top-30 tokens in the vector projections to the vocabulary. We selected a small set of 10 value vectors whose top-scoring tokens were coherent and seemed to promote different kinds of non-toxic tokens. The list of manually picked vectors is provided in Tab. 8. Importantly, the search process of all vectors was a one-time effort that took $&lt;5$ minutes in total. We chose the value vectors in a greedy-manner, without additional attempts to optimize our choice.</p>
+<p>To select 10 non-toxic value vectors based on an automatic toxicity metric, we used the Perspective API. Concretely, we concatenated the top-30 tokens by each value vector and graded the resulting text with the toxicity score produced by the API. Then, we sampled 10 random vectors with a toxicity score $&lt;0.1$ (a score of $&lt;0.5$ indicates a non-toxic text).</p>
+<h2>A. 5 Early Exit Details</h2>
+<p>This section provides further details and analysis regarding our early exit method and the baselines we implemented.</p>
+<p>Method Implementation. We consider $90 \%$ of the 10 k examples for constructing $T^{\ell}$ and $N^{\ell}$, and the remaining $10 \%$ examples are considered as the testing set. We used $k=2 e^{2}$ to cluster the top-10
+dominant value vectors, but observed that other $k$ values yielded similar results.</p>
+<p>Baselines' Implementation. We train each binary classifier using 8 k training examples, based on the standardized forms of each feature vector. We considered a hyperparameter sweep, using 8 -fold cross-validation, with $l 2$ or $l 1$ regularization (lasso (Tibshirani, 1996) or ridge (Hoerl and Kennard, 1970)), regularization coefficients $C \in\left{1 e^{-3}, 1 e^{-2}, 1 e^{-1}, 1,1 e^{1}, 1 e^{2}, 1 e^{3}\right}$, and took the best performing model for each layer. We also used a inversely proportional loss coefficient according to the class frequencies.</p>
+<p>In order to achieve high accuracy, we further calibrate a threshold per classifier for reaching the maximal $\mathrm{F}_{1}$ score for each layer. This calibration is done after training each classifier, over a set of 1000 validation examples.</p>
+<p>Frequency of Saturation Events. We investigate the potential of performing early exit for WiKILM and GPT2. Tab. 9 and 10 depict the frequency of saturation events per layer, considering 10k examples from the WikiText-103 validation set, for WiKiLM and GPT2, respectively. In GPT2, $34.15 \%$ of the examples require the full computation using all the model layers, while for WiKiLM, this holds for only $15.22 \%$ of the examples. Notably, early fixation events in GPT2 are less common than in WiKiLM, possibly due to the larger number of layers the prediction construction is spread over. Hence, we use WiKiLM for our experiments, as it has significantly higher compu-</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">patterns</th>
+<th style="text-align: center;">word</th>
+<th style="text-align: center;">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">front</td>
+<td style="text-align: center;">the side that is forward or prominent</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">ahead</td>
+<td style="text-align: center;">having the leading position or higher score in a contest</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">forward</td>
+<td style="text-align: center;">the person who plays the position of forward in certain games, such as basketball, soccer, or hockey</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">preceded</td>
+<td style="text-align: center;">be earlier in time; go back further</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Before</td>
+<td style="text-align: center;">earlier in time; previously</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">before</td>
+<td style="text-align: center;">earlier in time; previously</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">rear</td>
+<td style="text-align: center;">the back of a military formation or procession</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">fore</td>
+<td style="text-align: center;">front part of a vessel or aircraft</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Name</td>
+<td style="text-align: center;">a language unit by which a person or thing is known</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Past</td>
+<td style="text-align: center;">the time that has elapsed</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">prior</td>
+<td style="text-align: center;">the head of a religious order; in an abbey the prior is next below the abbot</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">anterior</td>
+<td style="text-align: center;">a tooth situated at the front of the mouth</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">upperparts</td>
+<td style="text-align: center;">standard terms for unambiguous description of relative placement of body parts</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">lead</td>
+<td style="text-align: center;">an advantage held by a competitor in a race</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">backwards</td>
+<td style="text-align: center;">at or to or toward the back or rear</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">aft</td>
+<td style="text-align: center;">(nautical, aeronautical) situated at or toward the stern or tail</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">preceding</td>
+<td style="text-align: center;">be earlier in time; go back further</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">upstream</td>
+<td style="text-align: center;">in the direction against a stream's current</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">hind</td>
+<td style="text-align: center;">any of several mostly spotted fishes that resemble groupers</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">posterior</td>
+<td style="text-align: center;">the fleshy part of the human body that you sit on</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Etymology</td>
+<td style="text-align: center;">a history of a word</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Pre</td>
+<td style="text-align: center;">Wikimedia disambiguation page</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">chin</td>
+<td style="text-align: center;">the protruding part of the lower jaw</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">north</td>
+<td style="text-align: center;">the region of the United States lying to the north of the Mason-Dixon line</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">east</td>
+<td style="text-align: center;">the cardinal compass point that is at 90 degrees</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">surname</td>
+<td style="text-align: center;">the name used to identify the members of a family (as distinguished from each member's given name)</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Then</td>
+<td style="text-align: center;">that time; that moment</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">name</td>
+<td style="text-align: center;">a language unit by which a person or thing is known</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">northbound</td>
+<td style="text-align: center;">moving toward the north</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">leading</td>
+<td style="text-align: center;">thin strip of metal used to separate lines of type in printing</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">pattern id</th>
+<th style="text-align: left;">description <br> (optional)</th>
+<th style="text-align: left;">semantic/syntactic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">positions/ <br> directions</td>
+<td style="text-align: left;">semantic</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">naming</td>
+<td style="text-align: left;">semantic</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: An example annotation spreadsheet of the top-tokens by the value vector $\mathbf{u}_{1090}^{6}$ in WikiLM.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 6: Relative contribution to the FFN output of the 10 most dominant and 10 random sub-updates in each layer, of WiKiLM (left) and GPT2 (right).
+tation saving potential, as well as more saturation events per layer.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Top-10 Tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$v_{1853}^{14}$</td>
+<td style="text-align: center;">transparency, disclosure, clearer, parency, iquette, humility, modesty, disclosures, accountability, safer</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{15}^{15}$</td>
+<td style="text-align: center;">respectful, honorable, healthy, decent, fair, erning, neutral, peacefully, respected, reconc</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{1305}^{15}$</td>
+<td style="text-align: center;">safe, neither, safer, course, safety, safe, Safe, apologize, Compact, cart</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{216}^{16}$</td>
+<td style="text-align: center;">refere, Messages, promises, Relations, accept, acceptance, Accept, assertions, persistence, warn</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{462}^{17}$</td>
+<td style="text-align: center;">should, should, MUST, ought, wisely, Should, SHOULD, safely, shouldn, urgently</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{3209}^{17}$</td>
+<td style="text-align: center;">peaceful, stable, healthy, calm, trustworthy, impartial, stability, credibility, respected, peace</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{4061}^{17}$</td>
+<td style="text-align: center;">Proper, proper, moder, properly, wisely, decency, correct, corrected, restraint, professionalism</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{2921}^{18}$</td>
+<td style="text-align: center;">thank, THANK, thanks, thank, Thank, apologies, Thank, thanks, Thanks, apologise</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{1891}^{18}$</td>
+<td style="text-align: center;">thanks, thank, Thanks, thanks, THANK, Thanks, Thank, Thank, thank, congratulations</td>
+</tr>
+<tr>
+<td style="text-align: center;">$v_{3770}^{23}$</td>
+<td style="text-align: center;">free, fit, legal, und, Free, leg, pless, sound, qualified, Free</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: The 10 manually picked value vectors used for toxic language suppression and the top-10 tokens in their projection to the vocabulary. Repetitions in the projections are a result of special characters not being shown. These vectors were found by manually searching for non-toxic words such as "safe" and "peace" in the projections to the vocabulary.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: center;">\% Examples</th>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: center;">\% Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6.70</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">2.96</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5.25</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">3.78</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">13.74</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">4.74</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">3.13</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">7.45</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1.02</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">10.79</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">1.07</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">9.88</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1.86</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">9.81</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">2.60</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">15.22</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9: The percentage of saturation events per layer using WiKiLM, for the WiKiText-103 validation set.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: center;">\% Examples</th>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: center;">\% Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2.21</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">1.24</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.77</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">1.62</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1.06</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">2.37</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.74</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">2.72</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.85</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">2.99</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0.83</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">3.80</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.83</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">4.15</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.72</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">5.21</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">0.93</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">5.67</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">0.99</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">9.31</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">1.16</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">14.52</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">1.32</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">34.15</td>
+</tr>
+</tbody>
+</table>
+<p>Table 10: The percentage of saturation events per layer using GPT2, for the WiKiText-103 validation set.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{8}$ We use the NLTK python package.
+${ }^{9}$ Using the wptools package https://pypi.org/ project/wptools/.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{5}$ Data is segmented into sentences (Geva et al., 2021).&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

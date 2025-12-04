@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-4714 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-4714</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-4714</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-102.html">extraction-schema-102</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <p><strong>Paper ID:</strong> paper-e4d6e26f52cfbf881c0235913538acb26329fa24</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/e4d6e26f52cfbf881c0235913538acb26329fa24" target="_blank">Investigating the Limitations of the Transformers with Simple Arithmetic Tasks</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> It is concluded that modern pretrained language models can easily learn arithmetic from very few examples, as long as they use the proper surface representation, which bolsters evidence that subword tokenizers and positional encodings are components in current transformer designs that might need improvement.</p>
+                <p><strong>Cost:</strong> 0.014</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e4714.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e4714.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>T5 (various)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>T5 sequence-to-sequence models (T5-60M, T5-220M, T5-770M, T5-3B)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Pretrained transformer encoder-decoder models (T5 family) fine-tuned on synthetic sequence-to-sequence arithmetic (addition/subtraction) tasks; experiments also include non-pretrained/vanilla transformers for ablations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>T5 (60M, 220M, 770M, 3B)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Sequence-to-sequence transformer models (T5) of sizes ~60M, 220M, 770M, and 3B parameters; experiments fine-tune pretrained checkpoints (also train-from-scratch variants) on synthetic addition/subtraction questions using greedy decoding; training uses AdamW, batches of 128 and varied learning rates.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Addition and subtraction of multi-digit integers (digit lengths varied from 2 up to 60 digits); both regular (most-significant-digit-first) and inverse (least-significant-digit-first) generation orders evaluated; sampling regimes: balanced and random.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>Models do not internally discover an abstract algorithm automatically; instead they rely heavily on surface representation and positional cues. Mechanisms observed include memorization of digit positions, learning digit-wise addition conditioned on explicit position tokens, leveraging pretraining knowledge when numbers are expressed in words, and limited algorithmic behavior in larger models enabling some extrapolation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>1) Representational ablations: orthographies that make digit significance explicit (10-BASED/10E-BASED position tokens) yield near-100% accuracy with small data (1k examples), whereas DECIMAL subword tokenization fails. 2) FIXED-CHARACTER/UNDERSCORE show improved performance vs. CHARACTER when positions are made consistent, indicating memorization of fixed positions. 3) Pretrained models need ~10x fewer examples than from-scratch models to reach 100% on 60-digit addition, implying pretraining confers useful inductive biases. 4) Scaling: larger models (3B) extrapolate to longer lengths much better than smaller models.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>1) Even with explicit position tokens, models often fail to extrapolate to longer lengths unless trained on sufficiently long numbers; extrapolation accuracy is unstable and seed-dependent. 2) Models trained with many steps can degrade extrapolation performance over training, indicating failure to converge to a length-independent arithmetic algorithm. 3) Observed generation 'skipping' of intermediate position tokens during extrapolation demonstrates brittle sequence-generation behavior inconsistent with a stable arithmetic algorithm.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Representation effects (T5-220M, 1k balanced training examples): DECIMAL: nearly 0% beyond 2-4 digits (0% at 5+ digits). CHARACTER and UNDERSCORE: high for small digits but accuracy falls to 0% by 15-digit addition. FIXED-CHARACTER: better for >12 digits but ≈20% at 15 digits. WORDS: ~40–60% accuracy for 5–15 digits, fails at ≥20 digits. 10-BASED and 10E-BASED: ≈100% up to 15 digits with 1k examples; with more data, >99.9% for most reps except DECIMAL (which had 2.1% error even with 10M examples). Interpolation (trained & tested up to 60 digits): nearly 100% across sizes. Extrapolation (train up to 50 digits, test on 60 digits): T5-3B: high (e.g., addition regular/inverse ~0.974/0.988 depending on order), T5-220M: mixed (e.g., addition regular ~0.862, subtraction regular ~0.641, inverse often 0), T5-770M and smaller: often fail or low accuracy. Pretrained vs from-scratch on various bases (15-digit): pretrained ~0.999 (base 2/3), 0.993 (base 10), 0.976 (base 19); from-scratch ~0.0 with 1k examples.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>Position-encoding ablation (Appendix B): original sinusoidal encoding failed on the addition task; a custom 'Pos-Masked' position-wise masked embedding greatly improved learning. Training with/without target position encodings was tested: providing target positions during training but not at inference caused format mismatch and worse performance; matching formats matters. Pretraining ablation: pretrained models require ~10x fewer examples than from-scratch to learn long additions. Generation analyses showed consistent skipping of position tokens during extrapolation (model emitted many correct high positions then skipped a block then continued), revealing a generation failure mode.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Key failure modes: (1) Dependence on surface orthography—subword tokenizers (DECIMAL) prevent learning; (2) Counting/position inference difficulty—CHARACTER and UNDERSCORE require counting digits to infer significance, which fails for long numbers; (3) Memorization of fixed positions (FIXED-CHARACTER) breaks beyond trained lengths; (4) Poor extrapolation to lengths outside training distribution—models often cannot generalize arithmetic rules independent of seen lengths; (5) Generation anomalies—models may skip intermediate position tokens during output, shorten sequences unexpectedly, and display high run-to-run variance; (6) Sensitivity to training length distribution—training on long-only random samples prevents learning to add shorter numbers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_models</strong></td>
+                            <td>Comparisons performed across T5 sizes and with vanilla (non-pretrained) transformers: larger T5 models (3B) extrapolate far better than smaller ones; pretrained T5 models are far more sample-efficient than from-scratch models. Vanilla transformers with original sinusoidal positional encodings struggle, but perform better with Pos-Masked encodings; 10E-BASED orthography consistently outperforms others across architectures.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e4714.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e4714.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>10E-BASED / 10-BASED</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Position-token orthography (10-BASED and compact 10E-BASED representation)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A surface encoding that inserts explicit position tokens indicating powers of ten between digits (10-BASED) or their compact scientific notation (10E-BASED), making each digit's significance explicit in the token sequence.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>T5-220M (experiments) / other T5 sizes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Applied as an input orthography to T5 fine-tuning experiments; 10E-BASED is a compact version of 10-BASED using '10eN' tokens to mark digit positions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-digit addition and subtraction (up to 60 digits in interpolation experiments).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>Explicit position tokens let the model determine digit significance by local context, allowing the network to learn digit-wise addition/subtraction and carry behavior without complex counting or relying on tokenizer segmentation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Near-100% accuracy with very few (1k) training examples up to 15-digit addition; in position-encoding experiments 10E-BASED outperformed CHARACTER and was robust across different positional encodings; 10E-BASED and 10-BASED allowed models to reach >99.9% with more data (10M) for 30-digit addition.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>Even with explicit position tokens, models still can fail to extrapolate to lengths not seen in training unless trained on sufficiently long examples; models display skipping behavior when extrapolating (omitting ranges of position tokens), indicating the representation alone does not guarantee length-independent arithmetic algorithms.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>With 1k training examples (balanced): ≈100% accuracy up to 15 digits. With more data (10M) for 30-digit addition: >99.9% accuracy. Extrapolation: success depends on model size—T5-3B can extrapolate when trained to 50 digits and tested at 60 digits with high accuracy; smaller models less reliable.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>Position-encoding ablations showed that 10E-BASED works best with Pos-Masked or consistent positional encodings; format mismatches between training and inference (e.g., providing vs not providing target positions) hurt performance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Requires consistent token-level position semantics; still subject to extrapolation failures and generation skipping. Does not by itself force the model to learn length-independent carry logic; performance can be seed-dependent and degrade after some training steps.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e4714.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e4714.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>DECIMAL / subword tokenization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Standard decimal orthography tokenized by subword tokenizer (DECIMAL)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>The default numeral form (e.g., '832') tokenized by typical subword tokenizers, which may split numerals irregularly into variable-length subword tokens.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>T5-220M (primary experiments)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>DECIMAL inputs are fed to T5 with standard tokenizer; tokens representing numbers can correspond to variable numbers of digits depending on tokenizer vocabulary and training corpus.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Addition and subtraction of multi-digit numbers represented in standard decimal digit string form.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>Irregular tokenization causes embeddings to represent inconsistent digit spans; the model cannot reliably map token embeddings to digit-level semantics and therefore fails to learn digit-wise arithmetic.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Empirical results: DECIMAL representation produced near-zero accuracy beyond 2-digit addition, and 0% at 5 digits or more with 1k examples. Even with 10M training examples DECIMAL retained higher error (≈2.1%) compared to other orthographies.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>With very large training sets (millions of examples) models eventually learn, indicating failure is a sample-efficiency/representation issue rather than impossibility.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>T5-220M with 1k examples: near 0% beyond 2-digit; with 10M examples: error ≈2.1% on 30-digit addition (i.e., ~97.9% accuracy).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>No probing of internal neurons reported specific to subword splits; analysis attributes failures to inconsistent tokenization across numerals (e.g., '132' => ['1','32'] vs '232' => ['23','2']).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Highly sensitive to tokenizer segmentation; poor sample efficiency; requires very large datasets to approach parity with more explicit orthographies.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e4714.3">
+                <h3 class="extraction-instance">Extracted Data Instance 3 (e4714.3)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Surface orthographies (CHARACTER / FIXED-CHARACTER / UNDERSCORE / WORDS)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Character- and word-level numeral representations: CHARACTER, FIXED-CHARACTER, UNDERSCORE, WORDS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Alternatives to DECIMAL that attempt to make digit semantics or position explicit: CHARACTER (digits separated by spaces), FIXED-CHARACTER (fixed-width digit strings), UNDERSCORE (digits separated by '_' tokens), and WORDS (numbers spelled out in English).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>T5-220M (experiments) / other T5 sizes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>These orthographies were used as input formats to probe how tokenization and explicitness of digit significance affect learning of addition/subtraction.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-digit addition/subtraction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>CHARACTER/UNDERSCORE aim to ensure embeddings correspond to single digits, requiring the model to infer digit significance by counting positions; FIXED-CHARACTER enables position memorization by fixing maximum width; WORDS provides semantic magnitude tokens (hundred, thousand) which may be leveraged from pretraining.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>CHARACTER and UNDERSCORE outperform DECIMAL for small numbers, showing benefit of single-digit tokenization. FIXED-CHARACTER outperforms CHARACTER/UNDERSCORE for >12 digits, indicating models can memorize fixed digit positions. WORDS shows stable moderate accuracy (40–60%) for 5–15 digits, consistent with leveraging pretraining knowledge of magnitude words.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>CHARACTER and UNDERSCORE accuracy falls to zero for ~15-digit addition because counting positions becomes hard. FIXED-CHARACTER's memorization strategy breaks down around 15 digits (≈20% accuracy), indicating learned positional encodings are not precise or general enough. WORDS fails beyond ~20 digits likely because pretraining did not include very large spelled-out numbers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>CHARACTER/UNDERSCORE: higher than DECIMAL for small digit counts but drop to 0% at ~15 digits. FIXED-CHARACTER: higher accuracy than CHARACTER for >12 digits but ≈20% at 15-digit addition. WORDS: ~40–60% accuracy for 5–15 digits, failing at ≥20 digits.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>Experiments changing digit order and fixed widths (Appendix C) show models use either counting or memorization strategies; positional encoding choice interacts with these representations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Counting-based strategies become unreliable as length increases; memorization of absolute positions does not generalize to unseen lengths; reliance on pretraining for WORDS limits performance on very large numbers not seen during pretraining.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e4714.4">
+                <h3 class="extraction-instance">Extracted Data Instance 4 (e4714.4)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Positional encodings (Sinusoidal vs Pos-Masked)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Transformer positional encodings: original sinusoidal and proposed position-wise masked embedding (Pos-Masked)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Investigation of positional encoding choices: standard sinusoidal absolute encodings perform poorly for digit-wise arithmetic tasks, while a custom position-wise masked embedding that exposes digit-index-specific subvector regions improves learning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Vanilla transformer (4-layer encoder/decoder) and T5 variants (ablation experiments)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Vanilla (non-pretrained) transformers used to test positional encodings on addition up to 9 digits; Pos-Masked sets disjoint embedding subvector slots for digit positions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Addition (2–9 digits in positional-encoding experiments)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>Embedding distinct contiguous subvector slices for each digit position (Pos-Masked) gives an explicit, disentangled positional signal that simplifies mapping digits to significance, aiding digit-wise operations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Figure 2 shows sinusoidal encoding failed to learn addition effectively; Pos-Masked embedding substantially improved accuracy. Training with consistent target/source format (no mismatch between train and inference positions) is important.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>Providing target position encodings during training but not at inference introduces format mismatch harming performance; Pos-Masked still doesn't solve extrapolation to longer lengths when training lengths are limited.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>In vanilla transformer experiments for 2–9 digit addition, Pos-Masked encoding combined with 10E-BASED representation yields best performance; sinusoidal encoding performs poorly (exact numeric accuracies shown in paper's Figure 2).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>Explicit intervention by replacing sinusoidal with Pos-Masked yields large performance gains; experiments varying whether target positions are provided show that matching train/inference formats matters more than providing target positions per se.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Pos-Masked helps for trained lengths but does not guarantee length-independent arithmetic; target-vs-inference format discrepancy is a practical pitfall; design requires predefining maximum widths or subvector partitions.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Analysing mathematical reasoning abilities of neural models <em>(Rating: 2)</em></li>
+                <li>Do NLP models know numbers? <em>(Rating: 2)</em></li>
+                <li>Neural arithmetic logic units <em>(Rating: 2)</em></li>
+                <li>The EOS decision and length extrapolation <em>(Rating: 2)</em></li>
+                <li>Deep learning for symbolic mathematics <em>(Rating: 2)</em></li>
+                <li>Learning numeral embeddings <em>(Rating: 1)</em></li>
+                <li>Injecting numerical reasoning skills into language models <em>(Rating: 1)</em></li>
+                <li>Enhancing the transformer with explicit relational encoding for math problem solving <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-4714",
+    "paper_id": "paper-e4d6e26f52cfbf881c0235913538acb26329fa24",
+    "extraction_schema_id": "extraction-schema-102",
+    "extracted_data": [
+        {
+            "name_short": "T5 (various)",
+            "name_full": "T5 sequence-to-sequence models (T5-60M, T5-220M, T5-770M, T5-3B)",
+            "brief_description": "Pretrained transformer encoder-decoder models (T5 family) fine-tuned on synthetic sequence-to-sequence arithmetic (addition/subtraction) tasks; experiments also include non-pretrained/vanilla transformers for ablations.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "T5 (60M, 220M, 770M, 3B)",
+            "model_description": "Sequence-to-sequence transformer models (T5) of sizes ~60M, 220M, 770M, and 3B parameters; experiments fine-tune pretrained checkpoints (also train-from-scratch variants) on synthetic addition/subtraction questions using greedy decoding; training uses AdamW, batches of 128 and varied learning rates.",
+            "arithmetic_task_type": "Addition and subtraction of multi-digit integers (digit lengths varied from 2 up to 60 digits); both regular (most-significant-digit-first) and inverse (least-significant-digit-first) generation orders evaluated; sampling regimes: balanced and random.",
+            "mechanism_hypothesis": "Models do not internally discover an abstract algorithm automatically; instead they rely heavily on surface representation and positional cues. Mechanisms observed include memorization of digit positions, learning digit-wise addition conditioned on explicit position tokens, leveraging pretraining knowledge when numbers are expressed in words, and limited algorithmic behavior in larger models enabling some extrapolation.",
+            "evidence_for_mechanism": "1) Representational ablations: orthographies that make digit significance explicit (10-BASED/10E-BASED position tokens) yield near-100% accuracy with small data (1k examples), whereas DECIMAL subword tokenization fails. 2) FIXED-CHARACTER/UNDERSCORE show improved performance vs. CHARACTER when positions are made consistent, indicating memorization of fixed positions. 3) Pretrained models need ~10x fewer examples than from-scratch models to reach 100% on 60-digit addition, implying pretraining confers useful inductive biases. 4) Scaling: larger models (3B) extrapolate to longer lengths much better than smaller models.",
+            "evidence_against_mechanism": "1) Even with explicit position tokens, models often fail to extrapolate to longer lengths unless trained on sufficiently long numbers; extrapolation accuracy is unstable and seed-dependent. 2) Models trained with many steps can degrade extrapolation performance over training, indicating failure to converge to a length-independent arithmetic algorithm. 3) Observed generation 'skipping' of intermediate position tokens during extrapolation demonstrates brittle sequence-generation behavior inconsistent with a stable arithmetic algorithm.",
+            "performance_metrics": "Representation effects (T5-220M, 1k balanced training examples): DECIMAL: nearly 0% beyond 2-4 digits (0% at 5+ digits). CHARACTER and UNDERSCORE: high for small digits but accuracy falls to 0% by 15-digit addition. FIXED-CHARACTER: better for &gt;12 digits but ≈20% at 15 digits. WORDS: ~40–60% accuracy for 5–15 digits, fails at ≥20 digits. 10-BASED and 10E-BASED: ≈100% up to 15 digits with 1k examples; with more data, &gt;99.9% for most reps except DECIMAL (which had 2.1% error even with 10M examples). Interpolation (trained & tested up to 60 digits): nearly 100% across sizes. Extrapolation (train up to 50 digits, test on 60 digits): T5-3B: high (e.g., addition regular/inverse ~0.974/0.988 depending on order), T5-220M: mixed (e.g., addition regular ~0.862, subtraction regular ~0.641, inverse often 0), T5-770M and smaller: often fail or low accuracy. Pretrained vs from-scratch on various bases (15-digit): pretrained ~0.999 (base 2/3), 0.993 (base 10), 0.976 (base 19); from-scratch ~0.0 with 1k examples.",
+            "probing_or_intervention_results": "Position-encoding ablation (Appendix B): original sinusoidal encoding failed on the addition task; a custom 'Pos-Masked' position-wise masked embedding greatly improved learning. Training with/without target position encodings was tested: providing target positions during training but not at inference caused format mismatch and worse performance; matching formats matters. Pretraining ablation: pretrained models require ~10x fewer examples than from-scratch to learn long additions. Generation analyses showed consistent skipping of position tokens during extrapolation (model emitted many correct high positions then skipped a block then continued), revealing a generation failure mode.",
+            "limitations_and_failure_modes": "Key failure modes: (1) Dependence on surface orthography—subword tokenizers (DECIMAL) prevent learning; (2) Counting/position inference difficulty—CHARACTER and UNDERSCORE require counting digits to infer significance, which fails for long numbers; (3) Memorization of fixed positions (FIXED-CHARACTER) breaks beyond trained lengths; (4) Poor extrapolation to lengths outside training distribution—models often cannot generalize arithmetic rules independent of seen lengths; (5) Generation anomalies—models may skip intermediate position tokens during output, shorten sequences unexpectedly, and display high run-to-run variance; (6) Sensitivity to training length distribution—training on long-only random samples prevents learning to add shorter numbers.",
+            "comparison_to_other_models": "Comparisons performed across T5 sizes and with vanilla (non-pretrained) transformers: larger T5 models (3B) extrapolate far better than smaller ones; pretrained T5 models are far more sample-efficient than from-scratch models. Vanilla transformers with original sinusoidal positional encodings struggle, but perform better with Pos-Masked encodings; 10E-BASED orthography consistently outperforms others across architectures.",
+            "uuid": "e4714.0"
+        },
+        {
+            "name_short": "10E-BASED / 10-BASED",
+            "name_full": "Position-token orthography (10-BASED and compact 10E-BASED representation)",
+            "brief_description": "A surface encoding that inserts explicit position tokens indicating powers of ten between digits (10-BASED) or their compact scientific notation (10E-BASED), making each digit's significance explicit in the token sequence.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "T5-220M (experiments) / other T5 sizes",
+            "model_description": "Applied as an input orthography to T5 fine-tuning experiments; 10E-BASED is a compact version of 10-BASED using '10eN' tokens to mark digit positions.",
+            "arithmetic_task_type": "Multi-digit addition and subtraction (up to 60 digits in interpolation experiments).",
+            "mechanism_hypothesis": "Explicit position tokens let the model determine digit significance by local context, allowing the network to learn digit-wise addition/subtraction and carry behavior without complex counting or relying on tokenizer segmentation.",
+            "evidence_for_mechanism": "Near-100% accuracy with very few (1k) training examples up to 15-digit addition; in position-encoding experiments 10E-BASED outperformed CHARACTER and was robust across different positional encodings; 10E-BASED and 10-BASED allowed models to reach &gt;99.9% with more data (10M) for 30-digit addition.",
+            "evidence_against_mechanism": "Even with explicit position tokens, models still can fail to extrapolate to lengths not seen in training unless trained on sufficiently long examples; models display skipping behavior when extrapolating (omitting ranges of position tokens), indicating the representation alone does not guarantee length-independent arithmetic algorithms.",
+            "performance_metrics": "With 1k training examples (balanced): ≈100% accuracy up to 15 digits. With more data (10M) for 30-digit addition: &gt;99.9% accuracy. Extrapolation: success depends on model size—T5-3B can extrapolate when trained to 50 digits and tested at 60 digits with high accuracy; smaller models less reliable.",
+            "probing_or_intervention_results": "Position-encoding ablations showed that 10E-BASED works best with Pos-Masked or consistent positional encodings; format mismatches between training and inference (e.g., providing vs not providing target positions) hurt performance.",
+            "limitations_and_failure_modes": "Requires consistent token-level position semantics; still subject to extrapolation failures and generation skipping. Does not by itself force the model to learn length-independent carry logic; performance can be seed-dependent and degrade after some training steps.",
+            "uuid": "e4714.1"
+        },
+        {
+            "name_short": "DECIMAL / subword tokenization",
+            "name_full": "Standard decimal orthography tokenized by subword tokenizer (DECIMAL)",
+            "brief_description": "The default numeral form (e.g., '832') tokenized by typical subword tokenizers, which may split numerals irregularly into variable-length subword tokens.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "T5-220M (primary experiments)",
+            "model_description": "DECIMAL inputs are fed to T5 with standard tokenizer; tokens representing numbers can correspond to variable numbers of digits depending on tokenizer vocabulary and training corpus.",
+            "arithmetic_task_type": "Addition and subtraction of multi-digit numbers represented in standard decimal digit string form.",
+            "mechanism_hypothesis": "Irregular tokenization causes embeddings to represent inconsistent digit spans; the model cannot reliably map token embeddings to digit-level semantics and therefore fails to learn digit-wise arithmetic.",
+            "evidence_for_mechanism": "Empirical results: DECIMAL representation produced near-zero accuracy beyond 2-digit addition, and 0% at 5 digits or more with 1k examples. Even with 10M training examples DECIMAL retained higher error (≈2.1%) compared to other orthographies.",
+            "evidence_against_mechanism": "With very large training sets (millions of examples) models eventually learn, indicating failure is a sample-efficiency/representation issue rather than impossibility.",
+            "performance_metrics": "T5-220M with 1k examples: near 0% beyond 2-digit; with 10M examples: error ≈2.1% on 30-digit addition (i.e., ~97.9% accuracy).",
+            "probing_or_intervention_results": "No probing of internal neurons reported specific to subword splits; analysis attributes failures to inconsistent tokenization across numerals (e.g., '132' =&gt; ['1','32'] vs '232' =&gt; ['23','2']).",
+            "limitations_and_failure_modes": "Highly sensitive to tokenizer segmentation; poor sample efficiency; requires very large datasets to approach parity with more explicit orthographies.",
+            "uuid": "e4714.2"
+        },
+        {
+            "name_short": "Surface orthographies (CHARACTER / FIXED-CHARACTER / UNDERSCORE / WORDS)",
+            "name_full": "Character- and word-level numeral representations: CHARACTER, FIXED-CHARACTER, UNDERSCORE, WORDS",
+            "brief_description": "Alternatives to DECIMAL that attempt to make digit semantics or position explicit: CHARACTER (digits separated by spaces), FIXED-CHARACTER (fixed-width digit strings), UNDERSCORE (digits separated by '_' tokens), and WORDS (numbers spelled out in English).",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "T5-220M (experiments) / other T5 sizes",
+            "model_description": "These orthographies were used as input formats to probe how tokenization and explicitness of digit significance affect learning of addition/subtraction.",
+            "arithmetic_task_type": "Multi-digit addition/subtraction",
+            "mechanism_hypothesis": "CHARACTER/UNDERSCORE aim to ensure embeddings correspond to single digits, requiring the model to infer digit significance by counting positions; FIXED-CHARACTER enables position memorization by fixing maximum width; WORDS provides semantic magnitude tokens (hundred, thousand) which may be leveraged from pretraining.",
+            "evidence_for_mechanism": "CHARACTER and UNDERSCORE outperform DECIMAL for small numbers, showing benefit of single-digit tokenization. FIXED-CHARACTER outperforms CHARACTER/UNDERSCORE for &gt;12 digits, indicating models can memorize fixed digit positions. WORDS shows stable moderate accuracy (40–60%) for 5–15 digits, consistent with leveraging pretraining knowledge of magnitude words.",
+            "evidence_against_mechanism": "CHARACTER and UNDERSCORE accuracy falls to zero for ~15-digit addition because counting positions becomes hard. FIXED-CHARACTER's memorization strategy breaks down around 15 digits (≈20% accuracy), indicating learned positional encodings are not precise or general enough. WORDS fails beyond ~20 digits likely because pretraining did not include very large spelled-out numbers.",
+            "performance_metrics": "CHARACTER/UNDERSCORE: higher than DECIMAL for small digit counts but drop to 0% at ~15 digits. FIXED-CHARACTER: higher accuracy than CHARACTER for &gt;12 digits but ≈20% at 15-digit addition. WORDS: ~40–60% accuracy for 5–15 digits, failing at ≥20 digits.",
+            "probing_or_intervention_results": "Experiments changing digit order and fixed widths (Appendix C) show models use either counting or memorization strategies; positional encoding choice interacts with these representations.",
+            "limitations_and_failure_modes": "Counting-based strategies become unreliable as length increases; memorization of absolute positions does not generalize to unseen lengths; reliance on pretraining for WORDS limits performance on very large numbers not seen during pretraining.",
+            "uuid": "e4714.3"
+        },
+        {
+            "name_short": "Positional encodings (Sinusoidal vs Pos-Masked)",
+            "name_full": "Transformer positional encodings: original sinusoidal and proposed position-wise masked embedding (Pos-Masked)",
+            "brief_description": "Investigation of positional encoding choices: standard sinusoidal absolute encodings perform poorly for digit-wise arithmetic tasks, while a custom position-wise masked embedding that exposes digit-index-specific subvector regions improves learning.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Vanilla transformer (4-layer encoder/decoder) and T5 variants (ablation experiments)",
+            "model_description": "Vanilla (non-pretrained) transformers used to test positional encodings on addition up to 9 digits; Pos-Masked sets disjoint embedding subvector slots for digit positions.",
+            "arithmetic_task_type": "Addition (2–9 digits in positional-encoding experiments)",
+            "mechanism_hypothesis": "Embedding distinct contiguous subvector slices for each digit position (Pos-Masked) gives an explicit, disentangled positional signal that simplifies mapping digits to significance, aiding digit-wise operations.",
+            "evidence_for_mechanism": "Figure 2 shows sinusoidal encoding failed to learn addition effectively; Pos-Masked embedding substantially improved accuracy. Training with consistent target/source format (no mismatch between train and inference positions) is important.",
+            "evidence_against_mechanism": "Providing target position encodings during training but not at inference introduces format mismatch harming performance; Pos-Masked still doesn't solve extrapolation to longer lengths when training lengths are limited.",
+            "performance_metrics": "In vanilla transformer experiments for 2–9 digit addition, Pos-Masked encoding combined with 10E-BASED representation yields best performance; sinusoidal encoding performs poorly (exact numeric accuracies shown in paper's Figure 2).",
+            "probing_or_intervention_results": "Explicit intervention by replacing sinusoidal with Pos-Masked yields large performance gains; experiments varying whether target positions are provided show that matching train/inference formats matters more than providing target positions per se.",
+            "limitations_and_failure_modes": "Pos-Masked helps for trained lengths but does not guarantee length-independent arithmetic; target-vs-inference format discrepancy is a practical pitfall; design requires predefining maximum widths or subvector partitions.",
+            "uuid": "e4714.4"
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Analysing mathematical reasoning abilities of neural models",
+            "rating": 2
+        },
+        {
+            "paper_title": "Do NLP models know numbers?",
+            "rating": 2
+        },
+        {
+            "paper_title": "Neural arithmetic logic units",
+            "rating": 2
+        },
+        {
+            "paper_title": "The EOS decision and length extrapolation",
+            "rating": 2
+        },
+        {
+            "paper_title": "Deep learning for symbolic mathematics",
+            "rating": 2
+        },
+        {
+            "paper_title": "Learning numeral embeddings",
+            "rating": 1
+        },
+        {
+            "paper_title": "Injecting numerical reasoning skills into language models",
+            "rating": 1
+        },
+        {
+            "paper_title": "Enhancing the transformer with explicit relational encoding for math problem solving",
+            "rating": 1
+        }
+    ],
+    "cost": 0.014289,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Investigating the Limitations of Transformers with Simple Arithmetic Tasks</h1>
+<p>Rodrigo Nogueira, Zhiying Jiang \&amp; Jimmy Lin<br>David R. Cheriton School of Computer Science<br>University of Waterloo</p>
+<h4>Abstract</h4>
+<p>The ability to perform arithmetic tasks is a remarkable trait of human intelligence and might form a critical component of more complex reasoning tasks. In this work, we investigate if the surface form of a number has any influence on how sequence-to-sequence language models learn simple arithmetic tasks such as addition and subtraction across a wide range of values. We find that how a number is represented in its surface form has a strong influence on the model's accuracy. In particular, the model fails to learn addition of five-digit numbers when using subwords (e.g., " 32 "), and it struggles to learn with character-level representations (e.g., " 32 "). By introducing position tokens (e.g., " 310 e 12 "), the model learns to accurately add and subtract numbers up to 60 digits. We conclude that modern pretrained language models can easily learn arithmetic from very few examples, as long as we use the proper surface representation. This result bolsters evidence that subword tokenizers and positional encodings are components in current transformer designs that might need improvement. Moreover, we show that regardless of the number of parameters and training examples, models cannot seem to learn addition rules that are independent of the length of the numbers seen during training. Code to reproduce our experiments is available at https://github.com/castorini/transformers-arithmetic</p>
+<h2>1 INTRODUCTION</h2>
+<p>Abstraction and composition are two important themes in the study of human languages, made possible by different linguistic representations. Although treatments in different linguistic traditions vary, representations at the lexical, syntactic, and semantic levels are a common feature in nearly all theoretical studies of human language, and until relatively recently, these representations are explicitly "materialized" in language processing pipelines (for example, semantic role labeling takes as input a syntactic parse).</p>
+<p>However, with the advent of pretrained transformer models, these intermediate representations no longer have any explicit "reality": while various studies have found evidence of syntactic and semantic knowledge in these models (Tenney et al., 2019), it is no longer possible to isolate, for example, a subject-verb relation in a specific part of the model. With transformers, the only input to the model is the surface form of text combined with supplemental embeddings (e.g., positional embeddings, and in the case of BERT, segment embeddings).</p>
+<p>What are the consequences of this exclusive focus on the surface form of text? Some might say, nothing, as bigger models, better pretraining objectives, etc. will lead us to models that are capable of reasoning (Brown et al., 2020). We believe this to be an untenable position and present a case study in simple arithmetic tasks where having the right representation is the difference between a nearly-impossible-to-learn task and an easy-to-learn task. Our work shows that it is possible to "inject" representations into transformer models by simple manipulations of the input sequence (in our case, explicitly enumerating the semantics of digit positions), and that doing so makes it possible for off-the-shelf models to easily perform simple arithmetic, whereas it is nearly impossible otherwise.</p>
+<p>While we present only a case study, our findings have broader implications for various language analysis tasks: First, although end-to-end training enabled by neural networks is a powerful tool,</p>
+<p>having the right representation is crucial also. Second, we demonstrate a simple way in which representations can be "injected" into transformer models in a completely transparent manner, without any need to re-pretrain. This work points out a path that might allow us to combine the best of both worlds: leveraging the power of pretraining, with additional guidance from our understanding of the problem domain.</p>
+<p>However, we find that even explicit semantic representations have their limits. Despite our best efforts, we find that models cannot extrapolate, i.e., they fail to perform simple arithmetic when evaluated on inputs whose length distribution differs from the one seen during training. This appears to be a problem that neither larger models, more compute, nor more data can solve.</p>
+<p>There are, of course, many previous papers that investigate the representation of numbers and various numeric reasoning tasks in the literature. We present related work in Appendix A.</p>
+<h1>2 Methodology</h1>
+<p>Our tasks are the addition and subtraction of two numbers. We cast them as sequence-to-sequence tasks in which both inputs to the models and target outputs are treated as sequences of tokens. For the addition task, an example input is "What is 52 plus 148?" and the target output is " 200 ". For the subtraction task, an example input is "What is 20 minus 185 ?" and the target output is "-165".</p>
+<p>We programmatically generate training, development, and test sets of different sizes depending on the experiment. The input template is always "What is [number1] [operation] [number2]?", where [number1] and [number2] are numbers randomly sampled and [operation] is either "plus" or "minus". Below, we discuss different ways of representing [number1] and [number2] and their corresponding answer. We use two different methods to sample numbers for training, development, and test sets, which are described below.</p>
+<p>Balanced sampling: To generate training and development sets, we first set the maximum number of digits $D$ and then create each example as follows: We first sample $d$ from $[2, D]$ and then independently sample [number1] and [number2] from $\left[10^{d-1}, 10^{d}-1\right]$. We then compute the answer according to the operation (i.e., either addition or subtraction). This method ensures that the set will have a roughly equal proportion of $d$-digit numbers, where $d \in[2, D]$.
+Random sampling: To generate test sets, we sample [number1] and [number2] independently from $\left[0,10^{D}-1\right]$. This results in approximately $90 \%$ of the numbers having $D$-digits, $9 \%$ having $(D-1)$ digits, and so on. This unbalanced set aims at evaluating models on the largest numbers it was trained on. We study how different sampling methods influence model effectiveness in Appendix G.</p>
+<p>Metric: Our metric is accuracy. That is, the model receives a score of one if its output matches the target output exactly. Otherwise, it receives a score of zero.</p>
+<p>Our experiments use T5 (Raffel et al., 2020), a pretrained sequence-to-sequence model where every natural language processing task-for example, machine translation, question answering, and classification-is formulated as feeding the model some input sequence and training it to generate some output sequence. We follow this same approach and feed the addition or subtraction question (described above) as a sequence of tokens to the model and train it to generate the answer, token by token. We use greedy decoding as beam search showed similar effectiveness but is slower.</p>
+<p>We train the models using the AdamW optimizer (Loshchilov \&amp; Hutter, 2018), batches of 128 examples, and a learning rate of 0.0003 . We experimented with all T5 model sizes except for T5-11B due to its computational cost. We refer to T5-small, T5-base, and T5-large as T5-60M, T5-220M, and T5-770M, respectively, to easily distinguish models by their numbers of parameters. We also experiment with "vanilla" (i.e., non-pretrained) transformers (see Appendix B).</p>
+<p>Previous studies have recognized that commonly used subword tokenization techniques today are not ideal to represent numbers (Wallace et al., 2019; Henighan et al., 2020; Saxton et al., 2018; Lample \&amp; Charton, 2019), although none of them studied the problem in depth. Here, we investigate how six different number representations, illustrated in Table 1, impact model accuracy on the arithmetic tasks. In our main results, we only experiment with the "standard" ordering of generating digits (i.e., most to least significant), but in Appendix C, we also experimented with inverting the order.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Orthography</th>
+<th style="text-align: right;">Example</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DECIMAL</td>
+<td style="text-align: right;">832</td>
+<td style="text-align: left;">default representation</td>
+</tr>
+<tr>
+<td style="text-align: left;">CHARACTER</td>
+<td style="text-align: right;">832</td>
+<td style="text-align: left;">ensures consistent tokenization</td>
+</tr>
+<tr>
+<td style="text-align: left;">FIXED-CHARACTER</td>
+<td style="text-align: right;">0832</td>
+<td style="text-align: left;">ensures consistent positions (e.g., max. 4 digits)</td>
+</tr>
+<tr>
+<td style="text-align: left;">UNDERSCORE</td>
+<td style="text-align: right;">$8 _3 _2$</td>
+<td style="text-align: left;">underscores provide hints on digit significance</td>
+</tr>
+<tr>
+<td style="text-align: left;">WORDS</td>
+<td style="text-align: right;">eight hundred thirty-two</td>
+<td style="text-align: left;">leverages pretraining</td>
+</tr>
+<tr>
+<td style="text-align: left;">10-BASED</td>
+<td style="text-align: right;">81003102</td>
+<td style="text-align: left;">easy to determine digit significance</td>
+</tr>
+<tr>
+<td style="text-align: left;">10E-BASED</td>
+<td style="text-align: right;">810 e 2310 e 1210 e 0</td>
+<td style="text-align: left;">more compact encoding of above</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Different ways of representing numbers explored in this work.
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Accuracy of different number representations on the addition task.</p>
+<p>DECIMAL: Digits are represented in the Hindu-Arabic numeral form (also called decimal form).
+CHARACTER: Digits are separated by a white space, thus allowing the model to work on embeddings that always represent single digits.
+FIXED-CHARACTER: In the character representation above, it is hard to determine the significance of a digit by relative position embeddings because relative positions change on a per example basis. To address this, we introduce the FIXED-CHARACTER representation in which numbers have the same maximum number of digits.
+UNDERSCORE: Digits are separated by an underscore token. A possible advantage of this representation is that the model can learn to find the significance of a digit by counting the number of underscores to the right until the least significant digit.
+WORDS: Numbers are converted to words using the num2words package. ${ }^{1}$ We can anticipate two advantages in this representation: (1) the T5 model was pretrained on large amounts of textual data, so it likely knows that "hundred" is larger than "ten" (Zhang et al., 2020); (2) digits are surrounded by tokens that describe their significance ("hundred", "thousand", etc.), thus making it easier to find which two digits in the input sequence should be added (or subtracted).
+10-BASED: Digits are separated by powers of 10 , which we call position tokens. This representation allows the model to find the significance of a digit by simply inspecting its left or right tokens.
+10E-BASED: Digits are separated by powers of 10 represented using scientific notation. This orthography has a more compact representation for the position tokens of large numbers than the 10-BASED orthography. For example, in the 10-BASED orthography, the position token of the most significant digit of a 60-digit number occupies 60 characters (i.e., " 1 " followed by 59 zeros). In the 10E-BASED orthography, this position token occupies only 5 characters (i.e., "10e59").</p>
+<h1>3 ReSULtS</h1>
+<p>We present results in Figure 1. Each point in the graph represents the mean accuracy of a T5-220M model trained for 100 epochs with five different sets of 1,000 addition examples sampled using the balanced method. A separate development set of 1,000 examples is used to select the best checkpoint of each run. Error bars correspond to $95 \%$ confidence intervals. The values on the $x$-axis represent the maximum number of digits used for training and testing. We use a maximum of 30-digit numbers as some representations such as WORDS would result in input sequences that have too many tokens (e.g., more than 512), and hence prohibitively long training times.</p>
+<p>In the DECIMAL representation, the model barely learns addition of 2-digit numbers, and it fails to learn addition of larger numbers, i.e., it has an accuracy of zero for 5 digits or more. One explanation for this failure is because numbers are not systematically tokenized into digits. For instance, " 132 " might be tokenized as " 1 " and " 32 ", whereas " 232 " might be tokenized as " 23 " and " 2 ". Hence, the model would have to learn that sometimes the embedding of a token refers to a single digit, other times to two digits, etc. It might be hard to learn (i.e., need more examples) to map an embedding to a number when the number of digits it represents changes irregularly (dependent on the training data of the tokenizer).</p>
+<p>The CHARACTER and UNDERSCORE representations have much higher accuracy than DECIMAL, thus showing that it is easier to learn when embeddings represent single digits. Both representations exhibit decreasing accuracy as we increase the number of digits, until reaching an accuracy of zero with 15-digit addition. One explanation for this failure is that, since digits with the same significance have different positions in each example, the model has to count the number of digits on the right side in order to find its significance. With larger numbers, counting becomes harder.</p>
+<p>The FIXED-CHARACTER representation achieves higher accuracy than CHARACTER and UNDERSCORE for numbers longer than 12 digits, thus showing that the model can learn to memorize digit positions to determine their significance. However, with an accuracy of approximately $20 \%$ for 15digit numbers, the memorization strategy eventually breaks down. It appears to be hard to learn relative positional embeddings that precisely encode the distance between two tokens for our task.</p>
+<p>The WORDS representation shows stable accuracy in the range of $40-60 \%$ from 5 to 15 digits. Our hypothesis for this stability is that the intrinsic position tokens present in this representation (e.g., "hundred", "thousand") make it easier for the model to find and sum two digits that are far apart in the input sequence. However, for 20 digits or more, the models fail at the task. Pretraining might have contributed to the high accuracy on 15 digits or less because the model might have already seen these numbers in this representation in the pretraining corpus. On the other hand, it is very unlikely that the corpus contains numbers of 20 digits or more expressed in plain English. We further investigate the impact of pretraining in Appendix E.</p>
+<p>With up to 15 digits, the 10-BASED and 10E-BASED representations achieve accuracy close to $100 \%$. Our explanation for their success is the explicit position tokens added between each digit, which allows the model to inspect the left or right tokens of a digit to determine its significance.</p>
+<p>In the Appendices, we present a number of additional experimental results that build on our main findings here. In Appendix B, we study the impact of various position embeddings on the addition task. In Appendix C, we investigate how models of different sizes perform interpolation and extrapolation tasks. Although larger models perform better than smaller ones, we show that not even 3B-parameter models can learn simple arithmetic rules. In Appendix D, we show that all representations can reach accuracies of $97 \%$ or more when enough training data is provided. Results here, however, show that representations do matter when training data is scarce. In Appendices E and F, we study how pretraining can impact a model's ability to learn arithmetic. Finally, in Appendix G, we investigate how a mismatch between the length distribution of training and test sets can be problematic for the addition task.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h1>4 CONCLUSION</h1>
+<p>Rumelhart et al. (1985) wrote in their germinal "backpropagation" paper that "unfortunately, this [addition] is the one problem we have found that reliably leads the system into local minima". Almost four decades later, despite remarkable progress in neural networks, the field is still exploring this task. Our small contribution is to show that simple manipulations of surface representations to render semantics explicit can help neural models to learn simple arithmetic tasks. It remains to be seen if this "trick" can be applied to other tasks, but our results provide evidence that improving tokenizers and positional encodings are promising directions for future exploration.</p>
+<h2>ACKNOWLEDGMENTS</h2>
+<p>This research was supported in part by the Canada First Research Excellence Fund and the Natural Sciences and Engineering Research Council (NSERC) of Canada. In addition, we would like to thank Google Cloud for credits to support this work.</p>
+<h2>REFERENCES</h2>
+<p>Daniel Andor, Luheng He, Kenton Lee, and Emily Pitler. Giving BERT a calculator: Finding operations and arguments with reading comprehension. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 5949-5954, 2019.</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D. Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei. Language models are few-shot learners. In Advances in Neural Information Processing Systems, pp. 1877-1901, 2020.</p>
+<p>Jui Chu, Chung-Chi Chen, Hen-Hsen Huang, and Hsin-Hsi Chen. Learning to generate correct numeric values in news headlines. In Companion Proceedings of the Web Conference 2020, pp. $17-18,2020$.</p>
+<p>Mostafa Dehghani, Stephan Gouws, Oriol Vinyals, Jakob Uszkoreit, and Lukasz Kaiser. Universal transformers. In International Conference on Learning Representations, 2018.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pp. 4171-4186, 2019.</p>
+<p>David Ding, Felix Hill, Adam Santoro, and Matt Botvinick. Object-based attention for spatiotemporal reasoning: Outperforming neuro-symbolic models with flexible distributed architectures. arXiv preprint arXiv:2012.08508, 2020.</p>
+<p>Dheeru Dua, Yizhong Wang, Pradeep Dasigi, Gabriel Stanovsky, Sameer Singh, and Matt Gardner. DROP: A reading comprehension benchmark requiring discrete reasoning over paragraphs. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pp. $2368-2378,2019$.</p>
+<p>Mor Geva, Ankit Gupta, and Jonathan Berant. Injecting numerical reasoning skills into language models. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pp. 946-958, July 2020.</p>
+<p>Pengcheng He, Xiaodong Liu, Jianfeng Gao, and Weizhu Chen. DeBERTa: Decoding-enhanced BERT with disentangled attention. arXiv preprint arXiv:2006.03654, 2020.</p>
+<p>Tom Henighan, Jared Kaplan, Mor Katz, Mark Chen, Christopher Hesse, Jacob Jackson, Heewoo Jun, Tom B. Brown, Prafulla Dhariwal, Scott Gray, Chris Hallacy, Benjamin Mann, Alec Radford, Aditya Ramesh, Nick Ryder, Daniel M. Ziegler, John Schulman, Dario Amodei, and Sam McCandlish. Scaling laws for autoregressive generative modeling. arXiv preprint arXiv:2010.14701, 2020.</p>
+<p>Danny Hernandez, Jared Kaplan, Tom Henighan, and Sam McCandlish. Scaling laws for transfer. arXiv preprint arXiv:2102.01293, 2021.</p>
+<p>Zhiheng Huang, Davis Liang, Peng Xu, and Bing Xiang. Improve transformer models with better relative position embeddings. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: Findings, pp. 3327-3335, 2020.</p>
+<p>Chengyue Jiang, Zhonglin Nian, Kaihao Guo, Shanbo Chu, Yinggong Zhao, Libin Shen, Haofen Wang, and Kewei Tu. Learning numeral embeddings. arXiv preprint arXiv:2001.00003, 2019.</p>
+<p>Devin Johnson, Denise Mak, Andrew Barker, and Lexi Loessberg-Zahl. Probing for multilingual numerical understanding in transformer-based language models. In Proceedings of the Third BlackboxNLP Workshop on Analyzing and Interpreting Neural Networks for NLP, pp. 184-192, 2020.</p>
+<p>Armand Joulin and Tomas Mikolov. Inferring algorithmic patterns with stack-augmented recurrent nets. Advances in Neural Information Processing Systems, 28:190-198, 2015.</p>
+<p>Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. arXiv preprint arXiv:1511.08228, 2015.</p>
+<p>Nal Kalchbrenner, Ivo Danihelka, and Alex Graves. Grid long short-term memory. arXiv preprint arXiv:1507.01526, 2015.</p>
+<p>Guolin Ke, Di He, and Tie-Yan Liu. Rethinking the positional encoding in language pre-training. arXiv preprint arXiv:2006.15595, 2020.</p>
+<p>Guillaume Lample and François Charton. Deep learning for symbolic mathematics. In International Conference on Learning Representations, 2019.</p>
+<p>Jierui Li, Lei Wang, Jipeng Zhang, Yan Wang, Bing Tian Dai, and Dongxiang Zhang. Modeling intra-relation in math word problems with different functional multi-head attentions. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 6162-6167, 2019 .</p>
+<p>Bill Yuchen Lin, Seyeon Lee, Rahul Khanna, and Xiang Ren. Birds have four legs?! NumerSense: Probing numerical commonsense knowledge of pre-trained language models. arXiv preprint arXiv:2005.00683, 2020.</p>
+<p>Qianying Liu, Wenyv Guan, Sujian Li, and Daisuke Kawahara. Tree-structured decoding for solving math word problems. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 2370-2379, 2019.</p>
+<p>Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. In International Conference on Learning Representations, 2018.</p>
+<p>Swaroop Mishra, Arindam Mitra, Neeraj Varshney, Bhavdeep Sachdeva, and Chitta Baral. Towards question format independent numerical reasoning: A set of prerequisite tasks. arXiv preprint arXiv:2005.08516, 2020.</p>
+<p>Aakanksha Naik, Abhilasha Ravichander, Carolyn Rose, and Eduard Hovy. Exploring numeracy in word embeddings. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 3374-3380, 2019.</p>
+<p>Benjamin Newman, John Hewitt, Percy Liang, and Christopher D. Manning. The EOS decision and length extrapolation. In Proceedings of the Third BlackboxNLP Workshop on Analyzing and Interpreting Neural Networks for NLP, pp. 276-291, 2020.</p>
+<p>Matthew Peters, Mark Neumann, Mohit Iyyer, Matt Gardner, Christopher Clark, Kenton Lee, and Luke Zettlemoyer. Deep contextualized word representations. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers), pp. 2227-2237, 2018.</p>
+<p>Stanislas Polu and Ilya Sutskever. Generative language modeling for automated theorem proving. arXiv preprint arXiv:2009.03393, 2020.</p>
+<p>Eric Price, Wojciech Zaremba, and Ilya Sutskever. Extensions and limitations of the neural GPU. arXiv preprint arXiv:1611.00736, 2016.</p>
+<p>Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J. Liu. Exploring the limits of transfer learning with a unified text-to-text transformer. Journal of Machine Learning Research, 21(140):1-67, 2020.</p>
+<p>Qiu Ran, Yankai Lin, Peng Li, Jie Zhou, and Zhiyuan Liu. NumNet: Machine reading comprehension with numerical reasoning. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 2474-2484, 2019.</p>
+<p>Abhilasha Ravichander, Aakanksha Naik, Carolyn Rose, and Eduard Hovy. EQUATE: A benchmark evaluation framework for quantitative reasoning in natural language inference. In Proceedings of the 23rd Conference on Computational Natural Language Learning (CoNLL), pp. 349-361, 2019 .</p>
+<p>Yuanhang Ren and Ye Du. Enhancing the numeracy of word embeddings: A linear algebraic perspective. In CCF International Conference on Natural Language Processing and Chinese Computing, pp. 170-178. Springer, 2020.</p>
+<p>David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams. Learning internal representations by error propagation. Technical report, Institute for Cognitive Science, University of California, San Diego, 1985.</p>
+<p>David Saxton, Edward Grefenstette, Felix Hill, and Pushmeet Kohli. Analysing mathematical reasoning abilities of neural models. In International Conference on Learning Representations, 2018 .</p>
+<p>Imanol Schlag, Paul Smolensky, Roland Fernandez, Nebojsa Jojic, Jürgen Schmidhuber, and Jianfeng Gao. Enhancing the transformer with explicit relational encoding for math problem solving. arXiv preprint arXiv:1910.06611, 2019.</p>
+<p>Hongjie Shi. A sequence-to-sequence approach for numerical slot-filling dialog systems. In Proceedings of the 21th Annual Meeting of the Special Interest Group on Discourse and Dialogue, pp. 272-277, 2020.</p>
+<p>Alon Talmor, Yanai Elazar, Yoav Goldberg, and Jonathan Berant. oLMpics-on what language model pre-training captures. arXiv preprint arXiv:1912.13283, 2019.</p>
+<p>Ian Tenney, Dipanjan Das, and Ellie Pavlick. BERT rediscovers the classical NLP pipeline. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. $4593-4601,2019$.</p>
+<p>Avijit Thawani, Jay Pujara, Pedro A. Szekely, and Filip Ilievski. Representing numbers in NLP: a survey and a vision. arXiv preprint arXiv:2103.13136, 2021.</p>
+<p>Andrew Trask, Felix Hill, Scott E. Reed, Jack Rae, Chris Dyer, and Phil Blunsom. Neural arithmetic logic units. In Advances in Neural Information Processing Systems, pp. 8035-8044, 2018.</p>
+<p>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. In Advances in Neural Information Processing Systems, pp. 5998-6008, 2017.</p>
+<p>Eric Wallace, Yizhong Wang, Sujian Li, Sameer Singh, and Matt Gardner. Do NLP models know numbers? Probing numeracy in embeddings. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 5310-5318, 2019.</p>
+<p>Benyou Wang, Donghao Zhao, Christina Lioma, Qiuchi Li, Peng Zhang, and Jakob Grue Simonsen. Encoding word order in complex embeddings. In International Conference on Learning Representations, 2019.</p>
+<p>Xikun Zhang, Deepak Ramachandran, Ian Tenney, Yanai Elazar, and Dan Roth. Do language embeddings capture scales? In Proceedings of the Third BlackboxNLP Workshop on Analyzing and Interpreting Neural Networks for NLP, pp. 292-299, 2020.</p>
+<p>Yanyan Zou and Wei Lu. Quantity tagger: A latent-variable sequence labeling approach to solving addition-subtraction word problems. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 5246-5251, 2019a.</p>
+<p>Yanyan Zou and Wei Lu. Text2Math: End-to-end parsing text into math expressions. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 5330-5340, 2019b.</p>
+<h1>A Related Work</h1>
+<p>Recent studies have explored the numerical capabilities learned by neural networks trained on large amounts of texts (Talmor et al., 2019; Jiang et al., 2019; Naik et al., 2019; Wallace et al., 2019; Lin et al., 2020; Johnson et al., 2020; Mishra et al., 2020). See Thawani et al. (2021) for a detailed survey.</p>
+<p>A common finding is that the learned embeddings capture magnitude (e.g., $2&lt;3$ ), but many models fail to capture numeracy (e.g., two=2) (Naik et al., 2019; Wallace et al., 2019; Ren \&amp; Du, 2020; Zhang et al., 2020). Character-level models such as ELMO (Peters et al., 2018) have stronger numeracy than sub-word models such as BERT (Devlin et al., 2019), perhaps because two numbers that are similar in value can have very different sub-word tokenizations (Wallace et al., 2019). Our work shows that characters are adequate representations for small to medium numbers, but they are not sufficient when dealing with large numbers, which require precise position representations for each digit.</p>
+<p>However, independently of the tokenization method, pretrained word embeddings have trouble extrapolating to numbers unseen during training (Wallace et al., 2019). Some alternatives to improve the extrapolation capabilities of neural models include augmenting pretraining corpora with numerical texts (Geva et al., 2020; Chu et al., 2020) or using scientific notation to represent numbers (Zhang et al., 2020). Similarly, better numerical skills can be achieved by augmenting input texts with pre-computed numerical computations (Andor et al., 2019) or by explicitly inferring mathematical equations from natural language text (Zou \&amp; Lu, 2019a;b; Li et al., 2019; Liu et al., 2019; Shi, 2020).</p>
+<p>Special architectures have also been proposed for arithmetic tasks (Kaiser \&amp; Sutskever, 2015; Kalchbrenner et al., 2015; Price et al., 2016; Trask et al., 2018). Many of these models are capable of summing numbers larger than the ones seen during training. In contrast, more general-purpose architectures fail to extrapolate on numerical tasks (Joulin \&amp; Mikolov, 2015; Dehghani et al., 2018; Schlag et al., 2019).</p>
+<p>Others have proposed neural-symbolic hybrids, which are typically composed of a neural model to convert inputs to contiguous vector representations and a symbolic component that applies rules over these vectors (Ran et al., 2019). However, a body of evidence has shown that neural networks can perform reasoning tasks. For instance, a modern pretrained model with self-attention that uses the right level of input representation can outperform neural-symbolic hybrids on artificial reasoning tasks that require answering questions from videos (Ding et al., 2020). Deep learning models were also successfully applied to symbolic integration, to solve differential equations (Lample \&amp; Charton, 2019), and automated theorem proving (Polu \&amp; Sutskever, 2020).</p>
+<p>Furthermore, it is not clear how architectures specialized to some tasks can be adapted to simultaneously perform a range of tasks a human is capable of. Our work instead focuses on a general-purpose architecture that can be applied to almost all natural language processing tasks.</p>
+<p>Novel ways of encoding positions of tokens in the transformer architecture have been proposed, but they were mostly evaluated on natural language processing tasks, showing small performance gains (Ke et al., 2020; He et al., 2020; Wang et al., 2019; Huang et al., 2020). We instead expose the limitations of subword tokenizers and positional encodings using simple arithmetic tasks.</p>
+<p>Datasets such as DROP (Dua et al., 2019), EQUATE (Ravichander et al., 2019), or Mathematics Questions (Saxton et al., 2018) test numerical reasoning; they contain examples that require comparing, sorting, and performing other complex mathematical tasks. This work focuses on isolating the failure cases of the transformer architecture by studying how it performs simple arithmetic tasks. We argue that this is a necessary skill to solve more complex reasoning tasks.</p>
+<h2>B Position Embeddings</h2>
+<p>Here, we study the impact of various position embeddings on the addition task. Since pretraining from scratch is a costly process, we experiment with only small transformer models fine-tuned without pretraining.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Addition accuracy of vanilla transformers with different position encoding methods.</p>
+<p>The architecture of the transformer follows Vaswani et al. (2017) except we use 4 layers for the encoder and the decoder, respectively. We look into the effect of representation and positional encoding on addition from 2 digits to 9 digits. Due to the cost of these experiments, we choose a subset of the representations studied in Section 3: 10E-BASED, 10-BASED, and CHARACTER.</p>
+<p>The dataset is split into training and test sets with a ratio of 9:1. For 3-9 digits addition, we randomly generate 10,000 samples for the whole dataset. For 2-digit addition, we use all of the combinations for every addend $a \in[10,99]$, which results in less than 10,000 samples. The models are trained for 55 epochs with a learning rate of $10^{-5}$.</p>
+<p>We find that the original positional encoding in Vaswani et al. (2017) fails to learn addition effectively, as shown in Figure 2. This might be due to the correlation introduced by two heterogeneous signals—embedding and absolute positional encoding (Ke et al., 2020). Therefore, we designed a position-wise masked embedding for this task.</p>
+<p>More specifically, for an $n$-digit number whose embedding is $e$ with embedding size $d$, we will set $e[u: v]=1$ for $i-t h$ digit in the number, where $u=\operatorname{int}\left(\frac{d}{u}\right) \cdot(n-i)$ and $v=\operatorname{int}\left(\frac{d}{u}\right) \cdot(n-i+1)$. We set other position embedding values to 0 . Note that $i$ follows the "Big-Endian" style (e.g., $i=3$ for " 2 " in the number " 271 "). However, during inference, digit information is not provided for the target sequence as we don't know the exact digit of the decoded number in advance. So, we face a format discrepancy between training and inference. To investigate how this discrepancy will affect the result, we train the model in two different ways-training with target position provided and training without target position provided (position encoding for the target is the zero vector). Note that position encoding is provided for the source sequence in both cases for training and inference; position encoding is not provided for the target sequence during inference in both cases. The results are shown in Figure 2, labeled as "WITH TGT" and "NO TGT", respectively. We label our positionwise masked embedding as "Pos-Masked". The original representation is called "Sinusoidal".</p>
+<p>Consistent with previous experiments, 10E-BASED performs best given the same position encoding and training strategies. Comparing "WITH TGT" and "NO TGT", we can see that training with target position encoding creates fluctuations among different digits. In general, it performs worse than training without target position encoding given the same encoding representation. Unsurprisingly, under our experiment setting, whether the target position is provided is not as important as having the same format between training and inference.</p>
+<h1>C EXPERIMENTS ON EXTRAPOLATION</h1>
+<p>One advantage of working with arithmetic tasks is that the rules to be learned are well defined and relatively simple. Thus, it is easy to verify if models learned such rules by evaluating them on numbers that are larger than the ones they were trained on. If successful, such a model would have no problem correctly adding or subtracting arbitrarily long numbers.</p>
+<p>In this section, we investigate how models of different sizes perform interpolation and extrapolation tasks. We train T5-60M, T5-220M, T5-770M, and T5-3B models on numbers that are sampled using the "balanced" method. Models are trained 100 K iterations using batches of 128 examples and a learning rate of $10^{-3}$. We save checkpoints every 2,000 iterations, and the best checkpoint is chosen using a separate validation set of 10,000 examples. The models are evaluated on a test set of 10,000 examples with numbers sampled using the "random" method.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Interpolation</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Extrapolation</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Order:</td>
+<td style="text-align: center;">Inverse</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Regular</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Inverse</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Regular</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Operation:</td>
+<td style="text-align: center;">Add</td>
+<td style="text-align: center;">Sub</td>
+<td style="text-align: center;">Add</td>
+<td style="text-align: center;">Sub</td>
+<td style="text-align: center;">Add</td>
+<td style="text-align: center;">Sub</td>
+<td style="text-align: center;">Add</td>
+<td style="text-align: center;">Sub</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5-60M</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">0.934</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 8}$</td>
+<td style="text-align: center;">0.830</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.004</td>
+<td style="text-align: center;">0.000</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5-220M</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 8}$</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 5}$</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.862</td>
+<td style="text-align: center;">0.641</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5-770M</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">0.947</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 9}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 8 2}$</td>
+<td style="text-align: center;">0.003</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.442</td>
+<td style="text-align: center;">0.373</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5-3B</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 7}$</td>
+<td style="text-align: center;">$\mathbf{1 . 0 0 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 3}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 7 4}$</td>
+<td style="text-align: center;">0.865</td>
+<td style="text-align: center;">$\mathbf{0 . 9 8 8}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 8 2}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Interpolation and extrapolation accuracy. Interpolation refers to training and testing on up to 60-digit numbers. Extrapolation refers to training on up to 50-digit numbers and testing on 60-digit numbers. We highlight in bold accuracy above $97 \%$.</p>
+<p>For interpolation experiments, the models are trained and evaluated on up to 60-digit numbers. For extrapolation experiments, the models are trained on up to 50-digit numbers and evaluated on 60digit numbers. We use that many digits for training because the models could not extrapolate with fewer; see more below.</p>
+<p>Regular vs. inverse orders: Auto-regressive models such as the ones used in this work generate the output sequence token by token. Thus, to produce the first digit of the answer, which is the most significant one, the model has to perform all the carry operations. In the addition example "What is 52 plus 148?", to produce the first digit " 2 ", the model has to perform the carry operation for the unit digits ( 2 and 8 ), and then the carry for the decimal digits ( 5 and 4 ). Hence, the model has to perform the digit-wise addition (or subtraction) of all the digits in the question before generating the first digit of the answer. We call this generation order "regular".</p>
+<p>Another way to produce an answer is by generating the least significant digits first. This order is perhaps easier to learn than the "regular" order because to decode each digit, the model only needs to add (or subtract) single digits and check if the previous digit-wise operation had a carry. We call this generation order "inverse".</p>
+<p>The results presented in Table 2 show that models of all sizes successfully perform interpolation tasks. Two exceptions are T5-60M on the subtraction tasks, which achieve 0.934 and 0.830 accuracy for inverse and regular orders, respectively. Nevertheless, compared to the extrapolation results, these numbers are high enough to consider them as successful runs.</p>
+<p>On extrapolation tasks, T5-3B succeeds on almost all of them, whereas smaller models fail more often. Even on tasks where T5-220M achieves reasonable accuracy ( 0.862 and 0.641 on addition and subtraction using regular order, respectively), T5-3B outperforms T5-220M by large margins. This result provides evidence that larger models might perform better on data whose distribution is outside its training data distribution. However, it remains to be investigated if this trend holds for more complex tasks, especially those involving natural language.</p>
+<p>The difference in accuracy is negligible between regular and inverse orders on interpolation tasks. However, models trained and evaluated on the regular order show higher extrapolation accuracy than those that use the inverse order. For example, T5-220M fails to extrapolate on both addition and subtraction tasks when using the inverse order (i.e., accuracy is zero), but it performs better when using the regular order, with accuracy between $60-90 \%$. This result is perhaps surprising since one would expect that the inverse order would be easier to learn.</p>
+<p>Supported by recent work, we suspect that the problem is related to the bias of selecting the termination (i.e., end-of-sequence) token when the generated sequence becomes longer than those seen during training (Newman et al., 2020). In the inverse order, the answer is generated from least to most significant digit, so the model might have a tendency to select the termination token right after it generates the most significant digit seen during training. In the regular order, however, the model has to predict the full length of the sequence before emitting the first and second tokens. For example, the first two tokens of the answer to the question $10^{60}+10^{60}$ are " 2 " and " 10 e 60 ". This explicit length prediction allows the model to better generalize to longer sequences, but it appears to be insufficient to induce models to learn addition rules that are independent of the length of numbers seen during training (more below).</p>
+<p>We observe high variance in accuracy for the extrapolation experiments. For example, during the training of a T5-770M model on up to 30-digit numbers, the accuracy ranges from $20 \%$ to $50 \%$ when evaluated on 60-digit numbers. Extrapolation accuracy also oscillates between 20-40 percentage points when changing the seed for training data generation.
+Extrapolation is hardly achieved when trained on fewer than 50 digits, regardless of the model size. For example, T5-220M, T5-770M, and T5-3B trained on 15 digits show an accuracy of zero when evaluated on 20 digits.
+Beyond a critical amount, increasing the training data does not improve extrapolation accuracy. For example, when trained on up to 30-digit and evaluated on 60-digit numbers, a T5-770M showed a similar accuracy range ( $20 \%-50 \%$ ) when trained with either $100 \mathrm{~K}, 1 \mathrm{M}$, or 10 M examples. As training progresses, interpolation accuracy always reaches $100 \%$, but extrapolation accuracy starts to decrease after some number of training steps. The number of training steps after which this drop occurs varies dramatically between runs that differ only in the seed used to generate the training data. We are unable to isolate the cause of this behavior.</p>
+<p>Contrary to the hypothesis of Newman et al. (2020), we find that the end-of-sequence token does not seem to be the cause of extrapolation failures. For example, when a T5-770M model trained on 30-digit numbers is evaluated on 60-digit numbers, it correctly generates the first 23 position tokens (i.e., from " 10 e 60 " until " 10 e 38 ") but it suddenly skips to position token " 10 e 27 ", and continues generating the correct position tokens until the last one (" 10 e 0 "). Here we show one such sequence:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e60</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e59</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e58</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="mf">10</span><span class="n">e57</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e56</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e55</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="mf">10</span><span class="n">e54</span><span class="w"> </span><span class="mf">7</span><span class="w"> </span><span class="mf">10</span><span class="n">e53</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e52</span>
+<span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e51</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e50</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e49</span><span class="w"> </span><span class="mf">9</span><span class="w"> </span><span class="mf">10</span><span class="n">e48</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e47</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e46</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e45</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e44</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e43</span><span class="w"> </span><span class="mf">3</span>
+<span class="mf">10</span><span class="n">e426</span><span class="w"> </span><span class="mf">10</span><span class="n">e41</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e406</span><span class="w"> </span><span class="mf">10</span><span class="n">e39</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e38</span><span class="w"> </span><span class="mf">8</span><span class="w"> </span><span class="mf">10</span><span class="n">e27</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e264</span><span class="w"> </span><span class="mf">10</span><span class="n">e25</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="mf">10</span><span class="n">e24</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="mf">10</span><span class="n">e23</span>
+<span class="mf">6</span><span class="w"> </span><span class="mf">10</span><span class="n">e22</span><span class="w"> </span><span class="mf">6</span><span class="w"> </span><span class="mf">10</span><span class="n">e21</span><span class="w"> </span><span class="mf">9</span><span class="w"> </span><span class="mf">10</span><span class="n">e20</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e19</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e18</span><span class="w"> </span><span class="mf">4</span><span class="w"> </span><span class="mf">10</span><span class="n">e17</span><span class="w"> </span><span class="mf">8</span><span class="w"> </span><span class="mf">10</span><span class="n">e16</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e15</span><span class="w"> </span><span class="mf">8</span><span class="w"> </span><span class="mf">10</span><span class="n">e14</span><span class="w"> </span><span class="mf">8</span>
+<span class="mf">10</span><span class="n">e13</span><span class="w"> </span><span class="mf">9</span><span class="w"> </span><span class="mf">10</span><span class="n">e12</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e11</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e10</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e9</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="mf">10</span><span class="n">e8</span><span class="w"> </span><span class="mf">6</span><span class="w"> </span><span class="mf">10</span><span class="n">e7</span><span class="w"> </span><span class="mf">4</span><span class="w"> </span><span class="mf">10</span><span class="n">e6</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="mf">10</span><span class="n">e5</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="mf">10</span><span class="n">e4</span><span class="w"> </span><span class="mf">6</span>
+<span class="mf">10</span><span class="n">e3</span><span class="w"> </span><span class="mf">7</span><span class="w"> </span><span class="mf">10</span><span class="n">e2</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="mf">10</span><span class="n">e1</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="mf">10</span><span class="n">e0</span>
+</code></pre></div>
+
+<p>Hence, although the model correctly emits the end-of-sequence token after the " 10 e 0 " token, it decides to shorten the sequence in the middle of the generation, i.e., by skipping position tokens "10e37" until "10e28". This skipping behavior is consistent across model sizes, dataset sizes, and extrapolation ranges (e.g., training on 20 digits, evaluating on 30 digits, etc.). Investigating it further might help us understand why neural models often fail on extrapolation tasks.</p>
+<h1>D IMPACT OF DATA SIZE</h1>
+<p>In Section 3, we show that the choice of orthography has a large impact on the addition task when training data is scarce (i.e., 1,000 training examples). In this section, we investigate how these representations perform with varying amounts of training data. We train and evaluate T5-220M on the addition task of up to 30-digit numbers using the regular order. Due to the high computational cost of training this model on millions of examples, we reduce the number of epochs depending on the dataset size, which is detailed in Table 3. We select the best checkpoint using a validation set of 10,000 examples and evaluate the models on a test set of 10,000 examples.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Size</th>
+<th style="text-align: right;">Epochs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$10^{3}$</td>
+<td style="text-align: right;">200</td>
+</tr>
+<tr>
+<td style="text-align: center;">$10^{4}$</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr>
+<td style="text-align: center;">$10^{5}$</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">$10^{6}$</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">$10^{7}$</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Number of training epochs for each dataset size presented in Figure 3.
+Results are shown in Figure 3. The 10E-BASED representation presents the best results for training sizes of 1,000 and 10,000 examples, followed by 10-BASED, WORDS, UNDERSCORE, CHARACTER, and DECIMAL. For larger datasets such as 10M examples, almost all representations achieve more</p>
+<p>than $99.9 \%$ accuracy. The exception is the DECIMAL representation, which still has a high error of $2.1 \%$ even when trained with 10 M examples.</p>
+<p>We conclude that with enough training data, models can learn the addition task regardless of the representation. The limitations of some representations are exposed only when training data is small.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Accuracy of different number representations when varying the amount of training examples. The task is addition of 30-digit numbers.</p>
+<h1>E Pretrained vs. From Scratch Models</h1>
+<p>One hypothesis for the high interpolation accuracy reported in Section 3 despite using a small number of training examples is that the model has already seen addition and subtraction examples during pretraining. To test this hypothesis, we compare pretrained models with models trained from scratch (i.e., no pretraining on the masked language modeling task) on the addition task. In this experiment, the models never see the same training example more than once. That is, they are not limited by training data.</p>
+<p>Figure 4 shows that both pretrained T5-220M and T5-3B need approximately ten times fewer training examples (and compute) than models trained from scratch to reach $100 \%$ accuracy on the addition of 60-digit numbers.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Accuracy of pretrained models vs. from scratch models with respect to the number of training examples. Models are trained and evaluated on numbers with up to 60 digits in length.</p>
+<h2>F Accuracy on Different Bases</h2>
+<p>Here we propose another way to test how pretraining can impact a model's ability to learn arithmetic. We hypothesize that a model might have difficulty learning bases different than base 10 (i.e.,</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Test Accuracy</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Base</td>
+<td style="text-align: center;">From Scratch</td>
+<td style="text-align: center;">Pretrained</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: center;">$0.000 \pm 0.000$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 9} \pm 0.001$</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: center;">$0.000 \pm 0.000$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 9} \pm 0.002$</td>
+</tr>
+<tr>
+<td style="text-align: left;">10</td>
+<td style="text-align: center;">$0.000 \pm 0.000$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9 3} \pm 0.003$</td>
+</tr>
+<tr>
+<td style="text-align: left;">19</td>
+<td style="text-align: center;">$0.000 \pm 0.000$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 7 6} \pm 0.007$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Test set accuracy of 15-digit addition on various bases. Numbers are represented with 10E-BASED orthography.
+decimal) because examples rarely occur in the pretraining corpus. To test this hypothesis, we train a T5-220M model on addition examples using binary, ternary, decimal, and base 19. While there might be examples of binary addition in the pretraining corpus, our expectation is that it contains few (if any?) examples of addition using base 19 numbers. We use the 10E-BASED orthography and inverse order due to its slightly better accuracy (see Table 2). We also evaluate models trained from scratch.</p>
+<p>We report the mean accuracy and $95 \%$ confidence intervals of a model trained with five different sets of 1,000 addition examples for 100 epochs. A separate development set of 1,000 examples was used to select the best checkpoint of each run. We trained and evaluated on numbers equivalent to 15 decimal digits.</p>
+<p>For these experiments, we use only 1,000 training examples since experiments in Appendix D show that models can successfully learn with enough training data, thus too much data defeats the purpose of measuring the impact of pretraining; see also Hernandez et al. (2021). Results are shown in Table 4. The pretrained model has no problem learning binary, ternary, and decimal bases, but its accuracy degrades slightly on base 19. Since it is unlikely that the pretrained model has encountered substantial numbers of examples of addition in rare bases (i.e., ternary and 19), it seems that pretraining helps on this task in other ways than simple memorization.</p>
+<p>To show that the task is not easy, we also report in the table that models trained from scratch fail to learn the task regardless of the base. This result is expected since a large number of parameters (220M) need to be learned from scratch using just 1,000 examples.</p>
+<h1>G IMPACT OF DIFFERENT LENGTH DISTRIBUTIONS</h1>
+<p>Here we investigate to what extent a mismatch between the length distribution of training and test sets is problematic for the addition task. We train T5-220M models on 100,000 examples, select the best checkpoint using a development set of 10,000 examples, and evaluate on another 10,000 examples. Here we use the regular order. Training and test sets are generated using either the balanced or random sampling methods described in Section 2.</p>
+<p>Results are shown in Table 5. When trained on the balanced distribution, the model succeeds on both random and balanced evaluation sets. When trained on the random distribution, it succeeds on the random evaluation set, but it fails on the balanced evaluation set. In other words, when trained on data where most numbers (i.e., $90 \%$ ) have 60 digits, it does not learn to add numbers with fewer digits. This shows that models have problems performing addition of sequences shorter than the ones seen during training. This is complementary to the results presented in Appendix C, which shows that models cannot generate examples longer than the ones seen during training.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Test</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Balanced</td>
+<td style="text-align: center;">Random</td>
+</tr>
+<tr>
+<td style="text-align: left;">Train</td>
+<td style="text-align: center;">Balanced</td>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">1.000</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Random</td>
+<td style="text-align: center;">0.014</td>
+<td style="text-align: center;">1.000</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Accuracy on 60-digit addition, with balanced and random sampling as described in Section 2 .</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{1}$ https://github.com/savoirfairelinux/num2words&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

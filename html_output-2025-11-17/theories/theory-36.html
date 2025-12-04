@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterative Preference Optimization with NLL Regularization Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-36</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-36</p>
+                <p><strong>Name:</strong> Iterative Preference Optimization with NLL Regularization Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> </p>
+                <p><strong>Description:</strong> Iterative preference optimization that combines standard DPO loss with an explicit negative log-likelihood (NLL) term for chosen sequences, applied over multiple iterations with fresh preference pairs each iteration, provides substantially larger gains than single-iteration preference optimization or SFT alone. The NLL term is critical to prevent chosen sequence probabilities from decreasing during DPO training. The iterative structure allows: (1) the model to generate higher-quality preference pairs in later iterations, (2) compounding improvements as the model becomes better at distinguishing correct from incorrect reasoning, (3) gradual refinement of the policy without catastrophic forgetting, and (4) exploration of increasingly difficult examples. The approach requires careful balancing of the DPO and NLL terms (λ parameter) and benefits from including gold CoT when the model cannot generate correct paths.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2025</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 9</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Iterative preference optimization with NLL regularization provides 15-20 percentage point improvements over SFT on gold demonstrations for multi-step reasoning tasks.</li>
+                <li>The NLL term is critical: removing it causes 10-15 percentage point performance drops by allowing chosen sequence probabilities to decrease.</li>
+                <li>Iterative application compounds gains: each iteration provides 3-5 percentage point improvements, with 3-4 iterations reaching near-optimal performance.</li>
+                <li>The approach requires careful balancing of DPO and NLL terms: optimal λ is typically 0.1-0.3 for reasoning tasks.</li>
+                <li>Including gold CoT in winners when the model cannot generate correct paths prevents performance degradation and maintains improvement trajectory.</li>
+                <li>The method scales better to harder tasks than SFT: the advantage increases from 8 points on ARC to 18 points on GSM8K to larger gaps on MATH.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Iterative RPO achieved 81.6% on GSM8K after 4 iterations, compared to 63.5% for SFT on gold CoT (+18.1 points) and 61.8% for standard DPO (+19.8 points). <a href="../results/extraction-result-218.html#e218.0" class="evidence-link">[e218.0]</a> </li>
+    <li>Standard DPO without NLL term achieved only 61.8% on GSM8K, while DPO+NLL in iteration 1 achieved 73.1% (+11.3 points), showing the NLL term is critical. <a href="../results/extraction-result-218.html#e218.2" class="evidence-link">[e218.2]</a> <a href="../results/extraction-result-218.html#e218.3" class="evidence-link">[e218.3]</a> </li>
+    <li>Iterative RPO on ARC-Challenge improved from 77.8% (zero-shot) to 86.7% (iteration 3), with +8.9 points vs zero-shot and +3.2 points vs standard DPO. <a href="../results/extraction-result-218.html#e218.4" class="evidence-link">[e218.4]</a> </li>
+    <li>Iterative RPO on MATH improved from 12.5% (few-shot) to 20.8% (iteration 3), with +8.3 points vs few-shot and +4.0 points vs SFT on chosen. <a href="../results/extraction-result-218.html#e218.5" class="evidence-link">[e218.5]</a> </li>
+    <li>SFT on chosen sequences alone achieved 65.2%, better than standard DPO (61.8%) but much worse than iterative RPO (81.6%), showing the importance of both preference signal and NLL term. <a href="../results/extraction-result-218.html#e218.3" class="evidence-link">[e218.3]</a> </li>
+    <li>The approach requires balancing λ (NLL weight): too low and chosen probabilities decrease, too high and the preference signal is weakened. <a href="../results/extraction-result-218.html#e218.0" class="evidence-link">[e218.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Applying iterative DPO+NLL to scientific literature QA would yield 12-18 percentage point improvements over SFT on human demonstrations, with larger gains for multi-step reasoning questions.</li>
+                <li>Using 3-4 iterations would provide optimal tradeoff between performance and computational cost, with diminishing returns beyond 4 iterations.</li>
+                <li>Setting λ=0.2 would provide a good starting point for scientific QA tasks, with task-specific tuning potentially improving results by 1-2 percentage points.</li>
+                <li>Monitoring chosen sequence log-probabilities during training would show consistent increases with DPO+NLL but decreases with standard DPO.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether iterative DPO+NLL would work for scientific QA tasks where correctness is not easily verifiable - might require human verification in the loop for each iteration.</li>
+                <li>The optimal number of iterations for scientific literature QA - whether 3-4 iterations is sufficient or whether harder scientific reasoning requires more iterations.</li>
+                <li>Whether the approach would transfer to multi-document scientific reasoning where generating correct paths might require synthesizing information across many papers.</li>
+                <li>How the method would handle scientific QA tasks with multiple valid answers or reasoning paths - whether the preference pairs would be too noisy.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If single-iteration DPO+NLL performs as well as iterative application, this would challenge the iterative refinement hypothesis.</li>
+                <li>If standard DPO performs as well as DPO+NLL when both use the same number of iterations, this would question the importance of the NLL term.</li>
+                <li>If the performance gains plateau after 1-2 iterations rather than continuing for 3-4 iterations, this would suggest limited benefit from iteration.</li>
+                <li>If including gold CoT in winners does not prevent performance degradation when the model cannot generate correct paths, this would question this mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't explain why optimal λ varies across tasks and models - GSM8K, ARC, and MATH might require different balancing. <a href="../results/extraction-result-218.html#e218.0" class="evidence-link">[e218.0]</a> <a href="../results/extraction-result-218.html#e218.4" class="evidence-link">[e218.4]</a> <a href="../results/extraction-result-218.html#e218.5" class="evidence-link">[e218.5]</a> </li>
+    <li>Standard DPO achieved 61.8% on GSM8K, which is still reasonable performance, suggesting it's not completely broken, just suboptimal. <a href="../results/extraction-result-218.html#e218.2" class="evidence-link">[e218.2]</a> </li>
+    <li>The gains from iteration 3 to iteration 4 were smaller than earlier iterations, suggesting diminishing returns, but the theory doesn't predict when to stop. <a href="../results/extraction-result-218.html#e218.0" class="evidence-link">[e218.0]</a> </li>
+    <li>On MATH, even after 3 iterations, performance was only 20.8%, suggesting limits to how much iterative refinement can help on very hard tasks. <a href="../results/extraction-result-218.html#e218.5" class="evidence-link">[e218.5]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Pang et al. (2024) Iterative Reasoning Preference Optimization [Introduces iterative RPO with NLL term]</li>
+    <li>Rafailov et al. (2023) Direct Preference Optimization [Original DPO without NLL term]</li>
+    <li>Yuan et al. (2024) Self-Rewarding Language Models [Iterative self-improvement with preference optimization]</li>
+    <li>Gulcehre et al. (2023) Reinforced Self-Training [Iterative self-training with RL]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Iterative Preference Optimization with NLL Regularization Theory",
+    "theory_description": "Iterative preference optimization that combines standard DPO loss with an explicit negative log-likelihood (NLL) term for chosen sequences, applied over multiple iterations with fresh preference pairs each iteration, provides substantially larger gains than single-iteration preference optimization or SFT alone. The NLL term is critical to prevent chosen sequence probabilities from decreasing during DPO training. The iterative structure allows: (1) the model to generate higher-quality preference pairs in later iterations, (2) compounding improvements as the model becomes better at distinguishing correct from incorrect reasoning, (3) gradual refinement of the policy without catastrophic forgetting, and (4) exploration of increasingly difficult examples. The approach requires careful balancing of the DPO and NLL terms (λ parameter) and benefits from including gold CoT when the model cannot generate correct paths.",
+    "supporting_evidence": [
+        {
+            "text": "Iterative RPO achieved 81.6% on GSM8K after 4 iterations, compared to 63.5% for SFT on gold CoT (+18.1 points) and 61.8% for standard DPO (+19.8 points).",
+            "uuids": [
+                "e218.0"
+            ]
+        },
+        {
+            "text": "Standard DPO without NLL term achieved only 61.8% on GSM8K, while DPO+NLL in iteration 1 achieved 73.1% (+11.3 points), showing the NLL term is critical.",
+            "uuids": [
+                "e218.2",
+                "e218.3"
+            ]
+        },
+        {
+            "text": "Iterative RPO on ARC-Challenge improved from 77.8% (zero-shot) to 86.7% (iteration 3), with +8.9 points vs zero-shot and +3.2 points vs standard DPO.",
+            "uuids": [
+                "e218.4"
+            ]
+        },
+        {
+            "text": "Iterative RPO on MATH improved from 12.5% (few-shot) to 20.8% (iteration 3), with +8.3 points vs few-shot and +4.0 points vs SFT on chosen.",
+            "uuids": [
+                "e218.5"
+            ]
+        },
+        {
+            "text": "SFT on chosen sequences alone achieved 65.2%, better than standard DPO (61.8%) but much worse than iterative RPO (81.6%), showing the importance of both preference signal and NLL term.",
+            "uuids": [
+                "e218.3"
+            ]
+        },
+        {
+            "text": "The approach requires balancing λ (NLL weight): too low and chosen probabilities decrease, too high and the preference signal is weakened.",
+            "uuids": [
+                "e218.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Iterative preference optimization with NLL regularization provides 15-20 percentage point improvements over SFT on gold demonstrations for multi-step reasoning tasks.",
+        "The NLL term is critical: removing it causes 10-15 percentage point performance drops by allowing chosen sequence probabilities to decrease.",
+        "Iterative application compounds gains: each iteration provides 3-5 percentage point improvements, with 3-4 iterations reaching near-optimal performance.",
+        "The approach requires careful balancing of DPO and NLL terms: optimal λ is typically 0.1-0.3 for reasoning tasks.",
+        "Including gold CoT in winners when the model cannot generate correct paths prevents performance degradation and maintains improvement trajectory.",
+        "The method scales better to harder tasks than SFT: the advantage increases from 8 points on ARC to 18 points on GSM8K to larger gaps on MATH."
+    ],
+    "new_predictions_likely": [
+        "Applying iterative DPO+NLL to scientific literature QA would yield 12-18 percentage point improvements over SFT on human demonstrations, with larger gains for multi-step reasoning questions.",
+        "Using 3-4 iterations would provide optimal tradeoff between performance and computational cost, with diminishing returns beyond 4 iterations.",
+        "Setting λ=0.2 would provide a good starting point for scientific QA tasks, with task-specific tuning potentially improving results by 1-2 percentage points.",
+        "Monitoring chosen sequence log-probabilities during training would show consistent increases with DPO+NLL but decreases with standard DPO."
+    ],
+    "new_predictions_unknown": [
+        "Whether iterative DPO+NLL would work for scientific QA tasks where correctness is not easily verifiable - might require human verification in the loop for each iteration.",
+        "The optimal number of iterations for scientific literature QA - whether 3-4 iterations is sufficient or whether harder scientific reasoning requires more iterations.",
+        "Whether the approach would transfer to multi-document scientific reasoning where generating correct paths might require synthesizing information across many papers.",
+        "How the method would handle scientific QA tasks with multiple valid answers or reasoning paths - whether the preference pairs would be too noisy."
+    ],
+    "negative_experiments": [
+        "If single-iteration DPO+NLL performs as well as iterative application, this would challenge the iterative refinement hypothesis.",
+        "If standard DPO performs as well as DPO+NLL when both use the same number of iterations, this would question the importance of the NLL term.",
+        "If the performance gains plateau after 1-2 iterations rather than continuing for 3-4 iterations, this would suggest limited benefit from iteration.",
+        "If including gold CoT in winners does not prevent performance degradation when the model cannot generate correct paths, this would question this mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't explain why optimal λ varies across tasks and models - GSM8K, ARC, and MATH might require different balancing.",
+            "uuids": [
+                "e218.0",
+                "e218.4",
+                "e218.5"
+            ]
+        },
+        {
+            "text": "Standard DPO achieved 61.8% on GSM8K, which is still reasonable performance, suggesting it's not completely broken, just suboptimal.",
+            "uuids": [
+                "e218.2"
+            ]
+        },
+        {
+            "text": "The gains from iteration 3 to iteration 4 were smaller than earlier iterations, suggesting diminishing returns, but the theory doesn't predict when to stop.",
+            "uuids": [
+                "e218.0"
+            ]
+        },
+        {
+            "text": "On MATH, even after 3 iterations, performance was only 20.8%, suggesting limits to how much iterative refinement can help on very hard tasks.",
+            "uuids": [
+                "e218.5"
+            ]
+        }
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Pang et al. (2024) Iterative Reasoning Preference Optimization [Introduces iterative RPO with NLL term]",
+            "Rafailov et al. (2023) Direct Preference Optimization [Original DPO without NLL term]",
+            "Yuan et al. (2024) Self-Rewarding Language Models [Iterative self-improvement with preference optimization]",
+            "Gulcehre et al. (2023) Reinforced Self-Training [Iterative self-training with RL]"
+        ]
+    },
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

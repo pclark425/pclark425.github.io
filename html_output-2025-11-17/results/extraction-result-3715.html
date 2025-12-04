@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-3715 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-3715</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-3715</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-88.html">extraction-schema-88</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of LLMs being used to estimate the probability or likelihood of future scientific discoveries or real-world events, including methods, results, and comparisons.</div>
+                <p><strong>Paper ID:</strong> paper-4c3c152fa3942b8cd93031424b0b33f59ba1896e</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/4c3c152fa3942b8cd93031424b0b33f59ba1896e" target="_blank">TimeTraveler: Reinforcement Learning for Temporal Knowledge Graph Forecasting</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> This work proposes the first reinforcement learning method for forecasting that defines a relative time encoding function to capture the timespan information, and proposes a novel representation method for unseen entities to improve the inductive inference ability of the model.</p>
+                <p><strong>Paper Abstract:</strong> Temporal knowledge graph (TKG) reasoning is a crucial task that has gained increasing research interest in recent years. Most existing methods focus on reasoning at past timestamps to complete the missing facts, and there are only a few works of reasoning on known TKGs to forecast future facts. Compared with the completion task, the forecasting task is more difficult that faces two main challenges: (1) how to effectively model the time information to handle future timestamps? (2) how to make inductive inference to handle previously unseen entities that emerge over time? To address these challenges, we propose the first reinforcement learning method for forecasting. Specifically, the agent travels on historical knowledge graph snapshots to search for the answer. Our method defines a relative time encoding function to capture the timespan information, and we design a novel time-shaped reward based on Dirichlet distribution to guide the model learning. Furthermore, we propose a novel representation method for unseen entities to improve the inductive inference ability of the model. We evaluate our method for this link prediction task at future timestamps. Extensive experiments on four benchmark datasets demonstrate substantial performance improvement meanwhile with higher explainability, less calculation, and fewer parameters when compared with existing state-of-the-art methods.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-3715",
+    "paper_id": "paper-4c3c152fa3942b8cd93031424b0b33f59ba1896e",
+    "extraction_schema_id": "extraction-schema-88",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.004878,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>TimeTraveler: Reinforcement Learning for Temporal Knowledge Graph Forecasting</h1>
+<p>Haohai Sun ${ }^{1 <em>}$ Jialun Zhong ${ }^{1 </em>}$ Yunpu Ma ${ }^{2 <em>}$ Zhen Han ${ }^{2,3 </em>}$ Kun He ${ }^{1 \dagger}$<br>${ }^{1}$ School of Computer Science and Technology, Huazhong University of Science and Technology<br>${ }^{2}$ Institute of Informatics, LMU Munich ${ }^{3}$ Corporate Technology, Siemens AG<br>{haohais, zhongjl}@hust.edu.cn<br>cognitive.yunpu@gmail.com, zhen.han@campus.lmu.de<br>brooklet60@hust.edu.cn</p>
+<h4>Abstract</h4>
+<p>Temporal knowledge graph (TKG) reasoning is a crucial task that has gained increasing research interest in recent years. Most existing methods focus on reasoning at past timestamps to complete the missing facts, and there are only a few works of reasoning on known TKGs to forecast future facts. Compared with the completion task, the forecasting task is more difficult and faces two main challenges: (1) how to effectively model the time information to handle future timestamps? (2) how to make inductive inference to handle previously unseen entities that emerge over time? To address these challenges, we propose the first reinforcement learning method for forecasting. Specifically, the agent travels on historical knowledge graph snapshots to search for the answer. Our method defines a relative time encoding function to capture the timespan information, and we design a novel time-shaped reward based on Dirichlet distribution to guide the model learning. Furthermore, we propose a novel representation method for unseen entities to improve the inductive inference ability of the model. We evaluate our method for this link prediction task at future timestamps. Extensive experiments on four benchmark datasets demonstrate substantial performance improvement meanwhile with higher explainability, less calculation, and fewer parameters when compared with existing state-of-the-art methods.</p>
+<h2>1 Introduction</h2>
+<p>Storing a wealth of human knowledge and facts, Knowledge Graphs (KGs) are widely used for many downstream Artificial Intelligence (AI) applications, such as recommendation systems (Guo et al., 2020), dialogue generation (Moon et al., 2019), and question answering (Zhang et al., 2018). KGs store facts in the form of triples</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>( $e_{x}, r, e_{o}$ ), i.e. (subject entity, predicate/relation, object entity), such as (LeBron_James, plays_for, Cleveland_Cavaliers). Each triple corresponds to a labeled edge of a multi-relational directed graph. However, facts constantly change over time. To reflect the timeliness of facts, Temporal Knowledge Graphs (TKGs) additionally associate each triple with a timestamp ( $e_{x}, r, e_{o}, t$ ), e.g., (LeBron_James, plays_for, Cleveland_Cavaliers, 2014-2018). Usually, we represent a TKG as a sequence of static KG snapshots.</p>
+<p>TKG reasoning is a process of inferring new facts from known facts, which can be divided into two types, interpolation and extrapolation. Most existing methods (Jiang et al., 2016a; Dasgupta et al., 2018; Goel et al., 2020; Wu et al., 2020) focus on interpolated TKG reasoning to complete the missing facts at past timestamps. In contrast, extrapolated TKG reasoning focuses on forecasting future facts (events). In this work, we focus on extrapolated TKG reasoning by designing a model for the link prediction at future timestamps. E.g., "which team LeBron James will play for in 2022?" can be seen as a query of link prediction at a future timestamp: (LeBron_James, plays_for, ?, 2022).</p>
+<p>Compared with the interpolation task, there are two challenges for extrapolation. (1) Unseen timestamps: the timestamps of facts to be forecast do not exist in the training set. (2) Unseen entities: new entities may emerge over time, and the facts to be predicted may contain previously unseen entities. Hence, the interpolation methods can not treat the extrapolation task.</p>
+<p>The recent extrapolation method RE-NET (Jin et al., 2020) uses Recurrent Neural Network (RNN) to capture temporally adjacent facts information to predict future facts. CyGNet (Zhu et al., 2021) focuses on the repeated pattern to count the frequency of similar facts in history. However, these methods only use the random vectors to represent the previously unseen entities and view the link prediction</p>
+<p>task as a multi-class classification task, causing it unable to handle the second challenge. Moreover, they cannot explicitly indicate the impact of historical facts on predicted facts.</p>
+<p>Inspired by path-based methods (Das et al., 2018; Lin et al., 2018) for static KGs, we propose a new temporal-path-based reinforcement learning (RL) model for extrapolated TKG reasoning. We call our agent the "TIme Traveler" (TITer), which travels on the historical KG snapshots to find answers for future queries. TITer starts from the query subject node, sequentially transfers to a new node based on temporal facts related to the current node, and is expected to stop at the answer node. To handle the unseen-timestamp challenge, TITer uses a relative time encoding function to capture the time information when making a decision. We further design a novel time-shaped reward based on Dirichlet distribution to guide the model to capture the time information. To tackle the unseen entities, we introduce a temporal-path-based framework and propose a new representation mechanism for unseen entities, termed the Inductive Mean (IM) representation, so as to improve the inductive reasoning ability of the model.</p>
+<p>Our main contributions are as follows:</p>
+<ul>
+<li>This is the first temporal-path-based reinforcement learning model for extrapolated TKG reasoning, which is explainable and can handle unseen timestamps and unseen entities.</li>
+<li>We propose a new method to model the time information. We utilize a relative time encoding function for the agent to capture the time information and use a time-shaped reward to guide the model learning.</li>
+<li>We propose a novel representation mechanism for unseen entities, which leverages query and trained entity embeddings to represent untrained (unseen) entities. This can stably improve the performance for inductive inference without increasing the computational cost.</li>
+<li>Extensive experiments indicate that our model substantially outperforms existing methods with less calculation and fewer parameters.</li>
+</ul>
+<h2>2 Related Work</h2>
+<h3>2.1 Static Knowledge Graph Reasoning</h3>
+<p>Embedding-based methods represent entities and relations as low-dimensional embeddings in different representation spaces, such as Euclidean space (Nickel et al., 2011; Bordes et al., 2013),
+complex vector space (Trouillon et al., 2016; Sun et al., 2019), and manifold space (Chami et al., 2020). These methods predict missing facts by scoring candidate facts based on entity and relation embeddings. Other works use deep learning models to encode the embeddings, such as Convolution Neural Network (CNN) (Dettmers et al., 2018; Vashishth et al., 2020) to obtain deeper semantics, or Graph Neural Network (GNN) (Schlichtkrull et al., 2018; Nathani et al., 2019; Zhang et al., 2020) to encode multi-hop structural information.</p>
+<p>Besides, path-based methods are also widely used in KG reasoning. Lin et al. (2015) and Guo et al. (2019) use RNN to compose the implications of paths. Reinforcement learning methods (Xiong et al., 2017; Das et al., 2018; Lin et al., 2018) view the task as a Markov decision process (MDP) to find paths between entity pairs, which are more explanatory than embedding-based methods.</p>
+<h3>2.2 Temporal Knowledge Graph Reasoning</h3>
+<p>A considerable amount of works extend static KG models to the temporal domain. These models redesign embedding modules and score functions related to time (Jiang et al., 2016b; Dasgupta et al., 2018; Goel et al., 2020; Lacroix et al., 2020; Han et al., 2020a). Some works leverage messagepassing networks to capture graph snapshot neighborhood information (Wu et al., 2020; Jung et al., 2020). These works are designed for interpolation.</p>
+<p>For extrapolation, Know-Evolve (Trivedi et al., 2017) and GHNN (Han et al., 2020b) use temporal point process to model facts evolved in the continuous time domain. Additionally, TANGO (Ding et al., 2021) explores the neural ordinary differential equation to build a continuous-time model. RE-NET (Jin et al., 2020) considers the multihop structural information of snapshot graphs and uses RNN to model entity interactions at different times. CyGNet (Zhu et al., 2021) finds that many facts often show a repeated pattern and make reference to known facts in history. These approaches lack to explain their predictions and cannot handle the previously unseen entities. Explanatory model xERTE (Han et al., 2021) uses a subgraph sampling technique to build an inference graph. Although the representation method that refers to GraphSAGE (Hamilton et al., 2017) makes it possible to deal with unseen nodes, the continuous expansion of inference graphs also severely restricts the inference speed.</p>
+<h2>3 Methodology</h2>
+<p>Analogizing to the previous work on KGs (Das et al., 2018), we frame the RL formulation as "walkbased query-answering" on a temporal graph: the agent starts from the source node (subject entity of the query) and sequentially selects outgoing edges to traverse to new nodes until reaching a target. In this section, we first define our task, and then describe the reinforcement learning framework and how we incorporate the time information into the on-policy reinforcement learning model. The optimization strategy and the inductive mean representation method for previously unseen entities are provided in the end. Figure 2 is the overview of our model.</p>
+<h3>3.1 Task Definition</h3>
+<p>Here we formally define the task of extrapolation in a TKG. Let $\mathcal{E}, \mathcal{R}, \mathcal{T}$, and $\mathcal{F}$ denote the sets of entities, relations, timestamps, and facts, respectively. A fact in a TKG can be represented in the form of a quadruple $\left(e_{s}, r, e_{o}, t\right)$, where $r \in \mathcal{R}$ is a directed labeled edge between a subject entity $e_{s} \in \mathcal{E}$ and an object entity $e_{o} \in \mathcal{E}$ at time $t \in \mathcal{T}$. We can represent a TKG by the graph snapshots over time. A TKG can be described as $\mathcal{G}<em 1="1">{(1, T)}=\left{\mathcal{G}</em>}, \mathcal{G<em T="T">{2}, \ldots, \mathcal{G}</em>}\right}$, where $\mathcal{G<em t="t">{t}=\left{\mathcal{E}</em>}, \mathcal{R}, \mathcal{F<em t="t">{t}\right}$ is a multi-relational directed TKG snapshot, and $\mathcal{E}</em>}$ and $\mathcal{F<em i="i">{t}$ denote entities and facts that exist at time $t$. In order to distinguish the graph nodes at different times, we let a node be a two-tuple with entity and timestamp: $e</em>$ with type $r$.}^{t}=\left(e_{i}, t\right)$. Thus, a fact (or event) $\left(e_{s}, r, e_{o}, t\right)$ can also be seen as an edge from source node $e_{s}^{t}$ to destination node $e_{o}^{t</p>
+<p>Extrapolated TKG reasoning is the task of predicting the evolution of KGs over time, and we perform link prediction at future times. It is also forecasting of events occurring in the near future. Given a query $\left(e_{q}, r_{q}, ?, t_{q}\right)$ or $\left(? , r_{q}, e_{q}, t_{q}\right)$, we have a set of known facts $\left{\left(e_{s_{i}}, r_{i}, e_{o_{i}}, t_{i}\right) \mid t_{i}&lt;t_{q}\right}$. These known facts constitute the known TKG, and our goal is to predict the missing object or subject entity in the query.</p>
+<h3>3.2 Reinforcement Learning Framework</h3>
+<p>Because there is no edge among the typical TKG snapshots, the agent cannot transfer from one snapshot to another. Hence, we sequentially add three types of edges. (i) Reversed Edges. For each quadruple $\left(e_{s}, r, e_{o}, t\right)$, we add $\left(e_{o}, r^{-1}, e_{s}, t\right)$ to
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Illustration of the TKG with temporal edges. To ensure the figure be clear enough, we omit the selfloop edges and reversed edges. The dotted lines are temporal edges.
+the TKG, where $r^{-1}$ indicates the reciprocal relation of $r$. Thus, we can predict the subject entity by converting (?, $r, e_{q}, t$ ) to ( $e_{q}, r^{-1}, ?, t$ ) without loss of generality. (ii) Self-loop Edges. Self-loop edges can allow the agent to stay in a place and work as a stop action when the agent search unrolled for a fixed number of steps. (iii) Temporal Edges. The agent can walk from node $e_{s}^{t_{j}}$ to node $e_{o}^{t_{i}}$ through edge $r$, if $\left(e_{s}, r, e_{o}, t_{i}\right)$ exits and $t_{i}&lt;t_{j} \leq t_{q}$. Temporal edges indicate the impact of the past fact on the entity and help the agent find the answer in historical facts. Figure 1 shows the graph with temporal edges.</p>
+<p>Our method can be formulated as a Markov Decision Process (MDP), and the components of which are elaborated as follows.</p>
+<p>States. Let $\mathcal{S}$ denote the state space, and a state is represented by a quintuple $s_{l}=\left(e_{l}, t_{l}, e_{q}, t_{q}, r_{q}\right) \in$ $\mathcal{S}$, where $\left(e_{l}, t_{l}\right)$ is the node visited at step $l$ and $\left(e_{q}, t_{q}, r_{q}\right)$ is the elements in the query. $\left(e_{q}, t_{q}, r_{q}\right)$ can be viewed as the global information while $\left(e_{l}, t_{l}\right)$ is the local information. The agent starts from the source node of the query, so the initial state is $s_{0}=\left(e_{q}, t_{q}, e_{q}, t_{q}, r_{q}\right)$.</p>
+<p>Actions. Let $\mathcal{A}$ denote the action space, and $\mathcal{A}<em l="l">{l}$ denote the set of optional actions at step $l, \mathcal{A}</em>} \subset \mathcal{A}$ consists of outgoing edges of node $e_{l}^{t_{l}}$. Concretely, $\mathcal{A<em l="l">{l}$ should be $\left{\left(r^{\prime}, e^{\prime}, t^{\prime}\right) \mid\left(e</em>$ is sampled from the set of above outgoing edges.}, r^{\prime}, e^{\prime}, t^{\prime}\right) \in \mathcal{F}, t^{\prime} \leq\right.$ $\left.t_{l}, t^{\prime}&lt;t_{q}\right}$, but an entity usually has many related historical facts, leading to a large number of optional actions. Thus, the final set of optional actions $\mathcal{A}_{l</p>
+<p>Transition. The environment state is transferred to a new node through the edge selected by the agent. The transition function $\delta: \mathcal{S} \times \mathcal{A} \rightarrow \mathcal{S}$ defined by $\delta\left(s_{l}, \mathcal{A}<em l_1="l+1">{l}\right)=s</em>}=\left(e_{l+1}, t_{l+1}, e_{q}, t_{q}, r_{q}\right)$, where $\mathcal{A<em l="l">{l}$ is the sampled outgoing edges of $e</em>$.}^{t_{l}</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Overview of TITer. Given a query (<em>e<sub>q</sub></em>, <em>r<sub>q</sub></em>, ? (<em>e<sub>gt</sub></em>), <em>t<sub>q</sub></em>), TITer starts from node <em>e<sub>q</sub><sup>t<sub>q</sub></sup></em>. At each step, TITer samples an outgoing edge and traverses to a new node according to π<sub>θ</sub> (policy network). We use the last step of the search as an example. <em>e<sub>i</sub><sup>t</sup></em> is the current node. Illustration of policy network provides the process for scoring one of the candidate actions (<em>r<sub>1</sub></em>, <em>e<sub>1</sub></em>, <em>t<sub>1</sub></em>). TITer samples an action based on the transition probability calculated from all candidate scores. When the search is completed, the time-shaped reward function will give the agent a reward based on the estimated Dirichlet distribution <em>Dir</em>(α<sub>r<sub>q</sub></sub>).</p>
+<p><strong>Rewards with shaping.</strong> The agent receives a terminal reward of 1 if it arrives at a correct target entity at the end of the search and 0 otherwise. If <em>s<sub>L</sub></em> = (<em>e<sub>L</sub></em>, <em>t<sub>L</sub></em>, <em>e<sub>q</sub></em>, <em>t<sub>q</sub></em>, <em>r<sub>q</sub></em>) is the final state and (<em>e<sub>q</sub></em>, <em>r<sub>q</sub></em>, <em>e<sub>gt</sub></em>, <em>t<sub>q</sub></em>) is the ground truth fact, the reward formulation is:</p>
+<p>$$R(s_L) = \mathbb{I}{e_L == e_{gt}}.\tag{1}$$</p>
+<p>Usually, the quadruples with the same entity are concentrated in specific periods, which causes temporal variability and temporal sparsity (Wu et al., 2020). Due to such property, the answer entity of the query has a distribution over time, and we can introduce this prior knowledge into the reward function to guide the agent learning. The time-shaped reward can let the agent know which snapshot is more likely to find the answer. Based on the training set, we estimate a Dirichlet distribution for each relation. Then, we shape the original reward with Dirichlet distributions:</p>
+<p>$$\begin{aligned}
+\widetilde{R}(s_L) &amp;= (1 + p_{\Delta t_L})R(s_L), \
+\Delta t_L &amp;= t_q - t_L, \
+(p_1, \dots, p_K) \sim \text{Dirichlet}(\alpha_{r_q}),
+\end{aligned} \tag{2}$$</p>
+<p>where α<sub>r<sub>q</sub></sub> ∈ ℝ<sup>K</sup> is a vector of parameters of the Dirichlet distribution for a relation <em>r<sub>q</sub></em>. We can estimate α<sub>r<sub>q</sub></sub> from the training set. For each quadruple with relation <em>r<sub>q</sub></em> in the training set, we count the number of times the object entity appears in each of the most recent <em>K</em> historical snapshots. Then, we obtain a multinomial sample <em>x<sub>i</sub></em> and <em>D</em> = {<em>x<sub>1</sub></em>, ..., <em>x<sub>N</sub></em>}. To maximize the likelihood:</p>
+<p>$$p(D|\alpha_{r_q}) = \prod_i p(x_i|\alpha_{r_q}),\tag{3}$$</p>
+<p>we can estimate α<sub>r<sub>q</sub></sub>. The maximum can be computed via the fixed-point iteration, and more calcu-</p>
+<p>lation formulas are provided in Appendix A.5. Because Dirichlet distribution has a conjugate prior, we can update it easily when we have more observed facts to train the model.</p>
+<h3>3.3 Policy Network</h3>
+<p>We design a policy network π<sub>θ</sub>(a<sub>l</sub>|s<sub>l</sub>) = P(a<sub>l</sub>|s<sub>l</sub>; θ) to model the agent in a continuous space, where a<sub>l</sub> ∈ A<sub>l</sub>, and θ are the model parameters. The policy network consists of the following three modules.</p>
+<p><strong>Dynamic embedding.</strong> We assign each relation <em>r</em> ∈ R a dense vector embedding <strong>r</strong> ∈ ℝ<sup>d<sub>r</sub></sub>. As the characteristic of entities may change over time, we adopt a relative time representation method for entities. We use a dynamic embedding to represent each node <em>e<sub>i</sub><sup>t</sup></em> = (<em>e<sub>i</sub></em>, <em>t</em>) in G<sub>t</sub>, and use <strong>e</strong> ∈ ℝ<sup>d<sub>r</sub></sub> to represent the latent invariant features of entities. We then define a relative time encoding function Φ(Δt) ∈ ℝ<sup>d<sub>t</sub></sub> to represent the time information. Δt = t<sub>q</sub> − t and Φ(Δt) is formulated as follows:</p>
+<p>$$\Phi(\Delta t) = \sigma(\mathbf{w}\Delta t + \mathbf{b}),\tag{4}$$</p>
+<p>where <strong>w</strong>, <strong>b</strong> ∈ ℝ<sup>d<sub>t</sub></sub> are vectors with learnable parameters and σ is an activation function. d<sub>r</sub>, d<sub>e</sub> and d<sub>t</sub> represent the dimensions of the embedding. Then, we can get the representation of a node <em>e<sub>i</sub><sup>t</sup></em>: <strong>e<sub>i</sub><sup>t</sup></strong> = [<strong>e<sub>i</sub></strong>; Φ(Δt)].</p>
+<p><strong>Path encoding.</strong> The search history h<sub>l</sub> = ((e<sub>q</sub><em>, t<sub>q</sub></em>), r<sub>1</sub>, (e<sub>1</sub><em>, t<sub>1</sub></em>), ..., r<sub>l</sub>, (e<sub>l</sub>*, t<sub>l</sub>)) is the sequence of actions taken. The agent encodes the history h<sub>l</sub> with a LSTM:</p>
+<p>$$\begin{aligned}
+\mathbf{h}<em l-1="l-1">l &amp;= \text{LSTM}(\mathbf{h}</em>}, [\mathbf{r<em l-1="l-1">{l-1}; \mathbf{e}</em>]), \
+\mathbf{h}}^{t_{l-1}<em q="q">0 &amp;= \text{LSTM}(\mathbf{0}, [\mathbf{r}_0; \mathbf{e}</em>])
+\end{aligned} \tag{5}$$}^{t_q</p>
+<p>Here, <strong>r<sub>0</sub></strong> is a start relation, and we keep the LSTM state unchanged when the last action is self-loop.</p>
+<p>Action scoring. We score each optional action and calculate the probability of state transition. Let $a_{n}=\left(e_{n}, t_{n}, r_{n}\right) \in \mathcal{A}<em n="n">{l}$ represent an optional action at step $l$. Future events are usually uncertain, and there is usually no strong causal logic chain for some queries, so the correlation between the entity and query is sometimes more important. Thus, we use a weighted action scoring mechanism to help the agent pay more attention to attributes of the destination nodes or types of edges. Two MultiLayer Perceptrons (MLPs) are used to encode the state information and output expected destination node $\bar{e}$ and outgoing edge $\bar{r}$ representations. Then, the agent obtains the destination node score and outgoing edge score of the candidate action by calculating the similarity. With the weighted sum of the two scores, the agent obtains the final candidate action score $\phi\left(a</em>\right)$ :}, s_{l</p>
+<p>$$
+\begin{gathered}
+\phi\left(a_{n}, s_{l}\right)=\beta_{n}\left\langle\overline{\mathbf{e}}, \mathbf{e}<em n="n">{n}^{t</em>}}\right\rangle+\left(1-\beta_{n}\right)\left\langle\overline{\mathbf{r}}, \mathbf{r<em e="e">{n}\right\rangle \
+\overline{\mathbf{e}}=\mathbf{W}</em>} \operatorname{ReLU}\left(\mathbf{W<em l="l">{1}\left[\mathbf{h}</em>} ; \mathbf{e<em q="q">{q}^{t</em>}} ; \mathbf{r<em r="r">{q}\right]\right) \
+\overline{\mathbf{r}}=\mathbf{W}</em>} \operatorname{ReLU}\left(\mathbf{W<em l="l">{1}\left[\mathbf{h}</em>} ; \mathbf{e<em q="q">{q}^{t</em>}} ; \mathbf{r<em n="n">{q}\right]\right) \
+\beta</em>}=\operatorname{sigmoid}\left(\mathbf{W<em l="l">{\beta}\left[\mathbf{h}</em>} ; \mathbf{e<em q="q">{q}^{t</em>}} ; \mathbf{r<em n="n">{q} ; \mathbf{e}</em>\right]\right)
+\end{gathered}
+$$}^{t_{n}} ; \mathbf{r}_{n</p>
+<p>where $\mathbf{W}<em e="e">{1}, \mathbf{W}</em>}, \mathbf{W<em _beta="\beta">{r}$ and $\mathbf{W}</em>}$ are learnable matrices. After scoring all candidate actions in $\mathcal{A<em _theta="\theta">{l}, \pi</em>\right)$ can be obtained through softmax.}\left(a_{l} \mid s_{l</p>
+<p>To summarize, the parameters of the LSTM, MLP and $\boldsymbol{\Phi}$, the embedding matrices of relation and entity form the parameters in $\theta$.</p>
+<h3>3.4 Optimization and Training</h3>
+<p>We fix the search path length to $L$, and an $L$-length trajectory will be generated from the policy network $\pi_{\theta}:\left{a_{1}, a_{2}, \ldots, a_{L}\right}$. The policy network is trained by maximizing the expected reward over all training samples $\mathcal{F}_{\text {train }}$ :</p>
+<p>$$
+\begin{gathered}
+J(\theta)=\mathbb{E}<em s="s">{\left(e</em>}, r, e_{o}, t\right) \sim \mathcal{F<em a__1="a_{1">{\text {train }}}\left[\mathbb{E}</em>\right. \
+\left.\left[\bar{R}\left(s_{L} \mid e_{s}, r, t\right)\right]\right]
+\end{gathered}
+$$}, \ldots, a_{L} \sim \pi_{\theta}</p>
+<p>Then, we use the policy gradient method to optimize the policy. The REINFORCE algorithm (Williams, 1992) will iterate through all quadruple in $\mathcal{F}_{\text {train }}$ and update $\theta$ with the following stochastic gradient:</p>
+<p>$$
+\nabla_{\theta} J(\theta) \approx \nabla_{\theta} \sum_{m \in[1, L]} \bar{R}\left(s_{L} \mid e_{s}, r, t\right) \log \pi_{\theta}\left(a_{l} \mid s_{l}\right)
+$$</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Illustration of the IM mechanism. For an unseen entity $e_{q}, " t_{q}-3: r_{1}, r_{3}$ " indicates $e_{q}$ has cooccurrence relations $r_{1}, r_{3}$ at $t_{q}-3$, and updates its representation based on $E_{r_{1}}, E_{r_{2}}$, and finally gets the IM representation at $t_{q}-1$. Then to answer a query $\left(e_{q}, r_{2}, ?, t_{q}\right)$, we do a prediction shift based on $E_{r_{2}}$.</p>
+<h3>3.5 Inductive Mean Representation</h3>
+<p>As new entities always emerge over time, we propose a new entity representation method for previously unseen entities. Previous works (Bhowmik and de Melo, 2020; Han et al., 2021) can represent unseen entities through neighbor information aggregation. However, newly emerging entities usually have very few links, which means that only limited information is available. E.g., for a query (Evan_Mobley, plays_for, ?, 2022), entity "Evan_Mobley" does not exist in previous times, but we could infer this entity is a player through relation "plays_for", and assign "Evan_Mobley" a more reasonable initial embedding that facilitates the inference. Here we provide another approach to represent unseen entities by leveraging the query information and embeddings of the trained entities, named Inductive Mean (IM), as illustrated in Figure 3.</p>
+<p>Let $\mathcal{G}<em j="j">{\left(t</em>}, t_{q}-1\right)}$ represent the snapshots of the TKG in the test set. The query entity $e_{q}$ first appears in $\mathcal{G<em j="j">{t</em>$ represent the set that comprises all the trained entities having the co-occurrence relation $r$. Then, we can obtain the inductive mean representation of the entities with the same co-occurrence relation $r$ :}}$ and gets a randomly initialized representation vector. We regard $r$ as the co-occurrence relation of $e_{q}$, if there exists a quadruple which contains $\left(e_{q}, r\right)$. Note that entity $e_{q}$ may have different cooccurrence relations over time. We denote $R_{t}\left(e_{q}\right)$ as the co-occurrence relation set of entity $e_{q}$ at time $t$. Let $E_{r</p>
+<p>$$
+\overline{\mathbf{e}^{r}}=\frac{\sum_{e \in E_{r}} \mathbf{e}}{\left|E_{r}\right|}
+$$</p>
+<p>Entities with the same co-occurrence relation $r$ have similar characteristics, so IM can utilize $\overline{\mathbf{e}^{r}}$ to gradually update the representation of $e_{q}$ based on the time flow. $0 \leq \mu \leq 1$ is a hyperparameter:</p>
+<p>$$
+\mathbf{e}<em q_="q," t-1="t-1">{q, t}=\mu \mathbf{e}</em>
+$$}+(1-\mu) \frac{\sum_{r \in R_{t}\left(e_{q}\right)} \overline{\mathbf{e}^{r}}}{\left|R_{t}\left(e_{q}\right)\right|</p>
+<p>For relation $r_{q}$, we do a prediction shift based on $\overline{\mathbf{e}^{r_{q}}}$ to make the entity representation more suitable for the current query. To answer a query $\left(e_{q}, r_{q}, ?, t_{q}\right)$, we use the combination of $e_{q}$ 's representation at time $t_{q}-1$ and the inductive mean representation $\overline{\mathbf{e}^{r_{q}}}$ :</p>
+<p>$$
+\mathbf{e}<em q="q">{q, t</em>}, r_{q}}=\mu \mathbf{e<em q="q">{q, t</em>
+$$}-1}+(1-\mu) \overline{\mathbf{e}^{r_{q}}</p>
+<h2>4 Experiments</h2>
+<h3>4.1 Experimental Setup</h3>
+<p>Datasets. We use four public TKG datasets for evaluation: ICEWS14, ICEWS18 (Boschee et al., 2015), WIKI (Leblay and Chekol, 2018a), and YAGO (Mahdisoltani et al., 2015). Integrated Crisis Early Warning System (ICEWS) is an event dataset. ICEWS14 and ICEWS18 are two subsets of events in ICEWS that occurred in 2014 and 2018 with a time granularity of days. WIKI and YAGO are two knowledge base that contains facts with time information, and we use the subsets with a time granularity of years. We adopt the same dataset split strategy as in (Jin et al., 2020) and split the dataset into train/valid/test by timestamps such that:
+time_of_train &lt; time_of_valid &lt; time_of_test. Appendix A. 2 summarizes more statistics on the datasets.</p>
+<p>Evaluation metrics. We evaluate our model on TKG forecasting, a link prediction task at the future timestamps. Mean Reciprocal Rank (MRR) and Hits@1/3/10 are performance metrics. For each quadruple $\left(e_{s}, r, e_{o}, t\right)$ in the test set, we evaluate two queries, $\left(e_{s}, r, ?, t\right)$ and $\left(?, r, e_{o}, t\right)$. We use the time-aware filtering scheme (Han et al., 2020b) that only filters out quadruples with query time $t$. The time-aware scheme is more reasonable than the filtering scheme used in (Jin et al., 2020; Zhu et al., 2021). Appendix A. 1 provides detailed definitions.</p>
+<p>Baseline. As lots of previous works have verified that the static methods underperform compared with the temporal methods on this task, we
+do not compare TITer with them. We compare our model with existing interpolated TKG reasoning methods, including TTransE (Leblay and Chekol, 2018b), TA-DistMult (García-Durán et al., 2018), DE-SimplE (Goel et al., 2020), and TNTComplEx (Lacroix et al., 2020), and state-of-theart extrapolated TKG reasoning approaches, including RE-NET (Jin et al., 2020), CyGNet (Zhu et al., 2021), TANGO (Ding et al., 2021), and xERTE (Han et al., 2021). An overview of these methods is in Section 2.</p>
+<h3>4.2 Implementation Details</h3>
+<p>Our model is implemented in PyTorch ${ }^{1}$. We set the entity embedding dimension to 80 , the relation embedding dimension to 100 , and the relative time encoding dimension to 20 . We choose the latest $N$ outgoing edges as candidate actions for TITer at each step. $N$ is 50 for ICEWS14 and ICEWS18, 60 for WIKI, and 30 for YAGO. The reasoning path length is 3 . The discount factor $\gamma$ of REINFORCE is 0.95 . We use Adam optimizer to optimize the parameters, and the learning rate is 0.001 . The batch size is set to 512 during training. We use beam search for inference, and the beam size is 100. For the IM, $\mu$ is 0.1 . The activation function of $\boldsymbol{\Phi}$ is cosine. For full details, please refer to Appendix A.3.</p>
+<h3>4.3 Results and Discussion</h3>
+<p>Performance on the TKG datasets. Our method can search multiple candidate answers via beam search. Table 1 reports the TKG forecasting performance of TITer and the baselines on four TKG datasets. TITer outperforms all baselines on all datasets when evaluated by MRR and Hits@1 metrics, and in most cases (except ICEWS18), TITer exhibits the best performance when evaluated by the other two metrics. TTransE, TA-DistMult, DE-SimplE, and TNTComplEx cannot deal with unseen timestamps in the test set, so they perform worse than others. The performance of TITer is much higher than RE-NET, CyGNet, and TANGO on WIKI and YAGO. Two reasons cause this phenomenon: (1) the characteristic of WIKI and YAGO that nodes usually have a small number of neighbors gives the neighbor search algorithm an advantage. (2) for WIKI and YAGO, a large number of quadruples contain unseen entities in the test set(See Table 2), but these</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 1: Comparison on future link prediction. The results of MRR and Hits@1/3/10 are multiplied by 100. The best results are in bold. We average the metrics over five runs.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>ICEWS14</th>
+<th></th>
+<th></th>
+<th></th>
+<th>ICEWS18</th>
+<th></th>
+<th></th>
+<th></th>
+<th>WIKI</th>
+<th></th>
+<th></th>
+<th></th>
+<th>YAGO</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>MRR</td>
+<td>H@1</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@1</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@1</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@1</td>
+<td>H@3</td>
+<td>H@10</td>
+</tr>
+<tr>
+<td>TTransE</td>
+<td>13.43</td>
+<td>3.11</td>
+<td>17.32</td>
+<td>34.55</td>
+<td>8.31</td>
+<td>1.92</td>
+<td>8.56</td>
+<td>21.89</td>
+<td>29.27</td>
+<td>21.67</td>
+<td>34.43</td>
+<td>42.39</td>
+<td>31.19</td>
+<td>18.12</td>
+<td>40.91</td>
+<td>51.21</td>
+</tr>
+<tr>
+<td>TA-DistMult</td>
+<td>26.47</td>
+<td>17.09</td>
+<td>30.22</td>
+<td>45.41</td>
+<td>16.75</td>
+<td>8.61</td>
+<td>18.41</td>
+<td>33.59</td>
+<td>44.53</td>
+<td>39.92</td>
+<td>48.73</td>
+<td>51.71</td>
+<td>54.92</td>
+<td>48.15</td>
+<td>59.61</td>
+<td>66.71</td>
+</tr>
+<tr>
+<td>DE-SimplE</td>
+<td>32.67</td>
+<td>24.43</td>
+<td>35.69</td>
+<td>49.11</td>
+<td>19.30</td>
+<td>11.53</td>
+<td>21.86</td>
+<td>34.80</td>
+<td>45.43</td>
+<td>42.6</td>
+<td>47.71</td>
+<td>49.55</td>
+<td>54.91</td>
+<td>51.64</td>
+<td>57.30</td>
+<td>60.17</td>
+</tr>
+<tr>
+<td>TNTComplEx</td>
+<td>32.12</td>
+<td>23.35</td>
+<td>36.03</td>
+<td>49.13</td>
+<td>27.54</td>
+<td>19.52</td>
+<td>30.80</td>
+<td>42.86</td>
+<td>45.03</td>
+<td>40.04</td>
+<td>49.31</td>
+<td>52.03</td>
+<td>57.98</td>
+<td>52.92</td>
+<td>61.33</td>
+<td>66.69</td>
+</tr>
+<tr>
+<td>CyGNet</td>
+<td>32.73</td>
+<td>23.69</td>
+<td>36.31</td>
+<td>50.67</td>
+<td>24.93</td>
+<td>15.90</td>
+<td>28.28</td>
+<td>42.61</td>
+<td>33.89</td>
+<td>29.06</td>
+<td>36.10</td>
+<td>41.86</td>
+<td>52.07</td>
+<td>45.36</td>
+<td>56.12</td>
+<td>63.77</td>
+</tr>
+<tr>
+<td>RE-NET</td>
+<td>38.28</td>
+<td>28.68</td>
+<td>41.34</td>
+<td>54.52</td>
+<td>28.81</td>
+<td>19.05</td>
+<td>32.44</td>
+<td>47.51</td>
+<td>49.66</td>
+<td>46.88</td>
+<td>51.19</td>
+<td>53.48</td>
+<td>58.02</td>
+<td>53.06</td>
+<td>61.08</td>
+<td>66.29</td>
+</tr>
+<tr>
+<td>xERTE</td>
+<td>40.79</td>
+<td>32.70</td>
+<td>45.67</td>
+<td>57.30</td>
+<td>29.31</td>
+<td>21.03</td>
+<td>33.51</td>
+<td>46.48</td>
+<td>71.14</td>
+<td>68.05</td>
+<td>76.11</td>
+<td>79.01</td>
+<td>84.19</td>
+<td>80.09</td>
+<td>88.02</td>
+<td>89.78</td>
+</tr>
+<tr>
+<td>TANGO-Tucker</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>28.68</td>
+<td>19.35</td>
+<td>32.17</td>
+<td>47.04</td>
+<td>50.43</td>
+<td>48.52</td>
+<td>51.47</td>
+<td>53.58</td>
+<td>57.83</td>
+<td>53.05</td>
+<td>60.78</td>
+<td>65.85</td>
+</tr>
+<tr>
+<td>TANGO-DistMult</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>26.75</td>
+<td>17.92</td>
+<td>30.08</td>
+<td>44.09</td>
+<td>51.15</td>
+<td>49.66</td>
+<td>52.16</td>
+<td>53.35</td>
+<td>62.70</td>
+<td>59.18</td>
+<td>60.31</td>
+<td>67.90</td>
+</tr>
+<tr>
+<td>TITer</td>
+<td>41.73</td>
+<td>32.74</td>
+<td>46.46</td>
+<td>58.44</td>
+<td>29.98</td>
+<td>22.05</td>
+<td>33.46</td>
+<td>44.83</td>
+<td>75.50</td>
+<td>72.96</td>
+<td>77.49</td>
+<td>79.02</td>
+<td>87.47</td>
+<td>84.89</td>
+<td>89.96</td>
+<td>90.27</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: The percentage of quadruples containing unseen entities of used test datasets.</p>
+<table>
+<thead>
+<tr>
+<th>Datasets</th>
+<th>ICEWS14</th>
+<th>ICEWS18</th>
+<th>WIKI</th>
+<th>YAGO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proportion</td>
+<td>6.52</td>
+<td>3.93</td>
+<td>42.91</td>
+<td>8.03</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Comparison on the number of parameters and calculation. (M means million.)</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th># Params</th>
+<th># MACs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RE-NET</td>
+<td>5.459 M</td>
+<td>4.370 M</td>
+</tr>
+<tr>
+<td>CyGNet</td>
+<td>8.568 M</td>
+<td>8.554 M</td>
+</tr>
+<tr>
+<td>xERTE(3 steps)</td>
+<td>2.927 M</td>
+<td>225.895 M</td>
+</tr>
+<tr>
+<td>TITer(3 steps)</td>
+<td>1.455 M</td>
+<td>0.225 M</td>
+</tr>
+</tbody>
+</table>
+<p>methods cannot handle these queries. Inductive inference. When a query contains an unseen entity, models should infer the answer inductively. For all such queries that contain unseen entities in the ICEWS14 test set, we present experimental results in Figure 4 and Table 6. The performance of RE-NET and CyGNet decays significantly when compared with their result on the whole ICEWS14 test set (see Table 1). Due to the lack of training for unseen entities' embedding and the classification layer for all entities, RE-Net and CyGNet could not reach the performance of a 3-hop neighborhood random search baseline, as illustrated by the dotted line in Figure 4. In contrast, xERTE can tackle such queries by dynamically updating the new entities' representation based on temporal message aggregation, and TITer can tackle such queries by the temporal-pathbased RL framework. We also observe that TITer outperforms xERTE, no matter TITer adopts the IM mechanism or not. The IM mechanism could further boost the performance, demonstrating its</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Inductive inference results on a subset of ICEWS14 that contain unseen entities. The dotted line corresponds to the score of a 3 -steps random search. T. w/o IM: TITer without IM mechanism. effectiveness in representing unseen entities. Case study. Table 4 visualizes specific reasoning paths of several examples in the test set of ICEWS18. We notice that TITer tends to select a recent fact (outgoing edge) to search for the answer. Although the first two queries have the same subject entity and relation, TITer can reach the ground truths according to different timestamps. As shown in Eq. (6), $\beta$ increases when TITer emphasizes neighbor nodes more than edges. After training, the representations of entities accumulate much semantic information, which helps TITer select the answer directly with less extra information for queries 3 and 4. In comparison, TITer needs more historical information when unseen entities appear. Query 5 is an example of multi-hop reasoning. It indicates that TITer can tackle combinational logic problems.</p>
+<p>Efficiency analysis. Table 3 reflects the complexity of RE-NET, CyGNet, xERTE, and TITer. Due to the enormous linear classification layers, RE-</p>
+<p>Table 4: Path visualization on ICEWS18. † indicates unseen entities not appeared in the training set. $\ddagger$ indicates entities along a path with the same country. $\beta$ is defined in Eq. (6). For a test quadruple, we use the object prediction as an example.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ID</th>
+<th style="text-align: center;">Test quadruple</th>
+<th style="text-align: center;">Path</th>
+<th style="text-align: center;">$\beta$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">(Military (Comoros) $\dagger$, Use conventional military force, Citizen (Comoros), 2018/10/17)</td>
+<td style="text-align: center;">Military $\ddagger$ Eight with small arms and light weapons</td>
+<td style="text-align: center;">Citizen $\ddagger$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$r=2018 / 10 / 16$</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">(Military (Comoros) $\dagger$, Use conventional military force, Armed Rebel (Comoros) $\dagger, 2018 / 10 / 26)$</td>
+<td style="text-align: center;">Military $\ddagger$ $\frac{\text { Investigate }^{-1}}{r=2018 / 10 / 19}$ Armed Rebel $\ddagger$</td>
+<td style="text-align: center;">0.54</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">(Nigeria, Consult, Muhammadu Buhari, 2018/10/04)</td>
+<td style="text-align: center;">Nigeria $\frac{\text { Make an appeal or request }^{-1}}{r=2018 / 10 / 01}$ Muhammadu Buhari</td>
+<td style="text-align: center;">0.96</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">(Police (India), Physically assault, Citizen (India), 2018/10/08)</td>
+<td style="text-align: center;">Police $\ddagger$ $\frac{\text { Investigate }}{r=2018 / 10 / 06}$ Citizen $\ddagger$</td>
+<td style="text-align: center;">0.96</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">(Governor (Cote d'Ivoire) $\dagger$, Make an appeal or request, Citizen (Cote d'Ivoire), 2018/10/14)</td>
+<td style="text-align: center;">Governor $\ddagger$ $\frac{\text { Praise or endorse }}{\text { Party Member } \ddagger}$ Make an appeal or request Citizen $\ddagger$</td>
+<td style="text-align: center;">-</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Ablation study on ICEWS18. w/o: without, ws: weighted action scoring mechanism, rs: reward shaping.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">MRR</th>
+<th style="text-align: left;">H@1</th>
+<th style="text-align: left;">H@3</th>
+<th style="text-align: left;">H@10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">TITer w/o ws and rs</td>
+<td style="text-align: left;">29.13</td>
+<td style="text-align: left;">20.73</td>
+<td style="text-align: left;">32.74</td>
+<td style="text-align: left;">45.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">TITer w/o ws</td>
+<td style="text-align: left;">29.25</td>
+<td style="text-align: left;">20.84</td>
+<td style="text-align: left;">32.83</td>
+<td style="text-align: left;">$\mathbf{4 5 . 0 6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">TITer w/o rs</td>
+<td style="text-align: left;">29.17</td>
+<td style="text-align: left;">21.00</td>
+<td style="text-align: left;">32.72</td>
+<td style="text-align: left;">44.51</td>
+</tr>
+<tr>
+<td style="text-align: left;">TITer</td>
+<td style="text-align: left;">$\mathbf{2 9 . 9 8}$</td>
+<td style="text-align: left;">$\mathbf{2 2 . 0 5}$</td>
+<td style="text-align: left;">$\mathbf{3 3 . 4 6}$</td>
+<td style="text-align: left;">44.83</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Results improvement with IM mechanism on subsets of ICEWS14 and WIKI that contain unseen entities.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Datasets</th>
+<th style="text-align: left;">MRR</th>
+<th style="text-align: left;">H@1</th>
+<th style="text-align: left;">H@3</th>
+<th style="text-align: left;">H@10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ICEWS14</td>
+<td style="text-align: left;">+0.41</td>
+<td style="text-align: left;">+0.46</td>
+<td style="text-align: left;">+0.81</td>
+<td style="text-align: left;">+0.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">WIKI</td>
+<td style="text-align: left;">+1.52</td>
+<td style="text-align: left;">+1.15</td>
+<td style="text-align: left;">+2.15</td>
+<td style="text-align: left;">+1.90</td>
+</tr>
+</tbody>
+</table>
+<p>NET and CyGNet have much more parameters than other methods. To achieve the best results, xERTE adopts the graph expansion mechanism and the temporal relational graph attention layer to perform a local representation aggregation for each step, leading to a vast amount of calculation. Compared with xERTE, the number of parameters of TITer has reduced by at least a half, and the number of Multi-Adds operations (MACs) has greatly reduced to 0.225 M , which is much less than the counterpart, indicating the high efficiency of the proposed model.</p>
+<p>In summary, compared to the previous state-of-the-art models, TITer has saved at least $50.3 \%$ parameters and $94.9 \%$ MACs. Meanwhile, TITer still exhibits better performance.</p>
+<h3>4.4 Ablation Study</h3>
+<p>In this subsection, we study the effect of different components of TITer by ablation studies. The results are shown in Table 5 and Figure 5.</p>
+<p>Relative time encoding. The relative time representation is a crucial component in our method. Figure 5 shows the notable change from temporal to static on ICEWS18 and WIKI. We remove the relative time encoding module to get the static model. For Hits@1, the temporal model improves $13.19 \%$ on ICEWS18 and $18.51 \%$ on WIKI, compared with the static model. It indicates that our relative time encoding function can help TITer choose the correct answer more precisely.</p>
+<p>Weighted action scoring mechanism. We observe that setting $\beta$ to a constant 0.5 can lead to a drop of $5.49 \%$ on Hits@1, indicating that TITer can better choose the source of evidence when making the inference. After training, TITer learns the latent relationship among entities. As expounded in Table 4, TITer prefers to pay more attention to the node for inferring when there exists more information to make a decision, and TITer chooses to focus on edges (relations in history) to assist the inferring for complex queries or unseen entities.</p>
+<p>Reward shaping. We observe that TITer outperforms the variant without reward shaping, which means an improvement of $5 \%$ on Hits@1. By using Dirichlet prior distribution to direct the decision process, TITer acquires knowledge about the probability distribution of the target's appearance over the whole time span.</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Ablation of time information.</p>
+<h2>5 Conclusion</h2>
+<p>In this work, we propose a temporal-path-based reinforcement learning model named TimeTraveler (TITer) for temporal knowledge graph forecasting. TITer travels on the TKG historical snapshots and searches for the temporal evidence chain to find the answer. TITer uses a relative time encoding function and time-shaped reward to model the time information, and the IM mechanism to update the unseen entities' representation in the process of testing. Extensive experimental results reveal that our model outperforms state-of-the-art baselines with less calculation and fewer parameters. Furthermore, the inference process of TITer is explainable, and TITer has good inductive reasoning ability.</p>
+<h2>Acknowledgements</h2>
+<p>This work is supported by National Natural Science Foundation (62076105).</p>
+<h2>References</h2>
+<p>Rajarshi Bhowmik and Gerard de Melo. 2020. Explainable link prediction for emerging entities in knowledge graphs. In International Semantic Web Conference, pages 39-55.</p>
+<p>Antoine Bordes, Nicolas Usunier, Alberto GarciaDuran, Jason Weston, and Oksana Yakhnenko. 2013. Translating embeddings for modeling multirelational data. In Neural Information Processing Systems, pages 2787-2795.</p>
+<p>Elizabeth Boschee, Jennifer Lautenschlager, Sean O'Brien, Steve Shellman, James Starz, and Michael Ward. 2015. ICEWS Coded Event Data.</p>
+<p>Ines Chami, Adva Wolf, Da-Cheng Juan, Frederic Sala, Sujith Ravi, and Christopher Ré. 2020. Lowdimensional hyperbolic knowledge graph embeddings. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pages 6901-6914.</p>
+<p>Rajarshi Das, Shehzaad Dhuliawala, Manzil Zaheer, Luke Vilnis, Ishan Durugkar, Akshay Krishnamurthy, Alex Smola, and Andrew McCallum. 2018. Go for a walk and arrive at the answer: Reasoning over paths in knowledge bases using reinforcement learning. In International Conference on Learning Representations.</p>
+<p>Shib Sankar Dasgupta, Swayambhu Nath Ray, and Partha Talukdar. 2018. HyTE: Hyperplane-based temporally aware knowledge graph embedding. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 2001-2011.</p>
+<p>Tim Dettmers, Pasquale Minervini, Pontus Stenetorp, and Sebastian Riedel. 2018. Convolutional 2D knowledge graph embeddings. In Thirty-Second AAAI Conference on Artificial Intelligence, pages 1811-1818.</p>
+<p>Zifeng Ding, Zhen Han, Yunpu Ma, and Volker Tresp. 2021. Temporal knowledge graph forecasting with neural ode. arXiv preprint arXiv:2101.05151.</p>
+<p>Alberto García-Durán, Sebastijan Dumancic, and Mathias Niepert. 2018. Learning sequence encoders for temporal knowledge graph completion. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 48164821.</p>
+<p>Rishab Goel, Seyed Mehran Kazemi, Marcus Brubaker, and Pascal Poupart. 2020. Diachronic embedding for temporal knowledge graph completion. In Thirty-Fourth AAAI Conference on Artificial Intelligence, pages 3988-3995.</p>
+<p>Lingbing Guo, Zequn Sun, and Wei Hu. 2019. Learning to exploit long-term relational dependencies in knowledge graphs. In Proceedings of the 36th International Conference on Machine Learning, pages 2505-2514.</p>
+<p>Qingyu Guo, Fuzhen Zhuang, Chuan Qin, Hengshu Zhu, Xing Xie, Hui Xiong, and Qing He. 2020. A survey on knowledge graph-based recommender systems. IEEE Transactions on Knowledge and Data Engineering.</p>
+<p>William L. Hamilton, Zhitao Ying, and Jure Leskovec. 2017. Inductive representation learning on large graphs. In Neural Information Processing Systems, pages 1025-1035.</p>
+<p>Zhen Han, Peng Chen, Yunpu Ma, and Volker Tresp. 2020a. DyERNIE: Dynamic evolution of riemannian manifold embeddings for temporal knowledge graph completion. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, pages 7301-7316.</p>
+<p>Zhen Han, Peng Chen, Yunpu Ma, and Volker Tresp. 2021. Explainable subgraph reasoning for forecasting on temporal knowledge graphs. In International Conference on Learning Representations.</p>
+<p>Zhen Han, Yunpu Ma, Yuyi Wang, Stephan Günnemann, and Volker Tresp. 2020b. Graph hawkes neural network for forecasting on temporal knowledge graphs. In Conference on Automated Knowledge Base Construction.</p>
+<p>Tingsong Jiang, Tianyu Liu, Tao Ge, Lei Sha, Baobao Chang, Sujian Li, and Zhifang Sui. 2016a. Towards time-aware knowledge graph completion. In COLING 2016, 26th International Conference on Computational Linguistics, pages 1715-1724.</p>
+<p>Tingsong Jiang, Tianyu Liu, Tao Ge, Lei Sha, Baobao Chang, Sujian Li, and Zhifang Sui. 2016b. Towards time-aware knowledge graph completion. In COLING 2016, 26th International Conference on Computational Linguistics, pages 1715-1724.</p>
+<p>Woojeong Jin, Meng Qu, Xisen Jin, and Xiang Ren. 2020. Recurrent event network: Autoregressive structure inference over temporal knowledge graphs. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, pages $6669-6683$.</p>
+<p>Jaehun Jung, Jinhong Jung, and U Kang. 2020. TGAP: Learning to walk across time for temporal knowledge graph completion. arXiv preprint arXiv:2012.10595.</p>
+<p>Timothée Lacroix, Guillaume Obozinski, and Nicolas Usunier. 2020. Tensor decompositions for temporal knowledge base completion. In International Conference on Learning Representations.</p>
+<p>Julien Leblay and Melisachew Wudage Chekol. 2018a. Deriving validity time in knowledge graph. In Companion Proceedings of the The Web Conference, pages 1771-1776.</p>
+<p>Julien Leblay and Melisachew Wudage Chekol. 2018b. Deriving validity time in knowledge graph. In Companion Proceedings of the The Web Conference 2018, pages 1771-1776.</p>
+<p>Xi Victoria Lin, Richard Socher, and Caiming Xiong. 2018. Multi-hop knowledge graph reasoning with reward shaping. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing, pages 3243-3253.</p>
+<p>Yankai Lin, Zhiyuan Liu, Huanbo Luan, Maosong Sun, Siwei Rao, and Song Liu. 2015. Modeling relation paths for representation learning of knowledge bases. In Proceedings of the 2015 Conference on Empirical Methods in Natural Language Processing, pages 705-714.</p>
+<p>Farzaneh Mahdisoltani, Joanna Biega, and Fabian M. Suchanek. 2015. YAGO3: A knowledge base from multilingual wikipedias. In Seventh Biennial Conference on Innovative Data Systems Research.</p>
+<p>Seungwhan Moon, Pararth Shah, Anuj Kumar, and Rajen Subba. 2019. OpenDialKG: Explainable conversational reasoning with attention-based walks over
+knowledge graphs. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages 845-854.</p>
+<p>Deepak Nathani, Jatin Chauhan, Charu Sharma, and Manohar Kaul. 2019. Learning attention-based embeddings for relation prediction in knowledge graphs. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages $4710-4723$.</p>
+<p>Maximilian Nickel, Volker Tresp, and Hans-Peter Kriegel. 2011. A three-way model for collective learning on multi-relational data. In Proceedings of the 28th International Conference on Machine Learning, pages 809-816.</p>
+<p>Michael Schlichtkrull, Thomas N Kipf, Peter Bloem, Rianne Van Den Berg, Ivan Titov, and Max Welling. 2018. Modeling relational data with graph convolutional networks. In European Semantic Web Conference, pages 593-607.</p>
+<p>Zhiqing Sun, Zhi-Hong Deng, Jian-Yun Nie, and Jian Tang. 2019. Rotate: Knowledge graph embedding by relational rotation in complex space. In International Conference on Learning Representations.</p>
+<p>Rakshit Trivedi, Hanjun Dai, Yichen Wang, and Le Song. 2017. Know-Evolve: Deep temporal reasoning for dynamic knowledge graphs. In Proceedings of the 34th International Conference on Machine Learning, pages 3462-3471.</p>
+<p>Théo Trouillon, Johannes Welbl, Sebastian Riedel, Éric Gaussier, and Guillaume Bouchard. 2016. Complex embeddings for simple link prediction. In Proceedings of the 33nd International Conference on Machine Learning, pages 2071-2080.</p>
+<p>Shikhar Vashishth, Soumya Sanyal, Vikram Nitin, Nilesh Agrawal, and Partha Talukdar. 2020. InteractE: Improving convolution-based knowledge graph embeddings by increasing feature interactions. In Thirty-Fourth AAAI Conference on Artificial Intelligence, pages 3009-3016.</p>
+<p>Ronald J Williams. 1992. Simple statistical gradientfollowing algorithms for connectionist reinforcement learning. Machine Learning, 8:229-256.</p>
+<p>Jiapeng Wu, Meng Cao, Jackie Chi Kit Cheung, and William L. Hamilton. 2020. TeMP: Temporal message passing for temporal knowledge graph completion. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, pages 5730-5746.</p>
+<p>Wenhan Xiong, Thien Hoang, and William Yang Wang. 2017. DeepPath: A reinforcement learning method for knowledge graph reasoning. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing, pages 564-573.</p>
+<p>Yuyu Zhang, Hanjun Dai, Zornitsa Kozareva, Alexander Smola, and Le Song. 2018. Variational reasoning for question answering with knowledge graph. In Thirty-Second AAAI Conference on Artificial Intelligence, pages 6069-6076.</p>
+<p>Zhao Zhang, Fuzhen Zhuang, Hengshu Zhu, Zhiping Shi, Hui Xiong, and Qing He. 2020. Relational graph neural network with hierarchical attention for knowledge graph completion. In ThirtyFourth AAAI Conference on Artificial Intelligence, pages 9612-9619.</p>
+<p>Cunchao Zhu, Muhao Chen, Changjun Fan, Guangquan Cheng, and Yan Zhang. 2021. Learning from history: Modeling temporal knowledge graphs with sequential copy-generation networks. In Thirty-Fifth AAAI Conference on Artificial Intelligence, pages 4732-4740.</p>
+<h2>A Appendix</h2>
+<h2>A. 1 Definitions for Evaluation Metrics</h2>
+<p>We use two popular metrics, Mean Reciprocal Rank (MRR) and Hits@ $k$ (we let $k \in{1,3,10}$ ), to evaluate the models' performance. For each quadruple $q=\left(e_{s}, r, e_{o}, t\right)$ in the test fact set $\mathcal{F}<em o="o">{\text {test }}$, we evaluate two queries: $q</em>, t\right)$. For each query, our model ranks the entities searched by beam search according to the transition probability. If the ground truth entity does not appear in the final searched entity set, we set the rank as the number of entities in the dataset. xERTE ranks the entities in the final inference graph, and others rank the total entities in the dataset.}=\left(e_{s}, r, ?, t\right)$ and $q_{s}=\left(? , r, e_{o</p>
+<p>MRR is defined as:</p>
+<p>$$
+\begin{aligned}
+M R R=\frac{1}{2 *\left|\mathcal{F}<em _in="\in" _mathcal_F="\mathcal{F" q="q">{\text {test }}\right|} \sum</em><em o="o">{\text {test }}} &amp; \left(\frac{1}{\operatorname{rank}\left(e</em>\right. \
+&amp; \left.+\frac{1}{\operatorname{rank}\left(e_{s} \mid q_{s}\right)}\right)
+\end{aligned}
+$$} \mid q_{o}\right)</p>
+<p>Hits@ $k$ is the percentage of times that the ground truth entity appears in the top $k$ of the ranked candidates, defined as:</p>
+<p>$$
+\begin{aligned}
+\text { Hits@ } k=\frac{1}{2 *\left|\mathcal{F}<em _in="\in" _mathcal_F="\mathcal{F" q="q">{\text {test }}\right|} \sum</em><em o="o">{\text {test }}} &amp; \left(\mathbb{I}\left{\operatorname{rank}\left(e</em>\right} \leq k\right.\right. \
+&amp; \left.\left.+\mathbb{I}\left{\operatorname{rank}\left(e_{s} \mid q_{s}\right} \leq k\right)\right.\right.
+\end{aligned}
+$$} \mid q_{o</p>
+<p>There are two filtering settings, static filtering and time-aware filtering. RE-NET (Jin et al., 2020) and CyGNet (Zhu et al., 2021) directly use static filtering setting to remove the entities from the candidate list according to the triples in the dataset. However, this filtering setting is not appropriate for temporal KGs. The facts of temporal KGs always change over time. For example, we evaluate the test quadruple ( $A$, visit, $B, 2018 / 04 / 03$ ). There are two other facts ( $A$, visit, $C, 2018 / 04 / 03$ ) and ( $A$, visit, $D, 2018 / 03 / 28$ ). Static filtering setting will remove both $C$ and $D$ from the candidates even though the triple $(A$, visit, $D)$ is not invalid in 2018/04/03. A more appropriate setting is only to remove $C$ from the candidates. Therefore, we use the time-aware filtering setting that eliminates the entities according to the quadruple.</p>
+<h2>A. 2 Dataset Statistics</h2>
+<p>Dataset statistics are provided in Table 8. $N_{\text {train }}$, $N_{\text {valid }}$ and $N_{\text {test }}$ are the numbers of quadruples</p>
+<p>Table 7: Number of unseen entities in the test set.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">$N_{\text {ent }}^{\text {unseen }}$</th>
+<th style="text-align: left;">$N_{\text {oq }}^{\text {unseen }}$</th>
+<th style="text-align: left;">$N_{\text {sq }}^{\text {unseen }}$</th>
+<th style="text-align: left;">$N_{\text {sog }}^{\text {unseen }}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ICEWS14</td>
+<td style="text-align: left;">496</td>
+<td style="text-align: left;">438</td>
+<td style="text-align: left;">497</td>
+<td style="text-align: left;">73</td>
+</tr>
+<tr>
+<td style="text-align: left;">ICEWS18</td>
+<td style="text-align: left;">1140</td>
+<td style="text-align: left;">975</td>
+<td style="text-align: left;">1050</td>
+<td style="text-align: left;">77</td>
+</tr>
+<tr>
+<td style="text-align: left;">WIKI</td>
+<td style="text-align: left;">2968</td>
+<td style="text-align: left;">11086</td>
+<td style="text-align: left;">22967</td>
+<td style="text-align: left;">6974</td>
+</tr>
+<tr>
+<td style="text-align: left;">YAGO</td>
+<td style="text-align: left;">540</td>
+<td style="text-align: left;">1102</td>
+<td style="text-align: left;">873</td>
+<td style="text-align: left;">366</td>
+</tr>
+</tbody>
+</table>
+<p>in training set, valid set, and test set, respectively. $N_{\text {ent }}$ and $N_{\text {rel }}$ are the numbers of total entities and total relations. ICEWS14 and ICEWS18 are eventbased knowledge graphs, and we use the same version as (Han et al., 2021) ${ }^{2}$. WIKI and YAGO datasets contain temporal facts with time span $\left(e_{s}, r, e_{o},\left[t_{s}, t_{e}\right]\right)$, and each fact is converted to $\left{\left(e_{s}, r, e_{o}, t_{s}\right),\left(e_{s}, r, e_{o}, t_{s}+1_{t}\right), \ldots,\left(e_{s}, r, e_{o}, t_{e}\right)\right}$ where $1_{t}$ is a unit time. Here, $1_{t}=1$ year. We use the same version of WIKI and YAGO as (Jin et al., 2020) ${ }^{3}$.</p>
+<p>Since we split each dataset by timestamps, some entities in the test set do not exist in the training set. Table 7 describes the number of unseen entities and the number of quadruples containing these entities in the test set. $N_{\text {ent }}^{\text {unseen }}$ is the number of new entities in the test set. $N_{\text {oq }}^{\text {unseen }}$ is the number of quadruples that object entities are unseen. $N_{\text {sq }}^{\text {unseen }}$ is the number of quadruples that subject entities are unseen. $N_{\text {sog }}^{\text {unseen }}$ is the number of quadruples that both subject entities and object entities are unseen.</p>
+<h2>A. 3 Detailed Implementation</h2>
+<p>Hyperparameters search. We use a grid search to choose the hyperparameters. The search space of $\mu$ is $[0.1,0.3,0.5,0.7,0.9]$. The search space of the outgoing edges number $N$ is $[30,50,80,100,200]$. The search space of the path length is $[2,3,4]$. We also try using different activation functions for the $\boldsymbol{\Phi}$, such as relu, sigmoid, $\tanh$.</p>
+<p>Details of TITer. For the policy network, we set the entity embedding dimension to 80 , and the function $\boldsymbol{\Phi}$ output dimension to 20 . The node representation is the concatenation of the entity embedding and $\boldsymbol{\Phi}$ output, and its dimension is set to 100 . we also set the relation embedding size to 100 . The hidden state dimension of LSTM and the middle layer dimensions of the two two-layer MLPs are 100. We choose the latest $N$ outgoing edges for the agent as the current state's candidate actions. $N$ is 50 for ICEWS14 and ICEWS18, 60 for WIKI, and</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 8: Statistics on datasets.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">$N_{\text {train }}$</th>
+<th style="text-align: left;">$N_{\text {valid }}$</th>
+<th style="text-align: left;">$N_{\text {test }}$</th>
+<th style="text-align: left;">$N_{\text {ent }}$</th>
+<th style="text-align: left;">$N_{\text {rel }}$</th>
+<th style="text-align: left;">Time granularity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ICEWS14</td>
+<td style="text-align: left;">63685</td>
+<td style="text-align: left;">13823</td>
+<td style="text-align: left;">13222</td>
+<td style="text-align: left;">7128</td>
+<td style="text-align: left;">230</td>
+<td style="text-align: left;">24 hours</td>
+</tr>
+<tr>
+<td style="text-align: left;">ICEWS18</td>
+<td style="text-align: left;">373018</td>
+<td style="text-align: left;">45995</td>
+<td style="text-align: left;">49545</td>
+<td style="text-align: left;">23033</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;">24 hours</td>
+</tr>
+<tr>
+<td style="text-align: left;">WIKI</td>
+<td style="text-align: left;">539286</td>
+<td style="text-align: left;">67538</td>
+<td style="text-align: left;">63110</td>
+<td style="text-align: left;">12554</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">1 year</td>
+</tr>
+<tr>
+<td style="text-align: left;">YAGO</td>
+<td style="text-align: left;">161540</td>
+<td style="text-align: left;">19523</td>
+<td style="text-align: left;">20026</td>
+<td style="text-align: left;">10623</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">1 year</td>
+</tr>
+</tbody>
+</table>
+<p>30 for YAGO. The reasoning path length is set to 3. All the parameters are initialized with Xavier initialization.</p>
+<p>Details of Training. Same as MINERVA, we use an additive control variate baseline to reduce the variance and add an entropy regularization term to the cost function scaled by a constant to encourage diversity in the paths sampled by the policy. The scaling constant is initialized to 0.01 , and it will decay exponentially with the number of training epochs. The attenuation coefficient is 0.9 . The discount factor $\gamma$ of REINFORCE is 0.95 . We use Adam optimizer to optimize the parameters, and the learning rate is 0.001 . The weight decay of the optimizer is 0.000001 . We clip gradients greater than 10 to avoid the gradient explosion. The batch size is set to 512 .</p>
+<p>Details of Testing. We use beam search to obtain a list of predicted entities with the corresponding scores. The beam size is set to 100 . Multiple paths obtained through beam search may lead to the same target entity, and we keep the highest path score among them as the final entity score. For the IM module, we set the time decay factor $\mu$ to 0.1 .</p>
+<p>Details of other Methods. We use the released code to implement DE-SimplE ${ }^{4}$, TNTComplEx ${ }^{5}$, CyGNet ${ }^{6}$, RE-NET $^{7}$, and xERTE $^{8}$. We use the default parameters in the code. Partial results in Table 1 are from (Han et al., 2021; Ding et al., 2021). The authors of CyGNet only made object predictions when evaluating their model. We find that the subject prediction is more difficult than the object prediction for these four datasets. We use the code of CyGNet to train two models to predict object and subject, respectively. TANGO (Ding et al., 2021) does not release the code, so we use the results reported in their paper.</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>A. 4 Model Robustness</h2>
+<p>We run TITer on all datasets five times by using five different random seeds with fixed hyperparameters. Table 9 reports the mean and standard deviation of TITer on these datasets. It shows that TITer demonstrates a small standard deviation, which indicates its robustness.</p>
+<h2>A. 5 Estimating a Dirichlet Distribution</h2>
+<p>The Dirichlet density is:</p>
+<p>$$
+p(\mathbf{p}) \sim \operatorname{Dir}\left(\alpha_{1}, \ldots, \alpha_{k}\right)=\frac{\Gamma\left(\sum_{k} \alpha_{k}\right)}{\prod_{k} \Gamma\left(\alpha_{k}\right)} \prod_{k} p_{k}^{\alpha_{k}-1}
+$$</p>
+<p>where $p_{k}&gt;0, \sum_{k} p_{k}=1$ and $\alpha_{k}&gt;0$. To estimate a Dirichlet distribution of order $k$ with parameters $\boldsymbol{\alpha}=\left{\alpha_{1}, \alpha_{2}, \ldots, \alpha_{k}\right}$, we observe a set of samples $D=\left{x_{1}, \ldots, x_{N}\right}$ where $x$ is a multinomial sample with length $n$ with probability $\mathbf{p} . n_{k}$ represents the count of corresponding category.</p>
+<p>$$
+\begin{aligned}
+p(\mathbf{x} \mid \boldsymbol{\alpha}) &amp; =\int_{\mathbf{p}} p(\mathbf{x} \mid \mathbf{p}) p(\mathbf{p} \mid \boldsymbol{\alpha}) \
+&amp; =\frac{\Gamma\left(\sum_{k} \alpha_{k}\right)}{\Gamma\left(n+\sum_{k} \alpha_{k}\right)} \prod_{k} \frac{\Gamma\left(n_{k}+\alpha_{k}\right)}{\Gamma\left(\alpha_{k}\right)} \
+p(D \mid \boldsymbol{\alpha}) &amp; =\prod_{i} p\left(x_{i} \mid \boldsymbol{\alpha}\right) \
+&amp; =\prod_{i}\left(\frac{\Gamma\left(\sum_{k} \alpha_{k}\right)}{\Gamma\left(n_{i}+\sum_{k} \alpha_{k}\right)} \prod_{k} \frac{\Gamma\left(n_{i k}+\alpha_{k}\right)}{\Gamma\left(\alpha_{k}\right)}\right)
+\end{aligned}
+$$</p>
+<p>The gradient of the log-likelihood is:</p>
+<p>$$
+\begin{aligned}
+\frac{d \log (p(D \mid \boldsymbol{\alpha})}{d \alpha_{k}}=\sum_{i} \Psi\left(\sum_{k} \alpha_{k}\right)-\Psi\left(n_{i}+\sum_{k} \alpha_{k}\right) \
++\Psi\left(n_{i k}+\alpha_{k}\right)-\Psi\left(\alpha_{k}\right)
+\end{aligned}
+$$</p>
+<p>where $\Psi$ is the digamma function. The maximum can be computed via the fixed-point iteration:</p>
+<p>$$
+\alpha_{k}^{\text {new }}=\alpha_{k} \frac{\sum_{i} \Psi\left(n_{i k}+\alpha_{k}\right)-\Psi\left(\alpha_{k}\right)}{\sum_{i} \Psi\left(n_{i}+\sum_{k} \alpha_{k}\right)-\Psi\left(\sum_{k} \alpha_{k}\right)}
+$$</p>
+<p>Table 9: Mean and standard deviation of TITer across five runs on four datasets.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Datasets</th>
+<th style="text-align: center;">MRR</th>
+<th style="text-align: center;">H@1</th>
+<th style="text-align: center;">H@3</th>
+<th style="text-align: center;">H@10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ICEWS14</td>
+<td style="text-align: center;">$41.75 \pm 0.21$</td>
+<td style="text-align: center;">$32.75 \pm 0.12$</td>
+<td style="text-align: center;">$46.46 \pm 0.09$</td>
+<td style="text-align: center;">$58.44 \pm 0.05$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ICEWS18</td>
+<td style="text-align: center;">$29.98 \pm 0.15$</td>
+<td style="text-align: center;">$22.05 \pm 0.07$</td>
+<td style="text-align: center;">$33.46 \pm 0.06$</td>
+<td style="text-align: center;">$44.83 \pm 0.03$</td>
+</tr>
+<tr>
+<td style="text-align: left;">WIKI</td>
+<td style="text-align: center;">$75.50 \pm 0.22$</td>
+<td style="text-align: center;">$72.96 \pm 0.18$</td>
+<td style="text-align: center;">$77.46 \pm 0.09$</td>
+<td style="text-align: center;">$79.02 \pm 0.04$</td>
+</tr>
+<tr>
+<td style="text-align: left;">YAGO</td>
+<td style="text-align: center;">$87.47 \pm 0.08$</td>
+<td style="text-align: center;">$84.89 \pm 0.07$</td>
+<td style="text-align: center;">$89.96 \pm 0.03$</td>
+<td style="text-align: center;">$90.27 \pm 0.04$</td>
+</tr>
+</tbody>
+</table>
+<p>We can also maximize the leave-one-out likelihood.
+The digamma function $\Psi$ can also be inverted efficiently by using a Newton-Raphson method.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{4}$ https://github.com/BorealisAI/de-simple
+${ }^{5}$ https://github.com/facebookresearch/tkbc
+${ }^{6}$ https://github.com/CunchaoZ/CyGNet
+${ }^{7}$ https://github.com/INK-USC/RE-Net
+${ }^{8}$ https://github.com/TemporalKGTeam/xERTE&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

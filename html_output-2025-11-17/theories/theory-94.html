@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stochastic Reporting Gap Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-94</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-94</p>
+                <p><strong>Name:</strong> Stochastic Reporting Gap Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about faithfulness gaps between natural language descriptions and code implementations in automated experimentation, based on the following results.</p>
+                <p><strong>Description:</strong> Natural language descriptions of experimental results typically report point estimates (single runs, best runs, or means without variance) while implementations produce distributions due to multiple stochastic factors including random seeds, data ordering, non-deterministic operations, hardware behavior, and framework choices. This creates a systematic reporting gap where the described results do not represent the full distribution of possible outcomes from the implementation. The theory predicts that this gap leads to: (1) overestimation of method performance through selective reporting or cherry-picking, (2) incorrect conclusions about method superiority when comparing single runs, (3) failed replications when different random samples are drawn from the outcome distribution, (4) hidden variance that affects practical deployment reliability, and (5) inability to distinguish genuine algorithmic improvements from random variation. The gap is exacerbated by cultural incentives to report best results, space constraints in publications, and lack of standardized reporting requirements.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Single-run or best-run reporting systematically overestimates performance compared to the median or mean performance across multiple runs, with the magnitude depending on the method's inherent variance.</li>
+                <li>The probability of incorrect superiority claims when comparing methods with single runs increases as the true performance difference decreases and as method variance increases.</li>
+                <li>Variance from random seeds and non-deterministic operations accounts for a substantial portion of total performance variance in stochastic methods, with the proportion varying by domain (higher in RL and GANs, lower in supervised learning with large datasets).</li>
+                <li>Reporting distributions (mean ± standard deviation over multiple runs with different seeds) substantially reduces incorrect conclusions compared to single-run reporting, but only when the number of runs is sufficient to estimate the distribution.</li>
+                <li>The stochastic reporting gap is largest for methods with: (1) high sensitivity to initialization, (2) complex optimization landscapes with multiple local optima, (3) small datasets or few-shot scenarios, (4) non-deterministic operations in the implementation, and (5) high-dimensional parameter spaces.</li>
+                <li>Multiple sources of stochasticity compound: random seeds, data ordering, non-deterministic GPU operations, framework choices, and hardware behavior all contribute to the total variance.</li>
+                <li>Cultural and practical factors (incentives to report best results, space constraints, lack of standards) perpetuate the reporting gap despite awareness of the issue.</li>
+                <li>The gap can be partially closed through: (1) reporting distributions over multiple seeds (≥10 runs recommended), (2) using deterministic settings where possible, (3) statistical testing across distributions, (4) reporting failure rates and outliers, and (5) providing code and exact environment specifications.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Papers commonly report best-run results or single runs without distributions, creating misleading performance claims. Distributional reporting reveals that methods converge with increased computational budget. <a href="../results/extraction-result-728.html#e728.1" class="evidence-link">[e728.1]</a> </li>
+    <li>Random seed selection and improper averaging (top-N selection) bias results. Different seed partitions produce statistically different learning distributions (t=-9.0916, p=0.0016 in one example). <a href="../results/extraction-result-706.html#e706.2" class="evidence-link">[e706.2]</a> <a href="../results/extraction-result-694.html#e694.4" class="evidence-link">[e694.4]</a> </li>
+    <li>Random seed dependence causes extreme variance: 16 identical training runs of LeNet5 produced accuracies from 8.6% to 99.0% (90.4% spread) under supposedly identical hyperparameters. <a href="../results/extraction-result-475.html#e475.1" class="evidence-link">[e475.1]</a> </li>
+    <li>Hidden failure reporting and mode collapse occur frequently but are underreported in textual descriptions. Some model/dataset combinations show up to 20% failure rates and significant outliers. <a href="../results/extraction-result-728.html#e728.5" class="evidence-link">[e728.5]</a> </li>
+    <li>GAN training shows high variance and failure rates not reflected in textual claims. Example: LSGAN on CIFAR shows FID standard deviation of 47.5, and some combinations have up to 20% failures. <a href="../results/extraction-result-728.html#e728.5" class="evidence-link">[e728.5]</a> <a href="../results/extraction-result-728.html#e728.0" class="evidence-link">[e728.0]</a> </li>
+    <li>Inherent nondeterminism from stochastic training components (random initialization, SGD, data shuffling, environment randomness) leads to run-to-run variation even with identical code and data. <a href="../results/extraction-result-485.html#e485.5" class="evidence-link">[e485.5]</a> </li>
+    <li>Framework-level non-determinism (PyTorch/cuDNN autotune, multithreading, algorithm selection) causes runs with identical seeds to diverge across machines and runs. <a href="../results/extraction-result-491.html#e491.1" class="evidence-link">[e491.1]</a> <a href="../results/extraction-result-688.html#e688.4" class="evidence-link">[e688.4]</a> </li>
+    <li>Hardware-induced floating-point non-determinism (NVIDIA Tensor Cores probabilistic rounding, GPU operation ordering) produces bit-level differences across identical runs. <a href="../results/extraction-result-491.html#e491.0" class="evidence-link">[e491.0]</a> </li>
+    <li>Implementation non-determinism from floating-point operation ordering and library behavior produces measurable variance (~0.4-0.5 perplexity on language modeling tasks). <a href="../results/extraction-result-703.html#e703.1" class="evidence-link">[e703.1]</a> </li>
+    <li>Neural network training shows large variance requiring multiple seeds for reliable conclusions. LSTM reproductions showed substantial variability (e.g., TDLSTM F1: original 69.00 vs reproduction mean 65.63, max closer to original). <a href="../results/extraction-result-454.html#e454.4" class="evidence-link">[e454.4]</a> </li>
+    <li>Hyperparameter sensitivity interacts with stochastic variance. Different architectures and activation functions produce large, inconsistent effects that require retuning and can mask or mimic stochastic effects. <a href="../results/extraction-result-706.html#e706.0" class="evidence-link">[e706.0]</a> <a href="../results/extraction-result-728.html#e728.0" class="evidence-link">[e728.0]</a> </li>
+    <li>Missing or underspecified hyperparameters in papers force implementers to make choices that interact with stochastic factors, compounding variance. <a href="../results/extraction-result-487.html#e487.3" class="evidence-link">[e487.3]</a> <a href="../results/extraction-result-445.html#e445.0" class="evidence-link">[e445.0]</a> </li>
+    <li>Environmental differences (hardware, compilers, framework versions) contribute variance independent of random seeds and can change results even with identical code. <a href="../results/extraction-result-485.html#e485.6" class="evidence-link">[e485.6]</a> </li>
+    <li>Codebases sometimes include mechanisms to search/select beneficial random seeds, and averaging different seed sets produces divergent reported results. <a href="../results/extraction-result-694.html#e694.4" class="evidence-link">[e694.4]</a> </li>
+    <li>Author correspondence strongly correlates with successful reproduction (84.6% success with reply vs 4.2% without, p=6.01×10^-8), suggesting that clarifying ambiguous descriptions helps bridge gaps. <a href="../results/extraction-result-487.html#e487.6" class="evidence-link">[e487.6]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Requiring papers to report distributions over multiple seeds (≥10) with statistical tests will reduce non-replicable findings, though the exact reduction will depend on enforcement and community adoption.</li>
+                <li>Automated tools that detect single-run reporting and flag high-variance methods will identify a substantial fraction of papers with stochastic reporting gaps, particularly in domains like RL and GANs.</li>
+                <li>Meta-analyses that account for stochastic variance will find that a meaningful fraction of claimed method improvements are not statistically significant when distributions are compared.</li>
+                <li>Standardizing random seed reporting and requiring minimum numbers of runs will improve replication rates, with larger improvements in high-variance domains.</li>
+                <li>Methods that show high variance across seeds will have lower practical deployment reliability, even when mean performance is competitive.</li>
+                <li>Providing exact environment specifications (containers, hardware details, framework versions) will improve reproducibility but not eliminate variance from inherent stochasticity.</li>
+                <li>Disabling non-deterministic operations (cuDNN benchmarking, probabilistic rounding) will reduce but not eliminate variance, at potential computational cost.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether the stochastic reporting gap has increased over time as methods have become more complex and stochastic, or whether awareness and reporting practices have improved to offset this.</li>
+                <li>Whether certain research communities (e.g., NLP vs CV vs RL) have systematically better or worse practices for reporting distributions.</li>
+                <li>Whether the gap can be closed through cultural change and community norms alone, or whether it requires enforcement through review processes and journal policies.</li>
+                <li>Whether automated variance estimation tools can accurately predict the full outcome distribution from a limited number of runs (e.g., <10).</li>
+                <li>The extent to which stochastic variance versus other factors (hyperparameter sensitivity, implementation bugs, environmental differences) accounts for failed replications in practice.</li>
+                <li>Whether methods can be designed to be inherently more robust to stochastic factors, or whether high variance is fundamental to certain problem classes.</li>
+                <li>The optimal number of runs needed to reliably estimate performance distributions for different method classes and problem domains.</li>
+                <li>Whether reporting distributions changes how researchers develop methods (e.g., favoring more stable algorithms) or just how they report results.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that single-run results are consistently representative of the full distribution across a broad range of methods would challenge the theory's core claim.</li>
+                <li>Demonstrating that reporting distributions does not improve replication rates in controlled studies would undermine the theory's practical recommendations.</li>
+                <li>Showing that stochastic variance is negligible compared to other sources of variance (hyperparameters, implementation differences) across most domains would limit the theory's importance.</li>
+                <li>Finding that methods with high reported variance are no less reproducible than low-variance methods would contradict the theory's predictions about deployment reliability.</li>
+                <li>Demonstrating that the correlation between author replies and reproduction success is due to confounding factors rather than clarification of stochastic details would weaken the theory's explanatory power.</li>
+                <li>Finding that deterministic settings eliminate all meaningful variance would suggest the problem is purely implementation-level rather than fundamental to the methods.</li>
+                <li>Showing that cultural changes alone (without enforcement) successfully close the reporting gap would challenge the theory's claim about the need for structural changes.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Some variance arises from hyperparameter sensitivity and architecture choices rather than purely stochastic factors, and these interact in complex ways. <a href="../results/extraction-result-728.html#e728.0" class="evidence-link">[e728.0]</a> <a href="../results/extraction-result-706.html#e706.0" class="evidence-link">[e706.0]</a> </li>
+    <li>Environmental differences (hardware, compilers, framework versions) contribute variance that is independent of random seeds but still affects reproducibility. <a href="../results/extraction-result-485.html#e485.6" class="evidence-link">[e485.6]</a> </li>
+    <li>Some methods are inherently more stable and show low variance even with single runs, suggesting method-specific factors beyond general stochasticity. <a href="../results/extraction-result-752.html#e752.5" class="evidence-link">[e752.5]</a> </li>
+    <li>Implementation bugs and errors can masquerade as stochastic variance, making it difficult to separate genuine stochasticity from implementation issues. <a href="../results/extraction-result-445.html#e445.3" class="evidence-link">[e445.3]</a> </li>
+    <li>Data quality and annotation variance can contribute to outcome distributions independently of algorithmic stochasticity. <a href="../results/extraction-result-461.html#e461.3" class="evidence-link">[e461.3]</a> <a href="../results/extraction-result-719.html#e719.8" class="evidence-link">[e719.8]</a> </li>
+    <li>The theory does not fully explain why some papers report distributions and still fail to replicate, suggesting other factors beyond stochastic reporting are important. <a href="../results/extraction-result-445.html#e445.0" class="evidence-link">[e445.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Henderson et al. (2018) Deep Reinforcement Learning that Matters [Documents variance and reporting issues in RL, advocates for reporting distributions and statistical testing]</li>
+    <li>Lucic et al. (2017) Are GANs Created Equal? A Large-Scale Study [Documents GAN variance, failure rates, and distributional reporting]</li>
+    <li>Reimers & Gurevych (2017) Reporting Score Distributions Makes a Difference [Advocates for distribution reporting in NLP and shows statistical significance of seed variance]</li>
+    <li>Bouthillier et al. (2019) Unreproducible Research is Reproducible [Analyzes variance in hyperparameter optimization and reproducibility]</li>
+    <li>Nagarajan et al. (2019) Deterministic PAC-Bayesian generalization bounds for deep networks via generalizing noise-resilience [Theoretical analysis of stochasticity in deep learning]</li>
+    <li>Pham et al. (2020) Problems and opportunities in training deep learning software systems: An analysis of variance [Comprehensive analysis of variance sources in deep learning]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Stochastic Reporting Gap Theory",
+    "theory_description": "Natural language descriptions of experimental results typically report point estimates (single runs, best runs, or means without variance) while implementations produce distributions due to multiple stochastic factors including random seeds, data ordering, non-deterministic operations, hardware behavior, and framework choices. This creates a systematic reporting gap where the described results do not represent the full distribution of possible outcomes from the implementation. The theory predicts that this gap leads to: (1) overestimation of method performance through selective reporting or cherry-picking, (2) incorrect conclusions about method superiority when comparing single runs, (3) failed replications when different random samples are drawn from the outcome distribution, (4) hidden variance that affects practical deployment reliability, and (5) inability to distinguish genuine algorithmic improvements from random variation. The gap is exacerbated by cultural incentives to report best results, space constraints in publications, and lack of standardized reporting requirements.",
+    "supporting_evidence": [
+        {
+            "text": "Papers commonly report best-run results or single runs without distributions, creating misleading performance claims. Distributional reporting reveals that methods converge with increased computational budget.",
+            "uuids": [
+                "e728.1"
+            ]
+        },
+        {
+            "text": "Random seed selection and improper averaging (top-N selection) bias results. Different seed partitions produce statistically different learning distributions (t=-9.0916, p=0.0016 in one example).",
+            "uuids": [
+                "e706.2",
+                "e694.4"
+            ]
+        },
+        {
+            "text": "Random seed dependence causes extreme variance: 16 identical training runs of LeNet5 produced accuracies from 8.6% to 99.0% (90.4% spread) under supposedly identical hyperparameters.",
+            "uuids": [
+                "e475.1"
+            ]
+        },
+        {
+            "text": "Hidden failure reporting and mode collapse occur frequently but are underreported in textual descriptions. Some model/dataset combinations show up to 20% failure rates and significant outliers.",
+            "uuids": [
+                "e728.5"
+            ]
+        },
+        {
+            "text": "GAN training shows high variance and failure rates not reflected in textual claims. Example: LSGAN on CIFAR shows FID standard deviation of 47.5, and some combinations have up to 20% failures.",
+            "uuids": [
+                "e728.5",
+                "e728.0"
+            ]
+        },
+        {
+            "text": "Inherent nondeterminism from stochastic training components (random initialization, SGD, data shuffling, environment randomness) leads to run-to-run variation even with identical code and data.",
+            "uuids": [
+                "e485.5"
+            ]
+        },
+        {
+            "text": "Framework-level non-determinism (PyTorch/cuDNN autotune, multithreading, algorithm selection) causes runs with identical seeds to diverge across machines and runs.",
+            "uuids": [
+                "e491.1",
+                "e688.4"
+            ]
+        },
+        {
+            "text": "Hardware-induced floating-point non-determinism (NVIDIA Tensor Cores probabilistic rounding, GPU operation ordering) produces bit-level differences across identical runs.",
+            "uuids": [
+                "e491.0"
+            ]
+        },
+        {
+            "text": "Implementation non-determinism from floating-point operation ordering and library behavior produces measurable variance (~0.4-0.5 perplexity on language modeling tasks).",
+            "uuids": [
+                "e703.1"
+            ]
+        },
+        {
+            "text": "Neural network training shows large variance requiring multiple seeds for reliable conclusions. LSTM reproductions showed substantial variability (e.g., TDLSTM F1: original 69.00 vs reproduction mean 65.63, max closer to original).",
+            "uuids": [
+                "e454.4"
+            ]
+        },
+        {
+            "text": "Hyperparameter sensitivity interacts with stochastic variance. Different architectures and activation functions produce large, inconsistent effects that require retuning and can mask or mimic stochastic effects.",
+            "uuids": [
+                "e706.0",
+                "e728.0"
+            ]
+        },
+        {
+            "text": "Missing or underspecified hyperparameters in papers force implementers to make choices that interact with stochastic factors, compounding variance.",
+            "uuids": [
+                "e487.3",
+                "e445.0"
+            ]
+        },
+        {
+            "text": "Environmental differences (hardware, compilers, framework versions) contribute variance independent of random seeds and can change results even with identical code.",
+            "uuids": [
+                "e485.6"
+            ]
+        },
+        {
+            "text": "Codebases sometimes include mechanisms to search/select beneficial random seeds, and averaging different seed sets produces divergent reported results.",
+            "uuids": [
+                "e694.4"
+            ]
+        },
+        {
+            "text": "Author correspondence strongly correlates with successful reproduction (84.6% success with reply vs 4.2% without, p=6.01×10^-8), suggesting that clarifying ambiguous descriptions helps bridge gaps.",
+            "uuids": [
+                "e487.6"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Single-run or best-run reporting systematically overestimates performance compared to the median or mean performance across multiple runs, with the magnitude depending on the method's inherent variance.",
+        "The probability of incorrect superiority claims when comparing methods with single runs increases as the true performance difference decreases and as method variance increases.",
+        "Variance from random seeds and non-deterministic operations accounts for a substantial portion of total performance variance in stochastic methods, with the proportion varying by domain (higher in RL and GANs, lower in supervised learning with large datasets).",
+        "Reporting distributions (mean ± standard deviation over multiple runs with different seeds) substantially reduces incorrect conclusions compared to single-run reporting, but only when the number of runs is sufficient to estimate the distribution.",
+        "The stochastic reporting gap is largest for methods with: (1) high sensitivity to initialization, (2) complex optimization landscapes with multiple local optima, (3) small datasets or few-shot scenarios, (4) non-deterministic operations in the implementation, and (5) high-dimensional parameter spaces.",
+        "Multiple sources of stochasticity compound: random seeds, data ordering, non-deterministic GPU operations, framework choices, and hardware behavior all contribute to the total variance.",
+        "Cultural and practical factors (incentives to report best results, space constraints, lack of standards) perpetuate the reporting gap despite awareness of the issue.",
+        "The gap can be partially closed through: (1) reporting distributions over multiple seeds (≥10 runs recommended), (2) using deterministic settings where possible, (3) statistical testing across distributions, (4) reporting failure rates and outliers, and (5) providing code and exact environment specifications."
+    ],
+    "new_predictions_likely": [
+        "Requiring papers to report distributions over multiple seeds (≥10) with statistical tests will reduce non-replicable findings, though the exact reduction will depend on enforcement and community adoption.",
+        "Automated tools that detect single-run reporting and flag high-variance methods will identify a substantial fraction of papers with stochastic reporting gaps, particularly in domains like RL and GANs.",
+        "Meta-analyses that account for stochastic variance will find that a meaningful fraction of claimed method improvements are not statistically significant when distributions are compared.",
+        "Standardizing random seed reporting and requiring minimum numbers of runs will improve replication rates, with larger improvements in high-variance domains.",
+        "Methods that show high variance across seeds will have lower practical deployment reliability, even when mean performance is competitive.",
+        "Providing exact environment specifications (containers, hardware details, framework versions) will improve reproducibility but not eliminate variance from inherent stochasticity.",
+        "Disabling non-deterministic operations (cuDNN benchmarking, probabilistic rounding) will reduce but not eliminate variance, at potential computational cost."
+    ],
+    "new_predictions_unknown": [
+        "Whether the stochastic reporting gap has increased over time as methods have become more complex and stochastic, or whether awareness and reporting practices have improved to offset this.",
+        "Whether certain research communities (e.g., NLP vs CV vs RL) have systematically better or worse practices for reporting distributions.",
+        "Whether the gap can be closed through cultural change and community norms alone, or whether it requires enforcement through review processes and journal policies.",
+        "Whether automated variance estimation tools can accurately predict the full outcome distribution from a limited number of runs (e.g., &lt;10).",
+        "The extent to which stochastic variance versus other factors (hyperparameter sensitivity, implementation bugs, environmental differences) accounts for failed replications in practice.",
+        "Whether methods can be designed to be inherently more robust to stochastic factors, or whether high variance is fundamental to certain problem classes.",
+        "The optimal number of runs needed to reliably estimate performance distributions for different method classes and problem domains.",
+        "Whether reporting distributions changes how researchers develop methods (e.g., favoring more stable algorithms) or just how they report results."
+    ],
+    "negative_experiments": [
+        "Finding that single-run results are consistently representative of the full distribution across a broad range of methods would challenge the theory's core claim.",
+        "Demonstrating that reporting distributions does not improve replication rates in controlled studies would undermine the theory's practical recommendations.",
+        "Showing that stochastic variance is negligible compared to other sources of variance (hyperparameters, implementation differences) across most domains would limit the theory's importance.",
+        "Finding that methods with high reported variance are no less reproducible than low-variance methods would contradict the theory's predictions about deployment reliability.",
+        "Demonstrating that the correlation between author replies and reproduction success is due to confounding factors rather than clarification of stochastic details would weaken the theory's explanatory power.",
+        "Finding that deterministic settings eliminate all meaningful variance would suggest the problem is purely implementation-level rather than fundamental to the methods.",
+        "Showing that cultural changes alone (without enforcement) successfully close the reporting gap would challenge the theory's claim about the need for structural changes."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Some variance arises from hyperparameter sensitivity and architecture choices rather than purely stochastic factors, and these interact in complex ways.",
+            "uuids": [
+                "e728.0",
+                "e706.0"
+            ]
+        },
+        {
+            "text": "Environmental differences (hardware, compilers, framework versions) contribute variance that is independent of random seeds but still affects reproducibility.",
+            "uuids": [
+                "e485.6"
+            ]
+        },
+        {
+            "text": "Some methods are inherently more stable and show low variance even with single runs, suggesting method-specific factors beyond general stochasticity.",
+            "uuids": [
+                "e752.5"
+            ]
+        },
+        {
+            "text": "Implementation bugs and errors can masquerade as stochastic variance, making it difficult to separate genuine stochasticity from implementation issues.",
+            "uuids": [
+                "e445.3"
+            ]
+        },
+        {
+            "text": "Data quality and annotation variance can contribute to outcome distributions independently of algorithmic stochasticity.",
+            "uuids": [
+                "e461.3",
+                "e719.8"
+            ]
+        },
+        {
+            "text": "The theory does not fully explain why some papers report distributions and still fail to replicate, suggesting other factors beyond stochastic reporting are important.",
+            "uuids": [
+                "e445.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some papers report distributions and still fail to replicate due to other factors (missing hyperparameters, implementation differences, environmental factors), suggesting stochastic reporting alone is insufficient.",
+            "uuids": [
+                "e445.0"
+            ]
+        },
+        {
+            "text": "Certain deterministic methods or methods with fixed seeds show high reproducibility despite not reporting distributions, indicating the gap is not universal.",
+            "uuids": [
+                "e725.0"
+            ]
+        },
+        {
+            "text": "Some high-variance methods (GANs) are widely used in practice despite poor reproducibility, suggesting deployment reliability may not always depend on low variance.",
+            "uuids": [
+                "e728.5"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Deterministic algorithms with fixed seeds and deterministic operations have minimal stochastic reporting gaps, though environmental factors may still introduce variance.",
+        "Methods with large datasets show reduced variance compared to few-shot methods, as the law of large numbers reduces sampling variance.",
+        "Ensemble methods can reduce prediction variance but introduce new sources of stochasticity in the ensemble construction process.",
+        "Online learning and reinforcement learning methods have temporal variance in addition to random seed variance, as the data distribution changes over time.",
+        "Some domains (e.g., supervised learning on large datasets) show lower variance than others (e.g., RL, GANs, few-shot learning), affecting the magnitude of the reporting gap.",
+        "Hardware-specific optimizations (Tensor Cores, cuDNN) introduce variance that is difficult to control even with fixed seeds.",
+        "Certain evaluation metrics (e.g., FID for GANs) are themselves stochastic and contribute to reported variance.",
+        "Methods that rely on pretrained models inherit variance from the pretraining process, which may not be reported or controllable."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Henderson et al. (2018) Deep Reinforcement Learning that Matters [Documents variance and reporting issues in RL, advocates for reporting distributions and statistical testing]",
+            "Lucic et al. (2017) Are GANs Created Equal? A Large-Scale Study [Documents GAN variance, failure rates, and distributional reporting]",
+            "Reimers & Gurevych (2017) Reporting Score Distributions Makes a Difference [Advocates for distribution reporting in NLP and shows statistical significance of seed variance]",
+            "Bouthillier et al. (2019) Unreproducible Research is Reproducible [Analyzes variance in hyperparameter optimization and reproducibility]",
+            "Nagarajan et al. (2019) Deterministic PAC-Bayesian generalization bounds for deep networks via generalizing noise-resilience [Theoretical analysis of stochasticity in deep learning]",
+            "Pham et al. (2020) Problems and opportunities in training deep learning software systems: An analysis of variance [Comprehensive analysis of variance sources in deep learning]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 6,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

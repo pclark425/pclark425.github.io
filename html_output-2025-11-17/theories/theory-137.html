@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensemble Disagreement as Epistemic Uncertainty Proxy Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-137</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-137</p>
+                <p><strong>Name:</strong> Ensemble Disagreement as Epistemic Uncertainty Proxy Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how adaptive experimental design works for AI agents operating in unknown environments, based on the following results.</p>
+                <p><strong>Description:</strong> In model-based reinforcement learning and active learning, the variance or disagreement among an ensemble of learned models provides a practical and effective proxy for epistemic uncertainty that avoids pathological attraction to stochastic noise. Unlike prediction error (which conflates epistemic and aleatoric uncertainty), ensemble disagreement naturally converges to low values on inherently stochastic transitions (where all models learn the same predictive distribution) while remaining high on under-explored transitions (where models have learned different hypotheses). This makes ensemble disagreement superior to prediction error for exploration in stochastic environments. The key mechanism is that bootstrap sampling or diverse initialization creates models that explore different hypotheses early in learning, and their disagreement indicates regions where more data would reduce model uncertainty. The effectiveness depends on maintaining ensemble diversity through bootstrap resampling, different initializations, or different architectures, and scales with ensemble size up to a point of diminishing returns.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Ensemble disagreement (variance across model predictions) provides a practical proxy for epistemic uncertainty that distinguishes learnable from stochastic uncertainty.</li>
+                <li>Ensemble methods naturally avoid pathological attraction to stochastic noise because all ensemble members converge to the same predictive distribution on inherently stochastic transitions, reducing disagreement to near-zero.</li>
+                <li>Bootstrap sampling or diverse initialization creates ensemble diversity that reflects epistemic uncertainty early in learning, with disagreement decreasing as models converge on the true dynamics in explored regions.</li>
+                <li>Ensemble disagreement is computationally cheaper than full Bayesian inference while providing similar benefits for exploration, though it requires maintaining and updating multiple models.</li>
+                <li>The effectiveness of ensemble disagreement increases with ensemble size (more models provide better uncertainty estimates) but with diminishing returns, with k=3-5 models often sufficient in practice.</li>
+                <li>Ensemble disagreement can be applied to various model types (neural networks, GPs, density models) and various prediction targets (next state, reward, value function, or abstract embeddings).</li>
+                <li>For exploration to be effective, ensemble diversity must be maintained through bootstrap resampling, different initializations, or different architectures, preventing collapse to identical models.</li>
+                <li>Ensemble disagreement measured in embedding space (rather than raw observation space) can be more computationally tractable for high-dimensional observations like images.</li>
+                <li>The disagreement signal naturally decays as regions become well-explored, enabling a smooth transition from exploration to exploitation without manual scheduling.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Disagreement exploration using ensemble variance (k=5 forward models) outperforms prediction-error baselines in stochastic environments (Unity with TV, Atari sticky actions) and achieves 67% interaction with unseen objects vs 17% random baseline and 1% REINFORCE-based curiosity <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>MAX uses ensemble disagreement (M=3 models, JSD among ensemble next-state predictions) combined with MCTS planning and achieves order-of-magnitude better sample efficiency than reactive baselines, exploring 100% of chain transitions in ~15 episodes vs ~40% at 60 episodes for baselines <a href="../results/extraction-result-1127.html#e1127.0" class="evidence-link">[e1127.0]</a> </li>
+    <li>In Noisy MNIST toy experiment, disagreement converges to near-zero intrinsic reward for both low- and high-stochasticity states, avoiding pathological perpetual curiosity that affects prediction-error methods <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>Disagreement matches or exceeds state-of-the-art curiosity/prediction-error baselines on near-deterministic Atari games, demonstrating it doesn't sacrifice performance in low-stochasticity settings <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>Bayesian Disagreement using Dropout NN (single-model approximation) underperformed ensemble disagreement in practice, suggesting multiple models are necessary <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>Pred-Error Variance ablation performed significantly worse than ensemble disagreement, demonstrating sensitivity to how uncertainty is measured and that variance of prediction errors is not equivalent to disagreement <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>L2 prediction error baseline performed poorly on sparse-reward tasks compared to information-theoretic methods like VIME, failing to solve many tasks where information-gain methods succeeded <a href="../results/extraction-result-1141.html#e1141.2" class="evidence-link">[e1141.2]</a> <a href="../results/extraction-result-1277.html#e1277.1" class="evidence-link">[e1277.1]</a> </li>
+    <li>Surprisal (negative log-likelihood) intrinsic reward consistently underperformed VASE (which includes confidence correction) across tested continuous control tasks, running faster than VIME but yielding weaker exploration <a href="../results/extraction-result-1141.html#e1141.2" class="evidence-link">[e1141.2]</a> </li>
+    <li>Bootstrap sampling with different initializations and resampled data maintains ensemble diversity in Disagreement experiments, with k=5 models used across multiple domains <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>Differentiable variant of disagreement enables more sample-efficient policy learning, reaching useful behavior in <1000 real-robot interactions <a href="../results/extraction-result-1155.html#e1155.0" class="evidence-link">[e1155.0]</a> </li>
+    <li>MAX ensemble models reach near-perfect accuracy (<1% error) in <20 episodes on Chain environment, demonstrating rapid convergence of individual models while maintaining useful disagreement signal <a href="../results/extraction-result-1127.html#e1127.0" class="evidence-link">[e1127.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a stochastic gridworld with some deterministic and some stochastic transitions, ensemble disagreement will correctly identify only the deterministic under-explored transitions as high-uncertainty, while prediction error will incorrectly identify stochastic transitions as high-uncertainty.</li>
+                <li>Increasing ensemble size from 3 to 10 models will improve exploration performance on complex tasks, but further increases to 20+ models will show diminishing returns while increasing computational cost linearly.</li>
+                <li>Ensemble disagreement will enable faster learning than prediction error in any environment with significant stochasticity (>20% action failure rate or inherent observation noise).</li>
+                <li>Using different network architectures or training procedures for ensemble members will increase diversity and improve uncertainty estimates compared to only varying initialization, particularly in the early stages of learning.</li>
+                <li>In a multi-room exploration task with both deterministic and stochastic elements, ensemble disagreement will lead to more efficient room discovery than prediction-error methods by avoiding getting stuck in stochastic regions.</li>
+                <li>Ensemble disagreement computed in a learned embedding space will be more sample-efficient than disagreement in raw pixel space for high-dimensional visual observations.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>In adversarial environments where the dynamics actively try to maximize ensemble disagreement (e.g., by presenting maximally confusing observations), whether this exploration strategy remains effective or becomes exploitable is unclear.</li>
+                <li>For very high-dimensional state spaces (e.g., raw video at 30fps), whether ensemble disagreement can be computed efficiently enough for real-time control without significant approximations is uncertain.</li>
+                <li>In non-stationary environments where the dynamics change over time, whether ensemble disagreement can track the changing uncertainty or will lag behind the true epistemic uncertainty is unclear, and whether periodic retraining or online adaptation is necessary.</li>
+                <li>Whether ensemble disagreement can effectively handle systematic model misspecification (when no ensemble member can represent the true dynamics due to architectural limitations) or will produce misleading uncertainty estimates is an open question.</li>
+                <li>In hierarchical or compositional environments where uncertainty exists at multiple levels of abstraction, whether a single ensemble at one level is sufficient or whether hierarchical ensembles are necessary is unknown.</li>
+                <li>Whether the optimal ensemble size scales with problem complexity in a predictable way (e.g., logarithmically with state-space size) or depends on other factors like stochasticity level is unclear.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding environments where prediction error consistently outperforms ensemble disagreement for exploration (beyond computational cost considerations) would challenge the theory's claim of superiority in stochastic settings.</li>
+                <li>Demonstrating that single-model Bayesian uncertainty estimates (e.g., via variational inference or Laplace approximation) achieve better exploration than ensemble disagreement while being computationally cheaper would question the necessity of ensembles.</li>
+                <li>Showing that the computational cost of maintaining and updating multiple models makes ensemble methods prohibitively slower than simpler prediction-error methods in time-constrained settings would limit practical applicability.</li>
+                <li>Identifying problem classes where ensemble disagreement fails to distinguish epistemic from aleatoric uncertainty (e.g., where all models converge to different but equally valid hypotheses) would reveal important limitations.</li>
+                <li>Finding that ensemble diversity collapses over long training runs despite bootstrap sampling, leading to underestimation of epistemic uncertainty, would challenge the theory's assumptions about diversity maintenance.</li>
+                <li>Demonstrating that ensemble disagreement systematically overestimates uncertainty in certain regions (e.g., near decision boundaries) leading to inefficient exploration would reveal important failure modes.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The optimal ensemble size as a function of problem complexity, stochasticity level, and available computational budget is not fully characterized </li>
+    <li>How to maintain ensemble diversity over very long training runs (preventing collapse to identical models) when using only bootstrap sampling remains partially open </li>
+    <li>The formal relationship between ensemble disagreement and rigorous Bayesian uncertainty quantification (e.g., posterior variance) is not fully understood theoretically </li>
+    <li>The behavior of ensemble disagreement under systematic model misspecification (when true dynamics are outside the model class) is not well characterized </li>
+    <li>How to optimally combine ensemble disagreement with other exploration bonuses (e.g., count-based methods) is not fully explored </li>
+    <li>The computational overhead of ensemble methods in very high-dimensional continuous control tasks and whether approximations (e.g., disagreement in learned embeddings) maintain effectiveness </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles [Deep ensemble uncertainty quantification, foundational work on using ensembles for uncertainty]</li>
+    <li>Osband et al. (2016) Deep Exploration via Bootstrapped DQN [Bootstrap for exploration in RL, uses ensemble of Q-networks]</li>
+    <li>Pathak et al. (2019) Self-Supervised Exploration via Disagreement [The main disagreement exploration paper, directly implements this theory]</li>
+    <li>Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models [Ensemble models for model-based RL, PETS algorithm]</li>
+    <li>Seung et al. (1992) Query by Committee [QBC - early ensemble disagreement for active learning, foundational work]</li>
+    <li>Bellemare et al. (2016) Unifying Count-Based Exploration and Intrinsic Motivation [Pseudo-counts and prediction gain, alternative to disagreement]</li>
+    <li>Houthooft et al. (2016) VIME: Variational Information Maximizing Exploration [Information gain for exploration, Bayesian approach]</li>
+    <li>Burda et al. (2019) Exploration by Random Network Distillation [RND, prediction-error based exploration]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Ensemble Disagreement as Epistemic Uncertainty Proxy Theory",
+    "theory_description": "In model-based reinforcement learning and active learning, the variance or disagreement among an ensemble of learned models provides a practical and effective proxy for epistemic uncertainty that avoids pathological attraction to stochastic noise. Unlike prediction error (which conflates epistemic and aleatoric uncertainty), ensemble disagreement naturally converges to low values on inherently stochastic transitions (where all models learn the same predictive distribution) while remaining high on under-explored transitions (where models have learned different hypotheses). This makes ensemble disagreement superior to prediction error for exploration in stochastic environments. The key mechanism is that bootstrap sampling or diverse initialization creates models that explore different hypotheses early in learning, and their disagreement indicates regions where more data would reduce model uncertainty. The effectiveness depends on maintaining ensemble diversity through bootstrap resampling, different initializations, or different architectures, and scales with ensemble size up to a point of diminishing returns.",
+    "supporting_evidence": [
+        {
+            "text": "Disagreement exploration using ensemble variance (k=5 forward models) outperforms prediction-error baselines in stochastic environments (Unity with TV, Atari sticky actions) and achieves 67% interaction with unseen objects vs 17% random baseline and 1% REINFORCE-based curiosity",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "MAX uses ensemble disagreement (M=3 models, JSD among ensemble next-state predictions) combined with MCTS planning and achieves order-of-magnitude better sample efficiency than reactive baselines, exploring 100% of chain transitions in ~15 episodes vs ~40% at 60 episodes for baselines",
+            "uuids": [
+                "e1127.0"
+            ]
+        },
+        {
+            "text": "In Noisy MNIST toy experiment, disagreement converges to near-zero intrinsic reward for both low- and high-stochasticity states, avoiding pathological perpetual curiosity that affects prediction-error methods",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "Disagreement matches or exceeds state-of-the-art curiosity/prediction-error baselines on near-deterministic Atari games, demonstrating it doesn't sacrifice performance in low-stochasticity settings",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "Bayesian Disagreement using Dropout NN (single-model approximation) underperformed ensemble disagreement in practice, suggesting multiple models are necessary",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "Pred-Error Variance ablation performed significantly worse than ensemble disagreement, demonstrating sensitivity to how uncertainty is measured and that variance of prediction errors is not equivalent to disagreement",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "L2 prediction error baseline performed poorly on sparse-reward tasks compared to information-theoretic methods like VIME, failing to solve many tasks where information-gain methods succeeded",
+            "uuids": [
+                "e1141.2",
+                "e1277.1"
+            ]
+        },
+        {
+            "text": "Surprisal (negative log-likelihood) intrinsic reward consistently underperformed VASE (which includes confidence correction) across tested continuous control tasks, running faster than VIME but yielding weaker exploration",
+            "uuids": [
+                "e1141.2"
+            ]
+        },
+        {
+            "text": "Bootstrap sampling with different initializations and resampled data maintains ensemble diversity in Disagreement experiments, with k=5 models used across multiple domains",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "Differentiable variant of disagreement enables more sample-efficient policy learning, reaching useful behavior in &lt;1000 real-robot interactions",
+            "uuids": [
+                "e1155.0"
+            ]
+        },
+        {
+            "text": "MAX ensemble models reach near-perfect accuracy (&lt;1% error) in &lt;20 episodes on Chain environment, demonstrating rapid convergence of individual models while maintaining useful disagreement signal",
+            "uuids": [
+                "e1127.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Ensemble disagreement (variance across model predictions) provides a practical proxy for epistemic uncertainty that distinguishes learnable from stochastic uncertainty.",
+        "Ensemble methods naturally avoid pathological attraction to stochastic noise because all ensemble members converge to the same predictive distribution on inherently stochastic transitions, reducing disagreement to near-zero.",
+        "Bootstrap sampling or diverse initialization creates ensemble diversity that reflects epistemic uncertainty early in learning, with disagreement decreasing as models converge on the true dynamics in explored regions.",
+        "Ensemble disagreement is computationally cheaper than full Bayesian inference while providing similar benefits for exploration, though it requires maintaining and updating multiple models.",
+        "The effectiveness of ensemble disagreement increases with ensemble size (more models provide better uncertainty estimates) but with diminishing returns, with k=3-5 models often sufficient in practice.",
+        "Ensemble disagreement can be applied to various model types (neural networks, GPs, density models) and various prediction targets (next state, reward, value function, or abstract embeddings).",
+        "For exploration to be effective, ensemble diversity must be maintained through bootstrap resampling, different initializations, or different architectures, preventing collapse to identical models.",
+        "Ensemble disagreement measured in embedding space (rather than raw observation space) can be more computationally tractable for high-dimensional observations like images.",
+        "The disagreement signal naturally decays as regions become well-explored, enabling a smooth transition from exploration to exploitation without manual scheduling."
+    ],
+    "new_predictions_likely": [
+        "In a stochastic gridworld with some deterministic and some stochastic transitions, ensemble disagreement will correctly identify only the deterministic under-explored transitions as high-uncertainty, while prediction error will incorrectly identify stochastic transitions as high-uncertainty.",
+        "Increasing ensemble size from 3 to 10 models will improve exploration performance on complex tasks, but further increases to 20+ models will show diminishing returns while increasing computational cost linearly.",
+        "Ensemble disagreement will enable faster learning than prediction error in any environment with significant stochasticity (&gt;20% action failure rate or inherent observation noise).",
+        "Using different network architectures or training procedures for ensemble members will increase diversity and improve uncertainty estimates compared to only varying initialization, particularly in the early stages of learning.",
+        "In a multi-room exploration task with both deterministic and stochastic elements, ensemble disagreement will lead to more efficient room discovery than prediction-error methods by avoiding getting stuck in stochastic regions.",
+        "Ensemble disagreement computed in a learned embedding space will be more sample-efficient than disagreement in raw pixel space for high-dimensional visual observations."
+    ],
+    "new_predictions_unknown": [
+        "In adversarial environments where the dynamics actively try to maximize ensemble disagreement (e.g., by presenting maximally confusing observations), whether this exploration strategy remains effective or becomes exploitable is unclear.",
+        "For very high-dimensional state spaces (e.g., raw video at 30fps), whether ensemble disagreement can be computed efficiently enough for real-time control without significant approximations is uncertain.",
+        "In non-stationary environments where the dynamics change over time, whether ensemble disagreement can track the changing uncertainty or will lag behind the true epistemic uncertainty is unclear, and whether periodic retraining or online adaptation is necessary.",
+        "Whether ensemble disagreement can effectively handle systematic model misspecification (when no ensemble member can represent the true dynamics due to architectural limitations) or will produce misleading uncertainty estimates is an open question.",
+        "In hierarchical or compositional environments where uncertainty exists at multiple levels of abstraction, whether a single ensemble at one level is sufficient or whether hierarchical ensembles are necessary is unknown.",
+        "Whether the optimal ensemble size scales with problem complexity in a predictable way (e.g., logarithmically with state-space size) or depends on other factors like stochasticity level is unclear."
+    ],
+    "negative_experiments": [
+        "Finding environments where prediction error consistently outperforms ensemble disagreement for exploration (beyond computational cost considerations) would challenge the theory's claim of superiority in stochastic settings.",
+        "Demonstrating that single-model Bayesian uncertainty estimates (e.g., via variational inference or Laplace approximation) achieve better exploration than ensemble disagreement while being computationally cheaper would question the necessity of ensembles.",
+        "Showing that the computational cost of maintaining and updating multiple models makes ensemble methods prohibitively slower than simpler prediction-error methods in time-constrained settings would limit practical applicability.",
+        "Identifying problem classes where ensemble disagreement fails to distinguish epistemic from aleatoric uncertainty (e.g., where all models converge to different but equally valid hypotheses) would reveal important limitations.",
+        "Finding that ensemble diversity collapses over long training runs despite bootstrap sampling, leading to underestimation of epistemic uncertainty, would challenge the theory's assumptions about diversity maintenance.",
+        "Demonstrating that ensemble disagreement systematically overestimates uncertainty in certain regions (e.g., near decision boundaries) leading to inefficient exploration would reveal important failure modes."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The optimal ensemble size as a function of problem complexity, stochasticity level, and available computational budget is not fully characterized",
+            "uuids": []
+        },
+        {
+            "text": "How to maintain ensemble diversity over very long training runs (preventing collapse to identical models) when using only bootstrap sampling remains partially open",
+            "uuids": []
+        },
+        {
+            "text": "The formal relationship between ensemble disagreement and rigorous Bayesian uncertainty quantification (e.g., posterior variance) is not fully understood theoretically",
+            "uuids": []
+        },
+        {
+            "text": "The behavior of ensemble disagreement under systematic model misspecification (when true dynamics are outside the model class) is not well characterized",
+            "uuids": []
+        },
+        {
+            "text": "How to optimally combine ensemble disagreement with other exploration bonuses (e.g., count-based methods) is not fully explored",
+            "uuids": []
+        },
+        {
+            "text": "The computational overhead of ensemble methods in very high-dimensional continuous control tasks and whether approximations (e.g., disagreement in learned embeddings) maintain effectiveness",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "RHC (trajectory optimization with Bayesian linear regression) outperformed MAX (ensemble disagreement with MCTS) in model accuracy and downstream control cost on low-dimensional continuous control tasks, suggesting that in some settings, explicit Bayesian uncertainty may be superior",
+            "uuids": [
+                "e1120.0",
+                "e1120.1"
+            ]
+        },
+        {
+            "text": "MAX had higher variance across runs than RHC and higher computational cost due to inner-loop RL, suggesting ensemble methods may be less stable or efficient in some settings",
+            "uuids": [
+                "e1120.1"
+            ]
+        },
+        {
+            "text": "The paper notes that long-horizon differentiable forward prediction remains challenging for the differentiable disagreement variant, limiting its applicability",
+            "uuids": [
+                "e1155.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In deterministic environments with no inherent stochasticity, ensemble disagreement reduces to standard model uncertainty and should perform similarly to prediction-error methods, with the main difference being computational cost.",
+        "For linear models with Gaussian noise and sufficient data, ensemble disagreement converges to posterior variance under certain conditions, making it equivalent to Bayesian uncertainty.",
+        "In tabular settings with sufficient data coverage, all ensemble members will converge to the same model and disagreement will go to zero everywhere, requiring alternative exploration mechanisms.",
+        "For very small ensembles (2-3 models), disagreement estimates may be noisy and unreliable, particularly in high-dimensional spaces where the variance of the disagreement estimate itself is high.",
+        "In environments with multiple equally-valid models (e.g., symmetries or aliasing), ensemble disagreement may remain high even with infinite data, requiring domain knowledge to resolve.",
+        "When computational budget is severely limited, the overhead of maintaining multiple models may outweigh the benefits of better uncertainty estimates, favoring simpler single-model methods.",
+        "In non-stationary environments, ensemble disagreement may lag behind true epistemic uncertainty unless models are periodically retrained or use online adaptation mechanisms.",
+        "For very high-dimensional observations (e.g., raw video), computing disagreement in embedding space rather than observation space may be necessary for computational tractability."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Lakshminarayanan et al. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles [Deep ensemble uncertainty quantification, foundational work on using ensembles for uncertainty]",
+            "Osband et al. (2016) Deep Exploration via Bootstrapped DQN [Bootstrap for exploration in RL, uses ensemble of Q-networks]",
+            "Pathak et al. (2019) Self-Supervised Exploration via Disagreement [The main disagreement exploration paper, directly implements this theory]",
+            "Chua et al. (2018) Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models [Ensemble models for model-based RL, PETS algorithm]",
+            "Seung et al. (1992) Query by Committee [QBC - early ensemble disagreement for active learning, foundational work]",
+            "Bellemare et al. (2016) Unifying Count-Based Exploration and Intrinsic Motivation [Pseudo-counts and prediction gain, alternative to disagreement]",
+            "Houthooft et al. (2016) VIME: Variational Information Maximizing Exploration [Information gain for exploration, Bayesian approach]",
+            "Burda et al. (2019) Exploration by Random Network Distillation [RND, prediction-error based exploration]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 3,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

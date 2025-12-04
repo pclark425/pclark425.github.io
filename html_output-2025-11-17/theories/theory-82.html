@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperparameter-Dataset Interaction Theory for Decoding Robustness - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-82</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-82</p>
+                <p><strong>Name:</strong> Hyperparameter-Dataset Interaction Theory for Decoding Robustness</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about variability and reproducibility in language model-driven scientific experimentation, based on the following results.</p>
+                <p><strong>Description:</strong> The optimal hyperparameters for decoding methods (temperature, top-p, top-k, beam width, penalties) are not universal but depend on the specific dataset and task characteristics. This dataset-specificity creates a reproducibility challenge: methods that perform well with tuned hyperparameters may perform poorly with fixed hyperparameters across datasets. The theory proposes that hyperparameter sensitivity (measured by ANP_best - ANP_fix) is a fundamental property of decoding methods, and that 'robust' methods are those with low sensitivity - they maintain performance across datasets without per-dataset tuning. The underlying mechanism is related to the entropy of the model's output distribution: aligned models have lower next-token entropy, which reduces the operating space for hyperparameter variation and thus reduces sensitivity. The theory predicts that hyperparameter sensitivity correlates with both the model's output entropy and the dataset's optimal output distribution characteristics.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Hyperparameter sensitivity S = ANP_best - ANP_fix quantifies a decoding method's robustness to fixed hyperparameters across datasets.</li>
+                <li>Methods with low S (< 5%) are 'robust' and suitable for deployment without per-dataset tuning; methods with high S (> 10%) require dataset-specific tuning.</li>
+                <li>Model alignment reduces hyperparameter sensitivity by reducing next-token entropy: lower entropy means less operating space for hyperparameter variation.</li>
+                <li>Dataset characteristics (output diversity requirements, task type, evaluation metric) determine optimal hyperparameters: tasks requiring diverse outputs need high temperature, tasks requiring focused outputs need low temperature.</li>
+                <li>Model scale reduces hyperparameter sensitivity: larger models show lower RDP and more stable performance across hyperparameter choices.</li>
+                <li>The relationship between entropy and sensitivity is causal: alignment reduces entropy by roughly an order of magnitude (e.g., GSM8K 1.05→0.27) and correspondingly reduces ANP sensitivity (11.59%→3.90%).</li>
+                <li>Hyperparameter sensitivity is task-dependent: the same hyperparameter change (e.g., temperature increase) can help some tasks (AlpacaEval) while harming others (GSM8K, HumanEval).</li>
+                <li>Aggregation methods (self-consistency, best-of-N) can compensate for hyperparameter sensitivity by sampling multiple outputs and selecting or combining them.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Temperature sampling shows 11.59% ANP decrease from best to fixed hyperparameters on Llama2-7B, demonstrating high sensitivity to hyperparameter choice. <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>FSD and FSD-d show small ANP change (robust under fixed hyperparameter), ranking top-3 for both ANP_best and ANP_fix, demonstrating low hyperparameter sensitivity. <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>Contrastive Decoding shows 9.42% ANP drop (7B) and 3.35% drop (7B-Chat) when using fixed hyperparameters, indicating moderate sensitivity that varies with alignment. <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>Aligned models (Chat variants) show substantially lower hyperparameter sensitivity: temperature ANP drop is only 3.90% for Chat vs 11.59% for base model. <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>Next-token entropy is substantially lower in aligned models: Llama2-7B-Chat shows entropy 0.27 (GSM8K), 0.39 (MBPP), 0.52 (Wikinews) vs Llama2-7B showing 1.05, 1.21, 2.37 respectively, explaining reduced sensitivity. <a href="../results/extraction-result-623.html#e623.3" class="evidence-link">[e623.3]</a> </li>
+    <li>Lower next-token entropy after alignment corresponds with reduced RDP (relative deviation percentage), demonstrating the link between entropy and hyperparameter sensitivity. <a href="../results/extraction-result-623.html#e623.3" class="evidence-link">[e623.3]</a> </li>
+    <li>RDP varies substantially across datasets: MBPP 25.81%, GSM8K 23.06%, Wikinews 26.83% for Llama2-7B, showing dataset-specific variation in sensitivity to decoding method choice. <a href="../results/extraction-result-623.html#e623.0" class="evidence-link">[e623.0]</a> </li>
+    <li>Model scaling reduces RDP: MBPP RDP drops from ~25.8% at 7B to ~15.2% at 70B, suggesting larger models have more stable output distributions and lower hyperparameter sensitivity. <a href="../results/extraction-result-623.html#e623.0" class="evidence-link">[e623.0]</a> </li>
+    <li>Alignment (instruction-tuning) reduces RDP: 7B to 7B-Chat MBPP RDP drops from 25.81% to 9.08%, demonstrating alignment's effect on reducing sensitivity. <a href="../results/extraction-result-623.html#e623.0" class="evidence-link">[e623.0]</a> </li>
+    <li>Optimal temperature varies by task and evaluation regime: T*=0.2 for pass@1 but T*=0.8 for pass@100, showing hyperparameter-task interaction depends on the evaluation metric. <a href="../results/extraction-result-631.html#e631.3" class="evidence-link">[e631.3]</a> </li>
+    <li>Repetition penalty effects are task-dependent: helps AlpacaEval at 1.2 but harms GSM8K (best at 0.9), showing no universal optimal setting across task types. <a href="../results/extraction-result-482.html#e482.4" class="evidence-link">[e482.4]</a> </li>
+    <li>Beam search and deterministic methods (BS/DBS) show high ANP_fix for chat models, suggesting alignment modulates which methods are robust. <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>Temperature effects vary by benchmark: small increases help AlpacaEval but high temperature (1.5) significantly harms GSM8K and HumanEval while AlpacaEval remains resilient. <a href="../results/extraction-result-482.html#e482.3" class="evidence-link">[e482.3]</a> </li>
+    <li>Greedy decoding generally outperforms sampling on most benchmarks (except AlpacaEval), showing task-dependent optimal decoding strategy. <a href="../results/extraction-result-482.html#e482.1" class="evidence-link">[e482.1]</a> </li>
+    <li>Self-consistency with 20 samples allows stochastic methods to surpass deterministic baselines on closed-ended tasks, showing aggregation can overcome single-sample hyperparameter sensitivity. <a href="../results/extraction-result-623.html#e623.2" class="evidence-link">[e623.2]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Measuring dataset entropy (average next-token entropy on the dataset) will predict optimal temperature: high-entropy datasets need high temperature, low-entropy datasets need low temperature.</li>
+                <li>Methods with low hyperparameter sensitivity will show more consistent rankings across datasets, making them more reliable for benchmarking without per-dataset tuning.</li>
+                <li>Further alignment training will continue to reduce hyperparameter sensitivity proportionally to the reduction in next-token entropy.</li>
+                <li>Hyperparameter sensitivity will decrease monotonically with model scale across all decoding methods, following the observed RDP reduction pattern.</li>
+                <li>For any given model, the ranking of decoding methods by ANP_fix will be more stable across datasets than ranking by ANP_best.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether there exist 'universal' hyperparameter settings that work well across all datasets for any decoding method, or whether dataset-specificity is fundamental and unavoidable.</li>
+                <li>Whether hyperparameter sensitivity is correlated across different hyperparameters (e.g., if a method is sensitive to temperature, is it also sensitive to top-p?), or whether sensitivities are independent.</li>
+                <li>Whether hyperparameter sensitivity can be predicted from model or dataset properties without empirical tuning, enabling a priori selection of robust methods.</li>
+                <li>Whether there exist decoding methods with zero sensitivity (perfectly robust) or whether some minimum sensitivity is unavoidable due to fundamental properties of language generation.</li>
+                <li>Whether the entropy-sensitivity relationship holds for modalities beyond text (e.g., image generation, audio generation).</li>
+                <li>Whether there is a theoretical lower bound on hyperparameter sensitivity that cannot be reduced even with infinite model scale or perfect alignment.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding methods where ANP_fix > ANP_best would challenge the assumption that dataset-specific tuning always helps.</li>
+                <li>Demonstrating that hyperparameter sensitivity is uncorrelated with next-token entropy would challenge the proposed causal mechanism linking alignment to robustness.</li>
+                <li>Showing that alignment increases hyperparameter sensitivity would contradict the observed pattern and challenge the entropy-based explanation.</li>
+                <li>Finding that robust methods (low S) perform worse on average than sensitive methods would challenge their practical utility and the value of robustness.</li>
+                <li>Demonstrating that model scaling increases hyperparameter sensitivity would contradict the observed RDP reduction pattern.</li>
+                <li>Finding datasets where temperature sensitivity is reversed (low temperature optimal for diverse outputs, high temperature optimal for focused outputs) would challenge the entropy-based prediction mechanism.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Why some methods (e.g., FSD/FSD-d) are inherently more robust than others independent of model properties - the mechanism of method-intrinsic robustness is not explained. </li>
+    <li>How to predict optimal hyperparameters from dataset properties without empirical search - no formula or algorithm is provided. </li>
+    <li>Whether hyperparameter sensitivity is stable across model versions or changes with updates - temporal stability is not addressed. </li>
+    <li>The exact functional form of the relationship between entropy and sensitivity - is it linear, logarithmic, or some other relationship? </li>
+    <li>Why beam search and deterministic methods become more robust specifically in chat models but not base models - what aspect of chat training causes this? <a href="../results/extraction-result-623.html#e623.1" class="evidence-link">[e623.1]</a> </li>
+    <li>How different types of alignment (RLHF vs instruction tuning vs other methods) differentially affect hyperparameter sensitivity. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Holtzman et al. (2019) The Curious Case of Neural Text Degeneration [Discusses nucleus sampling and decoding methods but does not analyze hyperparameter-dataset interactions or formalize sensitivity metrics]</li>
+    <li>Zhang et al. (2024) A Thorough Examination of Decoding Methods in the Era of LLMs [Measures ANP sensitivity and introduces the ANP_best vs ANP_fix framework, but does not propose the entropy-based causal mechanism or formalize the interaction theory]</li>
+    <li>Meister et al. (2022) Typical Decoding for Natural Language Generation [Proposes adaptive decoding based on entropy but does not analyze dataset-specificity or hyperparameter robustness]</li>
+    <li>Ouyang et al. (2022) Training language models to follow instructions with human feedback [Describes alignment effects on model behavior but does not analyze hyperparameter sensitivity or the entropy-sensitivity relationship]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Hyperparameter-Dataset Interaction Theory for Decoding Robustness",
+    "theory_description": "The optimal hyperparameters for decoding methods (temperature, top-p, top-k, beam width, penalties) are not universal but depend on the specific dataset and task characteristics. This dataset-specificity creates a reproducibility challenge: methods that perform well with tuned hyperparameters may perform poorly with fixed hyperparameters across datasets. The theory proposes that hyperparameter sensitivity (measured by ANP_best - ANP_fix) is a fundamental property of decoding methods, and that 'robust' methods are those with low sensitivity - they maintain performance across datasets without per-dataset tuning. The underlying mechanism is related to the entropy of the model's output distribution: aligned models have lower next-token entropy, which reduces the operating space for hyperparameter variation and thus reduces sensitivity. The theory predicts that hyperparameter sensitivity correlates with both the model's output entropy and the dataset's optimal output distribution characteristics.",
+    "supporting_evidence": [
+        {
+            "text": "Temperature sampling shows 11.59% ANP decrease from best to fixed hyperparameters on Llama2-7B, demonstrating high sensitivity to hyperparameter choice.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "FSD and FSD-d show small ANP change (robust under fixed hyperparameter), ranking top-3 for both ANP_best and ANP_fix, demonstrating low hyperparameter sensitivity.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "Contrastive Decoding shows 9.42% ANP drop (7B) and 3.35% drop (7B-Chat) when using fixed hyperparameters, indicating moderate sensitivity that varies with alignment.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "Aligned models (Chat variants) show substantially lower hyperparameter sensitivity: temperature ANP drop is only 3.90% for Chat vs 11.59% for base model.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "Next-token entropy is substantially lower in aligned models: Llama2-7B-Chat shows entropy 0.27 (GSM8K), 0.39 (MBPP), 0.52 (Wikinews) vs Llama2-7B showing 1.05, 1.21, 2.37 respectively, explaining reduced sensitivity.",
+            "uuids": [
+                "e623.3"
+            ]
+        },
+        {
+            "text": "Lower next-token entropy after alignment corresponds with reduced RDP (relative deviation percentage), demonstrating the link between entropy and hyperparameter sensitivity.",
+            "uuids": [
+                "e623.3"
+            ]
+        },
+        {
+            "text": "RDP varies substantially across datasets: MBPP 25.81%, GSM8K 23.06%, Wikinews 26.83% for Llama2-7B, showing dataset-specific variation in sensitivity to decoding method choice.",
+            "uuids": [
+                "e623.0"
+            ]
+        },
+        {
+            "text": "Model scaling reduces RDP: MBPP RDP drops from ~25.8% at 7B to ~15.2% at 70B, suggesting larger models have more stable output distributions and lower hyperparameter sensitivity.",
+            "uuids": [
+                "e623.0"
+            ]
+        },
+        {
+            "text": "Alignment (instruction-tuning) reduces RDP: 7B to 7B-Chat MBPP RDP drops from 25.81% to 9.08%, demonstrating alignment's effect on reducing sensitivity.",
+            "uuids": [
+                "e623.0"
+            ]
+        },
+        {
+            "text": "Optimal temperature varies by task and evaluation regime: T*=0.2 for pass@1 but T*=0.8 for pass@100, showing hyperparameter-task interaction depends on the evaluation metric.",
+            "uuids": [
+                "e631.3"
+            ]
+        },
+        {
+            "text": "Repetition penalty effects are task-dependent: helps AlpacaEval at 1.2 but harms GSM8K (best at 0.9), showing no universal optimal setting across task types.",
+            "uuids": [
+                "e482.4"
+            ]
+        },
+        {
+            "text": "Beam search and deterministic methods (BS/DBS) show high ANP_fix for chat models, suggesting alignment modulates which methods are robust.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "Temperature effects vary by benchmark: small increases help AlpacaEval but high temperature (1.5) significantly harms GSM8K and HumanEval while AlpacaEval remains resilient.",
+            "uuids": [
+                "e482.3"
+            ]
+        },
+        {
+            "text": "Greedy decoding generally outperforms sampling on most benchmarks (except AlpacaEval), showing task-dependent optimal decoding strategy.",
+            "uuids": [
+                "e482.1"
+            ]
+        },
+        {
+            "text": "Self-consistency with 20 samples allows stochastic methods to surpass deterministic baselines on closed-ended tasks, showing aggregation can overcome single-sample hyperparameter sensitivity.",
+            "uuids": [
+                "e623.2"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Hyperparameter sensitivity S = ANP_best - ANP_fix quantifies a decoding method's robustness to fixed hyperparameters across datasets.",
+        "Methods with low S (&lt; 5%) are 'robust' and suitable for deployment without per-dataset tuning; methods with high S (&gt; 10%) require dataset-specific tuning.",
+        "Model alignment reduces hyperparameter sensitivity by reducing next-token entropy: lower entropy means less operating space for hyperparameter variation.",
+        "Dataset characteristics (output diversity requirements, task type, evaluation metric) determine optimal hyperparameters: tasks requiring diverse outputs need high temperature, tasks requiring focused outputs need low temperature.",
+        "Model scale reduces hyperparameter sensitivity: larger models show lower RDP and more stable performance across hyperparameter choices.",
+        "The relationship between entropy and sensitivity is causal: alignment reduces entropy by roughly an order of magnitude (e.g., GSM8K 1.05→0.27) and correspondingly reduces ANP sensitivity (11.59%→3.90%).",
+        "Hyperparameter sensitivity is task-dependent: the same hyperparameter change (e.g., temperature increase) can help some tasks (AlpacaEval) while harming others (GSM8K, HumanEval).",
+        "Aggregation methods (self-consistency, best-of-N) can compensate for hyperparameter sensitivity by sampling multiple outputs and selecting or combining them."
+    ],
+    "new_predictions_likely": [
+        "Measuring dataset entropy (average next-token entropy on the dataset) will predict optimal temperature: high-entropy datasets need high temperature, low-entropy datasets need low temperature.",
+        "Methods with low hyperparameter sensitivity will show more consistent rankings across datasets, making them more reliable for benchmarking without per-dataset tuning.",
+        "Further alignment training will continue to reduce hyperparameter sensitivity proportionally to the reduction in next-token entropy.",
+        "Hyperparameter sensitivity will decrease monotonically with model scale across all decoding methods, following the observed RDP reduction pattern.",
+        "For any given model, the ranking of decoding methods by ANP_fix will be more stable across datasets than ranking by ANP_best."
+    ],
+    "new_predictions_unknown": [
+        "Whether there exist 'universal' hyperparameter settings that work well across all datasets for any decoding method, or whether dataset-specificity is fundamental and unavoidable.",
+        "Whether hyperparameter sensitivity is correlated across different hyperparameters (e.g., if a method is sensitive to temperature, is it also sensitive to top-p?), or whether sensitivities are independent.",
+        "Whether hyperparameter sensitivity can be predicted from model or dataset properties without empirical tuning, enabling a priori selection of robust methods.",
+        "Whether there exist decoding methods with zero sensitivity (perfectly robust) or whether some minimum sensitivity is unavoidable due to fundamental properties of language generation.",
+        "Whether the entropy-sensitivity relationship holds for modalities beyond text (e.g., image generation, audio generation).",
+        "Whether there is a theoretical lower bound on hyperparameter sensitivity that cannot be reduced even with infinite model scale or perfect alignment."
+    ],
+    "negative_experiments": [
+        "Finding methods where ANP_fix &gt; ANP_best would challenge the assumption that dataset-specific tuning always helps.",
+        "Demonstrating that hyperparameter sensitivity is uncorrelated with next-token entropy would challenge the proposed causal mechanism linking alignment to robustness.",
+        "Showing that alignment increases hyperparameter sensitivity would contradict the observed pattern and challenge the entropy-based explanation.",
+        "Finding that robust methods (low S) perform worse on average than sensitive methods would challenge their practical utility and the value of robustness.",
+        "Demonstrating that model scaling increases hyperparameter sensitivity would contradict the observed RDP reduction pattern.",
+        "Finding datasets where temperature sensitivity is reversed (low temperature optimal for diverse outputs, high temperature optimal for focused outputs) would challenge the entropy-based prediction mechanism."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "Why some methods (e.g., FSD/FSD-d) are inherently more robust than others independent of model properties - the mechanism of method-intrinsic robustness is not explained.",
+            "uuids": []
+        },
+        {
+            "text": "How to predict optimal hyperparameters from dataset properties without empirical search - no formula or algorithm is provided.",
+            "uuids": []
+        },
+        {
+            "text": "Whether hyperparameter sensitivity is stable across model versions or changes with updates - temporal stability is not addressed.",
+            "uuids": []
+        },
+        {
+            "text": "The exact functional form of the relationship between entropy and sensitivity - is it linear, logarithmic, or some other relationship?",
+            "uuids": []
+        },
+        {
+            "text": "Why beam search and deterministic methods become more robust specifically in chat models but not base models - what aspect of chat training causes this?",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "How different types of alignment (RLHF vs instruction tuning vs other methods) differentially affect hyperparameter sensitivity.",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Quantization increases RDP despite not directly affecting alignment, suggesting hardware/precision factors can override or interact with alignment effects on sensitivity in ways not explained by the entropy mechanism.",
+            "uuids": [
+                "e623.0"
+            ]
+        },
+        {
+            "text": "Some aligned models show different sensitivity patterns than expected (e.g., beam search robustness only in chat models), suggesting alignment effects are not universal and may depend on specific training procedures.",
+            "uuids": [
+                "e623.1"
+            ]
+        },
+        {
+            "text": "AlpacaEval shows opposite pattern where sampling outperforms greedy, contradicting the general pattern that greedy is more stable and better for most tasks.",
+            "uuids": [
+                "e482.1"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For very constrained tasks (e.g., multiple choice with few options), hyperparameter sensitivity may be minimal because the output space is small and most hyperparameters have similar effects.",
+        "For tasks with verification (e.g., code with unit tests), hyperparameter sensitivity may be less important in practice because incorrect outputs are filtered by verification, making pass@k metrics more relevant than single-sample metrics.",
+        "For very large models (&gt;100B parameters), hyperparameter sensitivity may be reduced due to more stable output distributions, as evidenced by the RDP reduction from 7B to 70B.",
+        "For tasks requiring creativity or diversity (e.g., creative writing, brainstorming), high sensitivity may be desirable to allow tuning for diversity, and robustness may not be the primary goal.",
+        "For open-ended instruction-following tasks (e.g., AlpacaEval), the relationship between hyperparameters and performance may be inverted compared to constrained tasks, with sampling outperforming greedy.",
+        "For tasks evaluated with aggregation methods (self-consistency, best-of-N), hyperparameter sensitivity is less critical because multiple samples compensate for single-sample variability.",
+        "Quantization introduces additional sensitivity that may not follow the same patterns as alignment-based sensitivity reduction, requiring separate consideration."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Holtzman et al. (2019) The Curious Case of Neural Text Degeneration [Discusses nucleus sampling and decoding methods but does not analyze hyperparameter-dataset interactions or formalize sensitivity metrics]",
+            "Zhang et al. (2024) A Thorough Examination of Decoding Methods in the Era of LLMs [Measures ANP sensitivity and introduces the ANP_best vs ANP_fix framework, but does not propose the entropy-based causal mechanism or formalize the interaction theory]",
+            "Meister et al. (2022) Typical Decoding for Natural Language Generation [Proposes adaptive decoding based on entropy but does not analyze dataset-specificity or hyperparameter robustness]",
+            "Ouyang et al. (2022) Training language models to follow instructions with human feedback [Describes alignment effects on model behavior but does not analyze hyperparameter sensitivity or the entropy-sensitivity relationship]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 6,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

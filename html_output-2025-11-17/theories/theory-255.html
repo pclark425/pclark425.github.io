@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stochastic Reporting Gap Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-255</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-255</p>
+                <p><strong>Name:</strong> Stochastic Reporting Gap Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about faithfulness gaps between natural language descriptions and code implementations in automated experimentation.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> A specific theory proposing that faithfulness gaps arise from the systematic underspecification of stochastic elements and their control mechanisms in natural language descriptions compared to code implementations. Stochastic elements pervade modern machine learning: random seeds, data shuffling, dropout, data augmentation, sampling procedures, stochastic gradient descent, Monte Carlo methods, and random train/test splits. Natural language descriptions typically acknowledge stochasticity at a high level ('trained with dropout', 'data randomly shuffled', 'sampled from the posterior') while omitting critical implementation details: (1) whether and how random seeds are set for reproducibility, (2) the specific random number generator used, (3) the order in which stochastic operations are applied, (4) how stochasticity interacts across different components, (5) whether stochastic elements are fixed or vary across runs, and (6) how results are aggregated across stochastic runs. Code implementations must make all these choices explicit, creating a gap where many different implementations with substantially different behaviors could all claim to faithfully implement the same natural language description. This gap is particularly problematic because stochastic choices often have cascading effects throughout an experiment, and small differences in stochastic specification can lead to large differences in outcomes.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Natural language descriptions of experiments systematically omit random seed specifications, while code implementations must either set seeds explicitly or accept framework defaults, creating a reproducibility gap.</li>
+                <li>The faithfulness gap in stochastic specification increases with the number of stochastic components in an experiment, as each component requires specification and their interactions must be defined.</li>
+                <li>When natural language mentions stochastic procedures without specifying control mechanisms, code implementations may use any of several approaches (fixed seeds, random seeds, multiple runs with aggregation), all of which could claim to match the description but produce different results.</li>
+                <li>Stochastic reporting gaps are compounded by framework differences, as different frameworks have different default random number generators, seeding behaviors, and stochastic operation implementations.</li>
+                <li>The specification gap for stochasticity is larger in complex experiments with multiple interacting stochastic components (data loading, augmentation, model stochasticity, optimization) where the order and interaction of stochastic operations matters.</li>
+                <li>Natural language descriptions rarely specify whether reported results are from a single run or aggregated across multiple runs, and if aggregated, what aggregation method is used (mean, median, best, etc.).</li>
+                <li>The gap between description and implementation is widest for implicit stochastic elements that are not mentioned in natural language but are present in code (e.g., framework-level randomness in parallel processing).</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Reproducibility studies in machine learning consistently identify random seed specification as a major source of irreproducibility, with many papers failing to specify seeds or reporting procedures. </li>
+    <li>Studies show that different random seeds can lead to substantially different results in deep learning, yet seed specification is often omitted from method descriptions. </li>
+    <li>Analysis of machine learning papers reveals that the majority do not specify how stochastic elements are controlled or how results are aggregated across multiple runs. </li>
+    <li>Research on reproducibility shows that different random number generators and their implementations across frameworks can produce different sequences even with the same seed. </li>
+    <li>Studies demonstrate that the order of stochastic operations (e.g., data shuffling before or after augmentation) can significantly affect results but is rarely specified. </li>
+    <li>Research on hyperparameter sensitivity shows that stochastic elements interact in complex ways, making their individual specification insufficient without specifying their interaction. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Papers that mention 'random' or 'stochastic' procedures without specifying seeds will have implementations that either use different random seeds across replications or use undocumented fixed seeds.</li>
+                <li>Implementations of the same described method by different researchers will make different choices about seed management, leading to different results even when all other hyperparameters match.</li>
+                <li>Experiments with multiple stochastic components (data shuffling, dropout, stochastic optimization) will show larger reproducibility gaps than experiments with single stochastic components.</li>
+                <li>Code that explicitly sets all random seeds will be more reproducible than code following natural language descriptions that omit seed specifications, even when both claim to implement the same method.</li>
+                <li>Papers reporting single numbers without error bars or multiple runs will have implementations that either cherry-pick results from multiple runs or report results from a single undocumented seed.</li>
+                <li>Implementations in different frameworks (PyTorch, TensorFlow, JAX) will produce different results even with the same nominal seed due to different RNG implementations and stochastic operation orderings.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Requiring explicit specification of all stochastic elements and their control mechanisms in natural language might reveal that many published results are not robust to stochastic variation, potentially invalidating claimed improvements.</li>
+                <li>Standardizing stochastic reporting practices (e.g., always reporting mean and variance over N seeds) might change which methods are considered state-of-the-art, as some methods may have high variance.</li>
+                <li>The relative contribution of different stochastic elements (initialization, data order, dropout, etc.) to overall result variance is unclear and might vary dramatically across domains and methods.</li>
+                <li>Automated tools for detecting and specifying stochastic elements might reduce faithfulness gaps, but could reveal that some results are highly sensitive to stochastic choices in unexpected ways.</li>
+                <li>The extent to which stochastic reporting gaps contribute to the replication crisis in machine learning compared to other factors (hyperparameter tuning, data leakage, etc.) is unknown.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that results are robust to random seed choices across a wide range of experiments would reduce the practical importance of stochastic reporting gaps.</li>
+                <li>Demonstrating that researchers consistently make the same stochastic implementation choices when not specified would suggest the gap is bridgeable through implicit conventions.</li>
+                <li>Showing that framework defaults for stochastic operations are sufficiently standardized that different implementations produce similar results would challenge the theory's emphasis on framework differences.</li>
+                <li>Finding that explicit seed specification does not improve reproducibility would question the theory's focus on seed reporting as a key gap.</li>
+                <li>Demonstrating that single-run results are representative of multi-run aggregated results would reduce the importance of specifying aggregation procedures.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not fully address hardware-level sources of stochasticity (e.g., non-deterministic GPU operations) that may not be controllable through software-level seed setting. </li>
+    <li>Distributed training introduces additional stochastic elements (worker synchronization, data distribution) that are not fully covered by the theory. </li>
+    <li>The theory does not fully address cases where stochasticity is intentionally used for exploration or diversity and should not be controlled (e.g., evolutionary algorithms, population-based training). </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Henderson et al. (2018) Deep Reinforcement Learning that Matters [Identifies the problem of stochastic variation in RL but does not theorize about description-implementation gaps]</li>
+    <li>Dodge et al. (2019) Show Your Work: Improved Reporting of Experimental Results [Proposes reporting standards but does not develop a theory of faithfulness gaps]</li>
+    <li>Bouthillier et al. (2019) Unreproducible Research is Reproducible [Demonstrates reproducibility issues from stochastic elements but does not theorize about natural language vs. code gaps]</li>
+    <li>Gundersen & Kjensmo (2018) State of the Art: Reproducibility in Artificial Intelligence [Surveys reproducibility issues but does not propose a theory of stochastic reporting gaps]</li>
+    <li>Pham et al. (2020) Problems and Opportunities in Training Deep Learning Software Systems: An Analysis of Variance [Analyzes sources of variance but does not theorize about description-implementation faithfulness]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Stochastic Reporting Gap Theory",
+    "theory_description": "A specific theory proposing that faithfulness gaps arise from the systematic underspecification of stochastic elements and their control mechanisms in natural language descriptions compared to code implementations. Stochastic elements pervade modern machine learning: random seeds, data shuffling, dropout, data augmentation, sampling procedures, stochastic gradient descent, Monte Carlo methods, and random train/test splits. Natural language descriptions typically acknowledge stochasticity at a high level ('trained with dropout', 'data randomly shuffled', 'sampled from the posterior') while omitting critical implementation details: (1) whether and how random seeds are set for reproducibility, (2) the specific random number generator used, (3) the order in which stochastic operations are applied, (4) how stochasticity interacts across different components, (5) whether stochastic elements are fixed or vary across runs, and (6) how results are aggregated across stochastic runs. Code implementations must make all these choices explicit, creating a gap where many different implementations with substantially different behaviors could all claim to faithfully implement the same natural language description. This gap is particularly problematic because stochastic choices often have cascading effects throughout an experiment, and small differences in stochastic specification can lead to large differences in outcomes.",
+    "supporting_evidence": [
+        {
+            "text": "Reproducibility studies in machine learning consistently identify random seed specification as a major source of irreproducibility, with many papers failing to specify seeds or reporting procedures.",
+            "citations": [
+                "Henderson et al. (2018) Deep Reinforcement Learning that Matters",
+                "Bouthillier et al. (2019) Unreproducible Research is Reproducible",
+                "Gundersen & Kjensmo (2018) State of the Art: Reproducibility in Artificial Intelligence"
+            ]
+        },
+        {
+            "text": "Studies show that different random seeds can lead to substantially different results in deep learning, yet seed specification is often omitted from method descriptions.",
+            "citations": [
+                "Nagarajan et al. (2019) Deterministic PAC-Bayesian generalization bounds for deep networks via generalizing noise-resilience",
+                "Picard (2021) Torch.manual_seed(3407) is all you need: On the influence of random seeds in deep learning architectures for computer vision"
+            ]
+        },
+        {
+            "text": "Analysis of machine learning papers reveals that the majority do not specify how stochastic elements are controlled or how results are aggregated across multiple runs.",
+            "citations": [
+                "Dodge et al. (2019) Show Your Work: Improved Reporting of Experimental Results",
+                "Bouthillier et al. (2021) Accounting for Variance in Machine Learning Benchmarks"
+            ]
+        },
+        {
+            "text": "Research on reproducibility shows that different random number generators and their implementations across frameworks can produce different sequences even with the same seed.",
+            "citations": [
+                "Pham et al. (2020) Problems and Opportunities in Training Deep Learning Software Systems: An Analysis of Variance"
+            ]
+        },
+        {
+            "text": "Studies demonstrate that the order of stochastic operations (e.g., data shuffling before or after augmentation) can significantly affect results but is rarely specified.",
+            "citations": [
+                "Bouthillier et al. (2019) Unreproducible Research is Reproducible"
+            ]
+        },
+        {
+            "text": "Research on hyperparameter sensitivity shows that stochastic elements interact in complex ways, making their individual specification insufficient without specifying their interaction.",
+            "citations": [
+                "Henderson et al. (2018) Deep Reinforcement Learning that Matters"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Natural language descriptions of experiments systematically omit random seed specifications, while code implementations must either set seeds explicitly or accept framework defaults, creating a reproducibility gap.",
+        "The faithfulness gap in stochastic specification increases with the number of stochastic components in an experiment, as each component requires specification and their interactions must be defined.",
+        "When natural language mentions stochastic procedures without specifying control mechanisms, code implementations may use any of several approaches (fixed seeds, random seeds, multiple runs with aggregation), all of which could claim to match the description but produce different results.",
+        "Stochastic reporting gaps are compounded by framework differences, as different frameworks have different default random number generators, seeding behaviors, and stochastic operation implementations.",
+        "The specification gap for stochasticity is larger in complex experiments with multiple interacting stochastic components (data loading, augmentation, model stochasticity, optimization) where the order and interaction of stochastic operations matters.",
+        "Natural language descriptions rarely specify whether reported results are from a single run or aggregated across multiple runs, and if aggregated, what aggregation method is used (mean, median, best, etc.).",
+        "The gap between description and implementation is widest for implicit stochastic elements that are not mentioned in natural language but are present in code (e.g., framework-level randomness in parallel processing)."
+    ],
+    "new_predictions_likely": [
+        "Papers that mention 'random' or 'stochastic' procedures without specifying seeds will have implementations that either use different random seeds across replications or use undocumented fixed seeds.",
+        "Implementations of the same described method by different researchers will make different choices about seed management, leading to different results even when all other hyperparameters match.",
+        "Experiments with multiple stochastic components (data shuffling, dropout, stochastic optimization) will show larger reproducibility gaps than experiments with single stochastic components.",
+        "Code that explicitly sets all random seeds will be more reproducible than code following natural language descriptions that omit seed specifications, even when both claim to implement the same method.",
+        "Papers reporting single numbers without error bars or multiple runs will have implementations that either cherry-pick results from multiple runs or report results from a single undocumented seed.",
+        "Implementations in different frameworks (PyTorch, TensorFlow, JAX) will produce different results even with the same nominal seed due to different RNG implementations and stochastic operation orderings."
+    ],
+    "new_predictions_unknown": [
+        "Requiring explicit specification of all stochastic elements and their control mechanisms in natural language might reveal that many published results are not robust to stochastic variation, potentially invalidating claimed improvements.",
+        "Standardizing stochastic reporting practices (e.g., always reporting mean and variance over N seeds) might change which methods are considered state-of-the-art, as some methods may have high variance.",
+        "The relative contribution of different stochastic elements (initialization, data order, dropout, etc.) to overall result variance is unclear and might vary dramatically across domains and methods.",
+        "Automated tools for detecting and specifying stochastic elements might reduce faithfulness gaps, but could reveal that some results are highly sensitive to stochastic choices in unexpected ways.",
+        "The extent to which stochastic reporting gaps contribute to the replication crisis in machine learning compared to other factors (hyperparameter tuning, data leakage, etc.) is unknown."
+    ],
+    "negative_experiments": [
+        "Finding that results are robust to random seed choices across a wide range of experiments would reduce the practical importance of stochastic reporting gaps.",
+        "Demonstrating that researchers consistently make the same stochastic implementation choices when not specified would suggest the gap is bridgeable through implicit conventions.",
+        "Showing that framework defaults for stochastic operations are sufficiently standardized that different implementations produce similar results would challenge the theory's emphasis on framework differences.",
+        "Finding that explicit seed specification does not improve reproducibility would question the theory's focus on seed reporting as a key gap.",
+        "Demonstrating that single-run results are representative of multi-run aggregated results would reduce the importance of specifying aggregation procedures."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not fully address hardware-level sources of stochasticity (e.g., non-deterministic GPU operations) that may not be controllable through software-level seed setting.",
+            "citations": [
+                "Pham et al. (2020) Problems and Opportunities in Training Deep Learning Software Systems: An Analysis of Variance"
+            ]
+        },
+        {
+            "text": "Distributed training introduces additional stochastic elements (worker synchronization, data distribution) that are not fully covered by the theory.",
+            "citations": [
+                "Zhang et al. (2017) Deep Learning with Elastic Averaging SGD"
+            ]
+        },
+        {
+            "text": "The theory does not fully address cases where stochasticity is intentionally used for exploration or diversity and should not be controlled (e.g., evolutionary algorithms, population-based training).",
+            "citations": [
+                "Jaderberg et al. (2017) Population Based Training of Neural Networks"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Some research suggests that modern deep learning methods are relatively robust to random seed variation for well-tuned hyperparameters, which would reduce the practical importance of seed specification gaps.",
+            "citations": [
+                "Picard (2021) Torch.manual_seed(3407) is all you need: On the influence of random seeds in deep learning architectures for computer vision"
+            ]
+        },
+        {
+            "text": "Studies showing that ensemble methods and averaging over multiple runs can reduce sensitivity to stochastic choices suggest that the gap may be less critical when proper statistical practices are followed.",
+            "citations": [
+                "Bouthillier et al. (2021) Accounting for Variance in Machine Learning Benchmarks"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In reinforcement learning, environment stochasticity adds another layer of randomness that interacts with agent stochasticity, making specification gaps particularly severe.",
+        "For generative models, stochasticity is often part of the model's output rather than just training, requiring specification of both training and inference stochasticity.",
+        "In Bayesian methods and Monte Carlo approaches, the number of samples and sampling procedures are critical stochastic specifications that are often underspecified.",
+        "Cross-validation and data splitting introduce stochastic choices (which examples go in which fold) that can significantly affect results but are rarely specified beyond the number of folds.",
+        "Data augmentation involves stochastic transformations with many parameters (rotation ranges, crop sizes, etc.) that are often incompletely specified in natural language.",
+        "In few-shot and meta-learning, the stochastic selection of tasks or episodes is a critical specification that is often omitted.",
+        "Neural architecture search involves stochastic search procedures with many underspecified elements (sampling strategies, mutation rates, etc.)."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Henderson et al. (2018) Deep Reinforcement Learning that Matters [Identifies the problem of stochastic variation in RL but does not theorize about description-implementation gaps]",
+            "Dodge et al. (2019) Show Your Work: Improved Reporting of Experimental Results [Proposes reporting standards but does not develop a theory of faithfulness gaps]",
+            "Bouthillier et al. (2019) Unreproducible Research is Reproducible [Demonstrates reproducibility issues from stochastic elements but does not theorize about natural language vs. code gaps]",
+            "Gundersen & Kjensmo (2018) State of the Art: Reproducibility in Artificial Intelligence [Surveys reproducibility issues but does not propose a theory of stochastic reporting gaps]",
+            "Pham et al. (2020) Problems and Opportunities in Training Deep Learning Software Systems: An Analysis of Variance [Analyzes sources of variance but does not theorize about description-implementation faithfulness]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 3,
+    "theory_query": "Build a theory about faithfulness gaps between natural language descriptions and code implementations in automated experimentation.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-94",
+    "original_theory_name": "Stochastic Reporting Gap Theory",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

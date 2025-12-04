@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Stiffness Hierarchy Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-361</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-361</p>
+                <p><strong>Name:</strong> Contact Stiffness Hierarchy Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> Successful sim-to-real transfer for contact-rich manipulation requires modeling contact stiffness at multiple hierarchical levels: (1) global object compliance (overall deformability of objects and structures), (2) local surface deformation (contact patch behavior and surface compliance), and (3) micro-scale contact dynamics (high-frequency vibrations and stick-slip phenomena). Transfer success depends on matching the stiffness hierarchy level to the task's force-control bandwidth requirements. Tasks requiring high-frequency force modulation (>10Hz) require accurate modeling at all three levels, while quasi-static tasks may succeed with only global compliance matching. The theory posits that mismatches at higher frequency levels cascade down to affect lower frequency performance through control instabilities and unexpected contact transitions, but low-frequency modeling errors have minimal impact on high-frequency dynamics. The required simulation fidelity level can be determined by analyzing the task's characteristic force variation timescales and the robot's control architecture.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> -1</p>
+                <p><strong>Knowledge Cutoff Month:</strong> -1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Contact-rich manipulation tasks can be classified by their dominant force-control bandwidth: quasi-static (<1Hz), low-frequency (1-10Hz), and high-frequency (>10Hz), which determines the required simulation fidelity.</li>
+                <li>Quasi-static tasks (e.g., slow insertion, placement) require only global object compliance modeling, tolerating substantial errors (30-50%) in stiffness parameters while still achieving successful transfer.</li>
+                <li>Low-frequency tasks (e.g., wiping, polishing, moderate-speed assembly) require both global compliance and local surface deformation modeling with moderate accuracy (15-30% error tolerance) for successful transfer.</li>
+                <li>High-frequency tasks (e.g., rapid tapping, high-speed insertion with vibration, dynamic contact-rich manipulation) require accurate modeling at all three hierarchy levels with low error tolerance (<15%) to capture instabilities and contact transitions.</li>
+                <li>Stiffness modeling errors at higher frequencies create control instabilities that propagate to lower frequency control loops through unexpected contact state transitions and force spikes, but low-frequency errors do not significantly destabilize high-frequency dynamics.</li>
+                <li>The minimum simulator time-step must be significantly faster (approximately 5-10x) than the highest force-control bandwidth required by the task to accurately resolve contact dynamics and prevent numerical instabilities.</li>
+                <li>The required hierarchy level can be predicted by analyzing: (1) the task's characteristic force variation timescales, (2) the robot's control bandwidth and compliance, and (3) the expected contact state transition frequencies.</li>
+                <li>Adding hardware compliance (e.g., compliant wrists, series elastic actuators) reduces the required simulation fidelity by effectively filtering high-frequency dynamics, allowing policies to operate at lower bandwidth levels.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Contact-rich manipulation tasks such as peg-in-hole insertion show significant performance degradation during sim-to-real transfer when contact mechanics are not accurately modeled, even when geometric and friction parameters are well-calibrated. </li>
+    <li>Force-controlled assembly and manipulation tasks trained with rigid body assumptions in simulation transfer poorly to real hardware, with policies exhibiting instabilities and failures at contact transitions. </li>
+    <li>High-frequency force oscillations and contact dynamics observed in real robotic manipulation are not captured by standard rigid-body simulators with simple contact models, leading to policy failures during transfer. </li>
+    <li>Compliant contact modeling improves sim-to-real transfer for tasks involving sustained contact and force control, suggesting that contact stiffness is a critical parameter. </li>
+    <li>The time-step and contact solver fidelity of physics simulators significantly impacts the stability and accuracy of contact-rich simulations, with faster time-steps enabling better capture of contact dynamics. </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>A wiping task with ~5Hz force modulation trained in simulation with global and local compliance modeling (but without micro-scale contact dynamics) will transfer to real hardware with >75% of the success rate achieved with full-fidelity simulation.</li>
+                <li>A slow peg-in-hole insertion task (quasi-static, <1Hz) will transfer successfully with 30-40% error in contact stiffness parameters, achieving >85% of the success rate of perfectly calibrated simulation.</li>
+                <li>Adding a compliant wrist (reducing effective control bandwidth from >20Hz to ~5Hz) will allow a high-frequency manipulation task to transfer successfully using only low-frequency simulation fidelity (global + local compliance).</li>
+                <li>For a given contact-rich task, measuring the dominant frequency components in the force signal during human or teleoperated demonstrations will accurately predict the minimum required hierarchy level for successful sim-to-real transfer.</li>
+                <li>Training with accurate high-frequency contact modeling but deliberately degraded low-frequency accuracy will produce better transfer performance than training with uniformly moderate accuracy across all frequency levels.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether learned policies can automatically adapt their control bandwidth during training to match the available simulation fidelity, effectively self-selecting the appropriate hierarchical level and avoiding reliance on unmodeled high-frequency dynamics.</li>
+                <li>Whether there exists a universal mapping from task characteristics (contact forces, velocities, object properties) to required hierarchy levels that generalizes across different robot platforms and control architectures.</li>
+                <li>Whether training with deliberately mismatched stiffness hierarchies (e.g., accurate micro-scale but inaccurate global compliance) produces more robust policies through a form of implicit regularization than uniformly accurate modeling.</li>
+                <li>Whether the hierarchy requirements change fundamentally when using model-free vs. model-based reinforcement learning, or when incorporating explicit force feedback vs. position-only control.</li>
+                <li>Whether human demonstrations of contact-rich tasks naturally operate at specific points in the stiffness hierarchy that represent optimal trade-offs between task performance and robustness, and if matching this bandwidth improves transfer.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding a high-frequency force-control task (>10Hz dominant frequency) that transfers successfully with >80% success rate using only global compliance modeling would contradict the hierarchical requirement and suggest alternative mechanisms.</li>
+                <li>Demonstrating successful transfer of a contact-rich task where intentionally introduced high-frequency stiffness errors (>50% error) do not affect low-frequency task performance would contradict the cascade hypothesis.</li>
+                <li>Showing that a simulator with time-steps only 2x faster than the task's control bandwidth achieves equivalent transfer performance to 10x faster time-steps would contradict the temporal resolution requirement.</li>
+                <li>Finding that adding hardware compliance does not reduce simulation fidelity requirements would challenge the frequency filtering hypothesis.</li>
+                <li>Demonstrating that tasks with identical force bandwidth requirements but different contact geometries require different hierarchy levels would suggest the theory is incomplete and missing geometric factors.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not provide a systematic method for determining the force-control bandwidth requirement of a novel task a priori without empirical testing or demonstration data. </li>
+    <li>The interaction between stiffness hierarchy requirements and other physical parameters like friction coefficients, damping, and mass distribution is not fully characterized, though these likely interact with contact dynamics. </li>
+    <li>The theory does not address how different learning algorithms (model-free RL, model-based RL, imitation learning) might compensate for stiffness hierarchy mismatches through policy adaptation or implicit modeling. </li>
+    <li>The role of sensor noise and latency in determining effective control bandwidth and thus required simulation fidelity is not explicitly addressed. </li>
+    <li>The theory does not specify how multi-contact scenarios (simultaneous contacts at multiple points) affect the hierarchy requirements or whether each contact requires independent fidelity assessment. </li>
+    <li>The specific numerical thresholds (1Hz, 10Hz, percentage accuracies) are proposed based on reasoning but lack direct empirical validation across diverse tasks. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Hogan (1985) Impedance Control: An Approach to Manipulation [Foundational work on compliance and impedance control but does not address sim-to-real transfer or hierarchical fidelity requirements]</li>
+    <li>Mason (1981) Compliance and Force Control for Computer Controlled Manipulators [Early compliance work establishing importance of contact mechanics but no simulation transfer theory]</li>
+    <li>Todorov et al. (2012) MuJoCo: A physics engine for model-based control [Discusses contact modeling and solver design but does not propose hierarchical fidelity requirements for transfer]</li>
+    <li>Muratore et al. (2022) Robot Learning with Sensorimotor Pre-training [Addresses sim-to-real transfer and domain randomization but does not propose hierarchical stiffness theory]</li>
+    <li>Chebotar et al. (2019) Closing the Sim-to-Real Loop [Discusses simulation parameter adaptation but not hierarchical contact modeling requirements]</li>
+    <li>Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Proposes domain randomization as alternative to high-fidelity modeling but does not analyze contact hierarchy]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Contact Stiffness Hierarchy Theory",
+    "theory_description": "Successful sim-to-real transfer for contact-rich manipulation requires modeling contact stiffness at multiple hierarchical levels: (1) global object compliance (overall deformability of objects and structures), (2) local surface deformation (contact patch behavior and surface compliance), and (3) micro-scale contact dynamics (high-frequency vibrations and stick-slip phenomena). Transfer success depends on matching the stiffness hierarchy level to the task's force-control bandwidth requirements. Tasks requiring high-frequency force modulation (&gt;10Hz) require accurate modeling at all three levels, while quasi-static tasks may succeed with only global compliance matching. The theory posits that mismatches at higher frequency levels cascade down to affect lower frequency performance through control instabilities and unexpected contact transitions, but low-frequency modeling errors have minimal impact on high-frequency dynamics. The required simulation fidelity level can be determined by analyzing the task's characteristic force variation timescales and the robot's control architecture.",
+    "supporting_evidence": [
+        {
+            "text": "Contact-rich manipulation tasks such as peg-in-hole insertion show significant performance degradation during sim-to-real transfer when contact mechanics are not accurately modeled, even when geometric and friction parameters are well-calibrated.",
+            "citations": [
+                "Chebotar et al. (2019) Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience",
+                "Muratore et al. (2022) Robot Learning with Sensorimotor Pre-training"
+            ]
+        },
+        {
+            "text": "Force-controlled assembly and manipulation tasks trained with rigid body assumptions in simulation transfer poorly to real hardware, with policies exhibiting instabilities and failures at contact transitions.",
+            "citations": [
+                "Salvato et al. (2021) Crossing the Gap: A Deep Dive into Zero-Shot Sim-to-Real Transfer for Dynamics"
+            ]
+        },
+        {
+            "text": "High-frequency force oscillations and contact dynamics observed in real robotic manipulation are not captured by standard rigid-body simulators with simple contact models, leading to policy failures during transfer.",
+            "citations": [
+                "Todorov et al. (2012) MuJoCo: A physics engine for model-based control"
+            ]
+        },
+        {
+            "text": "Compliant contact modeling improves sim-to-real transfer for tasks involving sustained contact and force control, suggesting that contact stiffness is a critical parameter.",
+            "citations": [
+                "Lee et al. (2020) Learning Quadrupedal Locomotion over Challenging Terrain"
+            ]
+        },
+        {
+            "text": "The time-step and contact solver fidelity of physics simulators significantly impacts the stability and accuracy of contact-rich simulations, with faster time-steps enabling better capture of contact dynamics.",
+            "citations": [
+                "Erez et al. (2015) Simulation tools for model-based robotics: Comparison of Bullet, Havok, MuJoCo, ODE and PhysX"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Contact-rich manipulation tasks can be classified by their dominant force-control bandwidth: quasi-static (&lt;1Hz), low-frequency (1-10Hz), and high-frequency (&gt;10Hz), which determines the required simulation fidelity.",
+        "Quasi-static tasks (e.g., slow insertion, placement) require only global object compliance modeling, tolerating substantial errors (30-50%) in stiffness parameters while still achieving successful transfer.",
+        "Low-frequency tasks (e.g., wiping, polishing, moderate-speed assembly) require both global compliance and local surface deformation modeling with moderate accuracy (15-30% error tolerance) for successful transfer.",
+        "High-frequency tasks (e.g., rapid tapping, high-speed insertion with vibration, dynamic contact-rich manipulation) require accurate modeling at all three hierarchy levels with low error tolerance (&lt;15%) to capture instabilities and contact transitions.",
+        "Stiffness modeling errors at higher frequencies create control instabilities that propagate to lower frequency control loops through unexpected contact state transitions and force spikes, but low-frequency errors do not significantly destabilize high-frequency dynamics.",
+        "The minimum simulator time-step must be significantly faster (approximately 5-10x) than the highest force-control bandwidth required by the task to accurately resolve contact dynamics and prevent numerical instabilities.",
+        "The required hierarchy level can be predicted by analyzing: (1) the task's characteristic force variation timescales, (2) the robot's control bandwidth and compliance, and (3) the expected contact state transition frequencies.",
+        "Adding hardware compliance (e.g., compliant wrists, series elastic actuators) reduces the required simulation fidelity by effectively filtering high-frequency dynamics, allowing policies to operate at lower bandwidth levels."
+    ],
+    "new_predictions_likely": [
+        "A wiping task with ~5Hz force modulation trained in simulation with global and local compliance modeling (but without micro-scale contact dynamics) will transfer to real hardware with &gt;75% of the success rate achieved with full-fidelity simulation.",
+        "A slow peg-in-hole insertion task (quasi-static, &lt;1Hz) will transfer successfully with 30-40% error in contact stiffness parameters, achieving &gt;85% of the success rate of perfectly calibrated simulation.",
+        "Adding a compliant wrist (reducing effective control bandwidth from &gt;20Hz to ~5Hz) will allow a high-frequency manipulation task to transfer successfully using only low-frequency simulation fidelity (global + local compliance).",
+        "For a given contact-rich task, measuring the dominant frequency components in the force signal during human or teleoperated demonstrations will accurately predict the minimum required hierarchy level for successful sim-to-real transfer.",
+        "Training with accurate high-frequency contact modeling but deliberately degraded low-frequency accuracy will produce better transfer performance than training with uniformly moderate accuracy across all frequency levels."
+    ],
+    "new_predictions_unknown": [
+        "Whether learned policies can automatically adapt their control bandwidth during training to match the available simulation fidelity, effectively self-selecting the appropriate hierarchical level and avoiding reliance on unmodeled high-frequency dynamics.",
+        "Whether there exists a universal mapping from task characteristics (contact forces, velocities, object properties) to required hierarchy levels that generalizes across different robot platforms and control architectures.",
+        "Whether training with deliberately mismatched stiffness hierarchies (e.g., accurate micro-scale but inaccurate global compliance) produces more robust policies through a form of implicit regularization than uniformly accurate modeling.",
+        "Whether the hierarchy requirements change fundamentally when using model-free vs. model-based reinforcement learning, or when incorporating explicit force feedback vs. position-only control.",
+        "Whether human demonstrations of contact-rich tasks naturally operate at specific points in the stiffness hierarchy that represent optimal trade-offs between task performance and robustness, and if matching this bandwidth improves transfer."
+    ],
+    "negative_experiments": [
+        "Finding a high-frequency force-control task (&gt;10Hz dominant frequency) that transfers successfully with &gt;80% success rate using only global compliance modeling would contradict the hierarchical requirement and suggest alternative mechanisms.",
+        "Demonstrating successful transfer of a contact-rich task where intentionally introduced high-frequency stiffness errors (&gt;50% error) do not affect low-frequency task performance would contradict the cascade hypothesis.",
+        "Showing that a simulator with time-steps only 2x faster than the task's control bandwidth achieves equivalent transfer performance to 10x faster time-steps would contradict the temporal resolution requirement.",
+        "Finding that adding hardware compliance does not reduce simulation fidelity requirements would challenge the frequency filtering hypothesis.",
+        "Demonstrating that tasks with identical force bandwidth requirements but different contact geometries require different hierarchy levels would suggest the theory is incomplete and missing geometric factors."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not provide a systematic method for determining the force-control bandwidth requirement of a novel task a priori without empirical testing or demonstration data.",
+            "citations": []
+        },
+        {
+            "text": "The interaction between stiffness hierarchy requirements and other physical parameters like friction coefficients, damping, and mass distribution is not fully characterized, though these likely interact with contact dynamics.",
+            "citations": []
+        },
+        {
+            "text": "The theory does not address how different learning algorithms (model-free RL, model-based RL, imitation learning) might compensate for stiffness hierarchy mismatches through policy adaptation or implicit modeling.",
+            "citations": []
+        },
+        {
+            "text": "The role of sensor noise and latency in determining effective control bandwidth and thus required simulation fidelity is not explicitly addressed.",
+            "citations": []
+        },
+        {
+            "text": "The theory does not specify how multi-contact scenarios (simultaneous contacts at multiple points) affect the hierarchy requirements or whether each contact requires independent fidelity assessment.",
+            "citations": []
+        },
+        {
+            "text": "The specific numerical thresholds (1Hz, 10Hz, percentage accuracies) are proposed based on reasoning but lack direct empirical validation across diverse tasks.",
+            "citations": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Recent work demonstrates successful transfer of contact-rich manipulation tasks (including Rubik's cube solving with a dexterous hand) using rigid-body simulation with aggressive domain randomization, suggesting that stiffness modeling may not always be critical if sufficient randomization covers the reality gap.",
+            "citations": [
+                "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization",
+                "OpenAI et al. (2019) Solving Rubik's Cube with a Robot Hand"
+            ]
+        },
+        {
+            "text": "Some successful sim-to-real transfers for manipulation have been achieved with relatively coarse time-steps (1-2 kHz) even for tasks with contact, suggesting the 10x requirement may be conservative or task-dependent.",
+            "citations": [
+                "Andrychowicz et al. (2020) Learning dexterous in-hand manipulation"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Tasks involving highly deformable objects (e.g., fabric, rope, soft food items) may require additional continuum mechanics modeling beyond the three-level hierarchy, potentially adding a fourth level for large-scale deformation.",
+        "Underwater or other non-air environments require fluid-structure interaction modeling as an additional consideration, as fluid forces can dominate contact dynamics at certain scales.",
+        "Micro-manipulation tasks at sub-millimeter scales may require additional modeling of adhesion forces, surface energy effects, and electrostatic interactions that become significant at small scales.",
+        "Tasks with intentional impacts or collisions may require specialized contact models (e.g., coefficient of restitution, impact dynamics) that don't fit neatly into the stiffness hierarchy framework.",
+        "When using very high-gain force control or impedance control with low target stiffness, the robot's control system may effectively mask simulation errors, reducing the required fidelity.",
+        "Multi-fingered grasping with force closure may be more robust to contact modeling errors than single-point or line contact tasks due to the constraint redundancy.",
+        "Tasks where domain randomization can effectively cover the space of contact behaviors may not require explicit hierarchy matching, as the policy learns robustness to contact variations."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Hogan (1985) Impedance Control: An Approach to Manipulation [Foundational work on compliance and impedance control but does not address sim-to-real transfer or hierarchical fidelity requirements]",
+            "Mason (1981) Compliance and Force Control for Computer Controlled Manipulators [Early compliance work establishing importance of contact mechanics but no simulation transfer theory]",
+            "Todorov et al. (2012) MuJoCo: A physics engine for model-based control [Discusses contact modeling and solver design but does not propose hierarchical fidelity requirements for transfer]",
+            "Muratore et al. (2022) Robot Learning with Sensorimotor Pre-training [Addresses sim-to-real transfer and domain randomization but does not propose hierarchical stiffness theory]",
+            "Chebotar et al. (2019) Closing the Sim-to-Real Loop [Discusses simulation parameter adaptation but not hierarchical contact modeling requirements]",
+            "Peng et al. (2018) Sim-to-Real Transfer of Robotic Control with Dynamics Randomization [Proposes domain randomization as alternative to high-fidelity modeling but does not analyze contact hierarchy]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 0,
+    "theory_query": "Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs.. Please focus on creating new theories that have not been proposed before in the literature.",
+    "generation_mode": "llm_baseline_no_evidence",
+    "original_theory_id": "theory-189",
+    "original_theory_name": "Contact-Rich Manipulation Transfer Requirements",
+    "model_str": "claude-sonnet-4-5-20250929"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

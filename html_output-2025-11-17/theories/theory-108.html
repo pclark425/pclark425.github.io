@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inference-Time Computation vs Training Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-108</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-108</p>
+                <p><strong>Name:</strong> Inference-Time Computation vs Training Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory explaining the dissociation between strong QA performance and weak interactive procedural performance in LLM-based agents, and the architectural/training interventions required to close the gap, based on the following results.</p>
+                <p><strong>Description:</strong> For interactive procedural tasks, inference-time computational strategies (search, sampling, rejection, iteration, external execution) can substitute for or complement training-based improvements. This theory posits that: (1) sampling multiple trajectories and selecting the best (rejection sampling, best-of-n) can outperform single-trajectory generation, especially when paired with good evaluation mechanisms, (2) search-based methods (MCTS, beam search, DFS) can improve planning without additional training by exploring alternative paths, (3) iterative refinement with feedback (execution results, self-reflection, external verification) can correct errors that single-pass generation cannot, (4) external execution and tool use at inference time can provide grounding that improves reliability, (5) the effectiveness of inference-time computation depends critically on the quality of the evaluation/selection mechanism and the informativeness of feedback signals. The theory predicts trade-offs between training cost (one-time) and inference cost (per-query), with optimal strategies depending on deployment constraints, task characteristics, and model capabilities. Smaller models may benefit more from inference-time computation than larger models, and tasks with recoverable errors and informative feedback benefit most from iterative approaches.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Sampling multiple trajectories and selecting the best can outperform single-trajectory generation, with benefits scaling with number of samples up to a saturation point</li>
+                <li>Search-based methods (MCTS, beam search, DFS) improve planning without additional training by exploring alternative action sequences and enabling backtracking</li>
+                <li>Iterative refinement with feedback enables error correction beyond single-pass generation, with effectiveness depending on feedback informativeness</li>
+                <li>External execution (code interpreters, tools, environments) at inference time provides grounding that improves reliability and reduces hallucination</li>
+                <li>The effectiveness of inference-time computation depends critically on evaluation/selection mechanism quality (reward models, verifiers, test suites)</li>
+                <li>Inference-time computation trades per-query cost for improved performance, with diminishing returns at high computational budgets</li>
+                <li>Rejection sampling can be more effective than RL when the reward model is well-calibrated to the distribution of sampled outputs</li>
+                <li>Search depth and breadth can be tuned to balance performance and computational cost, with optimal settings varying by task</li>
+                <li>Multiple inference-time strategies can be combined synergistically (e.g., search + sampling + refinement + external execution)</li>
+                <li>Smaller models benefit more from inference-time computation than larger models, as it can partially compensate for limited capacity</li>
+                <li>Tasks with recoverable errors benefit more from iterative refinement than tasks with irreversible actions</li>
+                <li>The benefit of inference-time computation is greater when the base model has high variance in output quality</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>WebGPT shows that rejection sampling (best-of-64) provides larger benefits than RL training, with the 175B best-of-64 BC model preferred 68% of the time to the 175B BC model <a href="../results/extraction-result-921.html#e921.0" class="evidence-link">[e921.0]</a> <a href="../results/extraction-result-925.html#e925.0" class="evidence-link">[e925.0]</a> <a href="../results/extraction-result-925.html#e925.3" class="evidence-link">[e925.3]</a> </li>
+    <li>LATS demonstrates that MCTS-based search at inference time substantially improves performance across multiple tasks (HotPotQA, WebShop, HumanEval) <a href="../results/extraction-result-944.html#e944.0" class="evidence-link">[e944.0]</a> <a href="../results/extraction-result-944.html#e944.1" class="evidence-link">[e944.1]</a> <a href="../results/extraction-result-944.html#e944.2" class="evidence-link">[e944.2]</a> </li>
+    <li>ToT shows that tree search over thoughts dramatically improves problem-solving (Game of 24: 4% -> 74%, Creative Writing coherency improvement) <a href="../results/extraction-result-840.html#e840.0" class="evidence-link">[e840.0]</a> <a href="../results/extraction-result-840.html#e840.1" class="evidence-link">[e840.1]</a> </li>
+    <li>Self-consistency (CoT-SC) shows that sampling and voting improves reasoning across multiple benchmarks <a href="../results/extraction-result-933.html#e933.0" class="evidence-link">[e933.0]</a> <a href="../results/extraction-result-949.html#e949.1" class="evidence-link">[e949.1]</a> </li>
+    <li>CodeT demonstrates that generating multiple solutions and selecting via test execution improves code generation (HumanEval: 47.0% -> 65.8%) <a href="../results/extraction-result-942.html#e942.0" class="evidence-link">[e942.0]</a> <a href="../results/extraction-result-942.html#e942.3" class="evidence-link">[e942.3]</a> </li>
+    <li>Self-Refine shows that iterative refinement with self-feedback improves output quality on interactive tasks (Code Optimization +8.7%, Dialogue +49.2%) <a href="../results/extraction-result-927.html#e927.1" class="evidence-link">[e927.1]</a> </li>
+    <li>InterCode shows that multi-turn interaction with execution feedback improves over single-turn (SQL: 7.4% -> 15.6%, Bash: 24.6% -> 38.7%) <a href="../results/extraction-result-947.html#e947.2" class="evidence-link">[e947.2]</a> <a href="../results/extraction-result-947.html#e947.6" class="evidence-link">[e947.6]</a> <a href="../results/extraction-result-947.html#e947.10" class="evidence-link">[e947.10]</a> </li>
+    <li>Reflexion demonstrates that iterative retry with reflection improves task success (HotPotQA: 26-42% -> 38-55%, ALFWorld improvements) <a href="../results/extraction-result-821.html#e821.1" class="evidence-link">[e821.1]</a> <a href="../results/extraction-result-941.html#e941.2" class="evidence-link">[e941.2]</a> <a href="../results/extraction-result-910.html#e910.3" class="evidence-link">[e910.3]</a> </li>
+    <li>LASER shows that state-space exploration with backtracking improves web navigation over forward-only approaches <a href="../results/extraction-result-823.html#e823.1" class="evidence-link">[e823.1]</a> <a href="../results/extraction-result-823.html#e823.2" class="evidence-link">[e823.2]</a> <a href="../results/extraction-result-823.html#e823.5" class="evidence-link">[e823.5]</a> </li>
+    <li>Training verifiers shows that sample-and-rank can match larger model performance (6B verification ~ 175B finetuned) <a href="../results/extraction-result-911.html#e911.1" class="evidence-link">[e911.1]</a> <a href="../results/extraction-result-911.html#e911.5" class="evidence-link">[e911.5]</a> </li>
+    <li>DFSDT shows that depth-first search with retraction improves solution finding over linear reasoning <a href="../results/extraction-result-850.html#e850.6" class="evidence-link">[e850.6]</a> </li>
+    <li>Plan search in human-like planning framework improves plan quality (Final Pass Rate 0.0% -> 2.2%) <a href="../results/extraction-result-818.html#e818.0" class="evidence-link">[e818.0]</a> </li>
+    <li>Multi-agent discussion shows benefits from multiple reasoning paths when demonstrations are absent <a href="../results/extraction-result-943.html#e943.0" class="evidence-link">[e943.0]</a> <a href="../results/extraction-result-943.html#e943.1" class="evidence-link">[e943.1]</a> <a href="../results/extraction-result-943.html#e943.3" class="evidence-link">[e943.3]</a> </li>
+    <li>AutoGen shows that multi-agent conversation improves problem-solving on complex tasks <a href="../results/extraction-result-940.html#e940.2" class="evidence-link">[e940.2]</a> <a href="../results/extraction-result-940.html#e940.5" class="evidence-link">[e940.5]</a> <a href="../results/extraction-result-940.html#e940.7" class="evidence-link">[e940.7]</a> </li>
+    <li>TroVE shows that multi-candidate tool induction with execution verification improves efficiency (+21.0 pp on MATH) <a href="../results/extraction-result-935.html#e935.7" class="evidence-link">[e935.7]</a> </li>
+    <li>PAL demonstrates that generating code and executing it externally at inference time improves arithmetic reasoning (GSM8K: 65.6% -> 72.0%) <a href="../results/extraction-result-938.html#e938.0" class="evidence-link">[e938.0]</a> <a href="../results/extraction-result-938.html#e938.4" class="evidence-link">[e938.4]</a> <a href="../results/extraction-result-938.html#e938.5" class="evidence-link">[e938.5]</a> </li>
+    <li>Inner Monologue shows that closed-loop feedback injection at inference time improves embodied planning robustness <a href="../results/extraction-result-932.html#e932.0" class="evidence-link">[e932.0]</a> <a href="../results/extraction-result-932.html#e932.5" class="evidence-link">[e932.5]</a> </li>
+    <li>AVATAR demonstrates that iterative prompt optimization via batch contrastive reasoning improves tool usage (+14% Hit@1 on retrieval) <a href="../results/extraction-result-819.html#e819.0" class="evidence-link">[e819.0]</a> <a href="../results/extraction-result-819.html#e819.1" class="evidence-link">[e819.1]</a> <a href="../results/extraction-result-819.html#e819.3" class="evidence-link">[e819.3]</a> </li>
+    <li>IPR shows that iterative step-level process refinement improves agent learning (Llama-2-7B: ~5.5 -> 69.4 average reward) <a href="../results/extraction-result-831.html#e831.6" class="evidence-link">[e831.6]</a> <a href="../results/extraction-result-831.html#e831.2" class="evidence-link">[e831.2]</a> </li>
+    <li>ReAct shows benefits of interleaving reasoning and acting at inference time over pure action or pure reasoning <a href="../results/extraction-result-848.html#e848.1" class="evidence-link">[e848.1]</a> <a href="../results/extraction-result-848.html#e848.2" class="evidence-link">[e848.2]</a> <a href="../results/extraction-result-949.html#e949.5" class="evidence-link">[e949.5]</a> </li>
+    <li>Retroformer shows that learned retrospective feedback at inference time improves multi-step tasks (HotPotQA: 50% -> 54%) <a href="../results/extraction-result-941.html#e941.0" class="evidence-link">[e941.0]</a> <a href="../results/extraction-result-941.html#e941.2" class="evidence-link">[e941.2]</a> </li>
+    <li>CODET shows that dual execution agreement (multiple solutions + generated tests) improves selection <a href="../results/extraction-result-942.html#e942.0" class="evidence-link">[e942.0]</a> </li>
+    <li>EHRAgent shows that interactive coding with execution feedback and debugging improves complex reasoning (SR up to +29.6%) <a href="../results/extraction-result-844.html#e844.0" class="evidence-link">[e844.0]</a> <a href="../results/extraction-result-844.html#e844.5" class="evidence-link">[e844.5]</a> <a href="../results/extraction-result-844.html#e844.8" class="evidence-link">[e844.8]</a> </li>
+    <li>AGILE shows that inference-time advice-seeking and memory updates improve agent performance <a href="../results/extraction-result-816.html#e816.0" class="evidence-link">[e816.0]</a> <a href="../results/extraction-result-816.html#e816.3" class="evidence-link">[e816.3]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Increasing the number of sampled trajectories will monotonically improve performance up to a saturation point determined by the diversity of the model's output distribution</li>
+                <li>Search-based methods will provide greater benefits on tasks with larger action spaces, longer horizons, and more opportunities for backtracking</li>
+                <li>Iterative refinement will be most effective when feedback is informative, errors are recoverable, and the model can learn from its mistakes within context</li>
+                <li>The benefit of inference-time computation will be greater for smaller models than larger models, with the gap narrowing as model size increases</li>
+                <li>Combining multiple inference-time strategies (search + sampling + external execution) will outperform individual strategies, with synergistic effects</li>
+                <li>Tasks with dense, informative feedback will benefit more from iterative approaches than tasks with sparse, delayed feedback</li>
+                <li>External execution and tool use will provide greater benefits on tasks requiring precise computation or up-to-date information than on tasks requiring only reasoning</li>
+                <li>The optimal balance between training and inference-time computation will shift toward inference-time as models become more capable and compute becomes cheaper</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether inference-time computation can fully substitute for training on interactive data, or if some task-specific knowledge must be learned during training</li>
+                <li>The extent to which inference-time strategies transfer across different task domains and modalities</li>
+                <li>The scalability limits of search-based methods as task complexity, action space size, and horizon length increase</li>
+                <li>Whether future models will internalize search/sampling strategies through meta-learning, reducing the need for explicit inference-time computation</li>
+                <li>The optimal trade-off between training cost and inference cost for different deployment scenarios (latency-sensitive vs batch processing)</li>
+                <li>Whether inference-time computation can help models generalize to out-of-distribution tasks as effectively as training on diverse data</li>
+                <li>The extent to which inference-time computation can compensate for architectural limitations (e.g., context length, memory)</li>
+                <li>Whether combining inference-time computation with online learning can enable continual improvement without catastrophic forgetting</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Demonstrating that sampling multiple trajectories provides no benefit over single-trajectory generation would challenge the value of rejection sampling and suggest the model's output distribution has low variance</li>
+                <li>Showing that search-based methods perform no better than greedy decoding would question the utility of inference-time search and suggest the model already explores alternatives internally</li>
+                <li>Finding that iterative refinement provides no benefit over single-pass generation would challenge the value of feedback-based iteration and suggest errors are not recoverable</li>
+                <li>Demonstrating that inference-time computation provides no benefit beyond what training can achieve would question the necessity of these strategies and suggest training is sufficient</li>
+                <li>Showing that the computational cost of inference-time strategies outweighs their benefits would challenge their practical utility in resource-constrained settings</li>
+                <li>Finding that external execution provides no benefit over internal reasoning would question the value of tool use and suggest the model has sufficient internal knowledge</li>
+                <li>Demonstrating that smaller models do not benefit more from inference-time computation than larger models would challenge the capacity-compensation hypothesis</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The relative effectiveness of different inference-time strategies varies across tasks in complex ways that are not fully characterized <a href="../results/extraction-result-921.html#e921.0" class="evidence-link">[e921.0]</a> <a href="../results/extraction-result-944.html#e944.0" class="evidence-link">[e944.0]</a> </li>
+    <li>Some tasks show diminishing returns from inference-time computation earlier than others, with task-specific saturation points <a href="../results/extraction-result-944.html#e944.0" class="evidence-link">[e944.0]</a> <a href="../results/extraction-result-840.html#e840.0" class="evidence-link">[e840.0]</a> </li>
+    <li>The interaction between model quality, task difficulty, and inference-time computation effectiveness is not fully characterized <a href="../results/extraction-result-911.html#e911.1" class="evidence-link">[e911.1]</a> <a href="../results/extraction-result-831.html#e831.6" class="evidence-link">[e831.6]</a> </li>
+    <li>The optimal combination of inference-time strategies depends on task characteristics in ways that are not fully understood <a href="../results/extraction-result-944.html#e944.0" class="evidence-link">[e944.0]</a> <a href="../results/extraction-result-819.html#e819.0" class="evidence-link">[e819.0]</a> </li>
+    <li>The extent to which inference-time computation can compensate for training data limitations is not fully characterized <a href="../results/extraction-result-820.html#e820.0" class="evidence-link">[e820.0]</a> <a href="../results/extraction-result-820.html#e820.1" class="evidence-link">[e820.1]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Nakano et al. (2021) WebGPT: Browser-assisted question-answering with human feedback [Rejection sampling benefits, reward model training]</li>
+    <li>Yao et al. (2023) Tree of Thoughts: Deliberate Problem Solving with Large Language Models [Search-based reasoning, deliberate problem-solving]</li>
+    <li>Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Sampling and voting, self-consistency]</li>
+    <li>Madaan et al. (2023) Self-Refine: Iterative Refinement with Self-Feedback [Iterative refinement, self-feedback]</li>
+    <li>Chen et al. (2022) CodeT: Code Generation with Generated Tests [Test-based selection, dual execution agreement]</li>
+    <li>Gao et al. (2022) PAL: Program-aided Language Models [External execution, code generation]</li>
+    <li>Zhou et al. (2023) Language Agent Tree Search Unifies Reasoning Acting and Planning in Language Models [MCTS for language models, unified framework]</li>
+    <li>Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Verbal reflection, iterative improvement]</li>
+    <li>Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Verifier training, sample-and-rank]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Inference-Time Computation vs Training Theory",
+    "theory_description": "For interactive procedural tasks, inference-time computational strategies (search, sampling, rejection, iteration, external execution) can substitute for or complement training-based improvements. This theory posits that: (1) sampling multiple trajectories and selecting the best (rejection sampling, best-of-n) can outperform single-trajectory generation, especially when paired with good evaluation mechanisms, (2) search-based methods (MCTS, beam search, DFS) can improve planning without additional training by exploring alternative paths, (3) iterative refinement with feedback (execution results, self-reflection, external verification) can correct errors that single-pass generation cannot, (4) external execution and tool use at inference time can provide grounding that improves reliability, (5) the effectiveness of inference-time computation depends critically on the quality of the evaluation/selection mechanism and the informativeness of feedback signals. The theory predicts trade-offs between training cost (one-time) and inference cost (per-query), with optimal strategies depending on deployment constraints, task characteristics, and model capabilities. Smaller models may benefit more from inference-time computation than larger models, and tasks with recoverable errors and informative feedback benefit most from iterative approaches.",
+    "supporting_evidence": [
+        {
+            "text": "WebGPT shows that rejection sampling (best-of-64) provides larger benefits than RL training, with the 175B best-of-64 BC model preferred 68% of the time to the 175B BC model",
+            "uuids": [
+                "e921.0",
+                "e925.0",
+                "e925.3"
+            ]
+        },
+        {
+            "text": "LATS demonstrates that MCTS-based search at inference time substantially improves performance across multiple tasks (HotPotQA, WebShop, HumanEval)",
+            "uuids": [
+                "e944.0",
+                "e944.1",
+                "e944.2"
+            ]
+        },
+        {
+            "text": "ToT shows that tree search over thoughts dramatically improves problem-solving (Game of 24: 4% -&gt; 74%, Creative Writing coherency improvement)",
+            "uuids": [
+                "e840.0",
+                "e840.1"
+            ]
+        },
+        {
+            "text": "Self-consistency (CoT-SC) shows that sampling and voting improves reasoning across multiple benchmarks",
+            "uuids": [
+                "e933.0",
+                "e949.1"
+            ]
+        },
+        {
+            "text": "CodeT demonstrates that generating multiple solutions and selecting via test execution improves code generation (HumanEval: 47.0% -&gt; 65.8%)",
+            "uuids": [
+                "e942.0",
+                "e942.3"
+            ]
+        },
+        {
+            "text": "Self-Refine shows that iterative refinement with self-feedback improves output quality on interactive tasks (Code Optimization +8.7%, Dialogue +49.2%)",
+            "uuids": [
+                "e927.1"
+            ]
+        },
+        {
+            "text": "InterCode shows that multi-turn interaction with execution feedback improves over single-turn (SQL: 7.4% -&gt; 15.6%, Bash: 24.6% -&gt; 38.7%)",
+            "uuids": [
+                "e947.2",
+                "e947.6",
+                "e947.10"
+            ]
+        },
+        {
+            "text": "Reflexion demonstrates that iterative retry with reflection improves task success (HotPotQA: 26-42% -&gt; 38-55%, ALFWorld improvements)",
+            "uuids": [
+                "e821.1",
+                "e941.2",
+                "e910.3"
+            ]
+        },
+        {
+            "text": "LASER shows that state-space exploration with backtracking improves web navigation over forward-only approaches",
+            "uuids": [
+                "e823.1",
+                "e823.2",
+                "e823.5"
+            ]
+        },
+        {
+            "text": "Training verifiers shows that sample-and-rank can match larger model performance (6B verification ~ 175B finetuned)",
+            "uuids": [
+                "e911.1",
+                "e911.5"
+            ]
+        },
+        {
+            "text": "DFSDT shows that depth-first search with retraction improves solution finding over linear reasoning",
+            "uuids": [
+                "e850.6"
+            ]
+        },
+        {
+            "text": "Plan search in human-like planning framework improves plan quality (Final Pass Rate 0.0% -&gt; 2.2%)",
+            "uuids": [
+                "e818.0"
+            ]
+        },
+        {
+            "text": "Multi-agent discussion shows benefits from multiple reasoning paths when demonstrations are absent",
+            "uuids": [
+                "e943.0",
+                "e943.1",
+                "e943.3"
+            ]
+        },
+        {
+            "text": "AutoGen shows that multi-agent conversation improves problem-solving on complex tasks",
+            "uuids": [
+                "e940.2",
+                "e940.5",
+                "e940.7"
+            ]
+        },
+        {
+            "text": "TroVE shows that multi-candidate tool induction with execution verification improves efficiency (+21.0 pp on MATH)",
+            "uuids": [
+                "e935.7"
+            ]
+        },
+        {
+            "text": "PAL demonstrates that generating code and executing it externally at inference time improves arithmetic reasoning (GSM8K: 65.6% -&gt; 72.0%)",
+            "uuids": [
+                "e938.0",
+                "e938.4",
+                "e938.5"
+            ]
+        },
+        {
+            "text": "Inner Monologue shows that closed-loop feedback injection at inference time improves embodied planning robustness",
+            "uuids": [
+                "e932.0",
+                "e932.5"
+            ]
+        },
+        {
+            "text": "AVATAR demonstrates that iterative prompt optimization via batch contrastive reasoning improves tool usage (+14% Hit@1 on retrieval)",
+            "uuids": [
+                "e819.0",
+                "e819.1",
+                "e819.3"
+            ]
+        },
+        {
+            "text": "IPR shows that iterative step-level process refinement improves agent learning (Llama-2-7B: ~5.5 -&gt; 69.4 average reward)",
+            "uuids": [
+                "e831.6",
+                "e831.2"
+            ]
+        },
+        {
+            "text": "ReAct shows benefits of interleaving reasoning and acting at inference time over pure action or pure reasoning",
+            "uuids": [
+                "e848.1",
+                "e848.2",
+                "e949.5"
+            ]
+        },
+        {
+            "text": "Retroformer shows that learned retrospective feedback at inference time improves multi-step tasks (HotPotQA: 50% -&gt; 54%)",
+            "uuids": [
+                "e941.0",
+                "e941.2"
+            ]
+        },
+        {
+            "text": "CODET shows that dual execution agreement (multiple solutions + generated tests) improves selection",
+            "uuids": [
+                "e942.0"
+            ]
+        },
+        {
+            "text": "EHRAgent shows that interactive coding with execution feedback and debugging improves complex reasoning (SR up to +29.6%)",
+            "uuids": [
+                "e844.0",
+                "e844.5",
+                "e844.8"
+            ]
+        },
+        {
+            "text": "AGILE shows that inference-time advice-seeking and memory updates improve agent performance",
+            "uuids": [
+                "e816.0",
+                "e816.3"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Sampling multiple trajectories and selecting the best can outperform single-trajectory generation, with benefits scaling with number of samples up to a saturation point",
+        "Search-based methods (MCTS, beam search, DFS) improve planning without additional training by exploring alternative action sequences and enabling backtracking",
+        "Iterative refinement with feedback enables error correction beyond single-pass generation, with effectiveness depending on feedback informativeness",
+        "External execution (code interpreters, tools, environments) at inference time provides grounding that improves reliability and reduces hallucination",
+        "The effectiveness of inference-time computation depends critically on evaluation/selection mechanism quality (reward models, verifiers, test suites)",
+        "Inference-time computation trades per-query cost for improved performance, with diminishing returns at high computational budgets",
+        "Rejection sampling can be more effective than RL when the reward model is well-calibrated to the distribution of sampled outputs",
+        "Search depth and breadth can be tuned to balance performance and computational cost, with optimal settings varying by task",
+        "Multiple inference-time strategies can be combined synergistically (e.g., search + sampling + refinement + external execution)",
+        "Smaller models benefit more from inference-time computation than larger models, as it can partially compensate for limited capacity",
+        "Tasks with recoverable errors benefit more from iterative refinement than tasks with irreversible actions",
+        "The benefit of inference-time computation is greater when the base model has high variance in output quality"
+    ],
+    "new_predictions_likely": [
+        "Increasing the number of sampled trajectories will monotonically improve performance up to a saturation point determined by the diversity of the model's output distribution",
+        "Search-based methods will provide greater benefits on tasks with larger action spaces, longer horizons, and more opportunities for backtracking",
+        "Iterative refinement will be most effective when feedback is informative, errors are recoverable, and the model can learn from its mistakes within context",
+        "The benefit of inference-time computation will be greater for smaller models than larger models, with the gap narrowing as model size increases",
+        "Combining multiple inference-time strategies (search + sampling + external execution) will outperform individual strategies, with synergistic effects",
+        "Tasks with dense, informative feedback will benefit more from iterative approaches than tasks with sparse, delayed feedback",
+        "External execution and tool use will provide greater benefits on tasks requiring precise computation or up-to-date information than on tasks requiring only reasoning",
+        "The optimal balance between training and inference-time computation will shift toward inference-time as models become more capable and compute becomes cheaper"
+    ],
+    "new_predictions_unknown": [
+        "Whether inference-time computation can fully substitute for training on interactive data, or if some task-specific knowledge must be learned during training",
+        "The extent to which inference-time strategies transfer across different task domains and modalities",
+        "The scalability limits of search-based methods as task complexity, action space size, and horizon length increase",
+        "Whether future models will internalize search/sampling strategies through meta-learning, reducing the need for explicit inference-time computation",
+        "The optimal trade-off between training cost and inference cost for different deployment scenarios (latency-sensitive vs batch processing)",
+        "Whether inference-time computation can help models generalize to out-of-distribution tasks as effectively as training on diverse data",
+        "The extent to which inference-time computation can compensate for architectural limitations (e.g., context length, memory)",
+        "Whether combining inference-time computation with online learning can enable continual improvement without catastrophic forgetting"
+    ],
+    "negative_experiments": [
+        "Demonstrating that sampling multiple trajectories provides no benefit over single-trajectory generation would challenge the value of rejection sampling and suggest the model's output distribution has low variance",
+        "Showing that search-based methods perform no better than greedy decoding would question the utility of inference-time search and suggest the model already explores alternatives internally",
+        "Finding that iterative refinement provides no benefit over single-pass generation would challenge the value of feedback-based iteration and suggest errors are not recoverable",
+        "Demonstrating that inference-time computation provides no benefit beyond what training can achieve would question the necessity of these strategies and suggest training is sufficient",
+        "Showing that the computational cost of inference-time strategies outweighs their benefits would challenge their practical utility in resource-constrained settings",
+        "Finding that external execution provides no benefit over internal reasoning would question the value of tool use and suggest the model has sufficient internal knowledge",
+        "Demonstrating that smaller models do not benefit more from inference-time computation than larger models would challenge the capacity-compensation hypothesis"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The relative effectiveness of different inference-time strategies varies across tasks in complex ways that are not fully characterized",
+            "uuids": [
+                "e921.0",
+                "e944.0"
+            ]
+        },
+        {
+            "text": "Some tasks show diminishing returns from inference-time computation earlier than others, with task-specific saturation points",
+            "uuids": [
+                "e944.0",
+                "e840.0"
+            ]
+        },
+        {
+            "text": "The interaction between model quality, task difficulty, and inference-time computation effectiveness is not fully characterized",
+            "uuids": [
+                "e911.1",
+                "e831.6"
+            ]
+        },
+        {
+            "text": "The optimal combination of inference-time strategies depends on task characteristics in ways that are not fully understood",
+            "uuids": [
+                "e944.0",
+                "e819.0"
+            ]
+        },
+        {
+            "text": "The extent to which inference-time computation can compensate for training data limitations is not fully characterized",
+            "uuids": [
+                "e820.0",
+                "e820.1"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "RL sometimes outperforms rejection sampling despite higher training cost, suggesting training can be more efficient for some tasks",
+            "uuids": [
+                "e941.0"
+            ]
+        },
+        {
+            "text": "Some tasks show no benefit from multiple samples or search, suggesting the model's output distribution is already well-calibrated",
+            "uuids": [
+                "e927.1"
+            ]
+        },
+        {
+            "text": "Inference-time computation can introduce new failure modes (e.g., search getting stuck, over-optimization of reward models)",
+            "uuids": [
+                "e840.0",
+                "e925.0"
+            ]
+        },
+        {
+            "text": "Multi-agent discussion shows no benefit when demonstrations are present, suggesting inference-time computation is less valuable when the model already has strong in-context signals",
+            "uuids": [
+                "e943.0",
+                "e943.1"
+            ]
+        },
+        {
+            "text": "Some iterative approaches show minimal improvement over single-pass generation on certain tasks",
+            "uuids": [
+                "e927.1",
+                "e947.2"
+            ]
+        },
+        {
+            "text": "WebGPT shows that RL provides smaller benefits than rejection sampling, but this may be due to reward model distribution mismatch rather than fundamental limitations of RL",
+            "uuids": [
+                "e925.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "Tasks with sparse rewards may benefit more from search than tasks with dense feedback, as search can explore alternative paths",
+        "Deterministic tasks may show less benefit from sampling than stochastic tasks, as multiple samples will be similar",
+        "Tasks with irreversible actions may benefit less from iterative refinement, as errors cannot be corrected",
+        "The optimal inference-time strategy depends on computational budget and latency constraints, with different strategies optimal for different settings",
+        "Tasks requiring precise computation benefit more from external execution than tasks requiring only reasoning",
+        "Tasks with large action spaces benefit more from search-based methods than tasks with small action spaces",
+        "The benefit of inference-time computation is greater when the base model has high variance in output quality",
+        "Inference-time computation is most effective when paired with good evaluation mechanisms (reward models, verifiers, test suites)",
+        "The saturation point for sampling depends on the diversity of the model's output distribution",
+        "Iterative refinement is most effective when feedback is informative and errors are recoverable within the context window"
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Nakano et al. (2021) WebGPT: Browser-assisted question-answering with human feedback [Rejection sampling benefits, reward model training]",
+            "Yao et al. (2023) Tree of Thoughts: Deliberate Problem Solving with Large Language Models [Search-based reasoning, deliberate problem-solving]",
+            "Wang et al. (2022) Self-Consistency Improves Chain of Thought Reasoning in Language Models [Sampling and voting, self-consistency]",
+            "Madaan et al. (2023) Self-Refine: Iterative Refinement with Self-Feedback [Iterative refinement, self-feedback]",
+            "Chen et al. (2022) CodeT: Code Generation with Generated Tests [Test-based selection, dual execution agreement]",
+            "Gao et al. (2022) PAL: Program-aided Language Models [External execution, code generation]",
+            "Zhou et al. (2023) Language Agent Tree Search Unifies Reasoning Acting and Planning in Language Models [MCTS for language models, unified framework]",
+            "Shinn et al. (2023) Reflexion: Language Agents with Verbal Reinforcement Learning [Verbal reflection, iterative improvement]",
+            "Cobbe et al. (2021) Training Verifiers to Solve Math Word Problems [Verifier training, sample-and-rank]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 3,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

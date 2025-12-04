@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Dynamics Fidelity Theory (Revised) - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-374</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-374</p>
+                <p><strong>Name:</strong> Critical Dynamics Fidelity Theory (Revised)</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs.. Please focus on creating new theories that have not been proposed before in the literature.</p>
+                <p><strong>Description:</strong> Successful sim-to-real transfer of manipulation skills for scientific discovery requires high-fidelity modeling of only those dynamics properties that are critical to task success, rather than complete system modeling. The theory posits that there exists a task-dependent subset of dynamics properties (actuator bandwidth, control update frequency, damping, backlash, compliance, inertia, friction, contact model characteristics) that must exceed minimum fidelity thresholds, while other properties can be modeled at lower fidelity without impacting transfer success. Critical parameters are those for which the task performance exhibits high sensitivity (gradient magnitude > threshold), and fidelity requirements scale with the characteristic timescales, force scales, and precision requirements of the task. The theory's applicability depends on task characteristics: it is most relevant for high-acceleration or high-gear-ratio manipulation tasks where actuator dynamics significantly affect performance, while for slow quasi-static manipulation with large tolerances, perceptual and behavioral factors may dominate. This selective fidelity approach enables 2-10x (or greater) more efficient simulation while maintaining transfer performance within 5-10% of uniformly high-fidelity approaches for tasks where dynamics modeling is critical.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2030</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <a href="theory-360.html">[theory-360]</a></p>
+            <p><strong>Change Log:</strong></p>
+            <ul>
+                <li>Clarified theory scope: explicitly stated that the theory is most relevant for high-acceleration or high-gear-ratio manipulation tasks where actuator dynamics significantly affect performance, while for slow quasi-static manipulation with large tolerances, perceptual and behavioral factors may dominate.</li>
+                <li>Refined bandwidth parameter definition: distinguished between actuator response bandwidth and control update frequency, with separate thresholds (5x task frequency for actuator bandwidth, 10x task frequency for control frequency), and added temporal characteristics including actuation delay and minimum action duration.</li>
+                <li>Added contact_model_characteristics to the critical parameter set, recognizing it as a distinct critical factor (not just an actuator parameter) that is equally or more critical than actuator parameters for precision assembly tasks.</li>
+                <li>Acknowledged learned models: added explicit recognition that for actuators with strong nonlinearities, data-driven learned models (residual networks, joint-wise dynamics models, state-dependent perturbations) may be more practical and effective than explicit parameter identification while maintaining the selective fidelity principle.</li>
+                <li>Specified task-representative conditions: modified statements to emphasize that critical parameters must be evaluated and modeled under task-representative loading conditions (e.g., object-loaded data for manipulation, not free-hand or unloaded conditions).</li>
+                <li>Added precision assembly special case: explicitly stated that for tasks requiring <1mm positioning accuracy, both actuator parameter modeling AND contact model characteristics are required, with contact model fidelity being equally or more critical.</li>
+                <li>Refined domain randomization guidance: clarified that DR alone may suffice for actuators with relatively linear dynamics and simple transmissions, but explicit modeling (physics-based or learned) is required for actuators with strong nonlinearities, with the choice depending on actuator complexity and available data.</li>
+                <li>Modified sufficiency claims: clarified that high-fidelity modeling of critical dynamics parameters is necessary when dynamics matter, but may not be sufficient—additional factors including contact model fidelity, control-rate matching, and perceptual/behavioral alignment may also be necessary depending on task characteristics.</li>
+                <li>Added behavioral pattern statement: explicitly stated that for coordination-heavy tasks (e.g., bimanual manipulation), behavioral pattern consistency may be more critical than actuator-level fidelity.</li>
+                <li>Improved task characteristic predictions: refined the prediction rules for C_task based on task characteristics, making them more specific and evidence-based, and acknowledging that quasi-static tasks with large tolerances may have minimal or empty actuator dynamics in C_task.</li>
+                <li>Updated supporting evidence: reorganized and expanded supporting evidence to better reflect the full range of findings, including both positive evidence (UAN, Bolt, DexCtrl, DexNDM) and scope-limiting evidence (humanoid tasks, IKER quasi-static tasks).</li>
+                <li>Refined predictions: updated new predictions to be more specific and evidence-based, removing unsupported gear ratio thresholds and focusing on characteristics that are better supported by evidence (acceleration, timescale, transmission complexity).</li>
+                <li>Added negative experiments: included tests for scope limitations (quasi-static tasks), contact model fidelity claims, and task-representative loading conditions.</li>
+                <li>Expanded unaccounted_for: added items regarding the humanoid task contradiction, multi-phase tasks, sensor-actuator coupling, time-varying dynamics, and method selection criteria.</li>
+                <li>Improved clarity: restructured theory statements to be more precise and testable, with clearer conditions and thresholds based on evidence rather than arbitrary numbers.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For each manipulation task T with characteristic timescale τ_task, force scale F_task, and precision requirement δ_precision, there exists a critical set of dynamics parameters C_task ⊆ {actuator_bandwidth, control_frequency, damping, friction, backlash, compliance, inertia, contact_model_characteristics} such that high-fidelity modeling of C_task is necessary for successful transfer (defined as <10% performance degradation from real-world baseline) when dynamics significantly affect task performance.</li>
+                <li>The relevance of actuator dynamics to transfer success is task-dependent and can be predicted from task characteristics: (a) High-acceleration tasks (peak acceleration >5 rad/s² or τ_task < 1s) with complex transmissions (e.g., harmonic drives, high-reduction gearboxes) typically require actuator dynamics in C_task. (b) Quasi-static manipulation (τ_task > 2s) with large tolerances (δ_precision > 5mm) may have empty or minimal actuator dynamics in C_task, with perceptual and behavioral factors dominating. (c) Contact-rich dexterous tasks with object loads require actuator dynamics in C_task regardless of speed.</li>
+                <li>The minimum fidelity threshold for each critical parameter p ∈ C_task is determined by: fidelity_min(p) = k * |∂Performance/∂p|, where k is a task-class constant and the sensitivity is evaluated at the nominal parameter value under task-representative conditions (e.g., object-loaded for manipulation). Parameters with |∂Performance/∂p| < ε_threshold are non-critical.</li>
+                <li>For actuator response bandwidth ω_actuator and control update frequency f_control in dynamic tasks: (a) Actuator bandwidth is critical if ω_actuator < 5 * ω_task (where ω_task = 2π/τ_task). (b) Control frequency is critical if f_control < 10 * ω_task. (c) Both must exceed their respective thresholds for successful transfer. (d) Temporal characteristics including actuation delay and minimum action duration must also be modeled for tasks sensitive to timing.</li>
+                <li>For contact-rich tasks (>30% of task time in contact), compliance and friction parameters are typically critical and must be modeled with relative error <20% to achieve successful transfer. These parameters must be evaluated and modeled under task-representative loading conditions (e.g., object-loaded data for manipulation, not free-hand or unloaded conditions).</li>
+                <li>For precision assembly tasks requiring positioning accuracy δ_precision < 1mm, both actuator parameters (e.g., backlash with absolute error < 0.2mm) AND contact model characteristics (penetration tolerance, contact stiffness, solver accuracy) are critical. Contact model fidelity may be equally or more important than actuator parameter fidelity for such tasks.</li>
+                <li>Non-critical parameters (those not in C_task) can be modeled with simplified dynamics or idealized assumptions without degrading transfer performance by more than 5%. However, for actuators with strong nonlinearities (hysteresis, stick-slip, complex transmission effects), data-driven learned models of critical dynamics (residual networks, joint-wise dynamics models, state-dependent perturbations) may be more practical and effective than explicit parameter identification while maintaining the selective fidelity principle.</li>
+                <li>Task sensitivity to dynamics parameters can be determined through automated sensitivity analysis in simulation (using finite differences, adjoint methods, parameter sweeps, or contour mapping) before real-world deployment, enabling adaptive fidelity allocation. When performed under task-representative conditions, sensitivity analysis can predict critical parameters with 80-90% accuracy compared to empirical determination.</li>
+                <li>The computational cost of simulation scales approximately with the number of high-fidelity parameters modeled. Selective fidelity reduces simulation time by a factor approximately equal to N_total/N_critical, where N_total is total parameters and N_critical = |C_task|, achieving 2-10x (or greater) speedup for tasks where dynamics modeling is critical.</li>
+                <li>The critical parameter set C_task can be partially predicted from task characteristics: (a) Slow quasi-static tasks (τ_task > 2s) with large tolerances (>5mm) may have minimal or empty actuator dynamics in C_task. (b) Fast dynamic tasks (τ_task < 0.1s) typically have C_task including {actuator_bandwidth, control_frequency, inertia, damping}. (c) Force-controlled tasks typically have C_task including {compliance, damping, friction}. (d) High-acceleration tasks with complex transmissions typically have C_task including {friction, hysteresis, lag, bandwidth}. (e) Precision assembly (<1mm) typically has C_task including {backlash, contact_model_characteristics}.</li>
+                <li>For multi-actuator systems, the critical parameter set includes both individual actuator parameters and coupling terms, with coupling terms critical when actuators must coordinate within timescales <2 * τ_task. For coordination-heavy tasks (e.g., bimanual manipulation), behavioral pattern consistency (correct coordination strategy) may be more critical than actuator-level fidelity.</li>
+                <li>Domain randomization alone may be sufficient for actuators with relatively linear dynamics and simple transmissions, but explicit modeling (physics-based or learned) is required for actuators with strong nonlinearities (hysteresis, stick-slip, complex transmission effects). The choice between explicit parameter identification, learned residual models, and domain randomization depends on actuator complexity and available data.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>UAN demonstrates that for high-acceleration arm manipulation with harmonic drives, explicitly modeling actuator-specific nonlinearities (lag, friction, hysteresis) through learned residuals is critical for transfer, while domain randomization suffices for other parameters. This validates that task-dependent critical parameter subsets exist and that selective high-fidelity modeling enables successful transfer. <a href="../results/extraction-result-1966.html#e1966.0" class="evidence-link">[e1966.0]</a> </li>
+    <li>Bolt bipedal locomotion identifies joint friction and actuation delay as critical parameters requiring explicit modeling for zero-shot transfer, with omission causing immediate collapse, while other parameters (mass, inertia) are secondary. This validates that dynamic tasks have critical sets including friction and temporal parameters, and that critical parameters exhibit high sensitivity. <a href="../results/extraction-result-1919.html#e1919.0" class="evidence-link">[e1919.0]</a> </li>
+    <li>DexCtrl demonstrates that per-joint PD controller parameters (stiffness K_P and damping K_D) are critical for contact-rich dexterous manipulation, with sensitivity analysis showing K_P scales monotonically with object mass. This validates that contact-rich tasks require compliance and damping in the critical set, and that critical parameters exhibit measurable task-performance sensitivity. <a href="../results/extraction-result-1946.html#e1946.0" class="evidence-link">[e1946.0]</a> <a href="../results/extraction-result-1946.html#e1946.1" class="evidence-link">[e1946.1]</a> </li>
+    <li>DexNDM shows that joint-wise actuator dynamics modeling with object-loaded data is critical for in-hand rotation transfer, while free-hand actuator models fail completely. This validates that critical parameters are task-dependent and must be evaluated under task-relevant loading conditions, and that for contact-rich dexterous tasks, actuator dynamics modeling is essential. <a href="../results/extraction-result-1971.html#e1971.0" class="evidence-link">[e1971.0]</a> <a href="../results/extraction-result-1971.html#e1971.1" class="evidence-link">[e1971.1]</a> <a href="../results/extraction-result-1971.html#e1971.2" class="evidence-link">[e1971.2]</a> </li>
+    <li>Balboa balancing experiment demonstrates that viscous damping parameters and equivalent controller gains are critical for transfer, with systematic sensitivity analysis (parameter sweeps, contour maps) successfully identifying critical parameters and showing that gain-constrained domain randomization prevents exploitation of unrealistic actuator capabilities. <a href="../results/extraction-result-1929.html#e1929.0" class="evidence-link">[e1929.0]</a> </li>
+    <li>CEM parameter optimization shows that tuning a small subset of physics parameters (friction, damping, armature) can improve fit and reduce overshoot, validating that the critical set concept is valid and that some parameters matter more than others, though for complex actuators the parametric form may be insufficient. <a href="../results/extraction-result-1966.html#e1966.2" class="evidence-link">[e1966.2]</a> </li>
+    <li>IKER tasks achieve approximately 5-minute training times in simulation with domain randomization, demonstrating computational efficiency gains of 10-100x compared to methods requiring extensive real-world data collection or uniformly high-fidelity modeling. <a href="../results/extraction-result-1954.html#e1954.0" class="evidence-link">[e1954.0]</a> <a href="../results/extraction-result-1954.html#e1954.1" class="evidence-link">[e1954.1]</a> <a href="../results/extraction-result-1954.html#e1954.2" class="evidence-link">[e1954.2]</a> <a href="../results/extraction-result-1954.html#e1954.3" class="evidence-link">[e1954.3]</a> </li>
+    <li>Default and DR baselines failing for athletic arm tasks while succeeding for leg locomotion validates that critical parameter sets are task-dependent: high-acceleration arm manipulation with complex transmissions requires specific actuator modeling, while leg locomotion can use broader randomization. <a href="../results/extraction-result-1966.html#e1966.3" class="evidence-link">[e1966.3]</a> <a href="../results/extraction-result-1966.html#e1966.5" class="evidence-link">[e1966.5]</a> </li>
+    <li>Actuator Net (supervised) ablation shows that capturing lag alone is insufficient without modeling transmission nonlinearities, validating that for complex actuators, multiple parameters must be in the critical set and modeled with sufficient fidelity. <a href="../results/extraction-result-1966.html#e1966.1" class="evidence-link">[e1966.1]</a> </li>
+    <li>PALO achieves zero-shot sim-to-real transfer for quadruped locomotion by modeling PD-actuated control with randomization of actuator parameters (PD gains, action delay, motor torque), supporting the approach of identifying and modeling critical actuator parameters for dynamic tasks. <a href="../results/extraction-result-1923.html#e1923.0" class="evidence-link">[e1923.0]</a> </li>
+    <li>JT-Perturb demonstrates that state-dependent torque perturbations can capture unmodeled actuator dynamics better than finite-parameter randomization, supporting that critical dynamics must be modeled and that expressive learned models may be more practical than explicit parameter identification for actuators with complex nonlinearities. <a href="../results/extraction-result-1921.html#e1921.0" class="evidence-link">[e1921.0]</a> </li>
+    <li>Spot navigation study validates that identifying command-to-velocity mapping improves transfer, but stopping latency and minimum action duration caused failures, supporting that actuator dynamics modeling is important and that temporal characteristics must be included. <a href="../results/extraction-result-1949.html#e1949.0" class="evidence-link">[e1949.0]</a> </li>
+    <li>ExoStart/BulbInstall demonstrates that contact model fidelity (preventing penetration in tight insertions) can be more critical than actuator dynamics fidelity for precision assembly tasks, validating that simulation contact model implementation is a critical factor for high-precision tasks. <a href="../results/extraction-result-1974.html#e1974.0" class="evidence-link">[e1974.0]</a> <a href="../results/extraction-result-1974.html#e1974.1" class="evidence-link">[e1974.1]</a> </li>
+    <li>BB (BumbleBee) achieves transfer using PD-level control with cluster-specific delta-action models trained on real rollouts, supporting the concept of selective modeling (cluster-specific rather than uniform) though using data-driven compensation rather than physics-based parameter identification. <a href="../results/extraction-result-1927.html#e1927.0" class="evidence-link">[e1927.0]</a> </li>
+    <li>IKER shoe placement and pushing tasks achieve reasonable transfer (80-85% success) using kinematic end-effector control with domain randomization of object properties but no explicit joint-actuator dynamics modeling, consistent with the theory's prediction that slow quasi-static tasks may not require high-fidelity actuator modeling. <a href="../results/extraction-result-1954.html#e1954.0" class="evidence-link">[e1954.0]</a> <a href="../results/extraction-result-1954.html#e1954.1" class="evidence-link">[e1954.1]</a> </li>
+    <li>Multiple humanoid manipulation tasks (CupPnP, C2S-PnP, C2C-PnP) achieved strong sim-to-real transfer (80-95% success) with task-aware simulation and visual alignment, with explicit dynamics alignment producing no improvement, suggesting that for these specific quasi-static manipulation tasks with large tolerances, actuator dynamics were not in the critical set and perceptual/semantic factors dominated. <a href="../results/extraction-result-1955.html#e1955.0" class="evidence-link">[e1955.0]</a> <a href="../results/extraction-result-1955.html#e1955.1" class="evidence-link">[e1955.1]</a> <a href="../results/extraction-result-1955.html#e1955.2" class="evidence-link">[e1955.2]</a> <a href="../results/extraction-result-1955.html#e1955.3" class="evidence-link">[e1955.3]</a> <a href="../results/extraction-result-1955.html#e1955.4" class="evidence-link">[e1955.4]</a> <a href="../results/extraction-result-1955.html#e1955.5" class="evidence-link">[e1955.5]</a> <a href="../results/extraction-result-1955.html#e1955.6" class="evidence-link">[e1955.6]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For pick-and-place tasks with movement duration >3 seconds, positioning tolerance >5mm, and simple parallel-jaw grippers, modeling detailed actuator dynamics will not improve transfer success by more than 5% compared to kinematic end-effector control with domain randomization of object properties, as actuator dynamics are not in the critical set for such quasi-static tasks.</li>
+                <li>For pipetting and liquid handling tasks (characteristic timescale 1-3 seconds) involving force control, modeling compliance with <15% error and damping with <25% error will be critical for transfer success, while backlash modeling can be simplified without >5% performance loss.</li>
+                <li>Automated sensitivity analysis using parameter sweeps in simulation (with 5-10% parameter perturbations) under task-representative loading conditions (e.g., with objects for manipulation tasks) can identify the critical parameter set C_task with 80-90% accuracy compared to empirical determination through real-world trials.</li>
+                <li>For high-acceleration manipulation tasks (peak acceleration >10 rad/s²) with complex transmissions (harmonic drives, cycloidal drives), learned residual models trained on object-loaded real data will achieve >15% better transfer success than explicit parameter identification alone, as they better capture complex nonlinearities.</li>
+                <li>Training policies with high-fidelity models of only critical parameters (identified through sensitivity analysis) will achieve real-world performance within 8% of policies trained with uniformly high-fidelity models, but with 3-7x faster simulation speed for typical 6-DOF manipulators with complex transmissions.</li>
+                <li>For precision assembly tasks requiring <0.5mm positioning accuracy, both backlash modeling (absolute error <0.2mm) AND contact model fidelity (penetration tolerance <0.1mm, accurate contact solver) are required, with failures in either causing >20% performance degradation.</li>
+                <li>For quadruped locomotion with characteristic task frequency ~2 Hz, control update frequency must be at least 20 Hz (10x task frequency) and actuator bandwidth must exceed 10 Hz (5x task frequency) for successful transfer, with violations causing instability or oscillations.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether the critical parameter set C_task remains constant across different instances of the same task class with varying object properties (e.g., different liquid viscosities 1-100 cP, object masses varying 10x, surface friction varying 5x) or requires task-instance-specific determination. If constant across a range, this would enable task-class-specific simulation templates.</li>
+                <li>Whether there exist universal critical parameters that are important across >80% of manipulation tasks where actuator dynamics matter, enabling a general-purpose high-fidelity actuator model that transfers well across diverse tasks without task-specific tuning.</li>
+                <li>If the 5x bandwidth rule holds across all manipulation regimes, or if there are special regimes (e.g., impact dynamics with contact duration <10ms, stick-slip transitions, resonance conditions) where much higher bandwidth ratios (>20x) are required for accurate transfer.</li>
+                <li>Whether cross-parameter interactions (e.g., friction-compliance coupling in contact, bandwidth-delay interactions in oscillatory motions, inertia-damping coupling in dynamic tasks) create emergent critical parameters that wouldn't be identified by single-parameter sensitivity analysis, potentially requiring multi-parameter sensitivity methods.</li>
+                <li>Whether the critical parameter set changes during learning—parameters that are critical early in training (first 25% of training iterations) may become less critical as the policy learns compensatory behaviors, potentially enabling curriculum-based fidelity scheduling that progressively reduces fidelity requirements.</li>
+                <li>For tasks at the boundary between quasi-static and dynamic regimes (τ_task = 1-2s, moderate accelerations 2-5 rad/s²), whether actuator dynamics are in the critical set, and if so, which specific actuator parameters are critical. This boundary region may reveal task-specific factors that determine when actuator dynamics become critical.</li>
+                <li>Whether learned residual models trained on one robot platform can transfer to similar platforms (e.g., different harmonic-drive arms with similar specifications) or require platform-specific training, which would affect the practical scalability of the learned-model approach.</li>
+                <li>For humanoid manipulation tasks that succeeded without actuator dynamics tuning, whether this was due to (a) truly quasi-static task characteristics making actuator dynamics non-critical, (b) sufficient implicit robustness from other randomization, or (c) limited evaluation that didn't stress actuator dynamics. Testing with higher-acceleration variants would clarify.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding manipulation tasks with τ_task < 1s and peak accelerations >5 rad/s² using complex transmissions where uniformly low-fidelity actuator modeling (all actuator parameters at 50% error) achieves the same transfer success (<5% difference) as selective high-fidelity modeling would suggest that actuator dynamics are not task-dependent or that all such tasks are robust to dynamics errors.</li>
+                <li>Demonstrating that policies trained with high-fidelity models of supposedly non-critical parameters (identified by sensitivity analysis as having |∂Performance/∂p| < ε_threshold) significantly outperform (>15% improvement) policies trained with simplified models of those parameters would invalidate the sensitivity-based identification method.</li>
+                <li>Showing that sensitivity analysis in simulation fails to predict which parameters are critical for real-world transfer (precision <60% or recall <60%) even when performed under task-representative loading conditions would undermine the theory's practical applicability.</li>
+                <li>Finding that the computational savings from selective fidelity are negligible (<20% speedup) compared to other simulation costs across a range of manipulation tasks would reduce the practical motivation for the theory.</li>
+                <li>Discovering tasks where the critical parameter set cannot be predicted from task characteristics (timescale, acceleration, contact ratio, precision requirement, transmission type) and varies unpredictably across similar tasks would challenge the theory's predictive power.</li>
+                <li>Finding quasi-static manipulation tasks (τ_task > 3s, tolerance >10mm, peak acceleration <1 rad/s²) where actuator dynamics modeling is critical for transfer (>15% improvement) would contradict the theory's scope limitation and suggest actuator dynamics are always critical.</li>
+                <li>Demonstrating that for precision assembly tasks (<1mm tolerance), accurate actuator parameter modeling alone (without contact model fidelity) is sufficient for transfer would contradict the theory's claim that contact model characteristics are equally or more critical for such tasks.</li>
+                <li>Finding that learned residual models trained on free-hand (unloaded) data transfer successfully to contact-rich manipulation tasks would contradict the theory's claim that critical parameters must be evaluated under task-representative loading conditions.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not fully specify how to handle coupled dynamics where multiple parameters interact nonlinearly (e.g., friction-compliance coupling in contact, backlash-bandwidth interactions in oscillatory motions). The critical set concept assumes approximate parameter independence, but evidence suggests interactions may create emergent critical parameters requiring multi-parameter sensitivity analysis. </li>
+    <li>The minimum fidelity thresholds are stated with some quantitative bounds (e.g., <20% error for compliance, <0.2mm for backlash) but lack comprehensive specifications across all parameter types, task classes, and loading conditions. A complete fidelity specification table or empirical database is needed. </li>
+    <li>The theory does not address how sensor noise, delays, and quantization interact with actuator dynamics in determining transfer requirements. Sensor-actuator coupling may create additional critical parameters or modify fidelity requirements for closed-loop control tasks. </li>
+    <li>The theory does not specify how to handle time-varying dynamics (e.g., temperature-dependent friction, wear-dependent backlash, battery-voltage-dependent motor torque, thermal expansion) or how fidelity requirements change when actuator properties drift over time during deployment or across environmental conditions. </li>
+    <li>The computational cost model assumes approximately linear scaling with number of parameters but doesn't account for potential nonlinear effects from stiff dynamics, numerical integration challenges, or solver selection that may arise when modeling certain critical parameters at high fidelity. </li>
+    <li>The theory does not provide clear decision criteria for choosing between explicit parameter identification, learned residual models, and domain randomization for different actuator types and task regimes, though evidence suggests different approaches are optimal for different situations (e.g., learned models for complex transmissions, DR for simple actuators). </li>
+    <li>For tasks where perceptual or behavioral factors dominate (e.g., bimanual coordination, vision-based manipulation with large tolerances), the theory does not specify how to determine whether actuator dynamics are in the critical set or how to trade off actuator fidelity against perceptual/behavioral alignment in resource allocation. <a href="../results/extraction-result-1955.html#e1955.7" class="evidence-link">[e1955.7]</a> </li>
+    <li>The theory does not address how to handle tasks with multiple distinct phases (e.g., reach, grasp, manipulate, place) that may have different critical parameter sets for each phase, or whether a union of all phase-specific critical sets is required or if phase-specific modeling is possible. </li>
+    <li>The exact mechanism by which humanoid manipulation tasks achieved high transfer success without actuator dynamics tuning is not fully explained by the theory—whether this was due to truly quasi-static characteristics, implicit robustness from other factors, or limited evaluation scope remains unclear and requires further investigation. <a href="../results/extraction-result-1955.html#e1955.0" class="evidence-link">[e1955.0]</a> <a href="../results/extraction-result-1955.html#e1955.1" class="evidence-link">[e1955.1]</a> <a href="../results/extraction-result-1955.html#e1955.2" class="evidence-link">[e1955.2]</a> <a href="../results/extraction-result-1955.html#e1955.3" class="evidence-link">[e1955.3]</a> <a href="../results/extraction-result-1955.html#e1955.4" class="evidence-link">[e1955.4]</a> <a href="../results/extraction-result-1955.html#e1955.5" class="evidence-link">[e1955.5]</a> <a href="../results/extraction-result-1955.html#e1955.6" class="evidence-link">[e1955.6]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> unknown</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <span class="empty-note">No references provided.</span>        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Critical Dynamics Fidelity Theory (Revised)",
+    "type": "general",
+    "theory_description": "Successful sim-to-real transfer of manipulation skills for scientific discovery requires high-fidelity modeling of only those dynamics properties that are critical to task success, rather than complete system modeling. The theory posits that there exists a task-dependent subset of dynamics properties (actuator bandwidth, control update frequency, damping, backlash, compliance, inertia, friction, contact model characteristics) that must exceed minimum fidelity thresholds, while other properties can be modeled at lower fidelity without impacting transfer success. Critical parameters are those for which the task performance exhibits high sensitivity (gradient magnitude &gt; threshold), and fidelity requirements scale with the characteristic timescales, force scales, and precision requirements of the task. The theory's applicability depends on task characteristics: it is most relevant for high-acceleration or high-gear-ratio manipulation tasks where actuator dynamics significantly affect performance, while for slow quasi-static manipulation with large tolerances, perceptual and behavioral factors may dominate. This selective fidelity approach enables 2-10x (or greater) more efficient simulation while maintaining transfer performance within 5-10% of uniformly high-fidelity approaches for tasks where dynamics modeling is critical.",
+    "supporting_evidence": [
+        {
+            "text": "UAN demonstrates that for high-acceleration arm manipulation with harmonic drives, explicitly modeling actuator-specific nonlinearities (lag, friction, hysteresis) through learned residuals is critical for transfer, while domain randomization suffices for other parameters. This validates that task-dependent critical parameter subsets exist and that selective high-fidelity modeling enables successful transfer.",
+            "uuids": [
+                "e1966.0"
+            ]
+        },
+        {
+            "text": "Bolt bipedal locomotion identifies joint friction and actuation delay as critical parameters requiring explicit modeling for zero-shot transfer, with omission causing immediate collapse, while other parameters (mass, inertia) are secondary. This validates that dynamic tasks have critical sets including friction and temporal parameters, and that critical parameters exhibit high sensitivity.",
+            "uuids": [
+                "e1919.0"
+            ]
+        },
+        {
+            "text": "DexCtrl demonstrates that per-joint PD controller parameters (stiffness K_P and damping K_D) are critical for contact-rich dexterous manipulation, with sensitivity analysis showing K_P scales monotonically with object mass. This validates that contact-rich tasks require compliance and damping in the critical set, and that critical parameters exhibit measurable task-performance sensitivity.",
+            "uuids": [
+                "e1946.0",
+                "e1946.1"
+            ]
+        },
+        {
+            "text": "DexNDM shows that joint-wise actuator dynamics modeling with object-loaded data is critical for in-hand rotation transfer, while free-hand actuator models fail completely. This validates that critical parameters are task-dependent and must be evaluated under task-relevant loading conditions, and that for contact-rich dexterous tasks, actuator dynamics modeling is essential.",
+            "uuids": [
+                "e1971.0",
+                "e1971.1",
+                "e1971.2"
+            ]
+        },
+        {
+            "text": "Balboa balancing experiment demonstrates that viscous damping parameters and equivalent controller gains are critical for transfer, with systematic sensitivity analysis (parameter sweeps, contour maps) successfully identifying critical parameters and showing that gain-constrained domain randomization prevents exploitation of unrealistic actuator capabilities.",
+            "uuids": [
+                "e1929.0"
+            ]
+        },
+        {
+            "text": "CEM parameter optimization shows that tuning a small subset of physics parameters (friction, damping, armature) can improve fit and reduce overshoot, validating that the critical set concept is valid and that some parameters matter more than others, though for complex actuators the parametric form may be insufficient.",
+            "uuids": [
+                "e1966.2"
+            ]
+        },
+        {
+            "text": "IKER tasks achieve approximately 5-minute training times in simulation with domain randomization, demonstrating computational efficiency gains of 10-100x compared to methods requiring extensive real-world data collection or uniformly high-fidelity modeling.",
+            "uuids": [
+                "e1954.0",
+                "e1954.1",
+                "e1954.2",
+                "e1954.3"
+            ]
+        },
+        {
+            "text": "Default and DR baselines failing for athletic arm tasks while succeeding for leg locomotion validates that critical parameter sets are task-dependent: high-acceleration arm manipulation with complex transmissions requires specific actuator modeling, while leg locomotion can use broader randomization.",
+            "uuids": [
+                "e1966.3",
+                "e1966.5"
+            ]
+        },
+        {
+            "text": "Actuator Net (supervised) ablation shows that capturing lag alone is insufficient without modeling transmission nonlinearities, validating that for complex actuators, multiple parameters must be in the critical set and modeled with sufficient fidelity.",
+            "uuids": [
+                "e1966.1"
+            ]
+        },
+        {
+            "text": "PALO achieves zero-shot sim-to-real transfer for quadruped locomotion by modeling PD-actuated control with randomization of actuator parameters (PD gains, action delay, motor torque), supporting the approach of identifying and modeling critical actuator parameters for dynamic tasks.",
+            "uuids": [
+                "e1923.0"
+            ]
+        },
+        {
+            "text": "JT-Perturb demonstrates that state-dependent torque perturbations can capture unmodeled actuator dynamics better than finite-parameter randomization, supporting that critical dynamics must be modeled and that expressive learned models may be more practical than explicit parameter identification for actuators with complex nonlinearities.",
+            "uuids": [
+                "e1921.0"
+            ]
+        },
+        {
+            "text": "Spot navigation study validates that identifying command-to-velocity mapping improves transfer, but stopping latency and minimum action duration caused failures, supporting that actuator dynamics modeling is important and that temporal characteristics must be included.",
+            "uuids": [
+                "e1949.0"
+            ]
+        },
+        {
+            "text": "ExoStart/BulbInstall demonstrates that contact model fidelity (preventing penetration in tight insertions) can be more critical than actuator dynamics fidelity for precision assembly tasks, validating that simulation contact model implementation is a critical factor for high-precision tasks.",
+            "uuids": [
+                "e1974.0",
+                "e1974.1"
+            ]
+        },
+        {
+            "text": "BB (BumbleBee) achieves transfer using PD-level control with cluster-specific delta-action models trained on real rollouts, supporting the concept of selective modeling (cluster-specific rather than uniform) though using data-driven compensation rather than physics-based parameter identification.",
+            "uuids": [
+                "e1927.0"
+            ]
+        },
+        {
+            "text": "IKER shoe placement and pushing tasks achieve reasonable transfer (80-85% success) using kinematic end-effector control with domain randomization of object properties but no explicit joint-actuator dynamics modeling, consistent with the theory's prediction that slow quasi-static tasks may not require high-fidelity actuator modeling.",
+            "uuids": [
+                "e1954.0",
+                "e1954.1"
+            ]
+        },
+        {
+            "text": "Multiple humanoid manipulation tasks (CupPnP, C2S-PnP, C2C-PnP) achieved strong sim-to-real transfer (80-95% success) with task-aware simulation and visual alignment, with explicit dynamics alignment producing no improvement, suggesting that for these specific quasi-static manipulation tasks with large tolerances, actuator dynamics were not in the critical set and perceptual/semantic factors dominated.",
+            "uuids": [
+                "e1955.0",
+                "e1955.1",
+                "e1955.2",
+                "e1955.3",
+                "e1955.4",
+                "e1955.5",
+                "e1955.6"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For each manipulation task T with characteristic timescale τ_task, force scale F_task, and precision requirement δ_precision, there exists a critical set of dynamics parameters C_task ⊆ {actuator_bandwidth, control_frequency, damping, friction, backlash, compliance, inertia, contact_model_characteristics} such that high-fidelity modeling of C_task is necessary for successful transfer (defined as &lt;10% performance degradation from real-world baseline) when dynamics significantly affect task performance.",
+        "The relevance of actuator dynamics to transfer success is task-dependent and can be predicted from task characteristics: (a) High-acceleration tasks (peak acceleration &gt;5 rad/s² or τ_task &lt; 1s) with complex transmissions (e.g., harmonic drives, high-reduction gearboxes) typically require actuator dynamics in C_task. (b) Quasi-static manipulation (τ_task &gt; 2s) with large tolerances (δ_precision &gt; 5mm) may have empty or minimal actuator dynamics in C_task, with perceptual and behavioral factors dominating. (c) Contact-rich dexterous tasks with object loads require actuator dynamics in C_task regardless of speed.",
+        "The minimum fidelity threshold for each critical parameter p ∈ C_task is determined by: fidelity_min(p) = k * |∂Performance/∂p|, where k is a task-class constant and the sensitivity is evaluated at the nominal parameter value under task-representative conditions (e.g., object-loaded for manipulation). Parameters with |∂Performance/∂p| &lt; ε_threshold are non-critical.",
+        "For actuator response bandwidth ω_actuator and control update frequency f_control in dynamic tasks: (a) Actuator bandwidth is critical if ω_actuator &lt; 5 * ω_task (where ω_task = 2π/τ_task). (b) Control frequency is critical if f_control &lt; 10 * ω_task. (c) Both must exceed their respective thresholds for successful transfer. (d) Temporal characteristics including actuation delay and minimum action duration must also be modeled for tasks sensitive to timing.",
+        "For contact-rich tasks (&gt;30% of task time in contact), compliance and friction parameters are typically critical and must be modeled with relative error &lt;20% to achieve successful transfer. These parameters must be evaluated and modeled under task-representative loading conditions (e.g., object-loaded data for manipulation, not free-hand or unloaded conditions).",
+        "For precision assembly tasks requiring positioning accuracy δ_precision &lt; 1mm, both actuator parameters (e.g., backlash with absolute error &lt; 0.2mm) AND contact model characteristics (penetration tolerance, contact stiffness, solver accuracy) are critical. Contact model fidelity may be equally or more important than actuator parameter fidelity for such tasks.",
+        "Non-critical parameters (those not in C_task) can be modeled with simplified dynamics or idealized assumptions without degrading transfer performance by more than 5%. However, for actuators with strong nonlinearities (hysteresis, stick-slip, complex transmission effects), data-driven learned models of critical dynamics (residual networks, joint-wise dynamics models, state-dependent perturbations) may be more practical and effective than explicit parameter identification while maintaining the selective fidelity principle.",
+        "Task sensitivity to dynamics parameters can be determined through automated sensitivity analysis in simulation (using finite differences, adjoint methods, parameter sweeps, or contour mapping) before real-world deployment, enabling adaptive fidelity allocation. When performed under task-representative conditions, sensitivity analysis can predict critical parameters with 80-90% accuracy compared to empirical determination.",
+        "The computational cost of simulation scales approximately with the number of high-fidelity parameters modeled. Selective fidelity reduces simulation time by a factor approximately equal to N_total/N_critical, where N_total is total parameters and N_critical = |C_task|, achieving 2-10x (or greater) speedup for tasks where dynamics modeling is critical.",
+        "The critical parameter set C_task can be partially predicted from task characteristics: (a) Slow quasi-static tasks (τ_task &gt; 2s) with large tolerances (&gt;5mm) may have minimal or empty actuator dynamics in C_task. (b) Fast dynamic tasks (τ_task &lt; 0.1s) typically have C_task including {actuator_bandwidth, control_frequency, inertia, damping}. (c) Force-controlled tasks typically have C_task including {compliance, damping, friction}. (d) High-acceleration tasks with complex transmissions typically have C_task including {friction, hysteresis, lag, bandwidth}. (e) Precision assembly (&lt;1mm) typically has C_task including {backlash, contact_model_characteristics}.",
+        "For multi-actuator systems, the critical parameter set includes both individual actuator parameters and coupling terms, with coupling terms critical when actuators must coordinate within timescales &lt;2 * τ_task. For coordination-heavy tasks (e.g., bimanual manipulation), behavioral pattern consistency (correct coordination strategy) may be more critical than actuator-level fidelity.",
+        "Domain randomization alone may be sufficient for actuators with relatively linear dynamics and simple transmissions, but explicit modeling (physics-based or learned) is required for actuators with strong nonlinearities (hysteresis, stick-slip, complex transmission effects). The choice between explicit parameter identification, learned residual models, and domain randomization depends on actuator complexity and available data."
+    ],
+    "new_predictions_likely": [
+        "For pick-and-place tasks with movement duration &gt;3 seconds, positioning tolerance &gt;5mm, and simple parallel-jaw grippers, modeling detailed actuator dynamics will not improve transfer success by more than 5% compared to kinematic end-effector control with domain randomization of object properties, as actuator dynamics are not in the critical set for such quasi-static tasks.",
+        "For pipetting and liquid handling tasks (characteristic timescale 1-3 seconds) involving force control, modeling compliance with &lt;15% error and damping with &lt;25% error will be critical for transfer success, while backlash modeling can be simplified without &gt;5% performance loss.",
+        "Automated sensitivity analysis using parameter sweeps in simulation (with 5-10% parameter perturbations) under task-representative loading conditions (e.g., with objects for manipulation tasks) can identify the critical parameter set C_task with 80-90% accuracy compared to empirical determination through real-world trials.",
+        "For high-acceleration manipulation tasks (peak acceleration &gt;10 rad/s²) with complex transmissions (harmonic drives, cycloidal drives), learned residual models trained on object-loaded real data will achieve &gt;15% better transfer success than explicit parameter identification alone, as they better capture complex nonlinearities.",
+        "Training policies with high-fidelity models of only critical parameters (identified through sensitivity analysis) will achieve real-world performance within 8% of policies trained with uniformly high-fidelity models, but with 3-7x faster simulation speed for typical 6-DOF manipulators with complex transmissions.",
+        "For precision assembly tasks requiring &lt;0.5mm positioning accuracy, both backlash modeling (absolute error &lt;0.2mm) AND contact model fidelity (penetration tolerance &lt;0.1mm, accurate contact solver) are required, with failures in either causing &gt;20% performance degradation.",
+        "For quadruped locomotion with characteristic task frequency ~2 Hz, control update frequency must be at least 20 Hz (10x task frequency) and actuator bandwidth must exceed 10 Hz (5x task frequency) for successful transfer, with violations causing instability or oscillations."
+    ],
+    "new_predictions_unknown": [
+        "Whether the critical parameter set C_task remains constant across different instances of the same task class with varying object properties (e.g., different liquid viscosities 1-100 cP, object masses varying 10x, surface friction varying 5x) or requires task-instance-specific determination. If constant across a range, this would enable task-class-specific simulation templates.",
+        "Whether there exist universal critical parameters that are important across &gt;80% of manipulation tasks where actuator dynamics matter, enabling a general-purpose high-fidelity actuator model that transfers well across diverse tasks without task-specific tuning.",
+        "If the 5x bandwidth rule holds across all manipulation regimes, or if there are special regimes (e.g., impact dynamics with contact duration &lt;10ms, stick-slip transitions, resonance conditions) where much higher bandwidth ratios (&gt;20x) are required for accurate transfer.",
+        "Whether cross-parameter interactions (e.g., friction-compliance coupling in contact, bandwidth-delay interactions in oscillatory motions, inertia-damping coupling in dynamic tasks) create emergent critical parameters that wouldn't be identified by single-parameter sensitivity analysis, potentially requiring multi-parameter sensitivity methods.",
+        "Whether the critical parameter set changes during learning—parameters that are critical early in training (first 25% of training iterations) may become less critical as the policy learns compensatory behaviors, potentially enabling curriculum-based fidelity scheduling that progressively reduces fidelity requirements.",
+        "For tasks at the boundary between quasi-static and dynamic regimes (τ_task = 1-2s, moderate accelerations 2-5 rad/s²), whether actuator dynamics are in the critical set, and if so, which specific actuator parameters are critical. This boundary region may reveal task-specific factors that determine when actuator dynamics become critical.",
+        "Whether learned residual models trained on one robot platform can transfer to similar platforms (e.g., different harmonic-drive arms with similar specifications) or require platform-specific training, which would affect the practical scalability of the learned-model approach.",
+        "For humanoid manipulation tasks that succeeded without actuator dynamics tuning, whether this was due to (a) truly quasi-static task characteristics making actuator dynamics non-critical, (b) sufficient implicit robustness from other randomization, or (c) limited evaluation that didn't stress actuator dynamics. Testing with higher-acceleration variants would clarify."
+    ],
+    "negative_experiments": [
+        "Finding manipulation tasks with τ_task &lt; 1s and peak accelerations &gt;5 rad/s² using complex transmissions where uniformly low-fidelity actuator modeling (all actuator parameters at 50% error) achieves the same transfer success (&lt;5% difference) as selective high-fidelity modeling would suggest that actuator dynamics are not task-dependent or that all such tasks are robust to dynamics errors.",
+        "Demonstrating that policies trained with high-fidelity models of supposedly non-critical parameters (identified by sensitivity analysis as having |∂Performance/∂p| &lt; ε_threshold) significantly outperform (&gt;15% improvement) policies trained with simplified models of those parameters would invalidate the sensitivity-based identification method.",
+        "Showing that sensitivity analysis in simulation fails to predict which parameters are critical for real-world transfer (precision &lt;60% or recall &lt;60%) even when performed under task-representative loading conditions would undermine the theory's practical applicability.",
+        "Finding that the computational savings from selective fidelity are negligible (&lt;20% speedup) compared to other simulation costs across a range of manipulation tasks would reduce the practical motivation for the theory.",
+        "Discovering tasks where the critical parameter set cannot be predicted from task characteristics (timescale, acceleration, contact ratio, precision requirement, transmission type) and varies unpredictably across similar tasks would challenge the theory's predictive power.",
+        "Finding quasi-static manipulation tasks (τ_task &gt; 3s, tolerance &gt;10mm, peak acceleration &lt;1 rad/s²) where actuator dynamics modeling is critical for transfer (&gt;15% improvement) would contradict the theory's scope limitation and suggest actuator dynamics are always critical.",
+        "Demonstrating that for precision assembly tasks (&lt;1mm tolerance), accurate actuator parameter modeling alone (without contact model fidelity) is sufficient for transfer would contradict the theory's claim that contact model characteristics are equally or more critical for such tasks.",
+        "Finding that learned residual models trained on free-hand (unloaded) data transfer successfully to contact-rich manipulation tasks would contradict the theory's claim that critical parameters must be evaluated under task-representative loading conditions."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not fully specify how to handle coupled dynamics where multiple parameters interact nonlinearly (e.g., friction-compliance coupling in contact, backlash-bandwidth interactions in oscillatory motions). The critical set concept assumes approximate parameter independence, but evidence suggests interactions may create emergent critical parameters requiring multi-parameter sensitivity analysis.",
+            "uuids": []
+        },
+        {
+            "text": "The minimum fidelity thresholds are stated with some quantitative bounds (e.g., &lt;20% error for compliance, &lt;0.2mm for backlash) but lack comprehensive specifications across all parameter types, task classes, and loading conditions. A complete fidelity specification table or empirical database is needed.",
+            "uuids": []
+        },
+        {
+            "text": "The theory does not address how sensor noise, delays, and quantization interact with actuator dynamics in determining transfer requirements. Sensor-actuator coupling may create additional critical parameters or modify fidelity requirements for closed-loop control tasks.",
+            "uuids": []
+        },
+        {
+            "text": "The theory does not specify how to handle time-varying dynamics (e.g., temperature-dependent friction, wear-dependent backlash, battery-voltage-dependent motor torque, thermal expansion) or how fidelity requirements change when actuator properties drift over time during deployment or across environmental conditions.",
+            "uuids": []
+        },
+        {
+            "text": "The computational cost model assumes approximately linear scaling with number of parameters but doesn't account for potential nonlinear effects from stiff dynamics, numerical integration challenges, or solver selection that may arise when modeling certain critical parameters at high fidelity.",
+            "uuids": []
+        },
+        {
+            "text": "The theory does not provide clear decision criteria for choosing between explicit parameter identification, learned residual models, and domain randomization for different actuator types and task regimes, though evidence suggests different approaches are optimal for different situations (e.g., learned models for complex transmissions, DR for simple actuators).",
+            "uuids": []
+        },
+        {
+            "text": "For tasks where perceptual or behavioral factors dominate (e.g., bimanual coordination, vision-based manipulation with large tolerances), the theory does not specify how to determine whether actuator dynamics are in the critical set or how to trade off actuator fidelity against perceptual/behavioral alignment in resource allocation.",
+            "uuids": [
+                "e1955.7"
+            ]
+        },
+        {
+            "text": "The theory does not address how to handle tasks with multiple distinct phases (e.g., reach, grasp, manipulate, place) that may have different critical parameter sets for each phase, or whether a union of all phase-specific critical sets is required or if phase-specific modeling is possible.",
+            "uuids": []
+        },
+        {
+            "text": "The exact mechanism by which humanoid manipulation tasks achieved high transfer success without actuator dynamics tuning is not fully explained by the theory—whether this was due to truly quasi-static characteristics, implicit robustness from other factors, or limited evaluation scope remains unclear and requires further investigation.",
+            "uuids": [
+                "e1955.0",
+                "e1955.1",
+                "e1955.2",
+                "e1955.3",
+                "e1955.4",
+                "e1955.5",
+                "e1955.6"
+            ]
+        }
+    ],
+    "change_log": [
+        "Clarified theory scope: explicitly stated that the theory is most relevant for high-acceleration or high-gear-ratio manipulation tasks where actuator dynamics significantly affect performance, while for slow quasi-static manipulation with large tolerances, perceptual and behavioral factors may dominate.",
+        "Refined bandwidth parameter definition: distinguished between actuator response bandwidth and control update frequency, with separate thresholds (5x task frequency for actuator bandwidth, 10x task frequency for control frequency), and added temporal characteristics including actuation delay and minimum action duration.",
+        "Added contact_model_characteristics to the critical parameter set, recognizing it as a distinct critical factor (not just an actuator parameter) that is equally or more critical than actuator parameters for precision assembly tasks.",
+        "Acknowledged learned models: added explicit recognition that for actuators with strong nonlinearities, data-driven learned models (residual networks, joint-wise dynamics models, state-dependent perturbations) may be more practical and effective than explicit parameter identification while maintaining the selective fidelity principle.",
+        "Specified task-representative conditions: modified statements to emphasize that critical parameters must be evaluated and modeled under task-representative loading conditions (e.g., object-loaded data for manipulation, not free-hand or unloaded conditions).",
+        "Added precision assembly special case: explicitly stated that for tasks requiring &lt;1mm positioning accuracy, both actuator parameter modeling AND contact model characteristics are required, with contact model fidelity being equally or more critical.",
+        "Refined domain randomization guidance: clarified that DR alone may suffice for actuators with relatively linear dynamics and simple transmissions, but explicit modeling (physics-based or learned) is required for actuators with strong nonlinearities, with the choice depending on actuator complexity and available data.",
+        "Modified sufficiency claims: clarified that high-fidelity modeling of critical dynamics parameters is necessary when dynamics matter, but may not be sufficient—additional factors including contact model fidelity, control-rate matching, and perceptual/behavioral alignment may also be necessary depending on task characteristics.",
+        "Added behavioral pattern statement: explicitly stated that for coordination-heavy tasks (e.g., bimanual manipulation), behavioral pattern consistency may be more critical than actuator-level fidelity.",
+        "Improved task characteristic predictions: refined the prediction rules for C_task based on task characteristics, making them more specific and evidence-based, and acknowledging that quasi-static tasks with large tolerances may have minimal or empty actuator dynamics in C_task.",
+        "Updated supporting evidence: reorganized and expanded supporting evidence to better reflect the full range of findings, including both positive evidence (UAN, Bolt, DexCtrl, DexNDM) and scope-limiting evidence (humanoid tasks, IKER quasi-static tasks).",
+        "Refined predictions: updated new predictions to be more specific and evidence-based, removing unsupported gear ratio thresholds and focusing on characteristics that are better supported by evidence (acceleration, timescale, transmission complexity).",
+        "Added negative experiments: included tests for scope limitations (quasi-static tasks), contact model fidelity claims, and task-representative loading conditions.",
+        "Expanded unaccounted_for: added items regarding the humanoid task contradiction, multi-phase tasks, sensor-actuator coupling, time-varying dynamics, and method selection criteria.",
+        "Improved clarity: restructured theory statements to be more precise and testable, with clearer conditions and thresholds based on evidence rather than arbitrary numbers."
+    ]
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

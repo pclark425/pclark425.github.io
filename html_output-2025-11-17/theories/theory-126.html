@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counterfactual Validation for Data Augmentation in Factorized Dynamics - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-126</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-126</p>
+                <p><strong>Name:</strong> Counterfactual Validation for Data Augmentation in Factorized Dynamics</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of distractor-robust causal discovery in open-ended virtual labs, including methods to detect, downweight, and refute spurious signals during inquiry, based on the following results.</p>
+                <p><strong>Description:</strong> In environments with locally factorized causal structure, counterfactual data augmentation can dramatically improve sample efficiency by generating combinatorially many synthetic samples from a small set of factual transitions. Valid augmentation requires: (1) learning or knowing the local causal graph structure (which components influence which next-state components), (2) identifying independent components in the local graph that can be safely swapped between transitions, and (3) validating proposed counterfactuals by verifying that the local causal structure remains consistent after swapping. The validation step is critical: proposals are accepted only if recomputing the local mask on the counterfactual yields the same graph partitioning as the original, and if structural equations for swapped components are identical across source neighborhoods. When properly validated, counterfactual augmentation can increase effective dataset size by n^m (n factual samples, m independent components) with minimal model bias compared to model-based augmentation. However, the approach requires accurate local causal structure estimation, which can fail in high-dimensional observation spaces or when using naive attention-based methods. Performance depends critically on mask quality: oracle masks yield best results, while learned masks introduce approximation error but remain practical.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>A counterfactual transition is valid if and only if: (1) swapped components are independent in the local causal graph (belong to different connected components), and (2) structural equations for swapped components are identical across source neighborhoods</li>
+                <li>The number of valid counterfactuals grows combinatorially as n^m where n is the number of factual samples and m is the number of independent components in the local graph</li>
+                <li>Validation via mask recomputation (checking that M(s_cf, a_cf) yields the same graph partitioning as the original) is necessary to prevent invalid swaps that would violate local causal structure</li>
+                <li>Learned masks (via neural networks) can approximate oracle masks but introduce approximation error; oracle masks yield best performance while learned masks remain practical with significant but reduced gains</li>
+                <li>Counterfactual augmentation is most effective in sparse, factorized environments with clear component independence and provides diminishing returns in densely connected systems where few components are independent</li>
+                <li>Action influence estimation (e.g., via CAI = I(S'_j; A | S=s)) provides a principled alternative to attention-based methods for identifying which state components are causally affected by actions</li>
+                <li>Counterfactual augmentation reduces model bias compared to model-based methods (e.g., Dyna) because it reuses empirical subsamples rather than generating samples from learned forward models</li>
+                <li>The effectiveness of counterfactual augmentation depends critically on accurate local causal structure estimation; naive attention-based methods (e.g., transformer attention) can fail in high-dimensional settings</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>CoDA generates valid counterfactuals by computing connected components of local causal graphs, swapping independent components between transitions, and validating proposals by reapplying the mask function to ensure graph partitioning remains consistent <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>CoDA yields substantial empirical gains: ~3x performance boost at small dataset sizes in batch Pong, best performance in Spriteworld with oracle masks, and significant early sample-efficiency gains with learned masks <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>CoDA outperforms model-based Dyna augmentation using the same learned dynamics model due to lower model bias, as CoDA reuses empirical subsamples rather than sampling from an explicit forward model <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>Local Causal Models (LCMs) provide theoretical foundation: conditioning on neighborhoods L ⊆ S×A produces sparser local graphs via structural minimality, enabling separation of causal mechanisms and scalable counterfactual reasoning <a href="../results/extraction-result-994.html#e994.1" class="evidence-link">[e994.1]</a> </li>
+    <li>CAIAC uses learned action influence (via CAI measure based on conditional mutual information) to identify which state components are causally affected by actions, enabling generation of dynamically-feasible counterfactuals <a href="../results/extraction-result-737.html#e737.0" class="evidence-link">[e737.0]</a> <a href="../results/extraction-result-737.html#e737.1" class="evidence-link">[e737.1]</a> </li>
+    <li>CAIAC achieves strong OOD performance: Franka-Kitchen Kettle 0.73±0.08, Microwave 0.60±0.09, substantially outperforming baselines and CODA in high-dimensional manipulation tasks <a href="../results/extraction-result-737.html#e737.0" class="evidence-link">[e737.0]</a> </li>
+    <li>Validation-based rejection is critical: proposed counterfactuals are accepted only if recomputed local mask matches original partitions and structural equations for swapped components are identical across neighborhoods <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>Learned masks work but lag oracle masks: CoDA with learned masks gives significant early gains but oracle masks yield best performance in Spriteworld experiments <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>MADE-style masked networks provide architectural inspiration for enforcing local factorization via layer-wise masks conditioned on state and action <a href="../results/extraction-result-994.html#e994.5" class="evidence-link">[e994.5]</a> </li>
+    <li>CAI (Causal Action Influence) provides principled measure for detecting agent influence: I(S'_j; A | S=s) estimated via learned probabilistic transition model, achieving high detection accuracy (AUC 0.97-1.00) and graceful degradation under observation noise <a href="../results/extraction-result-1003.html#e1003.0" class="evidence-link">[e1003.0]</a> </li>
+    <li>CAI-based prioritization (CAI-P) improves RL sample efficiency 1.5-2.5× by downweighting episodes with low causal influence, reducing spurious/noisy transitions in replay <a href="../results/extraction-result-1003.html#e1003.0" class="evidence-link">[e1003.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a 4-object manipulation task with 2 independent components per object, CoDA should generate approximately 16^2 = 256 valid counterfactuals from 16 factual samples, assuming proper validation</li>
+                <li>CoDA with learned masks should achieve 60-80% of oracle mask performance in continuous control tasks based on the gap observed in Spriteworld experiments</li>
+                <li>Counterfactual augmentation should reduce sample requirements by 2-5× in goal-conditioned RL with factorized state spaces, consistent with observed 3× gains in batch Pong</li>
+                <li>CAI-based influence detection should achieve AUC > 0.95 in detecting agent-controllable state components in manipulation tasks with moderate observation noise</li>
+                <li>Combining CAI-based influence estimation with counterfactual validation should outperform attention-based methods in high-dimensional robotic manipulation tasks</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether counterfactual validation can be made more robust through adversarial training, consistency checks across multiple mask predictions, or ensemble methods</li>
+                <li>The effectiveness of counterfactual augmentation in partially observable environments where full state is not observed and local causal structure must be inferred from observation history</li>
+                <li>Whether the approach extends effectively to environments with stochastic dynamics where structural equations include noise terms that vary across neighborhoods</li>
+                <li>The scalability to environments with 10+ objects and complex inter-object dependencies where the number of potential counterfactuals becomes computationally prohibitive</li>
+                <li>Whether hybrid approaches combining model-based and counterfactual augmentation could achieve better bias-variance tradeoffs than either method alone</li>
+                <li>The extent to which counterfactual augmentation can handle continuous action spaces where interpolation between factual actions may be needed rather than discrete swapping</li>
+                <li>Whether counterfactual augmentation provides benefits in multi-agent settings where other agents' behaviors must be accounted for in the local causal structure</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding cases where validated counterfactuals (passing mask recomputation check) are still dynamically infeasible when executed in the environment would undermine the sufficiency of the validation criterion</li>
+                <li>Demonstrating that counterfactual augmentation provides no benefit over standard data augmentation (e.g., random noise injection) in factorized environments would challenge the causal justification and suggest the gains come from increased data diversity rather than causal validity</li>
+                <li>Showing that learned masks cannot approximate oracle masks even with large amounts of training data and sophisticated architectures would limit practical applicability to settings where oracle masks are available</li>
+                <li>Finding that the combinatorial explosion of counterfactuals leads to overfitting or reduced generalization would reveal a fundamental limitation and suggest that quality matters more than quantity</li>
+                <li>Demonstrating that model-based augmentation with sufficiently accurate models consistently outperforms counterfactual augmentation would challenge the claim about model bias advantages</li>
+                <li>Finding environments where attention-based methods (e.g., transformer attention) reliably recover local causal structure would contradict the claim that such methods fail in high-dimensional settings</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory does not specify concrete methods for learning masks in high-dimensional observation spaces beyond mentioning neural networks; specific architectures and training procedures are not detailed <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>Computational cost of validation and counterfactual generation at scale is not fully characterized; the theory does not specify complexity bounds or practical limits on the number of counterfactuals that can be generated and validated <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>The relationship between mask accuracy and downstream RL performance is not quantified; the theory does not provide a functional form or bounds relating mask error to policy performance degradation <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>The theory does not address how to handle cases where structural equations vary across neighborhoods beyond stating it as a requirement; practical methods for detecting and handling such variation are not specified <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+    <li>The theory does not explain why CoDA with learned masks shows high variance across seeds in some settings (e.g., Franka-Kitchen tasks), suggesting unaccounted sources of instability <a href="../results/extraction-result-737.html#e737.2" class="evidence-link">[e737.2]</a> </li>
+    <li>The theory does not account for how to determine the optimal number of counterfactuals to generate or when to stop generating them to avoid diminishing returns or overfitting <a href="../results/extraction-result-994.html#e994.0" class="evidence-link">[e994.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Pitis et al. (2020) Counterfactual Data Augmentation using Locally Factored Dynamics [Original CoDA paper introducing the core method]</li>
+    <li>Pearl (2009) Causality: Models, Reasoning, and Inference [Foundational framework for counterfactual reasoning and structural causal models]</li>
+    <li>Bareinboim & Pearl (2016) Causal inference and the data-fusion problem [Theory of transportability and validity of counterfactual reasoning across domains]</li>
+    <li>Bengio et al. (2019) A meta-transfer objective for learning to disentangle causal mechanisms [Related work on learning factorized causal structure for transfer]</li>
+    <li>Germain et al. (2015) MADE: Masked autoencoder for distribution estimation [Architectural inspiration for masked networks enforcing factorization]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Counterfactual Validation for Data Augmentation in Factorized Dynamics",
+    "theory_description": "In environments with locally factorized causal structure, counterfactual data augmentation can dramatically improve sample efficiency by generating combinatorially many synthetic samples from a small set of factual transitions. Valid augmentation requires: (1) learning or knowing the local causal graph structure (which components influence which next-state components), (2) identifying independent components in the local graph that can be safely swapped between transitions, and (3) validating proposed counterfactuals by verifying that the local causal structure remains consistent after swapping. The validation step is critical: proposals are accepted only if recomputing the local mask on the counterfactual yields the same graph partitioning as the original, and if structural equations for swapped components are identical across source neighborhoods. When properly validated, counterfactual augmentation can increase effective dataset size by n^m (n factual samples, m independent components) with minimal model bias compared to model-based augmentation. However, the approach requires accurate local causal structure estimation, which can fail in high-dimensional observation spaces or when using naive attention-based methods. Performance depends critically on mask quality: oracle masks yield best results, while learned masks introduce approximation error but remain practical.",
+    "supporting_evidence": [
+        {
+            "text": "CoDA generates valid counterfactuals by computing connected components of local causal graphs, swapping independent components between transitions, and validating proposals by reapplying the mask function to ensure graph partitioning remains consistent",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "CoDA yields substantial empirical gains: ~3x performance boost at small dataset sizes in batch Pong, best performance in Spriteworld with oracle masks, and significant early sample-efficiency gains with learned masks",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "CoDA outperforms model-based Dyna augmentation using the same learned dynamics model due to lower model bias, as CoDA reuses empirical subsamples rather than sampling from an explicit forward model",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "Local Causal Models (LCMs) provide theoretical foundation: conditioning on neighborhoods L ⊆ S×A produces sparser local graphs via structural minimality, enabling separation of causal mechanisms and scalable counterfactual reasoning",
+            "uuids": [
+                "e994.1"
+            ]
+        },
+        {
+            "text": "CAIAC uses learned action influence (via CAI measure based on conditional mutual information) to identify which state components are causally affected by actions, enabling generation of dynamically-feasible counterfactuals",
+            "uuids": [
+                "e737.0",
+                "e737.1"
+            ]
+        },
+        {
+            "text": "CAIAC achieves strong OOD performance: Franka-Kitchen Kettle 0.73±0.08, Microwave 0.60±0.09, substantially outperforming baselines and CODA in high-dimensional manipulation tasks",
+            "uuids": [
+                "e737.0"
+            ]
+        },
+        {
+            "text": "Validation-based rejection is critical: proposed counterfactuals are accepted only if recomputed local mask matches original partitions and structural equations for swapped components are identical across neighborhoods",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "Learned masks work but lag oracle masks: CoDA with learned masks gives significant early gains but oracle masks yield best performance in Spriteworld experiments",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "MADE-style masked networks provide architectural inspiration for enforcing local factorization via layer-wise masks conditioned on state and action",
+            "uuids": [
+                "e994.5"
+            ]
+        },
+        {
+            "text": "CAI (Causal Action Influence) provides principled measure for detecting agent influence: I(S'_j; A | S=s) estimated via learned probabilistic transition model, achieving high detection accuracy (AUC 0.97-1.00) and graceful degradation under observation noise",
+            "uuids": [
+                "e1003.0"
+            ]
+        },
+        {
+            "text": "CAI-based prioritization (CAI-P) improves RL sample efficiency 1.5-2.5× by downweighting episodes with low causal influence, reducing spurious/noisy transitions in replay",
+            "uuids": [
+                "e1003.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "A counterfactual transition is valid if and only if: (1) swapped components are independent in the local causal graph (belong to different connected components), and (2) structural equations for swapped components are identical across source neighborhoods",
+        "The number of valid counterfactuals grows combinatorially as n^m where n is the number of factual samples and m is the number of independent components in the local graph",
+        "Validation via mask recomputation (checking that M(s_cf, a_cf) yields the same graph partitioning as the original) is necessary to prevent invalid swaps that would violate local causal structure",
+        "Learned masks (via neural networks) can approximate oracle masks but introduce approximation error; oracle masks yield best performance while learned masks remain practical with significant but reduced gains",
+        "Counterfactual augmentation is most effective in sparse, factorized environments with clear component independence and provides diminishing returns in densely connected systems where few components are independent",
+        "Action influence estimation (e.g., via CAI = I(S'_j; A | S=s)) provides a principled alternative to attention-based methods for identifying which state components are causally affected by actions",
+        "Counterfactual augmentation reduces model bias compared to model-based methods (e.g., Dyna) because it reuses empirical subsamples rather than generating samples from learned forward models",
+        "The effectiveness of counterfactual augmentation depends critically on accurate local causal structure estimation; naive attention-based methods (e.g., transformer attention) can fail in high-dimensional settings"
+    ],
+    "new_predictions_likely": [
+        "In a 4-object manipulation task with 2 independent components per object, CoDA should generate approximately 16^2 = 256 valid counterfactuals from 16 factual samples, assuming proper validation",
+        "CoDA with learned masks should achieve 60-80% of oracle mask performance in continuous control tasks based on the gap observed in Spriteworld experiments",
+        "Counterfactual augmentation should reduce sample requirements by 2-5× in goal-conditioned RL with factorized state spaces, consistent with observed 3× gains in batch Pong",
+        "CAI-based influence detection should achieve AUC &gt; 0.95 in detecting agent-controllable state components in manipulation tasks with moderate observation noise",
+        "Combining CAI-based influence estimation with counterfactual validation should outperform attention-based methods in high-dimensional robotic manipulation tasks"
+    ],
+    "new_predictions_unknown": [
+        "Whether counterfactual validation can be made more robust through adversarial training, consistency checks across multiple mask predictions, or ensemble methods",
+        "The effectiveness of counterfactual augmentation in partially observable environments where full state is not observed and local causal structure must be inferred from observation history",
+        "Whether the approach extends effectively to environments with stochastic dynamics where structural equations include noise terms that vary across neighborhoods",
+        "The scalability to environments with 10+ objects and complex inter-object dependencies where the number of potential counterfactuals becomes computationally prohibitive",
+        "Whether hybrid approaches combining model-based and counterfactual augmentation could achieve better bias-variance tradeoffs than either method alone",
+        "The extent to which counterfactual augmentation can handle continuous action spaces where interpolation between factual actions may be needed rather than discrete swapping",
+        "Whether counterfactual augmentation provides benefits in multi-agent settings where other agents' behaviors must be accounted for in the local causal structure"
+    ],
+    "negative_experiments": [
+        "Finding cases where validated counterfactuals (passing mask recomputation check) are still dynamically infeasible when executed in the environment would undermine the sufficiency of the validation criterion",
+        "Demonstrating that counterfactual augmentation provides no benefit over standard data augmentation (e.g., random noise injection) in factorized environments would challenge the causal justification and suggest the gains come from increased data diversity rather than causal validity",
+        "Showing that learned masks cannot approximate oracle masks even with large amounts of training data and sophisticated architectures would limit practical applicability to settings where oracle masks are available",
+        "Finding that the combinatorial explosion of counterfactuals leads to overfitting or reduced generalization would reveal a fundamental limitation and suggest that quality matters more than quantity",
+        "Demonstrating that model-based augmentation with sufficiently accurate models consistently outperforms counterfactual augmentation would challenge the claim about model bias advantages",
+        "Finding environments where attention-based methods (e.g., transformer attention) reliably recover local causal structure would contradict the claim that such methods fail in high-dimensional settings"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory does not specify concrete methods for learning masks in high-dimensional observation spaces beyond mentioning neural networks; specific architectures and training procedures are not detailed",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "Computational cost of validation and counterfactual generation at scale is not fully characterized; the theory does not specify complexity bounds or practical limits on the number of counterfactuals that can be generated and validated",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "The relationship between mask accuracy and downstream RL performance is not quantified; the theory does not provide a functional form or bounds relating mask error to policy performance degradation",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "The theory does not address how to handle cases where structural equations vary across neighborhoods beyond stating it as a requirement; practical methods for detecting and handling such variation are not specified",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "The theory does not explain why CoDA with learned masks shows high variance across seeds in some settings (e.g., Franka-Kitchen tasks), suggesting unaccounted sources of instability",
+            "uuids": [
+                "e737.2"
+            ]
+        },
+        {
+            "text": "The theory does not account for how to determine the optimal number of counterfactuals to generate or when to stop generating them to avoid diminishing returns or overfitting",
+            "uuids": [
+                "e994.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "Attention-based mask learning (CODA baseline using transformer attention) fails in high-dimensional settings, often misidentifying influence and even failing to recover temporal self-links, leading to dynamically-infeasible counterfactuals and poor OOD performance (e.g., Franka-Kitchen Kettle 0.18±0.05)",
+            "uuids": [
+                "e737.2"
+            ]
+        },
+        {
+            "text": "Learned masks consistently lag oracle masks in performance across multiple environments, suggesting a fundamental approximation gap that may limit practical applicability",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "Model-based augmentation can sometimes match or outperform CoDA depending on model quality and environment characteristics, challenging the universal superiority claim",
+            "uuids": [
+                "e994.0"
+            ]
+        },
+        {
+            "text": "CODA shows high variance and instability across random seeds in some high-dimensional tasks, suggesting the approach may not be robust in all factorized settings",
+            "uuids": [
+                "e737.2"
+            ]
+        },
+        {
+            "text": "In some environments (e.g., certain Franka-Kitchen configurations), CODA substantially underperforms simpler baselines, suggesting that counterfactual augmentation may not always be beneficial even when local structure exists",
+            "uuids": [
+                "e737.2"
+            ]
+        }
+    ],
+    "special_cases": [
+        "When structural equations vary across neighborhoods (e.g., different dynamics in different regions of state space), additional equation-consistency checks are required beyond graph partitioning validation, and swapping may only be valid within regions of similar dynamics",
+        "In stochastic environments where structural equations include noise terms, counterfactual validation must account for noise distributions and may require probabilistic validation criteria rather than deterministic mask matching",
+        "For continuous action spaces, simple component swapping may not be sufficient; interpolation between factual actions or more sophisticated action-space counterfactual generation may be needed",
+        "In multi-agent settings, counterfactual swapping must account for other agents' behaviors and their influence on the local causal structure, potentially requiring agent-conditioned masks",
+        "When observation spaces are high-dimensional (e.g., raw pixels), mask learning becomes significantly more challenging and may require specialized architectures or dimensionality reduction",
+        "In environments with long-horizon dependencies or delayed effects, local causal structure may be insufficient and temporal extension of the local graph may be required",
+        "When the number of independent components is small (m &lt;&lt; d where d is state dimensionality), the combinatorial benefit of counterfactual augmentation is limited and may not justify the computational cost",
+        "In densely connected causal graphs where most components influence each other, few valid swaps exist and counterfactual augmentation provides minimal benefit over standard augmentation"
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Pitis et al. (2020) Counterfactual Data Augmentation using Locally Factored Dynamics [Original CoDA paper introducing the core method]",
+            "Pearl (2009) Causality: Models, Reasoning, and Inference [Foundational framework for counterfactual reasoning and structural causal models]",
+            "Bareinboim & Pearl (2016) Causal inference and the data-fusion problem [Theory of transportability and validity of counterfactual reasoning across domains]",
+            "Bengio et al. (2019) A meta-transfer objective for learning to disentangle causal mechanisms [Related work on learning factorized causal structure for transfer]",
+            "Germain et al. (2015) MADE: Masked autoencoder for distribution estimation [Architectural inspiration for masked networks enforcing factorization]"
+        ]
+    },
+    "reflected_from_theory_index": 7,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

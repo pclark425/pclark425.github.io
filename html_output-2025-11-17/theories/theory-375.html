@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actuator Dynamics Transfer Requirements - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-375</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-375</p>
+                <p><strong>Name:</strong> Actuator Dynamics Transfer Requirements</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about sim-to-real transfer for scientific discovery agents that specifies environment fidelity requirements and skill-transfer conditions from virtual labs to real robotics labs, based on the following results.</p>
+                <p><strong>Description:</strong> For tasks involving dynamic motion or high-frequency control, the fidelity of actuator modeling significantly impacts sim-to-real transfer success. The required modeling depth depends on: (1) task dynamics (quasi-static vs dynamic), (2) control mode (position vs torque vs impedance), (3) control frequency, and (4) whether low-level controllers abstract actuator details. Critical actuator properties include: torque/force limits and saturation, electrical/mechanical dynamics (motor constants, gear ratios, transmission efficiency), control latencies and delays (typically 5-50ms), friction and backlash, and for compliant tasks, backdrivability and transmission efficiency. Complete omission of actuator dynamics causes transfer failure for locomotion and high-speed manipulation, but tasks using operational-space control or position control with low-level PD controllers can succeed with simplified actuator models. System identification of key actuator parameters from encoder-only data (20-40 seconds of excitation covering control bandwidth typically sufficient) can enable zero-shot transfer. Physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data, no torque sensors, and providing better generalization. Actuator parameter randomization can improve robustness when accurate identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer. Accurate actuator modeling also enables energy-efficient policies with 30%+ reductions in cost-of-transport. In-air actuator identification (without contact) can be sufficient for contact-rich locomotion, suggesting actuator modeling can be decoupled from contact modeling.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2030</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 1</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <a href="theory-190.html">[theory-190]</a></p>
+            <p><strong>Change Log:</strong></p>
+            <ul>
+                <li>Revised randomization statement to clarify it improves robustness when accurate identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer performance</li>
+                <li>Added theory statement that physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data, no torque sensors, and better generalization</li>
+                <li>Added theory statement that encoder-only data (joint positions and velocities) is sufficient for system identification without torque sensors</li>
+                <li>Modified sample size requirement from '10-20 trajectories' to '20-40 seconds of excitation data covering control bandwidth (up to Nyquist frequency)' to better reflect continuous system identification requirements</li>
+                <li>Lowered control latency threshold from '>10ms' to '>5-10ms' based on evidence of ~7.5ms critical delays in PACE experiments</li>
+                <li>Added theory statement that in-air actuator identification can be sufficient for contact-rich locomotion tasks, establishing that actuator modeling can be decoupled from contact modeling</li>
+                <li>Refined theory statement about inner current/torque loops to clarify they can be treated as unit-gain within policy bandwidth (<25 Hz) at low speeds, but voltage/current limits and back-EMF effects must still be modeled for high-speed performance</li>
+                <li>Added theory statement about energy efficiency benefits: accurate actuator modeling including electrical/mechanical losses enables 30%+ reductions in cost-of-transport</li>
+                <li>Added theory statement that CMA-ES and massively-parallel evolutionary optimization (4000+ parallel environments, 10-24 hour convergence) are effective system identification methods</li>
+                <li>Expanded soft/pneumatic actuator theory statement to include quantitative guidance on speed-dependent uncertainty modeling: Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 across actuation speeds π/3 to 2π rad/s</li>
+                <li>Updated theory description to comprehensively include all major findings: physics-based model superiority, encoder-only sufficiency, energy efficiency benefits, actuator-contact decoupling, and refined randomization guidance</li>
+                <li>Added supporting evidence from PACE paper (e1969.0, e1969.1, e1969.2, e1969.3, e1969.4) documenting zero-shot transfer with compact parameterization, comparison to learned models, and energy-efficient policies</li>
+                <li>Added supporting evidence from soft pneumatic actuator paper (e1932.0) with quantitative uncertainty parameters</li>
+                <li>Updated 'new_predictions_likely' to include specific quantitative predictions about physics-based vs learned models, encoder-only identification, energy efficiency (25-35% CoT reduction), in-air identification sufficiency, CMA-ES convergence (10-24 hours with 4000+ environments), and soft actuator uncertainty ranges</li>
+                <li>Added 'new_predictions_unknown' about limits of in-air identification for complex contact tasks</li>
+                <li>Added negative experiments to test physics-based superiority, encoder-only sufficiency, in-air identification sufficiency, and actuator-contact decoupling principles</li>
+                <li>Expanded 'unaccounted_for' items with more specific details about what remains unknown: robot size scaling specifics, series-elastic actuator differences, temperature/wear effects over >100 hours, hydraulic actuator modeling approach, cable-driven actuator parameterization, limits of in-air identification, and voltage-limited bandwidth generalization across power classes</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>For locomotion tasks with control frequencies >20Hz, omission of actuator torque limits and saturation causes transfer failure or large performance degradation (>50% performance drop)</li>
+                <li>Control latencies >5-10ms must be explicitly modeled or compensated for in tasks with control frequencies >20Hz; unmodeled latencies cause instability or oscillations</li>
+                <li>Motor electrical dynamics (back-EMF, resistance, battery voltage effects) must be modeled for tasks requiring precise torque control at high frequencies or high-speed performance; at low speeds (<1 m/s) and within policy bandwidth (<25 Hz), inner current loops can be treated as unit-gain torque sources, but voltage/current limits must still be modeled</li>
+                <li>Gear transmission efficiency and backdrivability must be modeled for compliant locomotion on torque-sensorless robots; omission causes joint oscillations and falls</li>
+                <li>System identification of 3-5 key actuator parameters (friction, damping, torque limits, transmission efficiency, inertia, delay) from 20-40 seconds of excitation data covering control bandwidth (up to Nyquist frequency) is sufficient for many dynamic tasks</li>
+                <li>Physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data (encoder-only vs torque-instrumented), no torque sensors, and providing better generalization across control gains and trajectories</li>
+                <li>Encoder-only data (joint positions and velocities) is sufficient for effective actuator system identification; torque sensors are not necessary for successful transfer in many cases</li>
+                <li>Quasi-static tasks (motion time >1s per action, control frequency <5Hz) can succeed with position control and approximate actuator modeling, achieving >80% success rates</li>
+                <li>Operational-space control (OSC) or end-effector space control can abstract away detailed actuator dynamics for manipulation tasks, but requires accurate system identification of robot dynamics (gravity, inertia, joint damping)</li>
+                <li>Actuator parameter randomization (±10-20% torque limits, ±10ms latency, ±20% motor strength) improves robustness when accurate system identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer performance</li>
+                <li>High inference frequency (>50Hz) can compensate for simplified actuator models in some tasks by enabling reactive control, particularly when low-level controllers provide high-bandwidth torque tracking</li>
+                <li>For soft/pneumatic actuators, pressure dynamics, chamber geometry, second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics, hysteresis, and speed-dependent uncertainty must be modeled; Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 across actuation speeds is required for accurate transfer</li>
+                <li>Action history (5-10 past actions) in observations can help policies learn to compensate for unmodeled actuator dynamics and delays</li>
+                <li>In-air actuator identification (without contact) can be sufficient for contact-rich locomotion tasks; actuator modeling can be decoupled from contact modeling and is often the more critical factor for locomotion transfer success</li>
+                <li>Accurate actuator modeling including electrical losses (Joule heating) and mechanical dissipation enables energy-efficient policies with 30%+ reductions in cost-of-transport compared to policies trained without accurate actuator models</li>
+                <li>CMA-ES and massively-parallel evolutionary optimization (with thousands of parallel environments) are effective system identification methods for actuator parameters, alongside trajectory optimization and gradient-based approaches; convergence typically requires 10-24 hours with 4000+ parallel environments</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>Minitaur quadruped locomotion required explicit DC motor model with piecewise-linear torque saturation and battery voltage effects; baseline simulator without actuator model produced large reality gap and policies failed on hardware <a href="../results/extraction-result-1780.html#e1780.0" class="evidence-link">[e1780.0]</a> </li>
+    <li>Bipedal locomotion on ROBOTIS-OP3 required directional transmission efficiency (DTE) model for gear backdrivability; without DTE model, policies exhibited joint oscillations and falls on real robot (transfer success 0/3 vs 3/3 with DTE) <a href="../results/extraction-result-1643.html#e1643.1" class="evidence-link">[e1643.1]</a> </li>
+    <li>System re-identification using reward-distribution matching recovered from failed transfer by adjusting actuator parameters with only 10 real episodes <a href="../results/extraction-result-1643.html#e1643.2" class="evidence-link">[e1643.2]</a> </li>
+    <li>Quadrotor acrobatics required modeling thrust-to-weight ratio randomized by ±10%; policies trained without this failed to transfer <a href="../results/extraction-result-1790.html#e1790.0" class="evidence-link">[e1790.0]</a> </li>
+    <li>DeXtreme dexterous manipulation randomized actuator effort scaling and used domain randomization over joint stiffness/damping; policies achieved 27.8±19.0 consecutive successes on real Allegro Hand <a href="../results/extraction-result-1791.html#e1791.0" class="evidence-link">[e1791.0]</a> </li>
+    <li>Shadow Hand dexterous manipulation simplified actuation model (direct torque/relative joint targets instead of tendon mechanics) but included randomization of actuator force gains, joint damping, and motor backlash model; achieved 18.8±17.1 consecutive successes on real hardware <a href="../results/extraction-result-1651.html#e1651.0" class="evidence-link">[e1651.0]</a> </li>
+    <li>Peg-in-hole assembly using operational-space control (OSC) with system identification of gravity, link masses, and joint damping succeeded without detailed actuator dynamics modeling; 20/20 success rate on real KUKA robot <a href="../results/extraction-result-1654.html#e1654.0" class="evidence-link">[e1654.0]</a> </li>
+    <li>System identification via CMA-ES optimizing gravity vector, link mass scaling, and joint damping significantly improved trajectory matching for KUKA robot <a href="../results/extraction-result-1654.html#e1654.2" class="evidence-link">[e1654.2]</a> </li>
+    <li>Contact-rich wiping task using VICES (variable impedance end-effector space control) achieved 80% real-world success with operational-space controller that factors out embodiment dynamics, without requiring detailed actuator modeling <a href="../results/extraction-result-1788.html#e1788.0" class="evidence-link">[e1788.0]</a> </li>
+    <li>Action delays and latencies (15-19ms for Minitaur, 3ms for low-level controller) must be modeled; explicit latency simulation using measured latencies was critical for transfer <a href="../results/extraction-result-1780.html#e1780.0" class="evidence-link">[e1780.0]</a> </li>
+    <li>Coverage path planning required modeling measured action delay and linear/angular accelerations; high inference frequency (15ms) allowed first-order policies to transfer, while lower frequency required higher-order policies with action history <a href="../results/extraction-result-1641.html#e1641.0" class="evidence-link">[e1641.0]</a> </li>
+    <li>Flexible cable manipulation used inverse dynamics (RNE) with AprilTag measurements to identify joint stiffness K and damping D, achieving joint-angle errors <0.005 rad and sagging angle errors <4.2% <a href="../results/extraction-result-1764.html#e1764.0" class="evidence-link">[e1764.0]</a> </li>
+    <li>Soft robotic fish used differentiable FEM to identify material parameters (Young's modulus, Poisson's ratio) from quasi-static marker data, achieving millimeter-scale deformation accuracy <a href="../results/extraction-result-1775.html#e1775.0" class="evidence-link">[e1775.0]</a> </li>
+    <li>IndustReal contact-rich assembly used high physics frequency and accurate contact modeling in Factory/Isaac Gym simulator; policies trained with PPO achieved high insertion success rates <a href="../results/extraction-result-1681.html#e1681.0" class="evidence-link">[e1681.0]</a> <a href="../results/extraction-result-1681.html#e1681.1" class="evidence-link">[e1681.1]</a> </li>
+    <li>Quasi-static manipulation tasks (Sim2Plan coffee-making) succeeded with position control and approximate actuator modeling, achieving 90% success in fixed scenes <a href="../results/extraction-result-1656.html#e1656.0" class="evidence-link">[e1656.0]</a> </li>
+    <li>Contact-rich manipulation with online admittance learning succeeded with position control for quasi-static tasks (completion time 19-28s), but required compliance parameter adaptation <a href="../results/extraction-result-1650.html#e1650.0" class="evidence-link">[e1650.0]</a> </li>
+    <li>Pneumatic soft robotic fish required explicit modeling of pneumatic chamber pressure boundary conditions and actuation; material parameter optimization compensated for simplified actuation model <a href="../results/extraction-result-1775.html#e1775.0" class="evidence-link">[e1775.0]</a> </li>
+    <li>Drawer-opening task with Franka Panda required modeling of robot action scaling and gripper dynamics; SimOpt adapted these parameters using 3 real rollouts per iteration <a href="../results/extraction-result-1657.html#e1657.2" class="evidence-link">[e1657.2]</a> </li>
+    <li>Nut-tightening task required accurate collision detection and contact dynamics but used joint position control; policies achieved 84.9-87.6% simulation success with careful contact modeling <a href="../results/extraction-result-1653.html#e1653.1" class="evidence-link">[e1653.1]</a> </li>
+    <li>Quadrotor navigation with Liquid networks required modeling of platform dynamics mismatch between simulated Crazyflie and real DJI M300; transfer succeeded despite mismatch due to closed-loop control <a href="../results/extraction-result-1768.html#e1768.0" class="evidence-link">[e1768.0]</a> </li>
+    <li>URDF-only simulation (no actuator modeling) caused complete transfer failure for quadrupedal locomotion at 400Hz control frequency, with policies diverging within seconds and requiring safety crane intervention, while PACE with actuator modeling achieved zero-shot transfer at ~0.85 m/s <a href="../results/extraction-result-1969.html#e1969.2" class="evidence-link">[e1969.2]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>System identification of 5 key actuator parameters (armature inertia, viscous damping, Coulomb friction, joint bias, global delay) from ~20 seconds of encoder-only in-air trajectory data was sufficient to enable zero-shot locomotion transfer on ANYmal, TYTAN, and MINIMAL quadrupeds <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Control latency of ~7.5ms was explicitly identified and modeled as a global command delay parameter and was critical for transfer success in quadrupedal locomotion <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Physics-based actuator models with 5 parameters fitted from ~20s encoder-only data outperformed learned actuator networks that required torque sensors and ~4 min of data, achieving better generalization across PD gains and trajectories with smaller sim-real deltas <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.1" class="evidence-link">[e1969.1]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>PACE achieved zero-shot transfer without actuator parameter randomization by using accurate system identification from in-air data, while learned actuator network baseline used randomization <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Energy-aware policies trained with accurate actuator models (including Joule heating and mechanical dissipation) achieved 32% reduction in Cost-of-Transport (CoT from 1.86 to 1.27 on ANYmal) <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>In-air trajectory identification (no ground contact) was sufficient for successful contact locomotion transfer, suggesting actuator modeling can be decoupled from contact modeling <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>CMA-ES with massively parallel simulation (N=4096 environments) enabled reliable fitting of physically-interpretable actuator parameters in 10-24 hours from encoder-only data <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Motor electrical dynamics including back-EMF constant, voltage-limited torque bandwidth, DC-bus voltage headroom, and battery voltage effects were shown important for high-speed performance, with inner current loop bandwidth measured at ~346 Hz <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Inner current loop acting as near-unit-gain torque source up to ~25 Hz policy bandwidth with <5° phase lag enabled reactive control, though voltage/current limits must still be modeled <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> </li>
+    <li>Soft pneumatic actuators required modeling of second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics, hysteresis via different damping constants, and speed-dependent uncertainty with Monte Carlo sampling (σ_ζ ranging 0.05-0.12, σ_ωn ranging 0.055-0.1 across speeds π/3 to 2π rad/s); failure to model these caused >10° finger mismatches and grasping failures <a href="../results/extraction-result-1932.html#e1932.0" class="evidence-link">[e1932.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>A throwing task will require accurate torque limits (±10%) and motor dynamics modeling to achieve target accuracy within 20cm; without it, throws will consistently overshoot or undershoot by >50cm</li>
+                <li>A high-speed pick-and-place task (cycle time <2s, control frequency >30Hz) will require latency modeling within ±5ms to avoid oscillations; unmodeled latencies will cause >30% failure rate</li>
+                <li>A compliant walking task on a new torque-sensorless robot will require gear backdrivability modeling to achieve stable gaits; without it the robot will fall within 10 steps in >80% of trials</li>
+                <li>A quasi-static assembly task (motion time >5s, control frequency <5Hz) will succeed with ±50% errors in actuator parameters using position control, achieving >70% success rate</li>
+                <li>System identification of actuator parameters from 20-40 seconds of chirp excitation data covering control bandwidth will enable transfer of a dynamic manipulation task with <20% performance degradation compared to training in perfect simulation</li>
+                <li>A manipulation task using OSC with system-identified robot dynamics (gravity, inertia, damping) will transfer with >80% success without detailed actuator modeling, even with ±30% errors in actuator parameters</li>
+                <li>Physics-based actuator identification from encoder-only data will outperform learned actuator networks trained on torque-instrumented data, achieving better generalization and requiring 50%+ less data</li>
+                <li>A locomotion policy trained with accurate actuator modeling including electrical/mechanical losses will achieve 25-35% lower cost-of-transport compared to a policy trained without loss modeling</li>
+                <li>In-air system identification of actuator parameters (20-40s of data) will enable successful transfer to contact-rich locomotion without requiring contact data for identification</li>
+                <li>CMA-ES with 4000+ parallel environments will converge to accurate actuator parameters within 10-24 hours from 20-40s of encoder-only in-air data, enabling zero-shot locomotion transfer</li>
+                <li>A soft pneumatic gripper with actuation speeds varying from π/3 to 2π rad/s will require Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 to achieve <5° finger coordination errors; without this, coordination errors will exceed 10° causing grasp failures</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether multi-actuator coordination tasks (e.g., bimanual manipulation, multi-legged locomotion) require modeling of actuator coupling and synchronization, or if independent per-actuator modeling suffices</li>
+                <li>Whether there exists a universal minimum control frequency threshold (e.g., <5Hz) below which actuator dynamics can be completely ignored for all task types</li>
+                <li>Whether actuator wear and temperature effects over long deployments (>100 hours) require online adaptation or if initial system identification remains sufficient</li>
+                <li>Whether end-to-end learned policies can implicitly learn to compensate for unmodeled actuator dynamics through sufficient training data, eliminating the need for explicit modeling</li>
+                <li>Whether the same compact parameterization (5-10 parameters) is sufficient across all actuator types (electric, hydraulic, pneumatic, cable-driven) or if fundamentally different parameterizations are needed</li>
+                <li>Whether massively-parallel evolutionary optimization (CMA-ES with thousands of environments) can identify actuator parameters from even shorter data (<10 seconds) while maintaining transfer performance</li>
+                <li>Whether energy-efficient policies trained with accurate actuator models can achieve >50% reductions in cost-of-transport on other robot platforms beyond quadrupeds</li>
+                <li>Whether in-air identification remains sufficient for contact tasks with more complex contact dynamics (e.g., multi-contact manipulation, deformable object manipulation) or if contact data becomes necessary</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding a locomotion task (control frequency >20Hz) that transfers successfully without any actuator torque modeling would challenge the torque-limit requirement</li>
+                <li>Demonstrating successful high-frequency control (>30Hz) without any latency modeling (<5ms unmodeled latency) would challenge the latency requirement</li>
+                <li>Showing that position control transfers as well as torque control for highly dynamic tasks (e.g., throwing, jumping) would challenge the dynamics-modeling requirement</li>
+                <li>Finding that actuator parameter randomization improves transfer performance over accurate physics-based identification would challenge the identification-superiority principle</li>
+                <li>Demonstrating that system identification from <10 seconds of data achieves the same transfer performance as identification from 20-40 seconds would challenge the sample-duration requirement</li>
+                <li>Finding that OSC-based methods fail to transfer without detailed actuator modeling would challenge the abstraction principle</li>
+                <li>Showing that quasi-static tasks require detailed actuator modeling to achieve >80% success would challenge the quasi-static simplification principle</li>
+                <li>Demonstrating that learned actuator networks outperform physics-based models in generalization and data efficiency would challenge the physics-based superiority principle</li>
+                <li>Finding that torque sensors are necessary for successful system identification would challenge the encoder-only sufficiency principle</li>
+                <li>Showing that contact data is necessary for actuator identification to enable contact-rich locomotion would challenge the in-air identification sufficiency principle</li>
+                <li>Finding a contact-rich locomotion task where in-air actuator identification fails but contact-inclusive identification succeeds would challenge the decoupling principle</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How actuator modeling requirements scale with robot size and mass (e.g., whether micro-robots <1kg require different modeling fidelity than human-scale robots 50-100kg, or whether the same 5-10 parameter compact parameterization applies with scaled values) <a href="../results/extraction-result-1780.html#e1780.0" class="evidence-link">[e1780.0]</a> <a href="../results/extraction-result-1643.html#e1643.1" class="evidence-link">[e1643.1]</a> <a href="../results/extraction-result-1811.html#e1811.0" class="evidence-link">[e1811.0]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Whether actuator modeling requirements differ fundamentally between series-elastic actuators (with explicit compliance) and rigid actuators, or if the same compact parameterization framework (I_a, d, τ_f, q_b, T_d) applies with additional stiffness parameters <a href="../results/extraction-result-1643.html#e1643.1" class="evidence-link">[e1643.1]</a> </li>
+    <li>How temperature effects (motor heating, battery temperature), actuator wear (friction changes, backlash increase), and hardware degradation affect transfer over long deployments (>100 hours), and whether online adaptation or periodic re-identification is necessary to maintain performance <a href="../results/extraction-result-1791.html#e1791.0" class="evidence-link">[e1791.0]</a> <a href="../results/extraction-result-1651.html#e1651.0" class="evidence-link">[e1651.0]</a> <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> </li>
+    <li>Whether hydraulic actuators require fundamentally different modeling (fluid dynamics, compressibility, pressure dynamics) compared to electric motors, or if the same compact parameterization approach (inertia, damping, friction, delay) can be extended with hydraulic-specific parameters </li>
+    <li>How actuator modeling requirements change with different low-level controllers (PD vs impedance vs admittance control) beyond the cases studied, particularly whether impedance/admittance control requires additional compliance parameters in the actuator model <a href="../results/extraction-result-1650.html#e1650.0" class="evidence-link">[e1650.0]</a> <a href="../results/extraction-result-1788.html#e1788.0" class="evidence-link">[e1788.0]</a> </li>
+    <li>Whether the compact parameterization approach (5-10 parameters) can be extended to cable-driven actuators with complex routing, capstan effects, and cable stretch, or if these require fundamentally different modeling approaches </li>
+    <li>The limits of in-air identification for contact tasks - specifically, whether there exist contact-rich tasks (e.g., high-impact tasks, deformable object manipulation, multi-contact coordination) where contact data is necessary for actuator identification to achieve successful transfer <a href="../results/extraction-result-1969.html#e1969.0" class="evidence-link">[e1969.0]</a> <a href="../results/extraction-result-1969.html#e1969.4" class="evidence-link">[e1969.4]</a> </li>
+    <li>Whether the voltage-limited torque bandwidth findings (~310 Hz theoretical, ~346 Hz measured current loop bandwidth) generalize across different motor sizes, voltages (12V, 24V, 48V systems), and power classes, or if these must be re-characterized per platform <a href="../results/extraction-result-1969.html#e1969.3" class="evidence-link">[e1969.3]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> unknown</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <span class="empty-note">No references provided.</span>        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Actuator Dynamics Transfer Requirements",
+    "type": "specific",
+    "theory_description": "For tasks involving dynamic motion or high-frequency control, the fidelity of actuator modeling significantly impacts sim-to-real transfer success. The required modeling depth depends on: (1) task dynamics (quasi-static vs dynamic), (2) control mode (position vs torque vs impedance), (3) control frequency, and (4) whether low-level controllers abstract actuator details. Critical actuator properties include: torque/force limits and saturation, electrical/mechanical dynamics (motor constants, gear ratios, transmission efficiency), control latencies and delays (typically 5-50ms), friction and backlash, and for compliant tasks, backdrivability and transmission efficiency. Complete omission of actuator dynamics causes transfer failure for locomotion and high-speed manipulation, but tasks using operational-space control or position control with low-level PD controllers can succeed with simplified actuator models. System identification of key actuator parameters from encoder-only data (20-40 seconds of excitation covering control bandwidth typically sufficient) can enable zero-shot transfer. Physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data, no torque sensors, and providing better generalization. Actuator parameter randomization can improve robustness when accurate identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer. Accurate actuator modeling also enables energy-efficient policies with 30%+ reductions in cost-of-transport. In-air actuator identification (without contact) can be sufficient for contact-rich locomotion, suggesting actuator modeling can be decoupled from contact modeling.",
+    "supporting_evidence": [
+        {
+            "text": "Minitaur quadruped locomotion required explicit DC motor model with piecewise-linear torque saturation and battery voltage effects; baseline simulator without actuator model produced large reality gap and policies failed on hardware",
+            "uuids": [
+                "e1780.0"
+            ]
+        },
+        {
+            "text": "Bipedal locomotion on ROBOTIS-OP3 required directional transmission efficiency (DTE) model for gear backdrivability; without DTE model, policies exhibited joint oscillations and falls on real robot (transfer success 0/3 vs 3/3 with DTE)",
+            "uuids": [
+                "e1643.1"
+            ]
+        },
+        {
+            "text": "System re-identification using reward-distribution matching recovered from failed transfer by adjusting actuator parameters with only 10 real episodes",
+            "uuids": [
+                "e1643.2"
+            ]
+        },
+        {
+            "text": "Quadrotor acrobatics required modeling thrust-to-weight ratio randomized by ±10%; policies trained without this failed to transfer",
+            "uuids": [
+                "e1790.0"
+            ]
+        },
+        {
+            "text": "DeXtreme dexterous manipulation randomized actuator effort scaling and used domain randomization over joint stiffness/damping; policies achieved 27.8±19.0 consecutive successes on real Allegro Hand",
+            "uuids": [
+                "e1791.0"
+            ]
+        },
+        {
+            "text": "Shadow Hand dexterous manipulation simplified actuation model (direct torque/relative joint targets instead of tendon mechanics) but included randomization of actuator force gains, joint damping, and motor backlash model; achieved 18.8±17.1 consecutive successes on real hardware",
+            "uuids": [
+                "e1651.0"
+            ]
+        },
+        {
+            "text": "Peg-in-hole assembly using operational-space control (OSC) with system identification of gravity, link masses, and joint damping succeeded without detailed actuator dynamics modeling; 20/20 success rate on real KUKA robot",
+            "uuids": [
+                "e1654.0"
+            ]
+        },
+        {
+            "text": "System identification via CMA-ES optimizing gravity vector, link mass scaling, and joint damping significantly improved trajectory matching for KUKA robot",
+            "uuids": [
+                "e1654.2"
+            ]
+        },
+        {
+            "text": "Contact-rich wiping task using VICES (variable impedance end-effector space control) achieved 80% real-world success with operational-space controller that factors out embodiment dynamics, without requiring detailed actuator modeling",
+            "uuids": [
+                "e1788.0"
+            ]
+        },
+        {
+            "text": "Action delays and latencies (15-19ms for Minitaur, 3ms for low-level controller) must be modeled; explicit latency simulation using measured latencies was critical for transfer",
+            "uuids": [
+                "e1780.0"
+            ]
+        },
+        {
+            "text": "Coverage path planning required modeling measured action delay and linear/angular accelerations; high inference frequency (15ms) allowed first-order policies to transfer, while lower frequency required higher-order policies with action history",
+            "uuids": [
+                "e1641.0"
+            ]
+        },
+        {
+            "text": "Flexible cable manipulation used inverse dynamics (RNE) with AprilTag measurements to identify joint stiffness K and damping D, achieving joint-angle errors &lt;0.005 rad and sagging angle errors &lt;4.2%",
+            "uuids": [
+                "e1764.0"
+            ]
+        },
+        {
+            "text": "Soft robotic fish used differentiable FEM to identify material parameters (Young's modulus, Poisson's ratio) from quasi-static marker data, achieving millimeter-scale deformation accuracy",
+            "uuids": [
+                "e1775.0"
+            ]
+        },
+        {
+            "text": "IndustReal contact-rich assembly used high physics frequency and accurate contact modeling in Factory/Isaac Gym simulator; policies trained with PPO achieved high insertion success rates",
+            "uuids": [
+                "e1681.0",
+                "e1681.1"
+            ]
+        },
+        {
+            "text": "Quasi-static manipulation tasks (Sim2Plan coffee-making) succeeded with position control and approximate actuator modeling, achieving 90% success in fixed scenes",
+            "uuids": [
+                "e1656.0"
+            ]
+        },
+        {
+            "text": "Contact-rich manipulation with online admittance learning succeeded with position control for quasi-static tasks (completion time 19-28s), but required compliance parameter adaptation",
+            "uuids": [
+                "e1650.0"
+            ]
+        },
+        {
+            "text": "Pneumatic soft robotic fish required explicit modeling of pneumatic chamber pressure boundary conditions and actuation; material parameter optimization compensated for simplified actuation model",
+            "uuids": [
+                "e1775.0"
+            ]
+        },
+        {
+            "text": "Drawer-opening task with Franka Panda required modeling of robot action scaling and gripper dynamics; SimOpt adapted these parameters using 3 real rollouts per iteration",
+            "uuids": [
+                "e1657.2"
+            ]
+        },
+        {
+            "text": "Nut-tightening task required accurate collision detection and contact dynamics but used joint position control; policies achieved 84.9-87.6% simulation success with careful contact modeling",
+            "uuids": [
+                "e1653.1"
+            ]
+        },
+        {
+            "text": "Quadrotor navigation with Liquid networks required modeling of platform dynamics mismatch between simulated Crazyflie and real DJI M300; transfer succeeded despite mismatch due to closed-loop control",
+            "uuids": [
+                "e1768.0"
+            ]
+        },
+        {
+            "text": "URDF-only simulation (no actuator modeling) caused complete transfer failure for quadrupedal locomotion at 400Hz control frequency, with policies diverging within seconds and requiring safety crane intervention, while PACE with actuator modeling achieved zero-shot transfer at ~0.85 m/s",
+            "uuids": [
+                "e1969.2",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "System identification of 5 key actuator parameters (armature inertia, viscous damping, Coulomb friction, joint bias, global delay) from ~20 seconds of encoder-only in-air trajectory data was sufficient to enable zero-shot locomotion transfer on ANYmal, TYTAN, and MINIMAL quadrupeds",
+            "uuids": [
+                "e1969.4",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Control latency of ~7.5ms was explicitly identified and modeled as a global command delay parameter and was critical for transfer success in quadrupedal locomotion",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Physics-based actuator models with 5 parameters fitted from ~20s encoder-only data outperformed learned actuator networks that required torque sensors and ~4 min of data, achieving better generalization across PD gains and trajectories with smaller sim-real deltas",
+            "uuids": [
+                "e1969.0",
+                "e1969.1",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "PACE achieved zero-shot transfer without actuator parameter randomization by using accurate system identification from in-air data, while learned actuator network baseline used randomization",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Energy-aware policies trained with accurate actuator models (including Joule heating and mechanical dissipation) achieved 32% reduction in Cost-of-Transport (CoT from 1.86 to 1.27 on ANYmal)",
+            "uuids": [
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "In-air trajectory identification (no ground contact) was sufficient for successful contact locomotion transfer, suggesting actuator modeling can be decoupled from contact modeling",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "CMA-ES with massively parallel simulation (N=4096 environments) enabled reliable fitting of physically-interpretable actuator parameters in 10-24 hours from encoder-only data",
+            "uuids": [
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Motor electrical dynamics including back-EMF constant, voltage-limited torque bandwidth, DC-bus voltage headroom, and battery voltage effects were shown important for high-speed performance, with inner current loop bandwidth measured at ~346 Hz",
+            "uuids": [
+                "e1969.3",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Inner current loop acting as near-unit-gain torque source up to ~25 Hz policy bandwidth with &lt;5° phase lag enabled reactive control, though voltage/current limits must still be modeled",
+            "uuids": [
+                "e1969.3"
+            ]
+        },
+        {
+            "text": "Soft pneumatic actuators required modeling of second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics, hysteresis via different damping constants, and speed-dependent uncertainty with Monte Carlo sampling (σ_ζ ranging 0.05-0.12, σ_ωn ranging 0.055-0.1 across speeds π/3 to 2π rad/s); failure to model these caused &gt;10° finger mismatches and grasping failures",
+            "uuids": [
+                "e1932.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "For locomotion tasks with control frequencies &gt;20Hz, omission of actuator torque limits and saturation causes transfer failure or large performance degradation (&gt;50% performance drop)",
+        "Control latencies &gt;5-10ms must be explicitly modeled or compensated for in tasks with control frequencies &gt;20Hz; unmodeled latencies cause instability or oscillations",
+        "Motor electrical dynamics (back-EMF, resistance, battery voltage effects) must be modeled for tasks requiring precise torque control at high frequencies or high-speed performance; at low speeds (&lt;1 m/s) and within policy bandwidth (&lt;25 Hz), inner current loops can be treated as unit-gain torque sources, but voltage/current limits must still be modeled",
+        "Gear transmission efficiency and backdrivability must be modeled for compliant locomotion on torque-sensorless robots; omission causes joint oscillations and falls",
+        "System identification of 3-5 key actuator parameters (friction, damping, torque limits, transmission efficiency, inertia, delay) from 20-40 seconds of excitation data covering control bandwidth (up to Nyquist frequency) is sufficient for many dynamic tasks",
+        "Physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data (encoder-only vs torque-instrumented), no torque sensors, and providing better generalization across control gains and trajectories",
+        "Encoder-only data (joint positions and velocities) is sufficient for effective actuator system identification; torque sensors are not necessary for successful transfer in many cases",
+        "Quasi-static tasks (motion time &gt;1s per action, control frequency &lt;5Hz) can succeed with position control and approximate actuator modeling, achieving &gt;80% success rates",
+        "Operational-space control (OSC) or end-effector space control can abstract away detailed actuator dynamics for manipulation tasks, but requires accurate system identification of robot dynamics (gravity, inertia, joint damping)",
+        "Actuator parameter randomization (±10-20% torque limits, ±10ms latency, ±20% motor strength) improves robustness when accurate system identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer performance",
+        "High inference frequency (&gt;50Hz) can compensate for simplified actuator models in some tasks by enabling reactive control, particularly when low-level controllers provide high-bandwidth torque tracking",
+        "For soft/pneumatic actuators, pressure dynamics, chamber geometry, second-order mechanical dynamics (M_eq, C_n, K_n), pump dynamics, hysteresis, and speed-dependent uncertainty must be modeled; Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 across actuation speeds is required for accurate transfer",
+        "Action history (5-10 past actions) in observations can help policies learn to compensate for unmodeled actuator dynamics and delays",
+        "In-air actuator identification (without contact) can be sufficient for contact-rich locomotion tasks; actuator modeling can be decoupled from contact modeling and is often the more critical factor for locomotion transfer success",
+        "Accurate actuator modeling including electrical losses (Joule heating) and mechanical dissipation enables energy-efficient policies with 30%+ reductions in cost-of-transport compared to policies trained without accurate actuator models",
+        "CMA-ES and massively-parallel evolutionary optimization (with thousands of parallel environments) are effective system identification methods for actuator parameters, alongside trajectory optimization and gradient-based approaches; convergence typically requires 10-24 hours with 4000+ parallel environments"
+    ],
+    "new_predictions_likely": [
+        "A throwing task will require accurate torque limits (±10%) and motor dynamics modeling to achieve target accuracy within 20cm; without it, throws will consistently overshoot or undershoot by &gt;50cm",
+        "A high-speed pick-and-place task (cycle time &lt;2s, control frequency &gt;30Hz) will require latency modeling within ±5ms to avoid oscillations; unmodeled latencies will cause &gt;30% failure rate",
+        "A compliant walking task on a new torque-sensorless robot will require gear backdrivability modeling to achieve stable gaits; without it the robot will fall within 10 steps in &gt;80% of trials",
+        "A quasi-static assembly task (motion time &gt;5s, control frequency &lt;5Hz) will succeed with ±50% errors in actuator parameters using position control, achieving &gt;70% success rate",
+        "System identification of actuator parameters from 20-40 seconds of chirp excitation data covering control bandwidth will enable transfer of a dynamic manipulation task with &lt;20% performance degradation compared to training in perfect simulation",
+        "A manipulation task using OSC with system-identified robot dynamics (gravity, inertia, damping) will transfer with &gt;80% success without detailed actuator modeling, even with ±30% errors in actuator parameters",
+        "Physics-based actuator identification from encoder-only data will outperform learned actuator networks trained on torque-instrumented data, achieving better generalization and requiring 50%+ less data",
+        "A locomotion policy trained with accurate actuator modeling including electrical/mechanical losses will achieve 25-35% lower cost-of-transport compared to a policy trained without loss modeling",
+        "In-air system identification of actuator parameters (20-40s of data) will enable successful transfer to contact-rich locomotion without requiring contact data for identification",
+        "CMA-ES with 4000+ parallel environments will converge to accurate actuator parameters within 10-24 hours from 20-40s of encoder-only in-air data, enabling zero-shot locomotion transfer",
+        "A soft pneumatic gripper with actuation speeds varying from π/3 to 2π rad/s will require Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 to achieve &lt;5° finger coordination errors; without this, coordination errors will exceed 10° causing grasp failures"
+    ],
+    "new_predictions_unknown": [
+        "Whether multi-actuator coordination tasks (e.g., bimanual manipulation, multi-legged locomotion) require modeling of actuator coupling and synchronization, or if independent per-actuator modeling suffices",
+        "Whether there exists a universal minimum control frequency threshold (e.g., &lt;5Hz) below which actuator dynamics can be completely ignored for all task types",
+        "Whether actuator wear and temperature effects over long deployments (&gt;100 hours) require online adaptation or if initial system identification remains sufficient",
+        "Whether end-to-end learned policies can implicitly learn to compensate for unmodeled actuator dynamics through sufficient training data, eliminating the need for explicit modeling",
+        "Whether the same compact parameterization (5-10 parameters) is sufficient across all actuator types (electric, hydraulic, pneumatic, cable-driven) or if fundamentally different parameterizations are needed",
+        "Whether massively-parallel evolutionary optimization (CMA-ES with thousands of environments) can identify actuator parameters from even shorter data (&lt;10 seconds) while maintaining transfer performance",
+        "Whether energy-efficient policies trained with accurate actuator models can achieve &gt;50% reductions in cost-of-transport on other robot platforms beyond quadrupeds",
+        "Whether in-air identification remains sufficient for contact tasks with more complex contact dynamics (e.g., multi-contact manipulation, deformable object manipulation) or if contact data becomes necessary"
+    ],
+    "negative_experiments": [
+        "Finding a locomotion task (control frequency &gt;20Hz) that transfers successfully without any actuator torque modeling would challenge the torque-limit requirement",
+        "Demonstrating successful high-frequency control (&gt;30Hz) without any latency modeling (&lt;5ms unmodeled latency) would challenge the latency requirement",
+        "Showing that position control transfers as well as torque control for highly dynamic tasks (e.g., throwing, jumping) would challenge the dynamics-modeling requirement",
+        "Finding that actuator parameter randomization improves transfer performance over accurate physics-based identification would challenge the identification-superiority principle",
+        "Demonstrating that system identification from &lt;10 seconds of data achieves the same transfer performance as identification from 20-40 seconds would challenge the sample-duration requirement",
+        "Finding that OSC-based methods fail to transfer without detailed actuator modeling would challenge the abstraction principle",
+        "Showing that quasi-static tasks require detailed actuator modeling to achieve &gt;80% success would challenge the quasi-static simplification principle",
+        "Demonstrating that learned actuator networks outperform physics-based models in generalization and data efficiency would challenge the physics-based superiority principle",
+        "Finding that torque sensors are necessary for successful system identification would challenge the encoder-only sufficiency principle",
+        "Showing that contact data is necessary for actuator identification to enable contact-rich locomotion would challenge the in-air identification sufficiency principle",
+        "Finding a contact-rich locomotion task where in-air actuator identification fails but contact-inclusive identification succeeds would challenge the decoupling principle"
+    ],
+    "unaccounted_for": [
+        {
+            "text": "How actuator modeling requirements scale with robot size and mass (e.g., whether micro-robots &lt;1kg require different modeling fidelity than human-scale robots 50-100kg, or whether the same 5-10 parameter compact parameterization applies with scaled values)",
+            "uuids": [
+                "e1780.0",
+                "e1643.1",
+                "e1811.0",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Whether actuator modeling requirements differ fundamentally between series-elastic actuators (with explicit compliance) and rigid actuators, or if the same compact parameterization framework (I_a, d, τ_f, q_b, T_d) applies with additional stiffness parameters",
+            "uuids": [
+                "e1643.1"
+            ]
+        },
+        {
+            "text": "How temperature effects (motor heating, battery temperature), actuator wear (friction changes, backlash increase), and hardware degradation affect transfer over long deployments (&gt;100 hours), and whether online adaptation or periodic re-identification is necessary to maintain performance",
+            "uuids": [
+                "e1791.0",
+                "e1651.0",
+                "e1969.0"
+            ]
+        },
+        {
+            "text": "Whether hydraulic actuators require fundamentally different modeling (fluid dynamics, compressibility, pressure dynamics) compared to electric motors, or if the same compact parameterization approach (inertia, damping, friction, delay) can be extended with hydraulic-specific parameters",
+            "uuids": []
+        },
+        {
+            "text": "How actuator modeling requirements change with different low-level controllers (PD vs impedance vs admittance control) beyond the cases studied, particularly whether impedance/admittance control requires additional compliance parameters in the actuator model",
+            "uuids": [
+                "e1650.0",
+                "e1788.0"
+            ]
+        },
+        {
+            "text": "Whether the compact parameterization approach (5-10 parameters) can be extended to cable-driven actuators with complex routing, capstan effects, and cable stretch, or if these require fundamentally different modeling approaches",
+            "uuids": []
+        },
+        {
+            "text": "The limits of in-air identification for contact tasks - specifically, whether there exist contact-rich tasks (e.g., high-impact tasks, deformable object manipulation, multi-contact coordination) where contact data is necessary for actuator identification to achieve successful transfer",
+            "uuids": [
+                "e1969.0",
+                "e1969.4"
+            ]
+        },
+        {
+            "text": "Whether the voltage-limited torque bandwidth findings (~310 Hz theoretical, ~346 Hz measured current loop bandwidth) generalize across different motor sizes, voltages (12V, 24V, 48V systems), and power classes, or if these must be re-characterized per platform",
+            "uuids": [
+                "e1969.3"
+            ]
+        }
+    ],
+    "change_log": [
+        "Revised randomization statement to clarify it improves robustness when accurate identification is not feasible, but accurate physics-based identification eliminates the need for randomization and achieves superior transfer performance",
+        "Added theory statement that physics-based actuator models with compact parameterizations (5-10 parameters) outperform learned neural network models, requiring less data, no torque sensors, and better generalization",
+        "Added theory statement that encoder-only data (joint positions and velocities) is sufficient for system identification without torque sensors",
+        "Modified sample size requirement from '10-20 trajectories' to '20-40 seconds of excitation data covering control bandwidth (up to Nyquist frequency)' to better reflect continuous system identification requirements",
+        "Lowered control latency threshold from '&gt;10ms' to '&gt;5-10ms' based on evidence of ~7.5ms critical delays in PACE experiments",
+        "Added theory statement that in-air actuator identification can be sufficient for contact-rich locomotion tasks, establishing that actuator modeling can be decoupled from contact modeling",
+        "Refined theory statement about inner current/torque loops to clarify they can be treated as unit-gain within policy bandwidth (&lt;25 Hz) at low speeds, but voltage/current limits and back-EMF effects must still be modeled for high-speed performance",
+        "Added theory statement about energy efficiency benefits: accurate actuator modeling including electrical/mechanical losses enables 30%+ reductions in cost-of-transport",
+        "Added theory statement that CMA-ES and massively-parallel evolutionary optimization (4000+ parallel environments, 10-24 hour convergence) are effective system identification methods",
+        "Expanded soft/pneumatic actuator theory statement to include quantitative guidance on speed-dependent uncertainty modeling: Monte Carlo randomization with σ_ζ ~ 0.05-0.12 and σ_ωn ~ 0.055-0.1 across actuation speeds π/3 to 2π rad/s",
+        "Updated theory description to comprehensively include all major findings: physics-based model superiority, encoder-only sufficiency, energy efficiency benefits, actuator-contact decoupling, and refined randomization guidance",
+        "Added supporting evidence from PACE paper (e1969.0, e1969.1, e1969.2, e1969.3, e1969.4) documenting zero-shot transfer with compact parameterization, comparison to learned models, and energy-efficient policies",
+        "Added supporting evidence from soft pneumatic actuator paper (e1932.0) with quantitative uncertainty parameters",
+        "Updated 'new_predictions_likely' to include specific quantitative predictions about physics-based vs learned models, encoder-only identification, energy efficiency (25-35% CoT reduction), in-air identification sufficiency, CMA-ES convergence (10-24 hours with 4000+ environments), and soft actuator uncertainty ranges",
+        "Added 'new_predictions_unknown' about limits of in-air identification for complex contact tasks",
+        "Added negative experiments to test physics-based superiority, encoder-only sufficiency, in-air identification sufficiency, and actuator-contact decoupling principles",
+        "Expanded 'unaccounted_for' items with more specific details about what remains unknown: robot size scaling specifics, series-elastic actuator differences, temperature/wear effects over &gt;100 hours, hydraulic actuator modeling approach, cable-driven actuator parameterization, limits of in-air identification, and voltage-limited bandwidth generalization across power classes"
+    ]
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

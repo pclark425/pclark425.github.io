@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voronoi-Intersection Decision Point Superiority Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-144</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-144</p>
+                <p><strong>Name:</strong> Voronoi-Intersection Decision Point Superiority Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about navigation complexity in text worlds that relates graph-topology features (diameter, clustering, dead-ends, door constraints) to exploration efficiency and optimal policy structure, based on the following results.</p>
+                <p><strong>Description:</strong> In continuous spatial navigation environments, decision points placed at Voronoi diagram intersections (medial axis intersections) are superior to frontier-based or arbitrary waypoints for mid-term planning. This superiority arises from four key properties: (1) intersection points maximize distance from obstacles, reducing collision risk and improving collision avoidance (SCA); (2) they provide broader perceptual coverage due to central positioning in free space, increasing explored area per path length (SEA); (3) they naturally correspond to topologically significant locations (junctions, room centers, corridor intersections) that are natural decision points; and (4) they provide adaptive granularity that scales with environment complexity. Policies that select waypoints at Voronoi intersections achieve higher success rates (42% vs lower for frontier methods on HM3D), better collision avoidance (higher SCA), and superior exploration efficiency (higher SEA) than frontier-based alternatives. The theory applies most strongly when combined with semantic reasoning (e.g., LLM-based goal selection) and when the Voronoi graph is appropriately pruned and sparsified to remove trivial connections.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Waypoints at Voronoi intersections have higher expected perceptual coverage than frontier points due to central positioning in free space, measurable as higher SEA (Success-weighted Explored Area).</li>
+                <li>Collision probability decreases monotonically with distance from nearest obstacle, making Voronoi points safer than frontier points, measurable as higher SCA (Success-weighted Collision Avoidance).</li>
+                <li>Voronoi intersections correspond to topologically significant locations (junctions, room centers, corridor intersections) that are natural decision points for navigation.</li>
+                <li>The density of Voronoi intersections scales appropriately with environment complexity, providing natural adaptive granularity without manual tuning.</li>
+                <li>Planning over Voronoi intersection graphs requires fewer nodes than dense grid representations while maintaining path quality (e.g., ~205 nodes vs ~85,000 grid nodes in SemaFORR).</li>
+                <li>Voronoi-based waypoint selection enables faster planning than dense grid representations (e.g., 3.56s vs 15s for grid A* in SemaFORR).</li>
+                <li>The advantage of Voronoi intersections is enhanced when combined with semantic reasoning (e.g., LLM-based goal selection) and appropriate graph pruning/sparsification.</li>
+                <li>Exploratory nodes (single-edge nodes to unexplored areas in RVG) can be flagged to bias exploration toward frontiers while maintaining intersection-based decision structure.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>VoroNav using Voronoi intersections achieves 42% success on HM3D and 41% success on HSSD, with SPL of 26.0 and 23.2 respectively. <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+    <li>Voronoi-based methods outperform Frontier-based methods with higher Success, SPL, SCA (collision avoidance), and SEA (explored area per path length). <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+    <li>Frontier-based exploration achieves lower SPL and Success than Voronoi-based methods (Frontier SCA HM3D 24.2 SEA 17.4), with frontier choices being less informative per step and more collision-prone. <a href="../results/extraction-result-1237.html#e1237.3" class="evidence-link">[e1237.3]</a> </li>
+    <li>RVG (Reduced Voronoi Graph) nodes at intersections give richer observations and lead to more informative mid-term decisions; using RVG increases SEA and SCA relative to frontier-only planning. <a href="../results/extraction-result-1237.html#e1237.1" class="evidence-link">[e1237.1]</a> </li>
+    <li>Selecting intersections (RVG nodes) as decision points increases perceptual coverage per step and reduces proximity to obstacles, improving obstacle-avoidance and observed area per path length. <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+    <li>GraphNav with manually-annotated topological maps placing nodes at semantic locations (rooms, doors, corridor orientations) achieves up to 83.3% success (GTL) in real indoor navigation, demonstrating value of topologically significant decision points. <a href="../results/extraction-result-1347.html#e1347.0" class="evidence-link">[e1347.0]</a> </li>
+    <li>SemaFORR using passage-focused skeleton (similar to medial axis) achieves 70.6% success vs 46.17% for ablated system without deliberate exploration, with planning time of 3.56s vs ~15s for grid A* and ~60s for model-based A*. <a href="../results/extraction-result-1180.html#e1180.0" class="evidence-link">[e1180.0]</a> <a href="../results/extraction-result-1180.html#e1180.1" class="evidence-link">[e1180.1]</a> </li>
+    <li>RVG provides sparse, skeleton-like connectivity capturing medial-axis routes and intersections; connectivity is pruned to emphasize informative intersections. <a href="../results/extraction-result-1237.html#e1237.1" class="evidence-link">[e1237.1]</a> </li>
+    <li>GVD (Generalized Voronoi Diagram) provides geometric substrate whose intersections/branches correspond to informative vantage points; pruning to RVG improves usability for planning. <a href="../results/extraction-result-1237.html#e1237.2" class="evidence-link">[e1237.2]</a> </li>
+    <li>Using medial-axis-derived nodes concentrates planning on central traversable corridors and intersections, reducing proximity to obstacles. <a href="../results/extraction-result-1237.html#e1237.2" class="evidence-link">[e1237.2]</a> </li>
+    <li>VoroNav's hierarchical reward W = P + C + L (exploration + efficiency + semantic) prioritizing exploration then efficiency then semantics reduces backtracking and improves exploration efficiency. <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a cluttered indoor environment, policies using Voronoi intersections will have >20% higher SCA (collision avoidance) scores than frontier-based policies.</li>
+                <li>The number of Voronoi intersections will correlate strongly (r > 0.7) with environment navigational complexity measured by number of rooms and corridor junctions.</li>
+                <li>Voronoi-based waypoints will enable faster planning (>2x speedup) than dense grid representations for equivalent path quality in environments with >50 rooms.</li>
+                <li>Combining Voronoi intersection selection with semantic LLM-based scoring will achieve >10% higher success rates than pure geometric Voronoi selection alone.</li>
+                <li>In environments with narrow passages, supplementing Voronoi intersections with exploratory nodes will maintain high SEA while improving coverage.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>In outdoor environments with less structured obstacles and more open space, the advantage of Voronoi intersections may diminish significantly or disappear entirely.</li>
+                <li>Very large-scale environments (>200 rooms) may require hierarchical Voronoi representations with multiple levels of abstraction that current single-level theory doesn't address.</li>
+                <li>Dynamic environments where obstacles move frequently may require online Voronoi recomputation at rates that could be computationally prohibitive (>1 Hz update rate).</li>
+                <li>In 3D environments with multiple floors and vertical connectivity, extending Voronoi diagrams to 3D may introduce computational complexity that outweighs benefits.</li>
+                <li>The optimal pruning threshold for Voronoi graphs may vary significantly across environment types in ways not yet characterized.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding indoor environments where frontier-based waypoints consistently achieve higher SCA and SEA than Voronoi intersections would challenge the core claims.</li>
+                <li>Demonstrating that collision rates are not lower at Voronoi points than at frontier points would contradict a key mechanism.</li>
+                <li>Showing that Voronoi intersections do not correspond to topologically significant locations in a substantial fraction of real environments would weaken the theory.</li>
+                <li>Finding that the computational cost of Voronoi computation and maintenance exceeds the planning time savings would challenge practical applicability.</li>
+                <li>Demonstrating that pure geometric Voronoi selection without semantic reasoning performs no better than random waypoint selection would suggest the geometric structure alone is insufficient.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't specify how to handle 3D environments where Voronoi diagrams become significantly more complex and computationally expensive. </li>
+    <li>The computational cost of online Voronoi diagram computation and maintenance is not quantified or bounded in the theory. </li>
+    <li>LTvN uses controller-aware reachability rather than pure geometric Voronoi, suggesting that geometric Voronoi structure alone may be insufficient and must be adapted to actual traversability. <a href="../results/extraction-result-1163.html#e1163.0" class="evidence-link">[e1163.0]</a> </li>
+    <li>VoroNav's success depends significantly on LLM-based semantic reasoning integrated with geometric Voronoi structure, but the theory doesn't fully account for the relative contributions of geometric vs semantic components. <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+    <li>The optimal pruning strategy for Voronoi graphs (merge proximate nodes, remove trivial forks) is mentioned but not formalized in the theory. <a href="../results/extraction-result-1237.html#e1237.1" class="evidence-link">[e1237.1]</a> </li>
+    <li>How to handle disconnected Voronoi components or isolated intersections in complex environments is not addressed. </li>
+    <li>The theory doesn't specify how to integrate door affordances and other semantic constraints with geometric Voronoi structure. <a href="../results/extraction-result-1237.html#e1237.0" class="evidence-link">[e1237.0]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Yamauchi (1997) A frontier-based approach for autonomous exploration [Classical frontier-based exploration, which this theory argues against for decision point selection]</li>
+    <li>Choset & Nagatani (2001) Topological simultaneous localization and mapping [Uses generalized Voronoi graphs for SLAM and topological mapping, but doesn't formalize decision point superiority or compare to frontiers]</li>
+    <li>Thrun (1998) Learning metric-topological maps for indoor mobile robot navigation [Discusses topological representations but doesn't specifically advocate Voronoi intersections as superior decision points]</li>
+    <li>Bhattacharya & Gavrilova (2008) Roadmap-based path planning using the Voronoi diagram for a clearance-based shortest path [Uses Voronoi for path planning but focuses on clearance rather than decision point selection]</li>
+    <li>Kallmann & Mataric (2004) Motion planning using dynamic roadmaps [Uses medial axis for motion planning but doesn't compare to frontier-based methods]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Voronoi-Intersection Decision Point Superiority Theory",
+    "theory_description": "In continuous spatial navigation environments, decision points placed at Voronoi diagram intersections (medial axis intersections) are superior to frontier-based or arbitrary waypoints for mid-term planning. This superiority arises from four key properties: (1) intersection points maximize distance from obstacles, reducing collision risk and improving collision avoidance (SCA); (2) they provide broader perceptual coverage due to central positioning in free space, increasing explored area per path length (SEA); (3) they naturally correspond to topologically significant locations (junctions, room centers, corridor intersections) that are natural decision points; and (4) they provide adaptive granularity that scales with environment complexity. Policies that select waypoints at Voronoi intersections achieve higher success rates (42% vs lower for frontier methods on HM3D), better collision avoidance (higher SCA), and superior exploration efficiency (higher SEA) than frontier-based alternatives. The theory applies most strongly when combined with semantic reasoning (e.g., LLM-based goal selection) and when the Voronoi graph is appropriately pruned and sparsified to remove trivial connections.",
+    "supporting_evidence": [
+        {
+            "text": "VoroNav using Voronoi intersections achieves 42% success on HM3D and 41% success on HSSD, with SPL of 26.0 and 23.2 respectively.",
+            "uuids": [
+                "e1237.0"
+            ]
+        },
+        {
+            "text": "Voronoi-based methods outperform Frontier-based methods with higher Success, SPL, SCA (collision avoidance), and SEA (explored area per path length).",
+            "uuids": [
+                "e1237.0"
+            ]
+        },
+        {
+            "text": "Frontier-based exploration achieves lower SPL and Success than Voronoi-based methods (Frontier SCA HM3D 24.2 SEA 17.4), with frontier choices being less informative per step and more collision-prone.",
+            "uuids": [
+                "e1237.3"
+            ]
+        },
+        {
+            "text": "RVG (Reduced Voronoi Graph) nodes at intersections give richer observations and lead to more informative mid-term decisions; using RVG increases SEA and SCA relative to frontier-only planning.",
+            "uuids": [
+                "e1237.1"
+            ]
+        },
+        {
+            "text": "Selecting intersections (RVG nodes) as decision points increases perceptual coverage per step and reduces proximity to obstacles, improving obstacle-avoidance and observed area per path length.",
+            "uuids": [
+                "e1237.0"
+            ]
+        },
+        {
+            "text": "GraphNav with manually-annotated topological maps placing nodes at semantic locations (rooms, doors, corridor orientations) achieves up to 83.3% success (GTL) in real indoor navigation, demonstrating value of topologically significant decision points.",
+            "uuids": [
+                "e1347.0"
+            ]
+        },
+        {
+            "text": "SemaFORR using passage-focused skeleton (similar to medial axis) achieves 70.6% success vs 46.17% for ablated system without deliberate exploration, with planning time of 3.56s vs ~15s for grid A* and ~60s for model-based A*.",
+            "uuids": [
+                "e1180.0",
+                "e1180.1"
+            ]
+        },
+        {
+            "text": "RVG provides sparse, skeleton-like connectivity capturing medial-axis routes and intersections; connectivity is pruned to emphasize informative intersections.",
+            "uuids": [
+                "e1237.1"
+            ]
+        },
+        {
+            "text": "GVD (Generalized Voronoi Diagram) provides geometric substrate whose intersections/branches correspond to informative vantage points; pruning to RVG improves usability for planning.",
+            "uuids": [
+                "e1237.2"
+            ]
+        },
+        {
+            "text": "Using medial-axis-derived nodes concentrates planning on central traversable corridors and intersections, reducing proximity to obstacles.",
+            "uuids": [
+                "e1237.2"
+            ]
+        },
+        {
+            "text": "VoroNav's hierarchical reward W = P + C + L (exploration + efficiency + semantic) prioritizing exploration then efficiency then semantics reduces backtracking and improves exploration efficiency.",
+            "uuids": [
+                "e1237.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Waypoints at Voronoi intersections have higher expected perceptual coverage than frontier points due to central positioning in free space, measurable as higher SEA (Success-weighted Explored Area).",
+        "Collision probability decreases monotonically with distance from nearest obstacle, making Voronoi points safer than frontier points, measurable as higher SCA (Success-weighted Collision Avoidance).",
+        "Voronoi intersections correspond to topologically significant locations (junctions, room centers, corridor intersections) that are natural decision points for navigation.",
+        "The density of Voronoi intersections scales appropriately with environment complexity, providing natural adaptive granularity without manual tuning.",
+        "Planning over Voronoi intersection graphs requires fewer nodes than dense grid representations while maintaining path quality (e.g., ~205 nodes vs ~85,000 grid nodes in SemaFORR).",
+        "Voronoi-based waypoint selection enables faster planning than dense grid representations (e.g., 3.56s vs 15s for grid A* in SemaFORR).",
+        "The advantage of Voronoi intersections is enhanced when combined with semantic reasoning (e.g., LLM-based goal selection) and appropriate graph pruning/sparsification.",
+        "Exploratory nodes (single-edge nodes to unexplored areas in RVG) can be flagged to bias exploration toward frontiers while maintaining intersection-based decision structure."
+    ],
+    "new_predictions_likely": [
+        "In a cluttered indoor environment, policies using Voronoi intersections will have &gt;20% higher SCA (collision avoidance) scores than frontier-based policies.",
+        "The number of Voronoi intersections will correlate strongly (r &gt; 0.7) with environment navigational complexity measured by number of rooms and corridor junctions.",
+        "Voronoi-based waypoints will enable faster planning (&gt;2x speedup) than dense grid representations for equivalent path quality in environments with &gt;50 rooms.",
+        "Combining Voronoi intersection selection with semantic LLM-based scoring will achieve &gt;10% higher success rates than pure geometric Voronoi selection alone.",
+        "In environments with narrow passages, supplementing Voronoi intersections with exploratory nodes will maintain high SEA while improving coverage."
+    ],
+    "new_predictions_unknown": [
+        "In outdoor environments with less structured obstacles and more open space, the advantage of Voronoi intersections may diminish significantly or disappear entirely.",
+        "Very large-scale environments (&gt;200 rooms) may require hierarchical Voronoi representations with multiple levels of abstraction that current single-level theory doesn't address.",
+        "Dynamic environments where obstacles move frequently may require online Voronoi recomputation at rates that could be computationally prohibitive (&gt;1 Hz update rate).",
+        "In 3D environments with multiple floors and vertical connectivity, extending Voronoi diagrams to 3D may introduce computational complexity that outweighs benefits.",
+        "The optimal pruning threshold for Voronoi graphs may vary significantly across environment types in ways not yet characterized."
+    ],
+    "negative_experiments": [
+        "Finding indoor environments where frontier-based waypoints consistently achieve higher SCA and SEA than Voronoi intersections would challenge the core claims.",
+        "Demonstrating that collision rates are not lower at Voronoi points than at frontier points would contradict a key mechanism.",
+        "Showing that Voronoi intersections do not correspond to topologically significant locations in a substantial fraction of real environments would weaken the theory.",
+        "Finding that the computational cost of Voronoi computation and maintenance exceeds the planning time savings would challenge practical applicability.",
+        "Demonstrating that pure geometric Voronoi selection without semantic reasoning performs no better than random waypoint selection would suggest the geometric structure alone is insufficient."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't specify how to handle 3D environments where Voronoi diagrams become significantly more complex and computationally expensive.",
+            "uuids": []
+        },
+        {
+            "text": "The computational cost of online Voronoi diagram computation and maintenance is not quantified or bounded in the theory.",
+            "uuids": []
+        },
+        {
+            "text": "LTvN uses controller-aware reachability rather than pure geometric Voronoi, suggesting that geometric Voronoi structure alone may be insufficient and must be adapted to actual traversability.",
+            "uuids": [
+                "e1163.0"
+            ]
+        },
+        {
+            "text": "VoroNav's success depends significantly on LLM-based semantic reasoning integrated with geometric Voronoi structure, but the theory doesn't fully account for the relative contributions of geometric vs semantic components.",
+            "uuids": [
+                "e1237.0"
+            ]
+        },
+        {
+            "text": "The optimal pruning strategy for Voronoi graphs (merge proximate nodes, remove trivial forks) is mentioned but not formalized in the theory.",
+            "uuids": [
+                "e1237.1"
+            ]
+        },
+        {
+            "text": "How to handle disconnected Voronoi components or isolated intersections in complex environments is not addressed.",
+            "uuids": []
+        },
+        {
+            "text": "The theory doesn't specify how to integrate door affordances and other semantic constraints with geometric Voronoi structure.",
+            "uuids": [
+                "e1237.0"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "LTvN achieves 65% success (real-world apartment) using controller-aware topological graphs rather than pure Voronoi, suggesting geometric Voronoi may need adaptation to actual robot capabilities.",
+            "uuids": [
+                "e1163.0"
+            ]
+        },
+        {
+            "text": "GraphNav achieves higher success rates (up to 83.3%) using manually-annotated semantic graphs rather than automatically-generated Voronoi graphs, suggesting semantic structure may be more important than geometric optimality.",
+            "uuids": [
+                "e1347.0"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In very open environments with few obstacles, the advantage of Voronoi intersections may be minimal as most points are far from obstacles.",
+        "In environments with many narrow passages, Voronoi intersections may be too sparse and require supplementation with exploratory nodes or additional waypoints.",
+        "For very short-range navigation (&lt; 2 meters), the overhead of Voronoi computation may outweigh benefits and simpler local planning may suffice.",
+        "In environments where semantic information (doors, room types) is critical, pure geometric Voronoi must be augmented with semantic reasoning (e.g., LLM-based) to achieve high performance.",
+        "The Voronoi graph must be appropriately pruned and sparsified; unpruned Voronoi graphs can have too many nodes and degrade performance.",
+        "In dynamic environments with moving obstacles, the Voronoi diagram may need frequent recomputation that could be computationally expensive.",
+        "Controller-dependent reachability (as in LTvN) may be necessary to adapt geometric Voronoi structure to actual robot/agent capabilities.",
+        "The hierarchical reward structure (exploration + efficiency + semantic) is important for effective waypoint selection, not just geometric position."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Yamauchi (1997) A frontier-based approach for autonomous exploration [Classical frontier-based exploration, which this theory argues against for decision point selection]",
+            "Choset & Nagatani (2001) Topological simultaneous localization and mapping [Uses generalized Voronoi graphs for SLAM and topological mapping, but doesn't formalize decision point superiority or compare to frontiers]",
+            "Thrun (1998) Learning metric-topological maps for indoor mobile robot navigation [Discusses topological representations but doesn't specifically advocate Voronoi intersections as superior decision points]",
+            "Bhattacharya & Gavrilova (2008) Roadmap-based path planning using the Voronoi diagram for a clearance-based shortest path [Uses Voronoi for path planning but focuses on clearance rather than decision point selection]",
+            "Kallmann & Mataric (2004) Motion planning using dynamic roadmaps [Uses medial axis for motion planning but doesn't compare to frontier-based methods]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 4,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

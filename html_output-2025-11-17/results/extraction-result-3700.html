@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-3700 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-3700</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-3700</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-88.html">extraction-schema-88</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of LLMs being used to estimate the probability or likelihood of future scientific discoveries or real-world events, including methods, results, and comparisons.</div>
+                <p><strong>Paper ID:</strong> paper-77dbd2b3d28541f35efb505fd95a9a0830af4585</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/77dbd2b3d28541f35efb505fd95a9a0830af4585" target="_blank">Recurrent Event Network: Autoregressive Structure Inference over Temporal Knowledge Graphs</a></p>
+                <p><strong>Paper Venue:</strong> Conference on Empirical Methods in Natural Language Processing</p>
+                <p><strong>Paper TL;DR:</strong> This paper proposes Recurrent Event Network (RE-NET), a novel autoregressive architecture for predicting future interactions that employs a recurrent event encoder to encode past facts and uses a neighborhood aggregator to model the connection of facts at the same timestamp.</p>
+                <p><strong>Paper Abstract:</strong> Knowledge graph reasoning is a critical task in natural language processing. The task becomes more challenging on temporal knowledge graphs, where each fact is associated with a timestamp. Most existing methods focus on reasoning at past timestamps and they are not able to predict facts happening in the future. This paper proposes Recurrent Event Network (RE-NET), a novel autoregressive architecture for predicting future interactions. The occurrence of a fact (event) is modeled as a probability distribution conditioned on temporal sequences of past knowledge graphs. Specifically, our RE-NET employs a recurrent event encoder to encode past facts and uses a neighborhood aggregator to model the connection of facts at the same timestamp. Future facts can then be inferred in a sequential manner based on the two modules. We evaluate our proposed method via link prediction at future times on five public datasets. Through extensive experiments, we demonstrate the strength of RENET, especially on multi-step inference over future timestamps, and achieve state-of-the-art performance on all five datasets. Code and data can be found at this https URL</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-3700",
+    "paper_id": "paper-77dbd2b3d28541f35efb505fd95a9a0830af4585",
+    "extraction_schema_id": "extraction-schema-88",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00583,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Recurrent Event Network: Autoregressive Structure Inference over Temporal Knowledge Graphs</h1>
+<p>Woojeong Jin ${ }^{1}$ Meng Qu ${ }^{23}$ Xisen Jin ${ }^{1}$ Xiang Ren ${ }^{1}$<br>${ }^{1}$ Department of Computer Science, University of Southern California<br>${ }^{2}$ MILA - Quebec AI Institute<br>${ }^{3}$ University of Montréal<br>{woojeong.jin,xisenjin,xiangren}@usc.edu meng.qu@umontreal.ca</p>
+<h4>Abstract</h4>
+<p>Knowledge graph reasoning is a critical task in natural language processing. The task becomes more challenging on temporal knowledge graphs, where each fact is associated with a timestamp. Most existing methods focus on reasoning at past timestamps and they are not able to predict facts happening in the future. This paper proposes Recurrent Event Network (RE-NET), a novel autoregressive architecture for predicting future interactions. The occurrence of a fact (event) is modeled as a probability distribution conditioned on temporal sequences of past knowledge graphs. Specifically, our RE-NET employs a recurrent event encoder to encode past facts, and uses a neighborhood aggregator to model the connection of facts at the same timestamp. Future facts can then be inferred in a sequential manner based on the two modules. We evaluate our proposed method via link prediction at future times on five public datasets. Through extensive experiments, we demonstrate the strength of RENET, especially on multi-step inference over future timestamps, and achieve state-of-the-art performance on all five datasets ${ }^{1}$.</p>
+<h2>1 Introduction</h2>
+<p>Knowledge graphs (KGs), which store real-world facts, are vital in various natural language processing applications (Bordes et al., 2013; Schlichtkrull et al., 2018; Kazemi et al., 2019). Due to the high cost of annotating facts, most knowledge graphs are far from complete, and thus predicting missing facts (a.k.a., knowledge graph reasoning) becomes an important task. Most existing efforts study reasoning on standard knowledge graphs, where each fact is represented as a triple of subject entity, object entity and the relation between them. However, in practice, each fact may not be true forever,</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Example temporal knowledge subgraphs. Each edge or interaction between entities is associated with temporal information and a set of interactions build a multi-relational graph at each time. Our task is to predict interactions and build graphs at future times.
+and hence it is useful to associate each fact with a timestamp as a constraint, yielding a temporal knowledge graph (TKG). Fig. 1 shows example subgraphs of a temporal knowledge graph. Despite the ubiquitousness of TKGs, methods for reasoning over such kind of data are relatively unexplored.</p>
+<p>Given a temporal knowledge graph with timestamps varying from $t_{0}$ to $t_{T}$, TKG reasoning primarily has two settings - interpolation and extrapolation. In the interpolation setting, new facts are predicted for time $t$ such that $t_{0} \leq t \leq t_{T}$ (GarcíaDurán et al., 2018; Leblay and Chekol, 2018; Dasgupta et al., 2018). In contrast, extrapolation reasoning, as a less studied setting, focuses on predicting new facts (e.g., unseen events) over timestamps $t$ that are greater than $t_{T}$ (i.e., $t&gt;t_{T}$ ). The extrapolation setting is of particular interests in TKG reasoning as it helps populate the knowledge graph over future timestamps and facilitates forecasting emerging events (Muthiah et al., 2015; Phillips et al., 2017; Korkmaz et al., 2015).</p>
+<p>Recent attempts to solve the extrapolation TKG reasoning problem are Know-Evolve (Trivedi et al., 2017) and its extension DyRep (Trivedi</p>
+<p>et al., 2019), which predict future events assuming ground truths of the preceding events are given at inference time. As a result, these methods are unable to predict events sequentially over future timestamps without ground truths of the preceding events-i.e., a practical requirement when deploying such reasoning systems for event forecasting (Morstatter et al., 2019). Moreover, these approaches do not model concurrent events occurring within the same time window (e.g., a day, or 12 hours), despite their prevalence in real-world event data (Boschee et al., 2015; Leetaru and Schrodt, 2013). Thus, it is desirable to have a principled method that can extrapolate graph structures over future timestamps by modeling the concurrent events within a time window as a local graph.</p>
+<p>To this end, we propose an autoregressive architecture, called Recurrent Event Network (RENET), for modeling temporal knowledge graphs. Key ideas of RE-NET are based on: (1) predicting future events over multiple time stamps can be formulated as a sequential and multi-step inference problem; (2) temporally adjacent events may carry related semantics and informative patterns, which can further help predict future events (i.e., temporal information); and (3) multiple events may co-occur within the same time window and exhibit structural dependencies between entities (i.e., local graph structural information).</p>
+<p>Given these observations, RE-NET defines the joint probability distribution of all events in a TKG in an autoregressive fashion. The probability distribution of the concurrent events at the current time step is conditioned on all the preceding events (see Fig. 2 for an illustration). Specifically, a recurrent event encoder summarizes information of the past event sequences, and a neighborhood aggregator aggregates the information of concurrent events within the same time window. With the summarized information, our decoder defines the joint probability of a current event. Inference for predicting future events can be achieved by sampling graphs over time in a sequential manner.</p>
+<p>We evaluate our proposed method on five public TKG datasets via a temporal (extrapolation) link prediction task, by testing the performance of multi-step inference over time. Experimental results demonstrate that RE-NET outperforms state-of-the-art models of both static and temporal knowledge graph reasoning, showing its better capability to model temporal, multi-relational graph data. We
+<img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Illustration of the Recurrent Event Network architecture. The aggregator encodes the global graph structure and the local neighborhood, capturing global and local information respectively. The recurrent event encoder updates its state with the sequence of encoded representations of graph structures. The MLP decoder defines the probability of a current graph.
+further show that RE-NET can perform effective multi-step inference to predict unseen entity relationships in a distant future.</p>
+<h2>2 Problem Formulation</h2>
+<p>We first describe notations for building our model and problem definition, and then we define the joint distribution of temporal events.
+Notations and Problem Definition. We consider a temporal knowledge graph as a multi-relational, directed graph with time-stamped edges between nodes (entities). An event is defined as a timestamped edge, i.e., (subject entity, relation, object entity, time) and is denoted by a quadruple $(\mathrm{s}, \mathrm{r}, \mathrm{o}, t)$ or $\left(\mathrm{s}<em t="t">{t}, \mathrm{r}</em>}, \mathrm{o<em t="t">{t}\right)$. We denote a set of events at time $t$ as $G</em>\right}}$. In our setup, the timestamps are discrete integers and used for the relative order of graphs or events. A TKG is built upon a sequence of event quadruples ordered ascending based on their timestamps, i.e., $\left{G_{t<em i="i">{t}=\left{\left(\mathrm{s}</em>}, \mathrm{r<em i="i">{i}, \mathrm{o}</em>\right)\right}}, t_{i<em i="i">{i}$ $\left(t</em>\right}$.
+Approach Overview. The key idea of our approach is to learn temporal dependency from the sequence of graphs and local structural dependency from the neighborhood (Fig. 2). Formally, we represent TKGs as sequences, and then build an autoregressive generative model on the sequences. To this}&lt;t_{j}, \forall i&lt;j\right)$, where each time-stamped edge has a direction pointing from the subject entity to the object entity. ${ }^{2}$ The goal of learning generative models of events is to learn a distribution $p(G)$ over TKGs, based on a set of observed event sets $\left{G_{1}, \ldots, G_{t</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>end, RE-NET defines the joint probability of concurrent events (or a graph), which is conditioned on all the previous events. Specifically, RE-NET consists of a Recurrent Neural Network (RNN) as a recurrent event encoding module and a neighborhood aggregation module to capture the information of graph structures. We first start with the definition of joint distribution of temporal events.</p>
+<p>Modeling Joint Distribution of Temporal Events. We define the joint distribution of all the events $G=\left{G_{1}, \ldots, G_{T}\right}$ in an autoregressive manner. Basically, we decompose the joint distribution into a sequence of conditional distributions, $p\left(G_{t} \mid G_{t-m: t-1}\right)$ ), where we assume the probability of the events at a time step, $G_{t}$, depends on the events at the previous $m$ steps, $G_{t-m: t-1}$. For each conditional distribution $p\left(G_{t} \mid G_{t-m: t-1}\right)$, we further assume that the events in $G_{t}$ are mutually independent given the previous events $G_{t-m: t-1}$. In this way, the joint distribution can be rewritten as follows:</p>
+<p>$$
+\begin{aligned}
+&amp; p(G)=\prod_{t} \prod_{\left(s_{t}, r_{t}, o_{t}\right) \in G_{t}} p\left(\mathrm{~s}<em t="t">{t}, \mathrm{r}</em>}, \mathrm{o<em t-1="t-1" t-m:="t-m:">{t} \mid G</em>\right) \
+&amp; =\prod_{t} \prod_{\left(s_{t}, r_{t}, o_{t}\right) \in G_{t}} p\left(\mathrm{~s}<em t-1="t-1" t-m:="t-m:">{t} \mid G</em>}\right) \cdot p\left(\mathrm{r<em t="t">{t} \mid \mathrm{s}</em>\right) \
+&amp; \cdot p\left(\mathrm{o}}, G_{t-m: t-1<em t="t">{t} \mid \mathrm{s}</em>}, \mathrm{r<em t-1="t-1" t-m:="t-m:">{t}, G</em>\right)
+\end{aligned}
+$$</p>
+<p>From these probabilities, we generate triplets as follows. Given all the past events $G_{t-m: t-1}$, we first sample a subject entity $\mathrm{s}<em t="t">{t}$ through $p\left(\mathrm{~s}</em>} \mid G_{t-m: t-1}\right)$. Then we generate a relation $\mathrm{r<em t="t">{t}$ with $p\left(\mathrm{r}</em>} \mid \mathrm{s<em t-1="t-1" t-m:="t-m:">{t}, G</em>}\right)$, and finally the object entity $\mathrm{o<em t="t">{t}$ is generated by $p\left(\mathrm{o}</em>} \mid \mathrm{s<em t="t">{t}, \mathrm{r}</em>$}, G_{t-m: t-1}\right) .^{3</p>
+<p>Next, we introduce how these probabilities are defined and parameterized in our method.</p>
+<h2>3 Recurrent Event Network</h2>
+<p>In this section, we introduce our proposed method, Recurrent Event Network (RE-NET). RE-NET consists of a Recurrent Neural Network (RNN) as a recurrent event encoder (Sec. 3.1) for temporal dependency and a neighborhood aggregator (Sec. 3.2) for graph structural dependency. We also discuss parameter learning of RE-NET and define multistep inference for distant future by sampling intermediate graphs in a sequential manner (Sec. 3.3).</p>
+<h3>3.1 Recurrent Event Encoder</h3>
+<p>To parameterize the probability for each event, RENET introduces a set of global representations as</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup>well as local representations. The global representation $\boldsymbol{H}<em t="t">{t}$ summarizes the global information from the entire graph until time stamp $t$, which reflects the global preference on the upcoming events. In contrast, the local representations focus more on each subject entity $s$ or each pair of subject entity and relation ( $\mathrm{s}, \mathrm{r}$ ), which capture the knowledge specifically related to those entities and relations. We denote the above local representations as $\boldsymbol{h}</em>)$, respectively. The global and local representations capture different aspects of knowledge from the knowledge graph, which are naturally complementary, allowing us to model the generative process of the graph in a more effective way.}(\mathrm{~s})$ and $\boldsymbol{h}_{t}(\mathrm{~s}, \mathrm{r</p>
+<p>Based on the above representations, RE-NET parameterizes $p\left(\mathrm{o}<em t-1="t-1" t-m:="t-m:">{t} \mid \mathrm{s}, \mathrm{r}, G</em>\right)$ in the following way:</p>
+<p>$$
+p\left(\mathrm{o}<em t-1="t-1" t-m:="t-m:">{t} \mid \mathrm{s}, \mathrm{r}, G</em>}\right) \propto \exp \left(\left[\boldsymbol{e<em _mathrm_r="\mathrm{r">{\mathrm{s}}: \boldsymbol{e}</em>}}: \boldsymbol{h<em _mathrm_o="\mathrm{o">{t-1}(\mathrm{~s}, \mathrm{r})\right]^{\top} \cdot \boldsymbol{w}</em>\right)
+$$}_{\mathrm{t}}</p>
+<p>where $\boldsymbol{e}<em _mathrm_r="\mathrm{r">{\mathrm{s}}, \boldsymbol{e}</em>}} \in \mathbb{R}^{d}$ are learnable embedding vectors specified for subject entity $s$ and relation $r$. $\boldsymbol{h<em _mathrm_s="\mathrm{s">{t-1}(\mathrm{~s}, \mathrm{r}) \in \mathbb{R}^{d}$ is the local representation for $(\mathrm{s}, \mathrm{r})$ obtained at time stamp $(t-1)$. Intuitively, $\boldsymbol{e}</em>}}$ and $\boldsymbol{e<em t-1="t-1">{\mathrm{r}}$ can be understood as static embedding vectors for subject entity s and relation r , whereas $\boldsymbol{h}</em>}(\mathrm{~s}, \mathrm{r})$ is dynamically updated at each time stamp. By concatenating both the static and dynamic representations, RE-NET can effectively capture the semantic of ( $\mathrm{s}, \mathrm{r})$ up to time stamp $(t-1)$. Based on that, we further compute the probability of different object entities $\mathrm{o<em _mathrm_o="\mathrm{o">{t}$ by passing the encoding into our multi-layer perceptron (MLP) decoder. We define the MLP decoder as a linear softmax classifier parameterized by $\left{\boldsymbol{w}</em>\right}$.}_{\mathrm{t}}</p>
+<p>Similarly, we define probabilities for relations and subjects as follows:</p>
+<p>$$
+\begin{aligned}
+&amp; p\left(\mathrm{r}<em t-1="t-1" t-m:="t-m:">{t} \mid \mathrm{s}, G</em>}\right) \propto \exp \left(\left[\boldsymbol{e<em t-1="t-1">{\mathrm{s}}: \boldsymbol{h}</em>}(\mathrm{~s})\right]\right]^{\top} \cdot \boldsymbol{w<em t="t">{\mathrm{r}</em>\right) \
+&amp; p\left(\mathrm{~s}}<em t-1="t-1" t-m:="t-m:">{t} \mid G</em>}\right) \propto \exp \left(\boldsymbol{H<em _mathrm_s="\mathrm{s">{t-1}^{\top} \cdot \boldsymbol{w}</em>\right)
+\end{aligned}
+$$}_{t}</p>
+<p>where $\boldsymbol{h}<em t-1="t-1">{t-1}(\mathrm{~s})$ focuses on the local information about s in the past, and $\boldsymbol{H}</em>} \in \mathbb{R}^{d}$ is a vector representation to encode global graph structures $G_{t-1: t-m}$. To predict what relations a subject entity will interact with $p\left(\mathrm{r<em t-1="t-1" t-m:="t-m:">{t} \mid \mathrm{s}, G</em>}\right)$, we treat the static representation $\boldsymbol{e<em t-1="t-1">{\mathrm{s}}$ as well as the dynamic representation $\boldsymbol{h}</em>}(\mathrm{~s})$ as features, and feed them into a multi-layer perceptron (MLP) decoder parameterized by $\boldsymbol{w<em t="t">{\mathrm{r}</em>}}$. Besides, to predict the distribution of subject entities at time stamp $t$ (i.e., $p\left(\mathrm{~s<em t-1="t-1" t-m:="t-m:">{t} \mid G</em>\right)$ ), we treat the global representation</p>
+<p>$\boldsymbol{H}_{t-1}$ as a feature, as it summarizes the global information from all the past graphs until time stamp $t-1$, which reflects the global preference on the upcoming events at time stamp $t$.</p>
+<p>The global representation $\boldsymbol{H}<em t="t">{t}$ is expected to preserve the global information about all the graphs up to time stamp $t$. The local representations $\boldsymbol{h}</em>)$ emphasize more on the local events related to each entity and relation. Thus we define them as follows:}(\mathrm{~s}, \mathrm{r})$ and $\boldsymbol{h}_{t}(\mathrm{~s</p>
+<p>$$
+\begin{aligned}
+\boldsymbol{H}<em t="t">{t} &amp; =\mathrm{RNN}^{1}\left(g\left(G</em>}\right), \boldsymbol{H<em t="t">{t-1}\right) \
+\boldsymbol{h}</em>}(\mathrm{~s}, \mathrm{r}) &amp; =\mathrm{RNN}^{2}\left(g\left(\mathrm{~N<em t="t">{t}^{(\mathrm{s})}\right), \boldsymbol{H}</em>}, \boldsymbol{h<em t="t">{t-1}(\mathrm{~s}, \mathrm{r})\right) \
+\boldsymbol{h}</em>}(\mathrm{~s}) &amp; =\mathrm{RNN}^{3}\left(g\left(\mathrm{~N<em t="t">{t}^{(\mathrm{s})}\right), \boldsymbol{H}</em>)\right)
+\end{aligned}
+$$}, \boldsymbol{h}_{t-1}(\mathrm{~s</p>
+<p>where $g$ is an aggregate function which will be discussed in Section 3.2 and $\mathrm{N}<em t="t">{t}^{(\mathrm{s})}$ stands for all the events related to s at the current time step $t$. We leverage a recurrent model RNN (Cho et al., 2014) to update them. The global representation takes the global graph structure $g\left(G</em>}\right)$ as an input. $g\left(G_{t}\right)$ is an aggregation over all the events $G_{t}$ at time $t$. We define $g\left(G_{t}\right)=\max \left(\left{g\left(\mathrm{~N<em s="s">{t}^{(\mathrm{s})}\right)\right}</em>}\right)$, which is an element-wise max-pooling operation over all $g\left(\mathrm{~N<em t="t">{t}^{(\mathrm{s})}\right)$. The $g\left(\mathrm{~N}</em>}^{(\mathrm{s})}\right)$ captures the local graph structure for subject entity $s$. The local representations are different from the global representations in two ways. First, the local representations focus more on each entity and relation, and hence we aggregate information from events $\mathrm{N<em t="t">{t}^{(\mathrm{s})}$ that are related to the entity. Second, to allow RE-NET to better characterize the relationships between different entities, we treat the global representation $\boldsymbol{H}</em>$ as an extra feature in the definition, which acts as a bridge to connect different entities.</p>
+<p>In the next section, we introduce how we design $g$ in RE-NET.</p>
+<h3>3.2 Neighborhood Aggregators</h3>
+<p>In this section, we first introduce two simple aggregation functions: a mean pooling aggregator and an attentive pooling aggregator. These two simple aggregators only collect neighboring entities under the same relation r. Then we introduce a more powerful aggregation function: a multi-relational aggregator. We depict comparison on aggregators in Fig. 3.
+Mean Pooling Aggregator. The baseline aggregator simply takes the element-wise mean of representations in $\left{\boldsymbol{e}<em t="t">{\mathrm{o}}: \mathrm{o} \in \mathrm{N}</em>$ is the set of objects that interacted with s under r at $t$. But the mean aggregator treats all neighboring objects
+}^{(\mathrm{s}, \mathrm{r})}\right}$, where $\mathrm{N}_{t}^{(\mathrm{s}, \mathrm{r})<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Comparison of neighborhood aggregators. The blue node corresponds to node s, red nodes are 1hop neighbors, and green nodes are 2-hop neighbors. Different colored edges are different relations. Mean and attentive pooling aggregators do not differentiate different relations and do not encode 2-hop neighbors, whereas RGCN aggregator can incorporate information from multi-relational and multi-hop neighbors.
+equally, and thus ignores the different importance of each neighbor entity.
+Attentive Pooling Aggregator. We define an attentive aggregator based on the additive attention introduced in (Bahdanau et al., 2015) to distinguish the important entities for ( $\mathrm{s}, \mathrm{r}$ ). The aggregate function is defined as $g\left(\mathrm{~N}<em _mathrm_o="\mathrm{o">{t}^{(\mathrm{s}, \mathrm{r})}\right)=\sum</em>} \in \mathrm{N<em _mathrm_o="\mathrm{o">{t}^{(\mathrm{s}, \mathrm{r})}} \alpha</em>}} \boldsymbol{e<em _mathrm_o="\mathrm{o">{\mathrm{o}}$, where $\alpha</em>}}=\operatorname{softmax}\left(\mathbf{v}^{\top} \tanh \left(\boldsymbol{W}\left(\boldsymbol{e<em _mathrm_o="\mathrm{o">{\mathrm{o}} ; \boldsymbol{e}</em>}} ; \boldsymbol{e<em t="t">{\mathrm{o}}\right)\right)\right), \mathbf{v} \in \mathbb{R}^{d}$ and $\boldsymbol{W} \in \mathbb{R}^{d \times 3 d}$ are trainable weight matrices. By adding the attention function of the subject and the relation, the weight can determine how relevant each object entity is to the subject and the relation.
+Multi-Relational Graph (RGCN) Aggregator. We introduce a multi-relational graph aggregator from (Schlichtkrull et al., 2018). This is a general aggregator that can incorporate information from multi-relational and multi-hop neighbors. Formally, the aggregator is defined as follows:
+$g\left(\mathrm{~N}</em>}^{(\mathrm{s})}\right)=\mathbf{h<em _mathrm_r="\mathrm{r">{\mathrm{s}}^{(\mathrm{t}+1)}=\sigma\left(\sum</em>} \in R} \sum_{\mathrm{o} \in \mathbf{N<em _mathrm_s="\mathrm{s">{t}^{(\mathrm{s}, \mathrm{r})}} \frac{1}{c</em>}}} \boldsymbol{W<em _mathrm_o="\mathrm{o">{\mathrm{o}}^{(l)} \mathbf{h}</em>}}^{(l)}+\boldsymbol{W<em _mathrm_s="\mathrm{s">{\mathrm{o}}^{(l)} \mathbf{h}</em>\right)$,
+where initial hidden representations for each node $\left(\mathbf{h}}}^{(l)<em _mathrm_o="\mathrm{o">{\mathrm{o}}^{(0)}\right)$ are set to trainable embedding vectors $\left(\boldsymbol{e}</em>$ is a normalizing factor. Details are described in Section B of appendix.}}\right)$ for each node and $c_{s</p>
+<h3>3.3 Parameter Learning and Inference</h3>
+<p>In this section, we discuss how RE-NET is trained and infers events over multiple time stamps.
+Parameter Learning via Event Predictions. An object entity prediction given ( $\mathrm{s}, \mathrm{r}$ ) can be viewed as a multi-class classification task, where each class corresponds to each object entity. Similarly, relation prediction given $s$ and subject entity prediction</p>
+<p>Algorithm 1: Learning algorithm of RE-NET
+Input: Observed graph sequence: $\left{G_{1}, \ldots, G_{t}\right}$, Number of events to sample at each step: $M$.
+Output: An estimation of the conditional distribution $p\left(G_{t+\Delta t} \mid G_{: t}\right)$.
+$t^{\prime} \leftarrow t+1$
+while $t^{\prime} \leq t+\Delta t$ do
+Sample $M$ number of $\mathrm{s} \sim p\left(\mathrm{~s} \mid \hat{G}<em t="t">{t+1: t^{\prime}-1}, G</em>\right)$ by equation (4).
+Pick top- $k$ triples
+$\left{\left(\mathrm{s}<em 1="1">{1}, \mathrm{r}</em>}, \mathrm{o<em k="k">{1}, t^{\prime}\right), \ldots,\left(\mathrm{s}</em>}, \mathrm{r<em k="k">{k}, \mathrm{o}</em>}, t^{\prime}\right)\right}$ ranked by $p\left(\mathrm{~s}, \mathrm{r}, \mathrm{o} \mid \hat{G<em t="t">{t+1: t^{\prime}-1}, G</em>\right)$.
+$\hat{G}<em 1="1">{t^{\prime}} \leftarrow\left{\left(\mathrm{s}</em>}, \mathrm{r<em 1="1">{1}, \mathrm{o}</em>}, t^{\prime}\right), \ldots,\left(\mathrm{s<em k="k">{k}, \mathrm{r}</em>}, \mathrm{o<em t-1="t-1" t_1:="t+1:" t_Delta="t+\Delta">{k}, t^{\prime}\right)\right}$
+$t^{\prime} \leftarrow t^{\prime}+1$
+7 Estimate the probability of each event $p\left(\mathrm{~s}, \mathrm{r}, \mathrm{o} \mid \hat{G}</em>\right)$.
+8 Estimate the joint distribution of all events $p\left(G_{t+\Delta t} \mid \hat{G}}, G_{: t<em t="t">{t+1: t+\Delta t-1}, G</em>\right)$ by equation (1).
+9 return $p\left(G_{t+\Delta t} \mid \hat{G}<em t="t">{t+1: t+\Delta t-1}, G</em>\right)$ as an estimation.
+can be considered as a multi-class classification task. Here we omit the notations for preceding events for brevity. Thus, the loss function is as follows:
+$\mathcal{L}=-\sum_{(s, r, o, t) \in G} \log p\left(\mathrm{o}<em t="t">{t} \mid \mathrm{s}</em>}, \mathrm{r<em 1="1">{t}\right)+\lambda</em>} \log p\left(\mathrm{r<em t="t">{t} \mid \mathrm{s}</em>}\right)+\lambda_{2} \log p\left(\mathrm{~s<em 1="1">{t}\right)$,
+where $G$ is set of events, and $\lambda</em>$.
+Multi-step Inference over Time. RE-NET seeks to predict the forthcoming events based on the previous observations. Suppose that the current time is $t$ and we aim to predict events at time $t+\Delta t$ where $\Delta t&gt;0$. Then the problem of multi-step inference can be formalized as inferring the conditional probability $p\left(G_{t+\Delta t} \mid G_{: t}\right)$. The problem is nontrivial as we need to integrate over all $G_{t+1: t+\Delta t-1}$. To achieve efficient inference, we draw a sample of $G_{t+1: t+\Delta t-1}$, and estimate the conditional probability as follows:}$ and $\lambda_{2}$ are importance parameters that control the importance of each loss term. $\lambda_{1}$ and $\lambda_{2}$ can be chosen depending on the task. If a task aims to predict $o$ given $(s, r)$, then we can give small values to $\lambda_{1}$ and $\lambda_{2</p>
+<p>$$
+\begin{aligned}
+&amp; p\left(G_{t+\Delta t} \mid G_{: t}\right) \
+&amp; =\sum_{G_{t+1: t+\Delta t-1}} p\left(G_{t+\Delta t}, G_{t+1: t+\Delta t-1} \mid G_{: t}\right) \
+&amp; =\sum_{G_{t+1: t+\Delta t-1}} p\left(G_{t+\Delta t} \mid G_{: t+\Delta t-1}\right) \cdots p\left(G_{t+1} \mid G_{: t}\right) \
+&amp; =\mathbb{E}<em t-1="t-1" t_1:="t+1:" t_Delta="t+\Delta">{G</em>\right)\right] \
+&amp; \simeq p\left(G_{t+\Delta t} \mid \hat{G}} \mid G_{: t}}\left[p\left(G_{t+\Delta t} \mid G_{: t+\Delta t-1<em t="t">{t+1: t+\Delta t-1}, G</em>\right)
+\end{aligned}
+$$</p>
+<p>Intuitively, one starts with computing $p\left(G_{t+1} \mid G_{: t}\right)$, and drawing a sample $\hat{G}<em t_2="t+2">{t+1}$ from the
+conditional distribution. With this sample, one can further compute $p\left(G</em>} \mid \hat{G<em t="t">{t+1}, G</em>}\right)$. By iteratively computing the conditional distribution for $G_{t^{\prime}}$ and drawing a sample from it, one can eventually estimate $p\left(G_{t+\Delta t} \mid G_{: t}\right)$ as $p\left(G_{t+\Delta t} \mid \hat{G<em t="t">{t+1: t+\Delta t-1}, G</em>$ (line 5) to generate a graph. The time complexity of the algorithm is described in Section C of appendix.}\right)$. Although we can improve the estimation by drawing multiple graph samples at each step, RE-NET already performs very well with a single sample, and thus we only draw one sample graph at each step for better efficiency. Based on the estimation of the conditional distribution, we can further predict events that are likely to form in the future. We summarize the detailed inference algorithm in Algorithm 1; we first sample $M$ number of $s$ (line 3) and pick top- $k$ triples (line 4). Then we build a graph at time $t^{\prime</p>
+<h2>4 Experiments</h2>
+<p>Evaluating the quality of generated graphs is nontrivial, especially for knowledge graphs (Theis et al., 2015). In our experiments, we evaluate the proposed method on a extrapolation link prediction task on TKGs. The task of predicting future links aims to predict unseen relationships with object entities given $(s, r, ?, t)$ (or subject entities given $(?, r, o, t))$ at future time $t$, based on the past observed events in the TKG. Essentially, the task is a ranking problem over all the events ( $s, r, ?, t)$ (or $(?, r, o, t)$ ). RE-NET can approach this problem by computing the probability of each event in a distant future with the inference algorithm in Algorithm 1, and further rank all the events according to their probabilities. Note that we are only given a training set as ground truth at inference and we do not use any ground truth in the test set for the next time step predictions when performing multi-step inference. This is the main difference from previous work; they use previous ground truth in the test set.</p>
+<p>We evaluate our proposed method on three benchmark tasks: (1) predicting future events on three event-based datasets; (2) predicting future facts on two knowledge graphs which include facts with time spans, and (3) studying ablation of our proposed method. Section 4.1 summarizes the datasets. In all these experiments, we perform predictions on time stamps that are not observed during training.</p>
+<p>Table 1: Performance comparison on temporal link prediction (average metrics in \% over 5 runs) on three eventbased TKG datasets (ICEWS18, GDELT, and ICEWS14) and two public knowledge graphs (WIKI and YAGO). RE-NET achieves the best results.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">ICEWS18</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">GDELT</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">ICEWS14</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">WIKI</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">YAGO</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">H@3</td>
+<td style="text-align: center;">H@10</td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">H@3</td>
+<td style="text-align: center;">H@10</td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">H@3</td>
+<td style="text-align: center;">H@10</td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">H@3</td>
+<td style="text-align: center;">H@10</td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">H@3</td>
+<td style="text-align: center;">H@10</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">DistMult</td>
+<td style="text-align: center;">22.16</td>
+<td style="text-align: center;">26.00</td>
+<td style="text-align: center;">42.18</td>
+<td style="text-align: center;">18.71</td>
+<td style="text-align: center;">20.05</td>
+<td style="text-align: center;">32.55</td>
+<td style="text-align: center;">19.06</td>
+<td style="text-align: center;">22.00</td>
+<td style="text-align: center;">36.41</td>
+<td style="text-align: center;">46.12</td>
+<td style="text-align: center;">49.81</td>
+<td style="text-align: center;">51.38</td>
+<td style="text-align: center;">59.47</td>
+<td style="text-align: center;">60.91</td>
+<td style="text-align: center;">65.26</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">R-GCN</td>
+<td style="text-align: center;">23.19</td>
+<td style="text-align: center;">25.34</td>
+<td style="text-align: center;">36.48</td>
+<td style="text-align: center;">23.31</td>
+<td style="text-align: center;">24.94</td>
+<td style="text-align: center;">34.36</td>
+<td style="text-align: center;">26.31</td>
+<td style="text-align: center;">30.43</td>
+<td style="text-align: center;">45.34</td>
+<td style="text-align: center;">37.57</td>
+<td style="text-align: center;">39.66</td>
+<td style="text-align: center;">41.90</td>
+<td style="text-align: center;">41.30</td>
+<td style="text-align: center;">44.44</td>
+<td style="text-align: center;">52.68</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ConvE</td>
+<td style="text-align: center;">36.85</td>
+<td style="text-align: center;">39.92</td>
+<td style="text-align: center;">50.54</td>
+<td style="text-align: center;">35.56</td>
+<td style="text-align: center;">39.45</td>
+<td style="text-align: center;">49.16</td>
+<td style="text-align: center;">40.46</td>
+<td style="text-align: center;">43.33</td>
+<td style="text-align: center;">54.75</td>
+<td style="text-align: center;">47.55</td>
+<td style="text-align: center;">49.78</td>
+<td style="text-align: center;">49.42</td>
+<td style="text-align: center;">62.66</td>
+<td style="text-align: center;">63.36</td>
+<td style="text-align: center;">65.57</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">RotatE</td>
+<td style="text-align: center;">23.10</td>
+<td style="text-align: center;">27.61</td>
+<td style="text-align: center;">38.72</td>
+<td style="text-align: center;">22.33</td>
+<td style="text-align: center;">23.89</td>
+<td style="text-align: center;">32.29</td>
+<td style="text-align: center;">29.56</td>
+<td style="text-align: center;">32.92</td>
+<td style="text-align: center;">42.68</td>
+<td style="text-align: center;">48.67</td>
+<td style="text-align: center;">49.74</td>
+<td style="text-align: center;">49.88</td>
+<td style="text-align: center;">64.09</td>
+<td style="text-align: center;">64.67</td>
+<td style="text-align: center;">66.16</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">TA-DistMult</td>
+<td style="text-align: center;">28.53</td>
+<td style="text-align: center;">31.57</td>
+<td style="text-align: center;">44.96</td>
+<td style="text-align: center;">29.35</td>
+<td style="text-align: center;">31.56</td>
+<td style="text-align: center;">41.39</td>
+<td style="text-align: center;">20.78</td>
+<td style="text-align: center;">22.80</td>
+<td style="text-align: center;">35.26</td>
+<td style="text-align: center;">48.09</td>
+<td style="text-align: center;">49.51</td>
+<td style="text-align: center;">51.70</td>
+<td style="text-align: center;">61.72</td>
+<td style="text-align: center;">63.32</td>
+<td style="text-align: center;">65.19</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">HyTE</td>
+<td style="text-align: center;">7.31</td>
+<td style="text-align: center;">7.50</td>
+<td style="text-align: center;">14.95</td>
+<td style="text-align: center;">6.37</td>
+<td style="text-align: center;">6.72</td>
+<td style="text-align: center;">18.63</td>
+<td style="text-align: center;">11.48</td>
+<td style="text-align: center;">13.04</td>
+<td style="text-align: center;">22.51</td>
+<td style="text-align: center;">43.02</td>
+<td style="text-align: center;">45.12</td>
+<td style="text-align: center;">49.49</td>
+<td style="text-align: center;">23.16</td>
+<td style="text-align: center;">45.74</td>
+<td style="text-align: center;">51.94</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">dyngraph2vecAE</td>
+<td style="text-align: center;">1.52</td>
+<td style="text-align: center;">1.99</td>
+<td style="text-align: center;">2.02</td>
+<td style="text-align: center;">4.53</td>
+<td style="text-align: center;">1.87</td>
+<td style="text-align: center;">1.87</td>
+<td style="text-align: center;">10.83</td>
+<td style="text-align: center;">12.70</td>
+<td style="text-align: center;">15.02</td>
+<td style="text-align: center;">5.30</td>
+<td style="text-align: center;">5.27</td>
+<td style="text-align: center;">5.45</td>
+<td style="text-align: center;">0.93</td>
+<td style="text-align: center;">0.84</td>
+<td style="text-align: center;">0.95</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">tNodeEmbed</td>
+<td style="text-align: center;">8.32</td>
+<td style="text-align: center;">9.74</td>
+<td style="text-align: center;">17.47</td>
+<td style="text-align: center;">19.97</td>
+<td style="text-align: center;">22.62</td>
+<td style="text-align: center;">32.72</td>
+<td style="text-align: center;">17.84</td>
+<td style="text-align: center;">20.16</td>
+<td style="text-align: center;">32.88</td>
+<td style="text-align: center;">9.54</td>
+<td style="text-align: center;">10.44</td>
+<td style="text-align: center;">16.60</td>
+<td style="text-align: center;">4.22</td>
+<td style="text-align: center;">4.16</td>
+<td style="text-align: center;">8.4</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">EvolveRGCN</td>
+<td style="text-align: center;">16.59</td>
+<td style="text-align: center;">18.32</td>
+<td style="text-align: center;">34.01</td>
+<td style="text-align: center;">15.55</td>
+<td style="text-align: center;">19.23</td>
+<td style="text-align: center;">31.54</td>
+<td style="text-align: center;">17.01</td>
+<td style="text-align: center;">18.97</td>
+<td style="text-align: center;">32.58</td>
+<td style="text-align: center;">46.49</td>
+<td style="text-align: center;">47.83</td>
+<td style="text-align: center;">49.23</td>
+<td style="text-align: center;">59.74</td>
+<td style="text-align: center;">61.03</td>
+<td style="text-align: center;">61.69</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Know-Evolve*</td>
+<td style="text-align: center;">3.27</td>
+<td style="text-align: center;">3.23</td>
+<td style="text-align: center;">3.26</td>
+<td style="text-align: center;">2.43</td>
+<td style="text-align: center;">2.35</td>
+<td style="text-align: center;">2.41</td>
+<td style="text-align: center;">1.42</td>
+<td style="text-align: center;">1.37</td>
+<td style="text-align: center;">1.43</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">00.03</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">00.07</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.04</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Know-Evolve+MLP</td>
+<td style="text-align: center;">9.29</td>
+<td style="text-align: center;">9.62</td>
+<td style="text-align: center;">17.18</td>
+<td style="text-align: center;">22.78</td>
+<td style="text-align: center;">25.49</td>
+<td style="text-align: center;">35.41</td>
+<td style="text-align: center;">22.89</td>
+<td style="text-align: center;">26.68</td>
+<td style="text-align: center;">38.57</td>
+<td style="text-align: center;">12.64</td>
+<td style="text-align: center;">14.33</td>
+<td style="text-align: center;">21.57</td>
+<td style="text-align: center;">6.19</td>
+<td style="text-align: center;">6.59</td>
+<td style="text-align: center;">11.48</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">DyRep+MLP</td>
+<td style="text-align: center;">9.86</td>
+<td style="text-align: center;">10.66</td>
+<td style="text-align: center;">18.66</td>
+<td style="text-align: center;">23.94</td>
+<td style="text-align: center;">27.88</td>
+<td style="text-align: center;">36.58</td>
+<td style="text-align: center;">24.61</td>
+<td style="text-align: center;">28.87</td>
+<td style="text-align: center;">39.34</td>
+<td style="text-align: center;">11.60</td>
+<td style="text-align: center;">12.74</td>
+<td style="text-align: center;">21.65</td>
+<td style="text-align: center;">5.87</td>
+<td style="text-align: center;">6.54</td>
+<td style="text-align: center;">11.98</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">R-GCRN+MLP</td>
+<td style="text-align: center;">35.12</td>
+<td style="text-align: center;">38.26</td>
+<td style="text-align: center;">50.49</td>
+<td style="text-align: center;">37.29</td>
+<td style="text-align: center;">41.08</td>
+<td style="text-align: center;">51.88</td>
+<td style="text-align: center;">36.77</td>
+<td style="text-align: center;">40.15</td>
+<td style="text-align: center;">52.33</td>
+<td style="text-align: center;">47.71</td>
+<td style="text-align: center;">48.14</td>
+<td style="text-align: center;">49.66</td>
+<td style="text-align: center;">53.89</td>
+<td style="text-align: center;">56.06</td>
+<td style="text-align: center;">61.19</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">RE-Net w. mean agg.</td>
+<td style="text-align: center;">40.70</td>
+<td style="text-align: center;">43.27</td>
+<td style="text-align: center;">53.65</td>
+<td style="text-align: center;">38.35</td>
+<td style="text-align: center;">42.13</td>
+<td style="text-align: center;">52.52</td>
+<td style="text-align: center;">43.79</td>
+<td style="text-align: center;">47.34</td>
+<td style="text-align: center;">57.47</td>
+<td style="text-align: center;">51.13</td>
+<td style="text-align: center;">51.37</td>
+<td style="text-align: center;">53.01</td>
+<td style="text-align: center;">65.10</td>
+<td style="text-align: center;">65.24</td>
+<td style="text-align: center;">67.34</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">RE-Net w. attn agg.</td>
+<td style="text-align: center;">40.96</td>
+<td style="text-align: center;">44.08</td>
+<td style="text-align: center;">54.32</td>
+<td style="text-align: center;">38.54</td>
+<td style="text-align: center;">42.25</td>
+<td style="text-align: center;">52.85</td>
+<td style="text-align: center;">43.94</td>
+<td style="text-align: center;">47.85</td>
+<td style="text-align: center;">57.91</td>
+<td style="text-align: center;">51.25</td>
+<td style="text-align: center;">52.54</td>
+<td style="text-align: center;">53.12</td>
+<td style="text-align: center;">65.13</td>
+<td style="text-align: center;">65.54</td>
+<td style="text-align: center;">67.87</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">RE-Net</td>
+<td style="text-align: center;">42.93</td>
+<td style="text-align: center;">45.47</td>
+<td style="text-align: center;">55.80</td>
+<td style="text-align: center;">40.42</td>
+<td style="text-align: center;">43.40</td>
+<td style="text-align: center;">53.70</td>
+<td style="text-align: center;">45.71</td>
+<td style="text-align: center;">49.06</td>
+<td style="text-align: center;">59.12</td>
+<td style="text-align: center;">51.97</td>
+<td style="text-align: center;">52.07</td>
+<td style="text-align: center;">53.91</td>
+<td style="text-align: center;">65.16</td>
+<td style="text-align: center;">65.63</td>
+<td style="text-align: center;">68.08</td>
+</tr>
+</tbody>
+</table>
+<h3>4.1 Experimental Setup</h3>
+<p>We compare the performance of our model against various traditional models for knowledge graphs, as well as some recent temporal reasoning models on five public datasets.
+Datasets. We use five TKG datasets in our experiments: 1) three event-based TKGs: ICEWS18 (Boschee et al., 2015), ICEWS14 (Trivedi et al., 2017), and GDELT (Leetaru and Schrodt, 2013); and 2) two knowledge graphs where temporally associated facts have meta-facts as $\left(\mathrm{s}, \mathrm{r}, \mathrm{o},\left[t_{s}, t_{e}\right]\right)$ where $t_{s}$ is the starting time point and $t_{e}$ is the ending time point: WIKI (Leblay and Chekol, 2018) and YAGO (Mahdisoltani et al., 2014).
+Evaluation Setting and Metrics. For each dataset except ICEWS14 ${ }^{4}$, we split it into three subsets, i.e., train( $80 \%$ )/valid( $10 \%$ )/test( $10 \%$ ), by time stamps. Thus, (time stamps of train) $&lt;$ (time stamps of valid) $&lt;$ (time stamps of test). We report a filtered version of Mean Reciprocal Ranks (MRR) and Hits@3/10. Similar to the definition of filtered setting in (Bordes et al., 2013), during evaluation, we remove all the valid triplets that appear in the train, valid, or test sets from the list of corrupted triplets.
+Baselines. We compare our approach to baselines for static graphs and temporal graphs as follows:
+(1) Static Methods. By ignoring the edge time stamps, we construct a static, cumulative graph for all the training events, and apply multi-relational</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Performance of temporal link prediction over future timestamps with filtered Hits@3. RENET consistently outperforms the baselines.
+graph representation learning methods including DistMult (Yang et al., 2015), R-GCN (Schlichtkrull et al., 2018), ConvE (Dettmers et al., 2018), and RotatE (Sun et al., 2019).
+(2) Temporal Reasoning Methods. We also compare state-of-the-art temporal reasoning methods for knowledge graphs, including Know-Evolve ${ }^{5}$ (Trivedi et al., 2017), TADistMult (García-Durán et al., 2018), and HyTE (Dasgupta et al., 2018). TA-DistMult and HyTE are for an interpolation task whereas we focus on an extrapolation task. To do this, we assign random values to temporal embeddings that are not observed during training. To see the effectiveness of our recurrent event encoder, we use encoders of previous work and our MLP decoder as baselines; we compare Know-Evolve, Dyrep (Trivedi et al., 2019), and GCRN (Seo</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" />
+(a) RE-NET with different aggregators
+<img alt="img-5.jpeg" src="img-5.jpeg" />
+(b) Study of empirical $p(s)$ and $p(s, r)$</p>
+<p>Figure 5: Performance study on model variations. We study the effects of (a) RE-NET with different aggregators, and (b) empirical $p(\mathrm{~s})$ and $p(\mathrm{~s}, \mathrm{r})$.
+et al., 2017) combined with our MLP decoder, called Know-Evolve+MLP, DyRep+MLP, and R-GCRN+MLP. The GCRN utilizes Graph Gonvolutional Network (Kipf and Welling, 2016). Instead, we use RGCN (Schlichtkrull et al., 2018) to deal with multi-relational graphs.</p>
+<p>We also compare our method with dynamic methods on homogeneous graphs: dyngraph2vecAE (Goyal et al., 2019), tNodeEmbed (Singer et al., 2019), and EvolveRGCN (Pareja et al., 2020). These methods were proposed to predict interactions at future time on homogeneous graphs. Thus, we modified the methods to apply them on multi-relational graph.
+(3) Variants of RE-NET. To evaluate the importance of different components of RE-NET, we varied our model in different ways: RE-NET w/o multi-step which does not update history during inference, RE-NET without the aggregator (RENET w/o agg.), RE-NET with a mean aggregator (RE-NET w. mean agg.), and RE-NET with an attentive aggregator (RE-NET w. attn agg.). RENET w/o agg. takes a zero vector instead of an aggregator. RE-NET w. GT denotes RE-NET with ground truth history.</p>
+<p>Please refer to Section D of appendix for detailed experimental settings.</p>
+<h3>4.2 Performance Comparison on TKGs.</h3>
+<p>We compare our proposed method with other baselines. The test results are obtained by averaged metrics ( 5 runs) over the entire test sets on datasets.
+Results on Event-based TKGs. Table 1 summarizes results on all datasets. Our proposed RE-NET outperforms all other baselines on ICEWS18 and GDELT. Static methods underperform compared to our method since they do not consider temporal factors. Also, RE-NET outperforms all other tem-
+poral methods including TA-DistMult, HyTE, and dynamic methods on homogeneous graphs. Know-Evovle+MLP significantly improves Know-Evolve, which shows effectiveness of our MLP decoder. However, there is still a large gap from our model, which also indicates effectiveness of our recurrent event encoder. R-GCRN+MLP has a similar structure to ours in that it has a recurrent encoder and an RGCN aggregator but it lacks multi-step inference, global information, and the sophisticated modeling for the recurrent encoder. Thus, it underperforms compared to our method. More importantly, none of the prior temporal methods are capable of multistep inference, while RE-NET can sequentially infer multi-step events (Details in Section 4.3).
+Results on Public KGs. Previous results have demonstrated the effectiveness of RE-NET on event-based KGs. In Table 1 we compare RENET with other baselines on the Public KGs WIKI and YAGO. Our proposed RE-NET outperforms all other baselines on these datasets. In these datasets, baselines show better results than in the eventbased TKGs. This is due to the characteristics of the datasets; they have facts that are valid within a time span. However, our proposed method consistently outperforms the static and temporal methods, which implies that RE-NET effectively infers new events using a powerful event encoder and an aggregator, and provides accurate prediction results.
+Performance of Prediction over Time. Next, we further study performance of RE-NET over time. Figs. 4 shows the performance comparisons over different time stamps on the ICEWS18, GDELT, WIKI, and YAGO datasets with filtered Hits@3 metrics. RE-NET consistently outperforms baseline methods for all different time stamps. Performance of each method fluctuate since testing entities are different at each time step. We notice that with increasing time steps, the difference between RE-NET and ConvE gets smaller as shown in Fig. 4. This is expected since further future events are harder to predict. To estimate the joint probability distribution of events in a distant future, RE-NET needs to generate a long graph sequence. The quality of generated graphs deteriorates when RE-NET generates a long graph sequence.</p>
+<h3>4.3 Ablation Study</h3>
+<p>In this section, we study the effect of variations in RE-NET on the ICEWS18 dataset. We present the results in Tables 1, 2, and Fig. 5.</p>
+<p>Table 2: Ablation study on the ICEWS18 and GDELT datasets.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">ICEWS18</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">GDELT</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">$\mathrm{H} @ 3$</td>
+<td style="text-align: center;">$\mathrm{H} @ 10$</td>
+<td style="text-align: center;">MRR</td>
+<td style="text-align: center;">$\mathrm{H} @ 3$</td>
+<td style="text-align: center;">$\mathrm{H} @ 10$</td>
+</tr>
+<tr>
+<td style="text-align: left;">RE-Net w/o agg.</td>
+<td style="text-align: center;">33.46</td>
+<td style="text-align: center;">35.98</td>
+<td style="text-align: center;">46.62</td>
+<td style="text-align: center;">38.10</td>
+<td style="text-align: center;">41.26</td>
+<td style="text-align: center;">51.61</td>
+</tr>
+<tr>
+<td style="text-align: left;">RE-Net w/o multi-step</td>
+<td style="text-align: center;">40.05</td>
+<td style="text-align: center;">42.60</td>
+<td style="text-align: center;">52.92</td>
+<td style="text-align: center;">38.72</td>
+<td style="text-align: center;">42.52</td>
+<td style="text-align: center;">52.78</td>
+</tr>
+<tr>
+<td style="text-align: left;">RE-Net</td>
+<td style="text-align: center;">42.93</td>
+<td style="text-align: center;">45.47</td>
+<td style="text-align: center;">55.80</td>
+<td style="text-align: center;">40.42</td>
+<td style="text-align: center;">43.40</td>
+<td style="text-align: center;">53.70</td>
+</tr>
+<tr>
+<td style="text-align: left;">RE-Net w. GT</td>
+<td style="text-align: center;">44.33</td>
+<td style="text-align: center;">46.83</td>
+<td style="text-align: center;">57.27</td>
+<td style="text-align: center;">41.80</td>
+<td style="text-align: center;">45.71</td>
+<td style="text-align: center;">56.03</td>
+</tr>
+</tbody>
+</table>
+<p>Different Aggregators. In Table 2, we observe that RE-NET w/o agg. hurts model quality, suggesting that introducing aggregators makes the model capable of dealing with concurrent events and improves performance. Table 1 and Fig. 5a show the performance of RE-NET with different aggregators. Among them, RGCN aggregator outperforms other aggregators. This aggregator has the advantage of exploring multi-relational neighbors. Also, RE-NET with an attentive aggregator shows better performance than RE-NET with a mean aggregator, which implies that giving different attention weights to each neighbor helps predictions.</p>
+<p>Multi-step Inference. In Table 2, we observe that RE-NET outperforms RE-NET w/o multi-step. The latter one does not update history during inference; keeps its last history in the training set. So it is not affected by time stamps. Without the multi-step inference, the performance of RE-NET is decreased as is shown. Also we expect that RENET w. GT shows significant improvement when RE-NET uses ground truth of triples at the previous time step which are not allowed in our setup.</p>
+<p>Empirical Probabilities. Here, we study the role of $p\left(\mathrm{~s}<em t-1="t-1" t-m:="t-m:">{t} \mid G</em>}\right)$ and $p\left(\mathrm{r<em t-1="t-1" t-m:="t-m:">{t} \mid \mathrm{s}, G</em>}\right)$. We denote them as $p(\mathrm{~s})$ and $p(\mathrm{r})$ for brevity. $p\left(\mathrm{~s<em t="t">{t}, \mathrm{r}</em>)$ shows the worst performance, suggesting that training each part of the probability in equation (1) improves performance.} \mid G_{t-m: t-1}\right)$ (or simply $p(\mathrm{~s}, \mathrm{r})$ ) is equivalent to $p(\mathrm{~s}) p(\mathrm{r})$. In Fig 5b, emp. $p(\mathrm{~s})$ (or $p_{e}(\mathrm{~s})$ ) denotes a model with empirical $p(\mathrm{~s})$, defined as $p_{e}(\mathrm{~s})=$ (# of s-related triples) / (total # of triples). emp. $p(\mathrm{~s}, \mathrm{r})$ (or $\left.p_{e}(\mathrm{~s}, \mathrm{r})\right)$ denotes a model with $p_{e}(\mathrm{~s})$ and $p_{e}(\mathrm{r})$,defined as $p_{e}(\mathrm{r})=(#$ of r-related triples $)$ / (total # of triples). Thus, $p_{e}(\mathrm{~s}, \mathrm{r})=p_{e}(\mathrm{~s}) p_{e}(\mathrm{r})$. Note that RE-NET use a trained $p(\mathrm{~s})$ and $p(\mathrm{r})$. The results show that the trained $p(\mathrm{~s})$ and $p(\mathrm{r})$ help RENET for multi-step predictions. $p_{e}(\mathrm{~s})$ underperforms RE-NET, and $p_{e}(\mathrm{~s}, \mathrm{r})=p_{e}(\mathrm{~s}) p_{e}(\mathrm{r</p>
+<h2>5 Related Work</h2>
+<p>Temporal KG Reasoning. There have been some recent attempts on incorporating temporal information in modeling dynamic knowledge graphs, broadly categorized into two settings - extrapolation (Trivedi et al., 2017) and interpolation (GarcíaDurán et al., 2018; Leblay and Chekol, 2018; Dasgupta et al., 2018; Goel et al., 2020; Lacroix et al., 2020). For the former setting, KnowEvolve (Trivedi et al., 2017) models the occurrence of a fact as a temporal point process. For the latter setting, several embedding-based methods have been proposed (García-Durán et al., 2018; Leblay and Chekol, 2018; Dasgupta et al., 2018; Goel et al., 2020; Lacroix et al., 2020) to model time information. They embed the associate into a low dimensional space such as relation embeddings with RNN on the text of time (García-Durán et al., 2018), time embeddings (Leblay and Chekol, 2018), temporal hyperplanes (Leblay and Chekol, 2018), diachronic entity embedding (Goel et al., 2020), and tensor decomposition (Lacroix et al., 2020). However, these models cannot predict future events, as representations of unseen time stamps are unavailable.</p>
+<p>Temporal Modeling on Homogeneous Graphs. There are attempts on predicting future links on homogeneous graphs (Pareja et al., 2020; Goyal et al., 2018, 2019; Zhou et al., 2018; Singer et al., 2019). Some of the methods try to incorporate and learn graphical structures to predict future links (Pareja et al., 2020; Zhou et al., 2018; Singer et al., 2019), while other methods predict by reconstructing an adjacency matrix by using an autoencoder (Goyal et al., 2018, 2019). These methods seek to predict on single-relational graphs, and are designed to predict future edges in one future step (i.e., for $t+1$ ). However, our work focuses on multi-relational knowledge graphs and aims for multi-step prediction.</p>
+<p>Deep Autoregressive Models. Deep autoregressive models define joint probability distributions as a product of conditionals. DeepGMG (Li et al., 2018) and GraphRNN (You et al., 2018) are deep generative models of graphs and focus on generating static homogeneous graphs where there is only a single type of edge. In contrast to these studies, our work focuses on generating heterogeneous graphs, in which multiple types of edges exist, and thus our problem is more challenging. To the best of our knowledge, this is the first paper to formu-</p>
+<p>late the structure inference (prediction) problem for temporal, multi-relational (knowledge) graphs in an autoregressive fashion.</p>
+<h2>6 Conclusion</h2>
+<p>To tackle the extrapolation problem, we proposed Recurrent Event Network (RE-NET) to model temporal, multi-relational, and concurrent interactions between entities. RE-NET defines the joint probability of all events, and thus is capable of inferring graphs in a sequential manner. The experiment revealed that RE-NET outperforms all the static and temporal methods and our extensive analysis shows its strength. Interesting future work includes developing a fast and efficient version of RE-NET, and modeling lasting events and performing inference on the long-lasting graph structures.</p>
+<h2>Acknowledgement</h2>
+<p>This research is based upon work supported in part by the Office of the Director of National Intelligence (ODNI), Intelligence Advanced Research Projects Activity (IARPA), via Contract No. 201919051600007, the DARPA MCS program under Contract No. N660011924033 with the United States Office Of Naval Research, the Defense Advanced Research Projects Agency with award W911NF-19-20271, and NSF SMA 18-29268. The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies, either expressed or implied, of ODNI, IARPA, or the U.S. Government. We would like to thank all the collaborators in USC INK research lab for their constructive feedback on the work.</p>
+<h2>References</h2>
+<p>Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. 2015. Neural machine translation by jointly learning to align and translate. CoRR, abs/1409.0473.</p>
+<p>Antoine Bordes, Nicolas Usunier, Alberto GarcíaDurán, Jason Weston, and Oksana Yakhnenko. 2013. Translating embeddings for modeling multirelational data. In NIPS.</p>
+<p>Elizabeth Boschee, Jennifer Lautenschlager, Sean O'Brien, Steve Shellman, James Starz, and Michael Ward. 2015. Icews coded event data. Harvard Dataverse, 12.</p>
+<p>Kyunghyun Cho, Bart van Merrienboer, Çaglar Gülçehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. 2014. Learning phrase representations using rm encoder-decoder for statistical machine translation. In EMNLP.</p>
+<p>Shib Sankar Dasgupta, Swayambhu Nath Ray, and Partha Talukdar. 2018. Hyte: Hyperplane-based temporally aware knowledge graph embedding. In EMNLP.</p>
+<p>Tim Dettmers, Pasquale Minervini, Pontus Stenetorp, and Sebastian Riedel. 2018. Convolutional 2d knowledge graph embeddings. In AAAI.</p>
+<p>Alberto García-Durán, Sebastijan Dumancic, and Mathias Niepert. 2018. Learning sequence encoders for temporal knowledge graph completion. In EMNLP.</p>
+<p>Rishab Goel, Seyed Mehran Kazemi, Marcus Brubaker, and Pascal Poupart. 2020. Diachronic embedding for temporal knowledge graph completion. In Thirty-Fourth AAAI Conference on Artificial Intelligence.</p>
+<p>Palash Goyal, Sujit Rokka Chhetri, and Arquimedes Canedo. 2019. dyograph2vec: Capturing network dynamics using dynamic graph representation learning. Knowledge-Based Systems, page 104816.</p>
+<p>Palash Goyal, Nitin Kamra, Xinran He, and Yan Liu. 2018. Dyngem: Deep embedding method for dynamic graphs. arXiv preprint arXiv:1805.11273.</p>
+<p>Seyed Mehran Kazemi, Rishab Goel, Kshitij Jain, Ivan Kobyzev, Akshay Sethi, Peter Forsyth, and Pascal Poupart. 2019. Relational representation learning for dynamic (knowledge) graphs: A survey. arXiv preprint arXiv:1905.11485.</p>
+<p>Diederik P Kingma and Jimmy Ba. 2014. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980.</p>
+<p>Thomas N. Kipf and Max Welling. 2016. Semisupervised classification with graph convolutional networks. CoRR, abs/1609.02907.</p>
+<p>Gizem Korkmaz, Jose Cadena, Chris J Kuhlman, Achla Marathe, Anil Vullikanti, and Naren Ramakrishnan. 2015. Combining heterogeneous data sources for civil unrest forecasting. In Proceedings of the 2015 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining 2015, pages $258-265$.</p>
+<p>Timothée Lacroix, Guillaume Obozinski, and Nicolas Usunier. 2020. Tensor decompositions for temporal knowledge base completion. In International Conference on Learning Representations.</p>
+<p>Julien Leblay and Melisachew Wudage Chekol. 2018. Deriving validity time in knowledge graph. In Companion of the The Web Conference 2018 on The Web Conference 2018, pages 1771-1776. International World Wide Web Conferences Steering Committee.</p>
+<p>Kalev Leetaru and Philip A Schrodt. 2013. Gdelt: Global data on events, location, and tone, 19792012. In ISA annual convention, volume 2, pages $1-49$. Citeseer.</p>
+<p>Yujia Li, Oriol Vinyals, Chris Dyer, Razvan Pascanu, and Peter Battaglia. 2018. Learning deep generative models of graphs. arXiv preprint arXiv:1803.03324.</p>
+<p>Farzaneh Mahdisoltani, Joanna Asia Biega, and Fabian M. Suchanek. 2014. Yago3: A knowledge base from multilingual wikipedias. In CIDR.</p>
+<p>Fred Morstatter, Aram Galstyan, Gleb Satyukov, Daniel Benjamin, Andres Abeliuk, Mehrnoosh Mirtaheri, KSM Tozammel Hossain, Pedro Szekely, Emilio Ferrara, Akira Matsui, Mark Steyvers, Stephen Bennet, David Budescu, Mark Himmelstein, Michael Ward, Andreas Beger, Michele Catasta, Rok Sosic, Jure Leskovec, Pavel Atanasov, Regina Joseph, Rajiv Sethi, and Ali Abbas. 2019. Sage: A hybrid geopolitical event forecasting system. In Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence, IJCAI-19. International Joint Conferences on Artificial Intelligence Organization.</p>
+<p>Sathappan Muthiah, Bert Huang, Jaime Arredondo, David Mares, Lise Getoor, Graham Katz, and Naren Ramakrishnan. 2015. Planned protest modeling in news and social media. In $A A A I$.</p>
+<p>Aldo Pareja, Giacomo Domeniconi, Jie Chen, Tengfei Ma, Toyotaro Suzumura, Hiroki Kanezashi, Tim Kaler, Tao B. Schardl, and Charles E. Leiserson. 2020. EvolveGCN: Evolving graph convolutional networks for dynamic graphs. In Proceedings of the Thirty-Fourth AAAI Conference on Artificial Intelligence.</p>
+<p>Lawrence Phillips, Chase Dowling, Kyle Shaffer, Nathan Oken Hodas, and Svitlana Volkova. 2017. Using social media to predict the future: A systematic literature review. ArXiv, abs/1706.06134.</p>
+<p>Michael Sejr Schlichtkrull, Thomas N. Kipf, Peter Bloem, Rianne van den Berg, Ivan Titov, and Max Welling. 2018. Modeling relational data with graph convolutional networks. In ESWC.</p>
+<p>Youngjoo Seo, Michaël Defferrard, Pierre Vandergheynst, and Xavier Bresson. 2017. Structured sequence modeling with graph convolutional recurrent networks. In ICONIP.</p>
+<p>Uriel Singer, Ido Guy, and Kira Radinsky. 2019. Node embedding over temporal graphs. arXiv preprint arXiv:1903.08889.</p>
+<p>Zhiqing Sun, Zhi-Hong Deng, Jian-Yun Nie, and Jian Tang. 2019. Rotate: Knowledge graph embedding by relational rotation in complex space. arXiv preprint arXiv:1902.10197.</p>
+<p>Lucas Theis, Aäron van den Oord, and Matthias Bethge. 2015. A note on the evaluation of generative models. arXiv preprint arXiv:1511.01844.</p>
+<p>Rakshit Trivedi, Hanjun Dai, Yichen Wang, and Le Song. 2017. Know-evolve: Deep temporal reasoning for dynamic knowledge graphs. In ICML.</p>
+<p>Rakshit Trivedi, Mehrdad Farajtabar, Prasenjeet Biswal, and Hongyuan Zha. 2019. Dyrep: Learning representations over dynamic graphs. In ICLR 2019.</p>
+<p>Bishan Yang, Wen tau Yih, Xiaodong He, Jianfeng Gao, and Li Deng. 2015. Embedding entities and relations for learning and inference in knowledge bases. CoRR, abs/1412.6575.</p>
+<p>Jiaxuan You, Rex Ying, Xiang Ren, William Hamilton, and Jure Leskovec. 2018. Graphrnn: Generating realistic graphs with deep auto-regressive models. In International Conference on Machine Learning, pages 5694-5703.</p>
+<p>Lekui Zhou, Yang Yang, Xiang Ren, Fei Wu, and Yueting Zhuang. 2018. Dynamic network embedding by modeling triadic closure process. In Thirty-Second AAAI Conference on Artificial Intelligence.</p>
+<h2>A Recurrent Neural Network</h2>
+<p>We define a recurrent event encoder based on RNN as follows:</p>
+<p>$$
+\boldsymbol{h}<em t="t">{t}(\mathrm{~s}, \mathrm{r})=\operatorname{RNN}\left(g\left(\mathrm{~N}</em>}(\mathrm{~s})\right), \boldsymbol{H<em t-1="t-1">{t}, \boldsymbol{h}</em>)\right)
+$$}(\mathrm{~s}, \mathrm{r</p>
+<p>We use Gated Recurrent Units (Cho et al., 2014) as RNN:</p>
+<p>$$
+\begin{aligned}
+&amp; \boldsymbol{a}<em _mathrm_e="\mathrm{e">{t}=\left[\boldsymbol{e}</em>}}: \boldsymbol{e<em t="t">{\mathrm{r}}: g\left(\mathrm{~N}</em>}(\mathrm{~s})\right): \boldsymbol{H<em t="t">{t}\right] \
+&amp; \boldsymbol{z}</em>}=\sigma\left(\boldsymbol{W<em t="t">{z} \boldsymbol{a}</em>}+\boldsymbol{U<em t-1="t-1">{z} \boldsymbol{h}</em>\right) \
+&amp; \boldsymbol{r}<em r="r">{t}=\sigma\left(\boldsymbol{W}</em>} \boldsymbol{a<em r="r">{t}+\boldsymbol{U}</em>} \boldsymbol{h<em t="t">{t-1}\right) \
+&amp; \boldsymbol{h}</em>}=\left(1-\boldsymbol{z<em t-1="t-1">{t}\right) \circ \boldsymbol{h}</em>}+\boldsymbol{z<em h="h">{t} \circ \tanh \left(\boldsymbol{W}</em>} \boldsymbol{a<em h="h">{t}+\boldsymbol{U}</em>}\left(\boldsymbol{r<em t-1="t-1">{t} \circ \boldsymbol{h}</em>\right)\right)
+\end{aligned}
+$$</p>
+<p>where : is concatenation, $\sigma(\cdot)$ is an activation function, and o is a Hadamard operator. The input is a concatenation of four vectors: subject embedding, object embedding, aggregation of neighborhood representations, and global information vector $\left(\boldsymbol{e}<em _mathrm_r="\mathrm{r">{\mathrm{e}}, \boldsymbol{e}</em>}}, g\left(\mathrm{~N<em t="t">{t}(\mathrm{~s})\right), \boldsymbol{H}</em>}\right) . \boldsymbol{h<em t="t">{t}(s)$ and $\boldsymbol{H}</em>}$ are similarly defined. For $\boldsymbol{h<em _mathrm_s="\mathrm{s">{t}(s)$, a concatenation of subject embedding, aggregation of neighborhood representations, and global information vector $\left(\boldsymbol{e}</em>}}, g\left(\mathrm{~N<em t="t">{t}(s)\right), \boldsymbol{H}</em>}\right)$ is input. For $\boldsymbol{H<em t="t">{t}$, aggregation of the whole graph representations $g\left(G</em>\right)$ is input.</p>
+<h2>B Details of RGCN Aggregator</h2>
+<p>The RGCN aggregator is defined as follows:</p>
+<p>$$
+g\left(\mathrm{~N}<em s="s">{t}^{(e)}\right)=\mathbf{h}</em>}^{(i+1)}=\sigma\left(\sum_{r \in R} \sum_{o \in \mathbf{N<em s="s">{t}^{(e, r)}} \frac{1}{c</em>}} \boldsymbol{W<em o="o">{r}^{(l)} \mathbf{h}</em>}^{(l)}+\boldsymbol{W<em s="s">{0}^{(l)} \mathbf{h}</em>\right)
+$$}^{(l)</p>
+<p>where initial hidden representations for each node $\left(\mathbf{h}<em o="o">{o}^{(0)}\right)$ are set to trainable embedding vectors $\left(\boldsymbol{e}</em>$ is a normalizing factor. Detailed}\right)$ for each node and $c_{s</p>
+<p>Basically, each relation can derive a local graph structure between entities, which further yield a message on each entity by aggregating information from neighbors, i.e., $\sum_{o \in \mathrm{~N}<em s="s">{t}^{(e, r)}} \frac{1}{c</em>}} \boldsymbol{W<em o="o">{r}^{(l)} \mathbf{h}</em>}^{(l)}$. The overall message on each entity is further computed by aggregating all the relation-specific messages, i.e., $\sum_{r \in R} \sum_{o \in \mathrm{~N<em s="s">{t}^{(e, r)}} \frac{1}{c</em>}} \boldsymbol{W<em o="o">{r}^{(l)} \mathbf{h}</em>}^{(l)}$. Finally, the aggregator $g\left(\mathrm{~N<em 0="0">{t}^{(e)}\right)$ is defined by combining both the overall message and information from past steps, i.e., $\boldsymbol{W}</em>$.}^{(l)} \mathbf{h}_{s}^{(l)</p>
+<p>To distinguish weights between different relations, we adopt independent weight matrices $\left{\boldsymbol{W}_{t}^{(l)}\right}$ for each relation r. Furthermore, the aggregator collects representations of multi-hop neighbors by introducing multiple layers of the neural
+network with each layer indexed by $l$. The number of layers determines the depth to which the node reaches to aggregate information from its local neighborhood.</p>
+<p>The major issue of this aggregator is that the number of parameters grows rapidly with the number of relations. In practice, this can easily lead to overfitting on rare relations and models of very large size. Thus, we adopt the block-diagonal decomposition (Schlichtkrull et al., 2018), where each relation-specific weight matrix is decomposed into a block-diagonal by decomposing into low-dimensional matrices. $\boldsymbol{W}<em 1="1" r="r">{t}^{(l)}$ in equation (10) is defined as a block diagonal matrix, $\operatorname{diag}\left(\mathbf{A}</em>}^{(l)}, \ldots, \mathbf{A<em k="k" r="r">{B r}^{(l)}\right)$ where $\mathbf{A}</em>$ and $B$ is the number of basis matrices. The block decomposition reduces the number of parameters and helps prevent overfitting.}^{(l)} \in$ $\mathbb{R}^{\left(d^{(l+1)} / R\right) \times\left(d^{(l)} / R\right)</p>
+<h2>C Computational Complexity Analysis.</h2>
+<p>We analyze the time complexity of the graph generation process in Algorithm 1. Computing $p\left(s_{t}\right]$ $G_{t-m: t-1}$ ) (equation (4)) takes $O(|E| L m)$, where $|E|$ is the maximum number of triples among $\left{G_{t-m}, \ldots, G_{t-1}\right}, L$ is the number of layers of aggregation, and $m$ is the number of the past time steps since we unroll $m$ time steps in RNN. From this probability, we sample $M$ number of subjects s. Computing $p\left(\mathrm{~s}<em t="t">{t}, \mathrm{r}</em>}, \mathrm{o<em t-1="t-1" t-m:="t-m:">{t} \mid G</em> m+\log k\right))$ where $k$ is the cutoff number for picking top- $k$ triples. The time complexity is linear to the number of entities and relations, and the number of sampled $s$.}\right)$ in equation (1) takes $O\left(D^{L} m\right)$, where $D$ is the maximum degree of entities. To get probabilities of all possible triples given sampled subjects, it requires $O(M|R||O| D^{L} m)$ where $|R|$ is the total number of relations and $|O|$ is the total number of entities. Thus, the time complexity for generating one graph is $O(|E| L m+M|R||O|\left(D^{L</p>
+<h2>D Detailed Experimental Settings</h2>
+<p>Datasets. We use five datasets: 1) three eventbased temporal knowledge graphs and 2) two knowledge graphs where temporally associated facts have meta-facts as $\left(\mathrm{s}, \mathrm{r}, \mathrm{o},\left[t_{s}, t_{e}\right]\right)$ where $t_{s}$ is the starting time point and $t_{e}$ is the ending time point. The first group of graphs includes Integrated Crisis Early Warning System (ICEWS18 (Boschee et al., 2015) and ICEWS14 (Trivedi et al., 2017)), and Global Database of Events, Language, and</p>
+<p>Table 3: Dataset Statistics.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Data</th>
+<th style="text-align: center;">$N_{\text {train }}$</th>
+<th style="text-align: center;">$N_{\text {valid }}$</th>
+<th style="text-align: center;">$N_{\text {test }}$</th>
+<th style="text-align: center;">$N_{\text {ent }}$</th>
+<th style="text-align: center;">$N_{\text {rel }}$</th>
+<th style="text-align: center;">Time gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">GDELT</td>
+<td style="text-align: center;">1,734,399</td>
+<td style="text-align: center;">238,765</td>
+<td style="text-align: center;">305,241</td>
+<td style="text-align: center;">7,691</td>
+<td style="text-align: center;">240</td>
+<td style="text-align: center;">15 mins</td>
+</tr>
+<tr>
+<td style="text-align: center;">ICEWS18</td>
+<td style="text-align: center;">373,018</td>
+<td style="text-align: center;">45,995</td>
+<td style="text-align: center;">49,545</td>
+<td style="text-align: center;">23,033</td>
+<td style="text-align: center;">256</td>
+<td style="text-align: center;">24 hours</td>
+</tr>
+<tr>
+<td style="text-align: center;">ICEWS14</td>
+<td style="text-align: center;">323,895</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">341,409</td>
+<td style="text-align: center;">12,498</td>
+<td style="text-align: center;">260</td>
+<td style="text-align: center;">24 hours</td>
+</tr>
+<tr>
+<td style="text-align: center;">WIKI</td>
+<td style="text-align: center;">539,286</td>
+<td style="text-align: center;">67,538</td>
+<td style="text-align: center;">63,110</td>
+<td style="text-align: center;">12,554</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">1 year</td>
+</tr>
+<tr>
+<td style="text-align: center;">YAGO</td>
+<td style="text-align: center;">161,540</td>
+<td style="text-align: center;">19,523</td>
+<td style="text-align: center;">20,026</td>
+<td style="text-align: center;">10,623</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">1 year</td>
+</tr>
+</tbody>
+</table>
+<p>Tone (GDELT) (Leetaru and Schrodt, 2013). The second group of graphs includes WIKI (Leblay and Chekol, 2018) and YAGO (Mahdisoltani et al., 2014). Dataset statistics are described on Table 3, where $N_{\text {train }}, N_{\text {valid }}$, and $N_{\text {test }}$ are the numbers of train set, valid set, and test set, respectively. $N_{\text {ent }}$ and $N_{\text {rel }}$ are the numbers of entities and relations. The time gap represents time granularity between adjacent events.</p>
+<p>ICEWS18 is collected from 1/1/2018 to 10/31/2018, ICEWS14 is from 1/1/2014 to 12/31/2014, and GDELT is from 1/1/2018 to 1/31/2018. The ICEWS14 is from (Trivedi et al., 2017). We didn't use their version of the GDELT dataset since they didn't release the dataset.</p>
+<p>WIKI and YAGO datasets have temporally associated facts $(\mathrm{s}, \mathrm{r}, \mathrm{o},\left[t_{s}, t_{e}\right])$. We preprocess the datasets such that each fact is converted to $\left{\left(\mathrm{s}, \mathrm{r}, \mathrm{o}, t_{s}\right),\left(\mathrm{s}, \mathrm{r}, \mathrm{o}, t_{\mathrm{s}}+1_{t}\right), \ldots,\left(\mathrm{s}, \mathrm{r}, \mathrm{o}, t_{\mathrm{e}}\right)\right}$ where $1_{t}$ is a unit time to ensure each fact has a sequence of events. Noisy events of early years are removed (before 1786 for WIKI and 1830 for YAGO).</p>
+<p>The difference between the first group and the second group is that facts happen multiple times (even periodically) on the first group (event-based knowledge graphs) while facts last long time but are not likely to occur multiple times in the second group.
+Model details of RE-NET. We use Gated Recurrent Units (Cho et al., 2014) as our recurrent event encoder, where the length of history is set as $m=10$ which means saving past 10 event sequences. If the events related to $s$ are sparse, we check the previous time steps until we get $m$ previous time steps related to the entity s. We pretrain the parameters related to equations 4 and 5 due to the large size of training graphs. We use a multi-relational aggregator to compute $\boldsymbol{H}<em t="t">{t}$. The aggregator provides hidden representations for each node and we max-pool over all hidden representations to get $\boldsymbol{H}</em>$. We apply teacher forcing for model training over historical data, i.e., we use the ground truth rather than the model's own prediction
+as the input of the next time step during training. At inference time, RE-NET performs multi-step prediction across the time stamps in dev and test sets. In each time step, we sample $1000(=M)$ number of subjects and save top-1000 $(=k)$ triples to use them as a generated graph. We set the size of entity/relation embeddings to be 200 and embedding of unobserved embeddings are randomly initialized. We use two-layer RGCN in the RGCN aggregator with block dimension $2 \times 2$. The model is trained by the Adam optimizer (Kingma and Ba, 2014). We set $\lambda_{1}$ to 0.1 , the learning rate to 0.001 and the weight decay rate to 0.00001 . All experiments were done on GeForce GTX 1080 Ti.</p>
+<p>Experimental Settings for Baseline Methods. In this section, we provide detailed settings for baselines. We use implementations of DistMult ${ }^{6}$. We implemented TA-DistMult based on the implementation of Distmult. For TA-DistMult, We use temporal tokens with the vocabulary of year, month and day on the ICEWS dataset and the vocabulary of year, month, day, hour and minute on the GDELT dataset. We use use a binary cross-entropy loss for DistMult and TA-DistMult. We validate the embedding size among 100 and 200. We set the batch size to 1024 , margin to 1.0 , negative sampling ratio to 1 , and use the Adam optimizer.</p>
+<p>We use the implementation of $\mathrm{HyTE}^{7}$. We use every timestamp as a hyperplane. The embedding size is set to 128 , the negative sampling ratio to 5 , and margin to 1.0. We use time agnostic negative sampling (TANS) for entity prediction, and the Adam optimizer.</p>
+<p>We use the codes for ConvE ${ }^{8}$ and use implementation by Deep Graph Library ${ }^{9}$. Embedding sizes are 200 for both methods. We use 1 to all negative sampling for ConvE and use 10 negative sampling ratio for RGCN, and use the Adam optimizer for both methods. We use the codes for</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 4: Performance comparisons with raw metrics. We observe our method outperforms all other methods.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>ICEWS18</th>
+<th></th>
+<th></th>
+<th>GDELT</th>
+<th></th>
+<th></th>
+<th>ICEWS14</th>
+<th></th>
+<th></th>
+<th>WIKI</th>
+<th></th>
+<th></th>
+<th>YAGO</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>MRR</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@3</td>
+<td>H@10</td>
+<td>MRR</td>
+<td>H@3</td>
+<td>H@10</td>
+</tr>
+<tr>
+<td>DistMult</td>
+<td>13.86</td>
+<td>15.22</td>
+<td>31.26</td>
+<td>8.61</td>
+<td>8.27</td>
+<td>17.04</td>
+<td>9.72</td>
+<td>10.09</td>
+<td>22.53</td>
+<td>27.96</td>
+<td>32.45</td>
+<td>39.51</td>
+<td>44.05</td>
+<td>49.70</td>
+<td>59.94</td>
+</tr>
+<tr>
+<td>R-GCN</td>
+<td>15.05</td>
+<td>16.49</td>
+<td>29.00</td>
+<td>12.17</td>
+<td>12.37</td>
+<td>20.63</td>
+<td>15.03</td>
+<td>16.12</td>
+<td>31.47</td>
+<td>13.96</td>
+<td>15.75</td>
+<td>22.05</td>
+<td>27.43</td>
+<td>31.24</td>
+<td>44.75</td>
+</tr>
+<tr>
+<td>ConvE</td>
+<td>22.56</td>
+<td>25.41</td>
+<td>41.67</td>
+<td>18.43</td>
+<td>19.57</td>
+<td>32.25</td>
+<td>21.64</td>
+<td>23.16</td>
+<td>38.37</td>
+<td>26.41</td>
+<td>30.36</td>
+<td>39.41</td>
+<td>41.31</td>
+<td>47.10</td>
+<td>59.67</td>
+</tr>
+<tr>
+<td>RotatE</td>
+<td>11.63</td>
+<td>12.31</td>
+<td>28.03</td>
+<td>3.62</td>
+<td>2.26</td>
+<td>8.57</td>
+<td>9.79</td>
+<td>9.37</td>
+<td>22.24</td>
+<td>26.08</td>
+<td>31.63</td>
+<td>38.51</td>
+<td>42.08</td>
+<td>46.77</td>
+<td>59.39</td>
+</tr>
+<tr>
+<td>TA-DistMult</td>
+<td>15.62</td>
+<td>17.09</td>
+<td>32.21</td>
+<td>10.34</td>
+<td>10.44</td>
+<td>21.63</td>
+<td>11.29</td>
+<td>11.60</td>
+<td>23.71</td>
+<td>26.44</td>
+<td>31.36</td>
+<td>38.97</td>
+<td>44.98</td>
+<td>50.64</td>
+<td>61.11</td>
+</tr>
+<tr>
+<td>HyTE</td>
+<td>7.41</td>
+<td>7.33</td>
+<td>16.01</td>
+<td>6.69</td>
+<td>7.57</td>
+<td>19.06</td>
+<td>7.72</td>
+<td>7.94</td>
+<td>20.16</td>
+<td>25.40</td>
+<td>29.16</td>
+<td>37.54</td>
+<td>14.42</td>
+<td>39.73</td>
+<td>46.98</td>
+</tr>
+<tr>
+<td>dyngraph2vecAE</td>
+<td>1.36</td>
+<td>1.54</td>
+<td>1.61</td>
+<td>4.53</td>
+<td>1.87</td>
+<td>1.87</td>
+<td>6.95</td>
+<td>8.17</td>
+<td>12.18</td>
+<td>2.67</td>
+<td>2.75</td>
+<td>3.00</td>
+<td>0.81</td>
+<td>0.74</td>
+<td>0.76</td>
+</tr>
+<tr>
+<td>tNodeEmbed</td>
+<td>7.21</td>
+<td>7.64</td>
+<td>15.75</td>
+<td>12.97</td>
+<td>12.61</td>
+<td>21.22</td>
+<td>13.36</td>
+<td>13.13</td>
+<td>24.31</td>
+<td>8.86</td>
+<td>10.11</td>
+<td>16.36</td>
+<td>3.82</td>
+<td>3.88</td>
+<td>8.07</td>
+</tr>
+<tr>
+<td>EvolveRGCN</td>
+<td>10.31</td>
+<td>10.52</td>
+<td>23.65</td>
+<td>6.54</td>
+<td>5.64</td>
+<td>15.22</td>
+<td>8.32</td>
+<td>7.64</td>
+<td>18.81</td>
+<td>27.19</td>
+<td>31.35</td>
+<td>38.13</td>
+<td>40.50</td>
+<td>45.78</td>
+<td>55.29</td>
+</tr>
+<tr>
+<td>Know-Evolve*</td>
+<td>0.11</td>
+<td>0.00</td>
+<td>0.47</td>
+<td>0.11</td>
+<td>0.02</td>
+<td>0.10</td>
+<td>0.05</td>
+<td>0.00</td>
+<td>0.10</td>
+<td>0.03</td>
+<td>0</td>
+<td>0.04</td>
+<td>0.02</td>
+<td>0</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>Know-Evolve+MLP</td>
+<td>7.41</td>
+<td>7.87</td>
+<td>14.76</td>
+<td>15.88</td>
+<td>15.69</td>
+<td>22.28</td>
+<td>16.81</td>
+<td>18.63</td>
+<td>29.20</td>
+<td>10.54</td>
+<td>13.08</td>
+<td>20.21</td>
+<td>5.23</td>
+<td>5.63</td>
+<td>10.23</td>
+</tr>
+<tr>
+<td>DyRepr+MLP</td>
+<td>7.82</td>
+<td>7.73</td>
+<td>16.33</td>
+<td>16.25</td>
+<td>16.45</td>
+<td>23.86</td>
+<td>17.54</td>
+<td>19.87</td>
+<td>30.34</td>
+<td>10.41</td>
+<td>12.06</td>
+<td>20.93</td>
+<td>4.98</td>
+<td>5.54</td>
+<td>10.19</td>
+</tr>
+<tr>
+<td>R-GCRN+MLP</td>
+<td>23.46</td>
+<td>26.62</td>
+<td>41.96</td>
+<td>18.63</td>
+<td>19.80</td>
+<td>32.42</td>
+<td>21.39</td>
+<td>23.60</td>
+<td>38.96</td>
+<td>28.68</td>
+<td>31.44</td>
+<td>38.58</td>
+<td>43.71</td>
+<td>48.53</td>
+<td>56.98</td>
+</tr>
+<tr>
+<td>RE-Net w. mean agg.</td>
+<td>25.45</td>
+<td>29.27</td>
+<td>44.31</td>
+<td>19.03</td>
+<td>20.20</td>
+<td>33.32</td>
+<td>22.73</td>
+<td>25.47</td>
+<td>41.48</td>
+<td>30.19</td>
+<td>32.94</td>
+<td>40.57</td>
+<td>46.33</td>
+<td>52.49</td>
+<td>61.21</td>
+</tr>
+<tr>
+<td>RE-Net w. attn agg.</td>
+<td>25.76</td>
+<td>29.56</td>
+<td>44.86</td>
+<td>19.35</td>
+<td>20.42</td>
+<td>33.55</td>
+<td>23.18</td>
+<td>25.98</td>
+<td>41.95</td>
+<td>30.25</td>
+<td>30.12</td>
+<td>40.86</td>
+<td>46.56</td>
+<td>52.56</td>
+<td>61.35</td>
+</tr>
+<tr>
+<td>RE-Net</td>
+<td>26.62</td>
+<td>30.27</td>
+<td>45.57</td>
+<td>19.60</td>
+<td>20.56</td>
+<td>33.89</td>
+<td>23.85</td>
+<td>14.63</td>
+<td>42.58</td>
+<td>30.87</td>
+<td>33.55</td>
+<td>41.27</td>
+<td>46.81</td>
+<td>52.71</td>
+<td>61.93</td>
+</tr>
+</tbody>
+</table>
+<p>Know-Evolve ${ }^{10}$. For Know-Evolve, we fix the issue in their codes. Issues are described in Section G. We follow their default settings.</p>
+<p>We use the code for RotatE ${ }^{11}$. The hidden layer/embedding size is set to 100 , and batch size 256; other values follow the best values for the larger FB15K dataset configurations supplied by the author. The author reports filtered metrics only, so we added the implementation of the raw setting.</p>
+<h2>Experimental Settings for Dynamic Methods.</h2>
+<p>We compare our method with dynamic methods on homogeneous graphs: dyngraph2vecAE (Goyal et al., 2019), tNodeEmbed (Singer et al., 2019), and EvolveGCN-O (Pareja et al., 2020). These methods were proposed to predict interactions at a future time on homogeneous graphs, while our proposed method is for predicting interactions on multi-relational graphs (or knowledge graphs). Furthermore, those methods predict links at one future time stamp, whereas our method seeks to predict interactions at multiple future time stamps. We modified some methods to apply them on multi-relational graphs as follows. We adopt RGCN (Schlichtkrull et al., 2018) for EvolveGCNO and call it EvolveRGCN. We convert knowledge graphs into homogeneous graphs for dyngraph2vecAE. The idea of this method is to reconstruct an adjacency matrix using an auto-encoder and regard it as a future adjacency matrix. If we keep relations, relation-specific adjacency matrices will be extremely sparse; the method learns to reconstruct near-zero adjacency matrices. tNodeEmbed is a temporal method on homogeneous</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 6: Performance of temporal link prediction over future timestamps with filtered Hits@3. RENET consistently outperforms the baselines.
+graphs. To use this on multi-relational graphs, we first train entity embeddings with DistMult and set these as initial embeddings for entities in tNodeEmbed. Also we give entity embeddings as input to LSTM of tNodeEmbed. We concatenate output of LSTM and relation embeddings to predict objects. We did not modified other methods since it is not trivial to extend the methods.</p>
+<h2>E Additional Experiments</h2>
+<h2>E. 1 Results with Raw Metrics</h2>
+<p>Table 4 shows the performance comparison on ICEWS18, GDELT, ICEWS14 with raw settings. Our proposed RE-NET outperforms all other baselines.</p>
+<h2>E. 2 Sensitivity Analysis</h2>
+<p>In this section, we study the parameter sensitivity of RE-NET including the length of history for the event encoder, cutoff position k for events to generate a graph, the number of layers of the RGCN</p>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 7: Parameter sensitivity on RE-NET. We study the effects of (a) length of RNN history in event sequence encoder, and (b) cutoff position at inference time, (c) number of RGCN layers in neighborhood aggregation, and (d) effect of the global representation from a global graph structure.
+aggregator, and effect of the global representation from a global graph structure. We report the performance change of RE-NET on the ICEWS18 dataset by varying the hyper-parameters (Figs. 7 and 7c).</p>
+<p>Length of Past History in Recurrent Event Encoder. The recurrent event encoder takes the sequence of past interactions up to $m$ graph sequences or previous histories. Fig. 7a shows the performance with various lengths of past histories. When RE-NET uses longer histories, MRR is getting higher. However, the MRR is not likely to go higher when the length of history is 5 and over.</p>
+<p>Cut-off Position $k$ at Inference. To generate a graph at each time, we cut off top- $k$ triples on ranking results. In Fig. 7b, when $k$ is 0 , RE-NET does not generate graphs for estimating $p\left(G_{t+\Delta t} \mid G_{: t}\right)$, i.e., RE-NET performs single-step predictions, and it shows the lowest result. When $k$ is larger, the performance is getting higher and it is saturated after 500. We notice that the conditional distribution $p\left(G_{t+\Delta t} \mid G_{: t}\right)$ can be approximated by $p\left(G_{t+\Delta t} \mid\right.$ $\hat{G}<em t="t">{t+1: t+\Delta t-1}, G</em>$ ) by using a larger cutoff position.
+Layers of RGCN Aggregator. The number of layers in the aggregator means the depth to which the node reaches. Fig. 7c shows the performance according to different numbers of layers of RGCN. 2layered RGCN improves the performance considerably compared to 1-layered RGCN since 2-layered</p>
+<p>RGCN aggregates more information. However, RE-NET with 3-layered RGCN underperforms RENET with 2-layered RGCN. We conjecture that the bigger parameter space leads to overfitting.
+Global Information. We further observe that representations from global graph structures help the predictions. Fig. 7d shows effectiveness of a representation of global graph structures. The improvement is marginal, but we consider that global representations at different time steps give distinct information beyond local graph structures.</p>
+<h2>F Case Study</h2>
+<p>In this section, we study RE-NET's predictions. Its predictions depend on interaction histories. We categorize histories into three cases: (1) consistent interactions with an object, (2) a specific temporal pattern, and (3) irrelevant history (Fig. 8). RE-NET can learn (1) and (2) cases, so it achieves high performances. For the first case, RE-NET can predict the answer because it consistently interacts with an object. However, static methods are prone to predicting different entities which are observed under relation "Accuse" in training set. The second case shows specific temporal patterns on relations: ( Arrest, $o) \rightarrow$ ( Use force, $o$ ). Without knowing this pattern, one method might predict "Businessman" instead of "Men". RE-NET is able to learn these temporal patterns so it can predict the second case. Lastly, the third case shows irrelevant history to the answer and the history is not helpful to predictions. RE-NET fails to predict the third case.</p>
+<h2>G Implementation Issues of Know-Evolve</h2>
+<p>We found a problematic formulation in the KnowEvolve model and codes. The intensity function (equation 3 in (Trivedi et al., 2017)) is defined as $\lambda_{r}^{s, r}(t \mid \bar{t})=f\left(g_{r}^{s, r}(\bar{t})\right)(t-\bar{t})$, where $g(\cdot)$ is a score function, $t$ is current time, and $\bar{t}$ is the most recent time point when either subject or object entity was involved in an event. This intensity function is used in inference to rank entity candidates. However, they don't consider concurrent event at the same time stamps, and thus $\bar{t}$ will become $t$ after one event. For example, we have events $e_{1}=\left(s, r, o_{1}, t_{1}\right), e_{2}=\left(s, r, o_{2}, t_{1}\right)$. After $e_{1}, \bar{t}$ will become $t$ (subject $s$ 's most recent time point), and thus the value of intensity function for $e_{2}$ will be 0 . This is problematic in inference since if $t=\bar{t}$, then the intensity function will always</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 8: Case study of RE-NET's predictions. RE-NET's predictions depend on interaction histories. Interaction histories are categorized into three cases: (1) consistent interactions with an object, (2) a specific temporal pattern, and (3) irrelevant history. RE-NET achieves good performances on the first two cases, and poor performances on the third case.
+be 0 regardless of entity candidates. In inference, all object candidates are ranked by the intensity function. But all intensity scores for all candidates will be 0 since $t=\bar{t}$, which means all candidates have the same 0 score. In their code, they give the highest ranks (first rank) for all entities including the ground truth object in this case. Thus, we fixed their code for a fair comparison; we give an average rank to entities who have the same scores.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{10}$ https://github.com/estriv/Know-Evolve
+${ }^{11}$ https://github.com/DeepGraphLearning/KnowledgeGraphEmbedding&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{5}$ *. We found a problematic formulation in Know-Evolve. Details of this issues are discussed in Section G of appendix.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-4697 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-4697</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-4697</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-102.html">extraction-schema-102</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <p><strong>Paper ID:</strong> paper-b5131c07be779d90af946e6f370156b9506b7c0d</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/b5131c07be779d90af946e6f370156b9506b7c0d" target="_blank">Discovering Variable Binding Circuitry with Desiderata</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> An approach which extends causal mediation experiments to automatically identify model components responsible for performing a specific subtask by solely specifying a set of \textit{desiderata}, or causal attributes of the model components executing that subtask is introduced.</p>
+                <p><strong>Paper Abstract:</strong> Recent work has shown that computation in language models may be human-understandable, with successful efforts to localize and intervene on both single-unit features and input-output circuits. Here, we introduce an approach which extends causal mediation experiments to automatically identify model components responsible for performing a specific subtask by solely specifying a set of \textit{desiderata}, or causal attributes of the model components executing that subtask. As a proof of concept, we apply our method to automatically discover shared \textit{variable binding circuitry} in LLaMA-13B, which retrieves variable values for multiple arithmetic tasks. Our method successfully localizes variable binding to only 9 attention heads (of the 1.6k) and one MLP in the final token's residual stream.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e4697.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e4697.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, performance, and failure modes.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Variable-binding circuitry</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Shared variable binding circuitry (value-copying heads and MLP) in LLaMA-13B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A localized subnetwork of nine attention heads and one MLP in LLaMA-13B that copies previously assigned variable values into the final token residual stream (enabling arithmetic on those values); discovered with activation-patching driven by desiderata for Value Dependence and Operation Invariance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>LLaMA-13B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Decoder-only transformer, 40 layers, ~13B parameters (LLaMA-13B), trained on a large diverse dataset (Touvron et al., 2023). Experiments patch contributions to the final-token residual stream across attention heads and MLPs (1640 components considered).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Two-digit arithmetic (addition, subtraction) used for training; tested on multiplication for transfer. Evaluation measures whether the model's predicted first digit of the numeric answer is correct.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_hypothesis</strong></td>
+                            <td>A dedicated value-copying subcircuit (distributed across ~9 attention heads and 1 MLP) reads the previously assigned value for a variable x and writes that value into the final-token residual stream; the downstream computation (other heads/MLPs) then applies the operation to the copied values.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Causal intervention via activation patching with learned binary masks: optimize mask weights to satisfy two desiderata (Value Dependence and Operation Invariance). A sparse mask (10 components: heads 11.11, 12.0, 12.7, 15.11, 15.25, 17.17, 18.11, 18.18, 19.20 and MLP 27) achieves high Value Dependence and Operation Invariance accuracies on held-out examples; patching those components with activations from alternate sequences changes outputs according to alternate x values (VD) but not according to changed operations (OI). Mask discovery used activation patching over 1640 components, continuous relaxation with l0.5 sparsity regularization (λ=0.03), Adam lr=0.01, 90/90 train/test.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_against_mechanism</strong></td>
+                            <td>When only Value Dependence desideratum is used (no Operation Invariance), the learned mask selects different components (clusters of late-layer MLPs) that cause VD behavior but fail Operation Invariance; this indicates multiple loci can affect outputs and that improper desiderata can localize the wrong subcomputation (e.g., components that write final computed result rather than copy input variable). The paper reports that the original unpatched model has low VD accuracy, indicating the effect is detectable only via interventions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Reported accuracies (first-digit correctness) on held-out examples: Original model: VD Acc (+,-)=18%, OI Acc (+,-)=91%, VD Acc (×)=11%, OI Acc (+,×)=93%. Mask learned with only VD desideratum: VD Acc (+,-)=93%, OI Acc (+,-)=11%, VD Acc (×)=82%, OI Acc (+,×)=13% (#patched=10). Mask learned with both VD & OI (final result): VD Acc (+,-)=84%, OI Acc (+,-)=82%, VD Acc (×)=84%, OI Acc (+,×)=91% (#patched=10).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_results</strong></td>
+                            <td>Activation patching: replace (or convex-combine) activations of targeted components when running original input with activations from alternate sequences, using learned continuous mask weights w_i in [0,1], then round to binary. Objective combines losses from VD (maximize logit difference toward alternate answer) and OI (minimize logit difference to preserve original answer). Demonstrated that ~10 components is approximately the minimal sparse set to achieve high VD and OI; varying sparsity (λ) yields masks with fewer heads that fail VD. Transfer tests: masks trained on +/− generalize to × (multiplication) although multiplication was not in training examples.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>limitations_and_failure_modes</strong></td>
+                            <td>Limitations reported: evaluation only on first-digit correctness (coarse metric); dataset small (90/90); identified circuitry depends on desiderata — incomplete desiderata can localize different components that produce superficially similar output changes (false localization). Failure modes: too few patched components fails to induce VD behavior; masks learned without OI compromise operation invariance (they alter outputs when operation changes); original model shows low native VD accuracy (18% for +/−), so interventions are necessary to reveal causality; generalization beyond tested arithmetic types and to full multi-digit correctness is untested.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>comparison_to_other_models</strong></td>
+                            <td>No direct empirical comparisons to other model families or sizes are provided in this paper; related work (cited) applies activation-patching and circuit discovery methods to other models, but this paper's experiments and quantitative results are specific to LLaMA-13B.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Discovering Variable Binding Circuitry with Desiderata', 'publication_date_yy_mm': '2023-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Locating and editing factual associations in gpt. <em>(Rating: 2)</em></li>
+                <li>Locating and editing factual associations in GPT. <em>(Rating: 2)</em></li>
+                <li>Towards automated circuit discovery for mechanistic interpretability <em>(Rating: 2)</em></li>
+                <li>Interpretability at scale: Identifying causal mechanisms in alpaca <em>(Rating: 2)</em></li>
+                <li>Finding alignments between interpretable causal variables and distributed neural representations. <em>(Rating: 2)</em></li>
+                <li>Zoom in: An introduction to circuits. <em>(Rating: 1)</em></li>
+                <li>Interpretability in the wild: a circuit for indirect object identification in gpt-2 small <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-4697",
+    "paper_id": "paper-b5131c07be779d90af946e6f370156b9506b7c0d",
+    "extraction_schema_id": "extraction-schema-102",
+    "extracted_data": [
+        {
+            "name_short": "Variable-binding circuitry",
+            "name_full": "Shared variable binding circuitry (value-copying heads and MLP) in LLaMA-13B",
+            "brief_description": "A localized subnetwork of nine attention heads and one MLP in LLaMA-13B that copies previously assigned variable values into the final token residual stream (enabling arithmetic on those values); discovered with activation-patching driven by desiderata for Value Dependence and Operation Invariance.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "LLaMA-13B",
+            "model_description": "Decoder-only transformer, 40 layers, ~13B parameters (LLaMA-13B), trained on a large diverse dataset (Touvron et al., 2023). Experiments patch contributions to the final-token residual stream across attention heads and MLPs (1640 components considered).",
+            "arithmetic_task_type": "Two-digit arithmetic (addition, subtraction) used for training; tested on multiplication for transfer. Evaluation measures whether the model's predicted first digit of the numeric answer is correct.",
+            "mechanism_hypothesis": "A dedicated value-copying subcircuit (distributed across ~9 attention heads and 1 MLP) reads the previously assigned value for a variable x and writes that value into the final-token residual stream; the downstream computation (other heads/MLPs) then applies the operation to the copied values.",
+            "evidence_for_mechanism": "Causal intervention via activation patching with learned binary masks: optimize mask weights to satisfy two desiderata (Value Dependence and Operation Invariance). A sparse mask (10 components: heads 11.11, 12.0, 12.7, 15.11, 15.25, 17.17, 18.11, 18.18, 19.20 and MLP 27) achieves high Value Dependence and Operation Invariance accuracies on held-out examples; patching those components with activations from alternate sequences changes outputs according to alternate x values (VD) but not according to changed operations (OI). Mask discovery used activation patching over 1640 components, continuous relaxation with l0.5 sparsity regularization (λ=0.03), Adam lr=0.01, 90/90 train/test.",
+            "evidence_against_mechanism": "When only Value Dependence desideratum is used (no Operation Invariance), the learned mask selects different components (clusters of late-layer MLPs) that cause VD behavior but fail Operation Invariance; this indicates multiple loci can affect outputs and that improper desiderata can localize the wrong subcomputation (e.g., components that write final computed result rather than copy input variable). The paper reports that the original unpatched model has low VD accuracy, indicating the effect is detectable only via interventions.",
+            "performance_metrics": "Reported accuracies (first-digit correctness) on held-out examples: Original model: VD Acc (+,-)=18%, OI Acc (+,-)=91%, VD Acc (×)=11%, OI Acc (+,×)=93%. Mask learned with only VD desideratum: VD Acc (+,-)=93%, OI Acc (+,-)=11%, VD Acc (×)=82%, OI Acc (+,×)=13% (#patched=10). Mask learned with both VD & OI (final result): VD Acc (+,-)=84%, OI Acc (+,-)=82%, VD Acc (×)=84%, OI Acc (+,×)=91% (#patched=10).",
+            "probing_or_intervention_results": "Activation patching: replace (or convex-combine) activations of targeted components when running original input with activations from alternate sequences, using learned continuous mask weights w_i in [0,1], then round to binary. Objective combines losses from VD (maximize logit difference toward alternate answer) and OI (minimize logit difference to preserve original answer). Demonstrated that ~10 components is approximately the minimal sparse set to achieve high VD and OI; varying sparsity (λ) yields masks with fewer heads that fail VD. Transfer tests: masks trained on +/− generalize to × (multiplication) although multiplication was not in training examples.",
+            "limitations_and_failure_modes": "Limitations reported: evaluation only on first-digit correctness (coarse metric); dataset small (90/90); identified circuitry depends on desiderata — incomplete desiderata can localize different components that produce superficially similar output changes (false localization). Failure modes: too few patched components fails to induce VD behavior; masks learned without OI compromise operation invariance (they alter outputs when operation changes); original model shows low native VD accuracy (18% for +/−), so interventions are necessary to reveal causality; generalization beyond tested arithmetic types and to full multi-digit correctness is untested.",
+            "comparison_to_other_models": "No direct empirical comparisons to other model families or sizes are provided in this paper; related work (cited) applies activation-patching and circuit discovery methods to other models, but this paper's experiments and quantitative results are specific to LLaMA-13B.",
+            "uuid": "e4697.0",
+            "source_info": {
+                "paper_title": "Discovering Variable Binding Circuitry with Desiderata",
+                "publication_date_yy_mm": "2023-07"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Locating and editing factual associations in gpt.",
+            "rating": 2
+        },
+        {
+            "paper_title": "Locating and editing factual associations in GPT.",
+            "rating": 2
+        },
+        {
+            "paper_title": "Towards automated circuit discovery for mechanistic interpretability",
+            "rating": 2
+        },
+        {
+            "paper_title": "Interpretability at scale: Identifying causal mechanisms in alpaca",
+            "rating": 2
+        },
+        {
+            "paper_title": "Finding alignments between interpretable causal variables and distributed neural representations.",
+            "rating": 2
+        },
+        {
+            "paper_title": "Zoom in: An introduction to circuits.",
+            "rating": 1
+        },
+        {
+            "paper_title": "Interpretability in the wild: a circuit for indirect object identification in gpt-2 small",
+            "rating": 1
+        }
+    ],
+    "cost": 0.00628925,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Discovering Variable Binding Circuitry with Desiderata</h1>
+<p>Xander Davies<em> ${ }^{</em> 1}$ Max Nadeau ${ }^{<em> 1}$ Nikhil Prakash ${ }^{</em> 2}$ Tamar Rott Shaham ${ }^{3}$ David Bau ${ }^{2}$</p>
+<h4>Abstract</h4>
+<p>Recent work has shown that computation in language models may be human-understandable, with successful efforts to localize and intervene on both single-unit features and input-output circuits. Here, we introduce an approach which extends causal mediation experiments to automatically identify model components responsible for performing a specific subtask by solely specifying a set of desiderata, or causal attributes of the model components executing that subtask. As a proof of concept, we apply our method to automatically discover shared variable binding circuitry in LLaMA-13B, which retrieves variable values for multiple arithmetic tasks. Our method successfully localizes variable binding to only 9 attention heads (of the 1.6 k ) and one MLP in the final token's residual stream.</p>
+<h2>1. Introduction</h2>
+<p>Deploying powerful generative AI systems requires confidence in the reliability of their outputs, especially with respect to certain high stakes behaviors like manipulation or truthfulness (Carroll et al., 2023; Perez et al., 2022). The emerging field of mechanistic interpretability seeks to make model computation human-understandable by explaining the function of particular model components and locating groups of model components responsible for performing certain language tasks. Indeed, recent work has successfully identify, localize and intervene in model computation ( Li et al., 2022; Burns et al., 2022; Wang et al., 2022; Conmy et al., 2023).</p>
+<p>Here, we introduce an automated approach which extends activation patching (Meng et al., 2022b; Vig et al., 2020) to localize components within neural networks (e.g. atten-</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>tion heads, MLP layers) that responsible for performing a specific subtask of model computation. Our method allows for quickly and automatically localizing computation, while only requiring to specify desiderata, or causal attributes of the target computation. As a proof of concept, we apply our method to automatically discover shared variable binding circuitry in LLaMA-13B (Touvron et al., 2023), which retrieves variable values for several arithmetic operations.</p>
+<p>Contributions. In this ongoing work, we:</p>
+<ol>
+<li>Describe a methodology for localizing computation by enumerating desiderata and learning a binary mask by performing causal interventions (Section 3, Fig. 1).</li>
+<li>Present initial results in applying this methodology to localize shared variable binding circuitry (Section 4, Fig. 2).</li>
+</ol>
+<h2>2. Background</h2>
+<p>Circuit analysis. A deep neural network can be represented as a directed acyclic graph with specific nodes to accept inputs, generate outputs, and perform various operations to transform inputs into outputs. Circuit analysis involves localizing and understanding subgraphs within the computational graph of a model that are responsible for specific behaviors, and has had success in both language and vision models (Olah et al., 2020; Wang et al., 2022; Räukur et al., 2022; Chan et al., 2022).</p>
+<p>Activation Patching. As introduced in (Meng et al., 2022b), activation patching is a technique that uses causal intervention to identify which submodules' activations matter for producing some model output. The process of activation patching involves running all the layers of a model until reaching a certain submodule with an original input, denoted as $A$, and a corrupted input, denoted as $B$. The activations of this specific submodule with input $B$ are then patched into the corresponding activations of the same submodule with input $A$ during the forward pass. Next, the patched activations are fed forward through the rest of the model. This enables one to assess the role of the specific submodule in generating an output, by quantifying how much this intervention shifts the model's output from its original answer on</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1. Localizing computation with desiderata. The figure depicts training with a single (original, alternate, target) tuple within a desideratum. We learn a mask $w$ that combines activations from an alternate sequence $a$ into the computation of the model on the input of the original sequence $o$ such that the output $y$ moves towards the target $t$.
+A. Our approach generalizes activation patching and swaps activation from multiple alternative input sequence runs with known target outputs, instead of corrupted sequence runs, as described in (Meng et al., 2022b).</p>
+<p>Variable Binding. Variable binding is the process of associating a variable with a specific value, and is a fundamental concept in symbolic reasoning considered essential for solving tasks such as natural language understanding and reasoning (Marcus, 2001). However, it is still a mystery if and how Large Language Models (LLMs) implement this process.</p>
+<p>Please see Appendix B for additional related work.</p>
+<h2>3. Using Desiderata to Localize Computation</h2>
+<p>We discover circuitry responsible for a specific task by enumerating properties of such a desired circuitry, and then learning a binary mask over the model's parameters which accords with these properties (Fig. 1). We specify properties (or desiderata) in terms of causal interventions with a known target effects, and combine various interventions into a single objective function. We then learn a sparse mask on the targeted model components, such that applying causal interventions on the masked components alters model behavior to satisfy the objective function.</p>
+<p>Model components. As a first step, we specify our set of model components. Models can be represented at various levels of granularity. More granular components is more computational expensive, but allows for more specific localization of a model behavior. In Section 4, we decompose LLaMA-13B into a set of attention heads and MLPs, as
+opposed to more granular (e.g. splitting by Query, Key, and Value matrices) or less granular (e.g. grouping into layers) representations.</p>
+<p>Desiderata. Given a computational circuitry with specific functionality, we define a set of desiderata to enumerate the effects of various causal interventions on the circuitry. Each desideratum $d$ corresponds to a set of $n 3$-tuple, each of which consists of an original sequence $(o)$, an alternate sequence $(a)$, and a target value $(t)$. When the activation of the sought-after circuitry generated with $o$ is replaced with the corresponding activation generated with $a$, the model should output $t$. The target value $(t)$ is determined based on the nature of the intervention: it can remain equal to the output of $o$ (indicating no change in the output is expected), be altered to match the output of $a$, or be set to a completely different third value. We identify and localize submodule with the desired functionality based on its adherence to the expected outcomes specified by the desiderata.</p>
+<p>Each 3-tuple $(o, a, t)$ contributes to a loss term which measures how well performing activation patching on a set of model components $\left{c_{i}\right}$ achieves $t$,</p>
+<p>$$
+\mathcal{L}<em i="i">{d}\left(\left{c</em>\right},(o, a, t), y\right)
+$$}\right}\right)=\frac{1}{n} \sum_{(o, a, t) \in d} \mathcal{L}\left(\left{c_{i</p>
+<p>Note that some measure of proximity $\mathcal{L}$ between the induced model output $y$ and the target $t$ is needed. Furthermore, one can combine multiple desideratum into a single objective function, $\mathcal{L}<em i="i">{D}\left(\left{c</em>}\right}\right)=\sum_{d \in D} \mathcal{L<em i="i">{d}\left(\left{c</em>\right}\right)$. Desiderata for the specific case of identifying the value-copying circuitry involved in variable binding are presented in Fig. 2 and discussed in Section 4.1.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2. Variable Binding Desiderata. Each desideratum is a set of original (o), alternate (a), and target (t) 3-tuples. In the Value Dependence desideratum, patching should change the output to the alternate's output; in the Operation Invariance desideratum, patching should have no effect.</p>
+<p>Learning a Binary Mask. In order to find the set of model components $\left{c_{i}\right}$ that minimizes $\mathcal{L}<em i="i">{D}\left(\left{c</em>$}\right}\right)$, we use a continuous relaxation of Equation 1. We define a mask over the model components by assigning a learnable weight $w_{i} \in[0,1]$, to each component $c_{i}$. That is, $w_{i}=0$ corresponds to fully patching component $c_{i}$ with its value $v_{a}$ from the sequence $a, w_{i}=1$ corresponds to not patching $c_{i}$, and $0&lt;w_{i}&lt;1$ corresponds to taking a convex combination of the $c_{i}$ 's activation value $v$ and the value $v_{a</p>
+<p>$$
+w_{i} \cdot v+\left(1-w_{i}\right) \cdot v_{a}
+$$</p>
+<p>Note that when we patch multiple components of the model, the value $v$ of a later-layer component will be influenced by the patching of earlier layers before it itself is combined with $v_{a}$ as above.</p>
+<p>We optimize the continuous mask according to $\mathcal{L}<em 0.5="0.5">{D}$, which measures how well the patching intervention defined by the mask meets our desiderata. We use $\ell</em>$ regularization with tunable strength $\lambda$ over the mask entries to encourage patching only a sparse set of model components (Louizos et al., 2018). Throughout learning, we clamp values between 0 and 1. After training, we round weights to either 0 or 1 to form a binary mask. Empirically, we find that rounding the mask to become binary typically has little effect on its ability to satisfy the desiderata, and attribute this to the regularization for sparsity during training.</p>
+<h2>4. Variable Binding</h2>
+<p>We apply our method (Section 3) to locate circuitry responsible for retrieving variable values when computing simple arithmetic expressions like those in Fig. 2. We use LLaMA13B, a 40-layer, decoder-only transformer language model, trained on a diverse data set (Touvron et al., 2023). We
+hypothesize that there exist components of LLaMA-13B that, in order to complete sequences like those appearing in Fig. 2, copy the value previously assigned to the variable $x$ into the final token's residual stream. We further hypothesize that the $x$ 's value is then combined with $y$ 's value to compute the desired expression.</p>
+<p>We design desiderata to search specifically for this valuecopying circuitry. Throughout, we only evaluate accuracy of models based on whether their prediction of the first digit of the answer value is correct; we ensure a diverse set of targets to avoid degenerate solutions. Code to replicate our results is available in a public repository. ${ }^{1}$</p>
+<h3>4.1. Variable Binding Desiderata</h3>
+<p>We propose two desiderata to isolate this hypothesized valuecopying circuitry: ${ }^{2}$</p>
+<ol>
+<li>Value Dependence (VD; Fig. 2, top). Patching our target circuitry with its activations from alternate sequences containing different $x$ values should control which value is copied into the final residual stream. Accordingly, such patching should change the model's output to match the output of the alternate sequences.</li>
+<li>Operation Invariance (OI; Fig. 2, bottom). Since we are looking for circuitry shared across arithmetic operations, the specific operation being performed in the expression should not affect the behavior of the valuecopying circuitry, as it should copy the same variable value regardless of the operation. We therefore form alternate sequences with a flipped operation (either ad-</li>
+</ol>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">VD Acc. (+, -)</th>
+<th style="text-align: center;">OI Acc. (+, -)</th>
+<th style="text-align: center;">VD Acc. ( $\times$ )</th>
+<th style="text-align: center;">OI Acc. (+, $\times$ )</th>
+<th style="text-align: right;"># Patched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Original Model</td>
+<td style="text-align: center;">$18 \%$</td>
+<td style="text-align: center;">$91 \%$</td>
+<td style="text-align: center;">$11 \%$</td>
+<td style="text-align: center;">$93 \%$</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Incomplete Desiderata (VD)</td>
+<td style="text-align: center;">$93 \%$</td>
+<td style="text-align: center;">$11 \%$</td>
+<td style="text-align: center;">$82 \%$</td>
+<td style="text-align: center;">$13 \%$</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Full Desiderata (VD \&amp; OI)</td>
+<td style="text-align: center;">$84 \%$</td>
+<td style="text-align: center;">$82 \%$</td>
+<td style="text-align: center;">$84 \%$</td>
+<td style="text-align: center;">$91 \%$</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1. Accuracy of patching experiments. Learning the patching mask according to an incomplete set of desiderata (only using the Value Dependence desideratum as presented in the second row) fails to localize our target computation (Operation Invariance accuracy suffers for all the tested operation indicated in parenthesis). Using both desiderata (Full Desiderata. third row) successfully causes Value Dependence behavior while maintaining Operation Invariance. Interestingly, the learnt patching mask achieves high accuracy also for operation that was not included in the training set. For all cases, accuracy is calculated on held-out test set.
+dition or subtraction), with a target value equals to the output value of the corresponding original sequence.</p>
+<h3>4.2. Binary Mask Details</h3>
+<p>We consider all MLPs and attention heads ( 1640 models' components in total) and learn a binary mask as described in Section 3. We only perform patching to each component's contribution to the final-token residual stream, as that is where we expect the value-copying circuitry to be active. We use two-digit variable values with addition and subtraction operations for defining both VD and OI sequences. We use the logit difference between the original and alternate answers as the proximity measure. For the VD task, we intend to maximize the logit difference, whereas, for the OI task, we aim to minimize it.</p>
+<p>We created a dataset comprising VD and OI sequences, with a total of $90 / 90$ train/test examples, such that the first digit of the expected answer is uniformly drawn from $[1,9]$. We use the Adam optimizer (Kingma \&amp; Ba, 2017) with a learning rate of 0.01 , and alternate between taking gradient steps from the VD loss and the OI loss to save memory. For all experiments described below we use a sparsity regularization weight of $\lambda=0.03$. In Appendix A we present additional results with different experimental settings such as varying $\lambda$ and the numbers of patched attention heads.</p>
+<h2>5. Results</h2>
+<p>According to our desiderata, we have identified a set of ten components, comprising nine attention heads and one MLP, that execute variable binding. We patch heads according to this ten-component mask and evaluate the model's accuracy on a held-out set of VD and OI problems. On VD scenarios, accuracy measures how often the model outputs the answer from the alternative sequence. On OI scenarios, accuracy measures how often the model outputs the answer from the original sequence. We expect a mask that finds heads corresponding to the value copying subtask of variable binding to achieve high accuracy in both VD and OI.</p>
+<p>We observe that the models' components identified by our method exhibit high accuracy in both tasks, as indicated in</p>
+<p>Table 1 (first and second columns). We further test these components on VD problems involving a multiplication operation instead of addition or subtraction, and on OI problems involving swapping between addition and multiplication. Surprisingly, we find that the accuracy remains high in these scenarios, despite not including multiplication during training (see Table 1, third and fourth columns). This indicates that these ten components indeed serve as the circuitry that copies variable values to the final residual stream (before the model operates on them); these components successfully cause the model's output to change in the case that one of the bound values changes, but not in the case that the operation in the equation changes, even when testing an operation that was not include in training.</p>
+<p>We also find that including both desiderata is crucial for locating this circuitry; with only the VD desideratum, the identified heads successfully alter model behavior in the VD scenario, but also affect the model's output in the OI scenario (see Table 1, second row). When both desiderata are included in the loss, the masked components are mostly attention heads in the middle of the model; ${ }^{3}$ whereas when only using the first desideratum, the masked components form a cluster of late-layer MLPs ${ }^{4}$. A possible explanation for this is that using only the VD desideratum, the mask includes model components that write the computed final value of the expression to the residual stream, whereas adding the second desideratum encourages the mask to find the value-copying circuitry.</p>
+<h2>6. Conclusion</h2>
+<p>In this paper, we proposed a new approach to localizing model components responsible for performing a specific task, using a set of causal behavior desiderata. Our method localize 10 components responsible for copying variable values in LLaMA-13B. We plan to compare it with existing localization methods (Meng et al., 2022a; Conmy et al., 2023) and to expend it to additional tasks.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>Acknowledgments</h2>
+<p>XD and MN would like to thank Sam Marks and Oam Patel for their valuable discussions. NP and DB are supported by grants from Open Philanthropy. TRS is supported in part by the Zuckerman STEM Leadership Program and the Viterbi Fellowship.</p>
+<h2>References</h2>
+<p>Burns, C., Ye, H., Klein, D., and Steinhardt, J. Discovering latent knowledge in language models without supervision, 2022.</p>
+<p>Carroll, M., Chan, A., Ashton, H., and Krueger, D. Characterizing manipulation from ai systems, 2023.</p>
+<p>Chan, L., Garriga-Alonso, A., Goldowsky-Dill, N., Greenblatt, R., Nitishinskaya, J., Radhakrishnan, A., Shlegeris, B., and Thomas, N. Causal Scrubbing: a method for rigorously testing interpretability hypotheses [Redwood Research], December 2022. URL https://www.alignmentforum. org/posts/JvZhhzycHu2Yd57RN/ causal-scrubbing-a-method-for-rigorously-testing-interpretability-hypotheses-causal-scrubbing-a-method-for-rigorously-testing</p>
+<p>Conmy, A., Mavor-Parker, A. N., Lynch, A., Heimersheim, S., and Garriga-Alonso, A. Towards automated circuit discovery for mechanistic interpretability, 2023.</p>
+<p>Geiger, A., Wu, Z., Lu, H., Rozner, J., Kreiss, E., Icard, T., Goodman, N., and Potts, C. Inducing causal structure for interpretable neural networks. In International Conference on Machine Learning, pp. 7324-7338. PMLR, 2022.</p>
+<p>Geiger, A., Wu, Z., Potts, C., Icard, T., and Goodman, N. D. Finding alignments between interpretable causal variables and distributed neural representations. arXiv preprint arXiv:2303.02536, 2023.</p>
+<p>Kingma, D. P. and Ba, J. Adam: A method for stochastic optimization, 2017.</p>
+<p>Li, K., Hopkins, A. K., Bau, D., Viégas, F., Pfister, H., and Wattenberg, M. Emergent world representations: Exploring a sequence model trained on a synthetic task, 2022. URL https://arxiv.org/abs/2210.13382.</p>
+<p>Louizos, C., Welling, M., and Kingma, D. P. Learning Sparse Neural Networks through \$L_0\$ Regularization, June 2018. URL http://arxiv.org/abs/1712. 01312. arXiv:1712.01312 [cs, stat].</p>
+<p>Marcus, G. F. Relations between Variables. In The Algebraic Mind: Integrating Connectionism and Cognitive Science. The MIT Press, 04 2001. ISBN 9780262279086. doi: 10.7551/mitpress/1187.003.0005. URL https://doi. org/10.7551/mitpress/1187.003.0005.</p>
+<p>Meng, K., Bau, D., Andonian, A., and Belinkov, Y. Locating and editing factual associations in gpt. Advances in Neural Information Processing Systems, 35:17359-17372, 2022a.</p>
+<p>Meng, K., Bau, D., Andonian, A., and Belinkov, Y. Locating and editing factual associations in GPT. Advances in Neural Information Processing Systems, 36, 2022b.</p>
+<p>Olah, C., Cammarata, N., Schubert, L., Goh, G., Petrov, M., and Carter, S. Zoom in: An introduction to circuits. Distill, 2020. doi: 10.23915/distill.00024.001. https://distill.pub/2020/circuits/zoom-in.</p>
+<p>Perez, E., Ringer, S., Lukošiūtė, K., Nguyen, K., Chen, E., Heiner, S., Pettit, C., Olsson, C., Kundu, S., Kadavath, S., Jones, A., Chen, A., Mann, B., Israel, B., Seethor, B., McKinnon, C., Olah, C., Yan, D., Amodei, D., Amodei, D., Drain, D., Li, D., Tran-Johnson, E., Khundadze, G., Kernion, J., Landis, J., Kerr, J., Mueller, J., Hyun, J., Landau, J., Ndousse, K., Goldberg, L., Lovitt, L., Lucas, M., Sellitto, M., Zhang, M., Kingsland, N., Elhage, N., Joseph, N., Mercado, N., DasSarma, N., Rausch, O., Larson, R., McCandlish, S., Johnston, S., Kravec, S., Showk, S. E., Lanham, T., Telleen-Lawton, T., Brown, T., Henighan, T., Hume, T., Bai, Y., Hatfield-Dodds, Z., Clark, J., Bowman, S. R., Askell, A., Grosse, R., Hernandez, D., Ganguli, D., Hubinger, E., Schiefer, N., and Kaplan, J. Discovering language model behaviors with model-written evaluations, 2022.</p>
+<p>Räukur, T., Ho, A., Casper, S., and Hadfield-Menell, D. Toward transparent ai: A survey on interpreting the inner structures of deep neural networks. arXiv preprint arXiv:2207.13243, 2022.</p>
+<p>Touvron, H., Lavril, T., Izacard, G., Martinet, X., Lachaux, M.-A., Lacroix, T., Rozière, B., Goyal, N., Hambro, E., Azhar, F., Rodriguez, A., Joulin, A., Grave, E., and Lample, G. Llama: Open and efficient foundation language models, 2023. URL https://arxiv.org/ abs/2302.13971.</p>
+<p>Vig, J., Gehrmann, S., Belinkov, Y., Qian, S., Nevo, D., Singer, Y., and Shieber, S. Investigating gender bias in language models using causal mediation analysis. $A d$ vances in neural information processing systems, 33: 12388-12401, 2020.</p>
+<p>Wang, K., Variengien, A., Conmy, A., Shlegeris, B., and Steinhardt, J. Interpretability in the wild: a circuit for indirect object identification in gpt-2 small, 2022.</p>
+<p>Wu, Z., Geiger, A., Potts, C., and Goodman, N. D. Interpretability at scale: Identifying causal mechanisms in alpaca, 2023.</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3. Evaluating masks of various numbers of heads on held-out VD and OI problems. Each vertical pair of datapoints corresponds to a mask learned by a training run with a different value of $\lambda$, the sparsity regularization weight. With too few components patched, the model does not score well at Value Dependence. We interpret this as indicating that not enough of the value-copying heads have been patched.</p>
+<h2>A. Varying regularization strength</h2>
+<p>We vary the regularization strength $\lambda$ in order to learn masks with varying numbers of heads. We find that setting the regularization so that the masks learns approximately 10 model subcomponents is the approximate minimum number that can score highly for held-out Value Dependence accuracy and Operation Invariance accuracy, and so we use that setting for the main results of our paper. We also show further that removing the Operation Invariance desideratum causes the mask to score poorly on that criterion.</p>
+<h2>B. Related Work</h2>
+<p>Previous work has developed automated approaches to localizing computation (Conmy et al., 2023; Geiger et al., 2022; Wu et al., 2023). Our work varies from Conmy et al. (2023) in learning a mask and considering a broader class of ablations (patches to change behavior, instead of just preserve). Our work shares features with recent work from Geiger et al. (2023) and Wu et al. (2023), but differs in attempting to isolate shared computation common in multiple input-output circuits as opposed to understanding full input-output circuits.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4. Transfer to accuracy on multiplication problems. This graph depicts the same masks as Fig. 3 (which were trained on sequences involving only addition and subtraction), but evaluated on all-multiplication Value Dependence problems, and addition-to-multiplication (and vice versa) Operation Invariance problems. Similarly to Fig. 3, VD accuracy is low with too few heads patched.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5. Varying regularization strength with incomplete desiderata. This graph demonstrates learning a mask with only the Value Dependence desideratum. Again, each vertical pair of datapoints corresponds to a mask learned by a training run with a different value of $\lambda$, the sparsity regularization weight. Unlike when the mask is optimized according to both desiderata, these masks fail to achieve high accuracies on both Operation Invariance and Value dependence at the same time, as discussed in Section 4.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{3}$ Heads $11.11,12.0,12.7,15.11,15.25,17.17,18.11,18.18$, 19.20, and MLP 27.
+${ }^{4}$ MLPs 18, 27, 28, 29, 30, 31, 32, 33, 35, and 36.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

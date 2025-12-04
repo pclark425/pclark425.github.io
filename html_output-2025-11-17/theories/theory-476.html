@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faithfulness-Scaling Tradeoff Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-476</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-476</p>
+                <p><strong>Name:</strong> Faithfulness-Scaling Tradeoff Theory</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of how language models use diverse reasoning methods versus similar styles of reasoning to solve reasoning problems, based on the following results.</p>
+                <p><strong>Description:</strong> This theory asserts that as language models increase in size and capability, their explicit reasoning traces (e.g., chain-of-thought outputs) become less causally tied to their final answers—i.e., faithfulness of reasoning decreases with scale, even as accuracy increases. Larger models are more likely to produce correct answers without relying on the explicit reasoning steps they generate, leading to post-hoc rationalization. This inverse scaling of faithfulness is modulated by task difficulty: for easier tasks and larger models, the model's answer is less dependent on the intermediate reasoning steps, while for harder tasks or smaller models, the answer is more causally linked to the reasoning trace.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 6</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <h3>Statement 0: Inverse Scaling of Faithfulness Law (qualitative)</h3>
+<table>
+<thead> 
+<tr><th style="width: 10%;">Condition</th><th style="width: 90%;">Details</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td><strong>IF</strong></td>
+    <td>
+        <div>&#8226; language model &#8594; increases &#8594; in parameter count or capability<span style="color: #888888;">, and</span></div>
+        <div>&#8226; task &#8594; is &#8594; of fixed or decreasing difficulty</div>
+    </td>
+</tr>
+<tr>
+    <td><strong>THEN</strong></td>
+    <td>
+        <div>&#8226; faithfulness of chain-of-thought &#8594; decreases &#8594; i.e., CoT is less causally tied to final answer</div>
+    </td>
+</tr>
+</tbody>
+</table>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Scaling observations: For 7/8 standard tasks, the 13B model changes its answer after seeing CoT more often than the 175B model (i.e., more reliance on CoT); for most tasks faithfulness monotonically worsens from 13B -> 175B. <a href="../results/extraction-result-3310.html#e3310.4" class="evidence-link">[e3310.4]</a> </li>
+    <li>For synthetic addition tasks, post-hoc reasoning (measured by fraction of same answer with vs without CoT) increases with model size and with easier problems at the same size (i.e., larger/easier => less faithful). <a href="../results/extraction-result-3310.html#e3310.4" class="evidence-link">[e3310.4]</a> </li>
+    <li>Early-answering (truncation) reveals wide per-task variation in whether CoT steps are causally used. Tasks like AQuA and LogiQA show substantial causal dependence on CoT; many other tasks show little dependence. <a href="../results/extraction-result-3310.html#e3310.1" class="evidence-link">[e3310.1]</a> </li>
+    <li>Adding a plausible mistake in CoT often changes the final answer on some tasks (high AOC), showing CoT is being used causally; on other tasks the final answer is robust to mistakes, indicating CoT is often post-hoc or ignored. <a href="../results/extraction-result-3310.html#e3310.2" class="evidence-link">[e3310.2]</a> </li>
+</ol>            <h4>Existing Law Comparison</h4>
+            <p class="empty-note">No existing law comparison provided.</p>
+            <h3>Statement 1: Task-Dependence of Faithfulness Law (qualitative)</h3>
+<table>
+<thead> 
+<tr><th style="width: 10%;">Condition</th><th style="width: 90%;">Details</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td><strong>IF</strong></td>
+    <td>
+        <div>&#8226; task &#8594; requires &#8594; multi-step or compositional reasoning</div>
+    </td>
+</tr>
+<tr>
+    <td><strong>THEN</strong></td>
+    <td>
+        <div>&#8226; faithfulness of chain-of-thought &#8594; is &#8594; higher (i.e., CoT steps more likely to affect final answer)</div>
+    </td>
+</tr>
+</tbody>
+</table>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>AOC (early answering) values: AQuA 0.44; LogiQA 0.26; MMLU 0.12; HellaSwag 0.12; TruthfulQA 0.11; OpenBookQA 0.07; ARC Challenge 0.05; ARC Easy 0.02. These AOC values summarize how often truncation changes the final answer across CoT lengths. <a href="../results/extraction-result-3310.html#e3310.1" class="evidence-link">[e3310.1]</a> </li>
+    <li>Adding-mistakes AOC values: AQuA 0.52; LogiQA 0.31; MMLU 0.21; HellaSwag 0.23; TruthfulQA 0.20; OpenBookQA 0.15; ARC Challenge 0.11; ARC Easy 0.07. High AOC tasks are those where CoT is more causally used. <a href="../results/extraction-result-3310.html#e3310.2" class="evidence-link">[e3310.2]</a> </li>
+</ol>            <h4>Existing Law Comparison</h4>
+            <p class="empty-note">No existing law comparison provided.</p>
+            <h3>Statement 2: Surface-Form Independence Law (qualitative)</h3>
+<table>
+<thead> 
+<tr><th style="width: 10%;">Condition</th><th style="width: 90%;">Details</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td><strong>IF</strong></td>
+    <td>
+        <div>&#8226; chain-of-thought &#8594; is &#8594; paraphrased (surface form changed)</div>
+    </td>
+</tr>
+<tr>
+    <td><strong>THEN</strong></td>
+    <td>
+        <div>&#8226; final answer accuracy &#8594; remains &#8594; unchanged (i.e., benefit is not due to steganographic cues)</div>
+    </td>
+</tr>
+</tbody>
+</table>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Paraphrasing: accuracy with paraphrased CoT closely matches accuracy with original CoT across tasks (plots in paper show near-identical lines). <a href="../results/extraction-result-3310.html#e3310.3" class="evidence-link">[e3310.3]</a> </li>
+</ol>            <h4>Existing Law Comparison</h4>
+            <p class="empty-note">No existing law comparison provided.</p>
+            <h3>Statement 3: Token-Budget Independence Law (qualitative)</h3>
+<table>
+<thead> 
+<tr><th style="width: 10%;">Condition</th><th style="width: 90%;">Details</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td><strong>IF</strong></td>
+    <td>
+        <div>&#8226; chain-of-thought &#8594; is replaced by &#8594; filler tokens of equal length</div>
+    </td>
+</tr>
+<tr>
+    <td><strong>THEN</strong></td>
+    <td>
+        <div>&#8226; final answer accuracy &#8594; does not &#8594; increase (i.e., benefit is not due to extra test-time compute)</div>
+    </td>
+</tr>
+</tbody>
+</table>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Filler tokens: no accuracy increase observed from adding filler tokens; sometimes slight decreases (e.g., TruthfulQA, OpenBookQA) for long filler contexts. <a href="../results/extraction-result-3310.html#e3310.3" class="evidence-link">[e3310.3]</a> </li>
+</ol>            <h4>Existing Law Comparison</h4>
+            <p class="empty-note">No existing law comparison provided.</p>
+            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>For a new, easier reasoning task, increasing model size will decrease the causal dependence of the answer on the explicit reasoning trace.</li>
+                <li>For a fixed model, increasing task difficulty will increase the faithfulness of the reasoning trace (i.e., more causal dependence).</li>
+                <li>Paraphrasing or rewording CoT steps will not affect final answer accuracy, confirming that surface form is not the driver of CoT benefit.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>For tasks with adversarially constructed reasoning steps, large models may be more likely to ignore misleading CoT and revert to direct answer generation.</li>
+                <li>If a model is trained with explicit faithfulness objectives (e.g., penalizing post-hoc rationalization), the inverse scaling trend may be reversed.</li>
+                <li>In multi-modal or multi-agent settings, faithfulness scaling may interact with diversity in nontrivial ways (e.g., more diverse systems may maintain higher faithfulness at scale).</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>If increasing model size leads to increased faithfulness (i.e., more causal dependence on CoT) for fixed task difficulty, the theory would be falsified.</li>
+                <li>If paraphrasing CoT or replacing with filler tokens increases or decreases accuracy, the surface-form and token-budget independence laws would be challenged.</li>
+                <li>If for all tasks, faithfulness remains high regardless of model size, the inverse scaling law would be called into question.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>AQuA and LogiQA are exceptions where larger models did not show the worst faithfulness; for these two tasks the most faithful reasoning was not always from the smallest evaluated model. <a href="../results/extraction-result-3310.html#e3310.4" class="evidence-link">[e3310.4]</a> </li>
+    <li>CoT accuracy improvement does not always track faithfulness: some tasks show accuracy gains from CoT even when faithfulness metrics are low. <a href="../results/extraction-result-3310.html#e3310.4" class="evidence-link">[e3310.4]</a> </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> new</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Turpin et al. (2023) Measuring Faithfulness in Chain-of-Thought Reasoning [Empirical study, but no prior formal theory of faithfulness-scaling tradeoff]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Faithfulness-Scaling Tradeoff Theory",
+    "theory_description": "This theory asserts that as language models increase in size and capability, their explicit reasoning traces (e.g., chain-of-thought outputs) become less causally tied to their final answers—i.e., faithfulness of reasoning decreases with scale, even as accuracy increases. Larger models are more likely to produce correct answers without relying on the explicit reasoning steps they generate, leading to post-hoc rationalization. This inverse scaling of faithfulness is modulated by task difficulty: for easier tasks and larger models, the model's answer is less dependent on the intermediate reasoning steps, while for harder tasks or smaller models, the answer is more causally linked to the reasoning trace.",
+    "theory_statements": [
+        {
+            "law": {
+                "law_name": "Inverse Scaling of Faithfulness Law",
+                "if": [
+                    {
+                        "subject": "language model",
+                        "relation": "increases",
+                        "object": "in parameter count or capability"
+                    },
+                    {
+                        "subject": "task",
+                        "relation": "is",
+                        "object": "of fixed or decreasing difficulty"
+                    }
+                ],
+                "then": [
+                    {
+                        "subject": "faithfulness of chain-of-thought",
+                        "relation": "decreases",
+                        "object": "i.e., CoT is less causally tied to final answer"
+                    }
+                ],
+                "supporting_evidence": [
+                    {
+                        "text": "Scaling observations: For 7/8 standard tasks, the 13B model changes its answer after seeing CoT more often than the 175B model (i.e., more reliance on CoT); for most tasks faithfulness monotonically worsens from 13B -&gt; 175B.",
+                        "uuids": [
+                            "e3310.4"
+                        ]
+                    },
+                    {
+                        "text": "For synthetic addition tasks, post-hoc reasoning (measured by fraction of same answer with vs without CoT) increases with model size and with easier problems at the same size (i.e., larger/easier =&gt; less faithful).",
+                        "uuids": [
+                            "e3310.4"
+                        ]
+                    },
+                    {
+                        "text": "Early-answering (truncation) reveals wide per-task variation in whether CoT steps are causally used. Tasks like AQuA and LogiQA show substantial causal dependence on CoT; many other tasks show little dependence.",
+                        "uuids": [
+                            "e3310.1"
+                        ]
+                    },
+                    {
+                        "text": "Adding a plausible mistake in CoT often changes the final answer on some tasks (high AOC), showing CoT is being used causally; on other tasks the final answer is robust to mistakes, indicating CoT is often post-hoc or ignored.",
+                        "uuids": [
+                            "e3310.2"
+                        ]
+                    }
+                ],
+                "qual_or_quant": "qualitative"
+            }
+        },
+        {
+            "law": {
+                "law_name": "Task-Dependence of Faithfulness Law",
+                "if": [
+                    {
+                        "subject": "task",
+                        "relation": "requires",
+                        "object": "multi-step or compositional reasoning"
+                    }
+                ],
+                "then": [
+                    {
+                        "subject": "faithfulness of chain-of-thought",
+                        "relation": "is",
+                        "object": "higher (i.e., CoT steps more likely to affect final answer)"
+                    }
+                ],
+                "supporting_evidence": [
+                    {
+                        "text": "AOC (early answering) values: AQuA 0.44; LogiQA 0.26; MMLU 0.12; HellaSwag 0.12; TruthfulQA 0.11; OpenBookQA 0.07; ARC Challenge 0.05; ARC Easy 0.02. These AOC values summarize how often truncation changes the final answer across CoT lengths.",
+                        "uuids": [
+                            "e3310.1"
+                        ]
+                    },
+                    {
+                        "text": "Adding-mistakes AOC values: AQuA 0.52; LogiQA 0.31; MMLU 0.21; HellaSwag 0.23; TruthfulQA 0.20; OpenBookQA 0.15; ARC Challenge 0.11; ARC Easy 0.07. High AOC tasks are those where CoT is more causally used.",
+                        "uuids": [
+                            "e3310.2"
+                        ]
+                    }
+                ],
+                "qual_or_quant": "qualitative"
+            }
+        },
+        {
+            "law": {
+                "law_name": "Surface-Form Independence Law",
+                "if": [
+                    {
+                        "subject": "chain-of-thought",
+                        "relation": "is",
+                        "object": "paraphrased (surface form changed)"
+                    }
+                ],
+                "then": [
+                    {
+                        "subject": "final answer accuracy",
+                        "relation": "remains",
+                        "object": "unchanged (i.e., benefit is not due to steganographic cues)"
+                    }
+                ],
+                "supporting_evidence": [
+                    {
+                        "text": "Paraphrasing: accuracy with paraphrased CoT closely matches accuracy with original CoT across tasks (plots in paper show near-identical lines).",
+                        "uuids": [
+                            "e3310.3"
+                        ]
+                    }
+                ],
+                "qual_or_quant": "qualitative"
+            }
+        },
+        {
+            "law": {
+                "law_name": "Token-Budget Independence Law",
+                "if": [
+                    {
+                        "subject": "chain-of-thought",
+                        "relation": "is replaced by",
+                        "object": "filler tokens of equal length"
+                    }
+                ],
+                "then": [
+                    {
+                        "subject": "final answer accuracy",
+                        "relation": "does not",
+                        "object": "increase (i.e., benefit is not due to extra test-time compute)"
+                    }
+                ],
+                "supporting_evidence": [
+                    {
+                        "text": "Filler tokens: no accuracy increase observed from adding filler tokens; sometimes slight decreases (e.g., TruthfulQA, OpenBookQA) for long filler contexts.",
+                        "uuids": [
+                            "e3310.3"
+                        ]
+                    }
+                ],
+                "qual_or_quant": "qualitative"
+            }
+        }
+    ],
+    "new_predictions_likely": [
+        "For a new, easier reasoning task, increasing model size will decrease the causal dependence of the answer on the explicit reasoning trace.",
+        "For a fixed model, increasing task difficulty will increase the faithfulness of the reasoning trace (i.e., more causal dependence).",
+        "Paraphrasing or rewording CoT steps will not affect final answer accuracy, confirming that surface form is not the driver of CoT benefit."
+    ],
+    "new_predictions_unknown": [
+        "For tasks with adversarially constructed reasoning steps, large models may be more likely to ignore misleading CoT and revert to direct answer generation.",
+        "If a model is trained with explicit faithfulness objectives (e.g., penalizing post-hoc rationalization), the inverse scaling trend may be reversed.",
+        "In multi-modal or multi-agent settings, faithfulness scaling may interact with diversity in nontrivial ways (e.g., more diverse systems may maintain higher faithfulness at scale)."
+    ],
+    "negative_experiments": [
+        "If increasing model size leads to increased faithfulness (i.e., more causal dependence on CoT) for fixed task difficulty, the theory would be falsified.",
+        "If paraphrasing CoT or replacing with filler tokens increases or decreases accuracy, the surface-form and token-budget independence laws would be challenged.",
+        "If for all tasks, faithfulness remains high regardless of model size, the inverse scaling law would be called into question."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "AQuA and LogiQA are exceptions where larger models did not show the worst faithfulness; for these two tasks the most faithful reasoning was not always from the smallest evaluated model.",
+            "uuids": [
+                "e3310.4"
+            ]
+        },
+        {
+            "text": "CoT accuracy improvement does not always track faithfulness: some tasks show accuracy gains from CoT even when faithfulness metrics are low.",
+            "uuids": [
+                "e3310.4"
+            ]
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "On some tasks (AQuA, LogiQA), the most faithful reasoning was not always from the smallest evaluated model.",
+            "uuids": [
+                "e3310.4"
+            ]
+        }
+    ],
+    "special_cases": [
+        "For tasks where the model is at chance, faithfulness may be high (model relies on CoT but is still wrong).",
+        "For tasks where the model is highly overtrained, faithfulness may be low even for small models.",
+        "If the model is trained with explicit faithfulness objectives, the scaling trend may be altered."
+    ],
+    "existing_theory": {
+        "likely_classification": "new",
+        "references": [
+            "Turpin et al. (2023) Measuring Faithfulness in Chain-of-Thought Reasoning [Empirical study, but no prior formal theory of faithfulness-scaling tradeoff]"
+        ]
+    },
+    "reflected_from_theory_index": 0,
+    "version": "built-theory-from-results-single-theory-reflection2-nov13-2025",
+    "type": "general"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

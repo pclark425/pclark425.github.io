@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-4508 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-4508</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-4508</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-99.html">extraction-schema-99</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of methods, systems, or approaches that use LLMs (or other AI models) to extract, distill, or discover quantitative laws, patterns, relationships, or principles from scientific papers or scholarly literature.</div>
+                <p><strong>Paper ID:</strong> paper-717d65440e1a21feb35640210dd0a6c767591b99</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/717d65440e1a21feb35640210dd0a6c767591b99" target="_blank">Doc2Dict: Information Extraction as Text Generation</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> This work replaces this labor-intensive workflow with a transformer language model trained on existing database records to directly generate structured JSON, which removes the workload associated with producing token-level annotations and takes advantage of a data source which is generally quite plentiful.</p>
+                <p><strong>Paper Abstract:</strong> Typically, information extraction (IE) requires a pipeline approach: first, a sequence labeling model is trained on manually annotated documents to extract relevant spans; then, when a new document arrives, a model predicts spans which are then post-processed and standardized to convert the information into a database entry. We replace this labor-intensive workflow with a transformer language model trained on existing database records to directly generate structured JSON. Our solution removes the workload associated with producing token-level annotations and takes advantage of a data source which is generally quite plentiful (e.g. database records). As long documents are common in information extraction tasks, we use gradient checkpointing and chunked encoding to apply our method to sequences of up to 32,000 tokens on a single GPU. Our Doc2Dict approach is competitive with more complex, hand-engineered pipelines and offers a simple but effective baseline for document-level information extraction. We release our Doc2Dict model and code to reproduce our experiments and facilitate future work.</p>
+                <p><strong>Cost:</strong> 0.004</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-4508",
+    "paper_id": "paper-717d65440e1a21feb35640210dd0a6c767591b99",
+    "extraction_schema_id": "extraction-schema-99",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00355275,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Doc2Dict: Information Extraction as Text Generation</h1>
+<p>Benjamin Townsend ${ }^{<em>}$ Eamon Ito-Fisher ${ }^{1}$ Lily Zhang ${ }^{1}$ Madison May</em><br>${ }^{1}$ Indico Data Solutions<br>${ }^{1}$ Franklin W. Olin College of Engineering<br>${ }^{1}$ New York University<br>{ben,madison}@indico.io<br>efisher@olin.edu<br>lily.h.zhang@nyu.edu</p>
+<h4>Abstract</h4>
+<p>Typically, information extraction (IE) requires a pipeline approach: first, a sequence labeling model is trained on manually annotated documents to extract relevant spans; then, when a new document arrives, a model predicts spans which are then post-processed and standardized to convert the information into a database entry. We replace this labor-intensive workflow with a transformer language model trained on existing database records to directly generate structured JSON. Our solution removes the workload associated with producing token-level annotations and takes advantage of a data source which is generally quite plentiful (e.g. database records). As long documents are common in information extraction tasks, we use gradient checkpointing and chunked encoding to apply our method to sequences of up to 32,000 tokens on a single GPU. Our Doc2Dict approach is competitive with more complex, hand-engineered pipelines and offers a simple but effective baseline for documentlevel information extraction. We release our Doc2Dict model and code to reproduce our experiments and facilitate future work.</p>
+<h2>1 Introduction</h2>
+<p>The task of extracting structured information from documents is omnipresent (Zhang et al., 2020; Majumder et al., 2020; Liu et al., 2019). Although documents are designed primarily for human-consumption, they often contain values (e.g. amounts, dates, IDs) that are useful as inputs to downstream software. While rigid forms permit straightforward automated processing via the use of document templates, more varied documents like invoices, contracts, and quarterly reports pose a challenge for machine-learning assisted processing.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>For these documents, the information necessary to convert the document to structured records is primarily textual and we turn to the field of natural language processing for potential solutions.</p>
+<h3>1.1 Sequence-Labeling for Information Extraction</h3>
+<p>It is natural to frame information extraction problems as sequence-labeling tasks (Collobert et al., 2011; Huang et al., 2015; Lample et al., 2016). However, sequence-labeling models rely on the availability of token-level annotations - data not typically recorded by data entry software, which only captures the standardized values derived from the document. Consequently, documents that have already been manually processed need to undergo a secondary annotation process where annotators denote document spans that correspond to the derived values.</p>
+<p>The cost of annotating large corpora with pertoken labels is significant (Alonso et al., 2016; Settles et al., 2008), and this burden is exaggerated for long documents where information of interest may be spread throughout the document. Previous work has focused on minimizing the number of labeled samples required to construct an effective model (Howard and Ruder, 2018; Radford et al., 2019; Devlin et al., 2019), but annotating even a few hundred lengthy documents still requires substantial effort and domain knowledge.</p>
+<p>One might reasonably look to reconstruct tokenlevel labels by automatically finding the source of each field in the corresponding document, but this alignment process is error prone. Searching for exact string matches between database values and source document text is insufficient, as values are frequently standardized prior to storage (e.g. "May 7th, 2019" may be converted to "2019/05/07").</p>
+<p>In other cases, a stored value might spuriously match irrelevant tokens in the source document.</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Information extraction with sequence-labeling models requires gathering additional token-level labels as well as an additional span selection and standardization step. Our proposed method, Doc2Dict, learns to directly produce a normalized version of the database record that corresponds to a given document, enabling the use of pre-existing database records as supervision and minimizing the need for custom post-processing.</p>
+<p>For instance, the "Subtotal" and "Total" lines on an invoice may both match the value of "Invoice Total" stored in a database, but only the latter should be provided as an annotation. More sophisticated systems do exist for aligning the values stored in a database with likely matches in the source document, but they rely on custom logic for each field type to perform reliably (Graliński et al., 2020) and must be tailored to the task of interest.</p>
+<p>Even after constructing a dataset with token-level labels and training a sequence-labeling model, it is necessary to post-process predicted spans to prepare entities for storage in a database. In the case that a single value is expected for a given field, a pool of candidate spans must be narrowed down to a single response via a selection heuristic.</p>
+<p>Values must also be standardized to match the expected format. If standardization is handled by a rules-based system, additional software engineering effort is necessary in order to benefit from the machine learning system. If standardization is instead performed manually, extra overhead will be incurred in perpetuity when incoming documents are processed. In combination, these limitations pose significant barriers to adoption.</p>
+<h3>1.2 Information Extraction as Text Generation</h3>
+<p>One possible solution to address the difficulty of producing labeled training data for sequence-labeling tasks is to forgo the requirement of token-level labels altogether by framing information extraction as a sequence-to-sequence task from document to a structured database record directly (Sutskever et al., 2014). Sequence-to-sequence learning presents a flexible framework under which many diverse tasks can be unified - classification, regression, question answering, and sequence-labeling tasks can all be treated as simple text generation tasks (McCann et al., 2018; Raffel et al., 2020; Radford et al., 2019). Rather than iterating through a document and predicting which document spans correspond to the fields of interest, we task a machine learning model with generating a JSON-like representation of the extracted information when conditioned on the text of the source document, permitting the direct use of preexisting database records as supervision.</p>
+<p>This paper introduces Doc2Dict: a general, end-to-end information extraction system that directly</p>
+<p>utilizes database records generated by manual data entry processes as training data for a text generation model. Doc2Dict requires little to no custom configuration and eliminates the need for additional manual annotation or a heuristic alignment step. We jointly learn to extract, select, and standardize values of interest, enabling direct generation of a JSON-like data format. Additionally, we leverage gradient checkpointing to allow processing documents of up to 32k tokens on a single consumer GPU. Finally, we systematically explore how different types of information loss in the translation to database records impact model performance and suggest avenues for minimizing impact.</p>
+<h2>2 Related Work</h2>
+<p>Other natural language processing application areas have already benefited from the use of textgeneration models to tasks that require structured outputs. In 2013, Andreas et al. (2013) demonstrated that framing semantic parsing as a machine translation task was competitive with existing methods that were purpose-built for semantic-parsing. More recently, text-generation methods have been successfully applied to the text-to-SQL task, which requires the translation of a natural language question and a database schema to a SQL query. Of particular note is SeqGenSQL (Li et al., 2020), a finetuned T5 model that treats the text-to-SQL problem as a pure text generation task and currently leads the weakly supervised category of the WikiSQL benchmark (Zhong et al., 2017).</p>
+<p>Similar to the text-to-SQL problem, taskoriented dialogue systems often contain components that translate free-form conversations to structured representations of dialogue state. While taskoriented dialogue systems have traditionally been broken up into many disparate parts (dialogue state tracking, dialogue management, and response generation), SimpleTOD (Hosseini-Asl et al., 2020) and its successors (Peng et al., 2020; Lin et al., 2020b) unify these parts under the umbrella of text generation and use a simple language modeling objective to learn to produce dialogue state representations.</p>
+<p>Several prior works explore information extraction tasks in an end-to-end manner. Paolini et al. (2021) proposes an augmented natural language format for use in solving a wide variety of structured prediction language tasks, including named entity recognition, relation extraction, and event
+extraction. Their output format and framing of IE as a generative language modeling task permits multi-task learning without task-specific heads, but requires span-level information, preventing direct application to our task of interest. Zeng et al. (2018) and Nayak and Ng (2020) use text-generation models to perform end-to-end joint entity and relation extraction from sentences. Similarly, Lin et al. (2020a) jointly tackles entity, relation, and event extraction tasks by using a transformer encoder and sophisticated graph decoder. In all cases, however, copy mechanisms or extractive task formulations prevent straightforward application to our problem setting.</p>
+<p>Most relevantly, a handful of prior works have approached information extraction from business documents in an end-to-end manner. Palm et al. (2019) leverages pointer networks to extract relevant fields from invoices. However, they build custom neural modules to handle the standardization of each field type, which limits the general usability of the approach to other output types not yet considered (e.g. addresses) and prevents leveraging pre-trained models to minimize training data requirements. Sage et al. (2020) similarly employs a pointer-generator network for information extraction from purchase orders. In contrast to our work, like (Zeng et al., 2018) they assume that no standardization has been applied to the extracted values and require that all system outputs can be copied directly from the source document.</p>
+<h2>3 Methods</h2>
+<p>Our Doc2Dict model is based on the T5 transformer-based encoder-decoder architecture of (Raffel et al., 2020). We maintain the text-to-text formulation of T5, enabling structured output generation by formatting the output as Python's string representation of built-in data types. In practice, we find that a multitude of different structured output formats enable similar performance (see Section 3.4). In the following subsections, we present additional considerations raised by our specific formulation of information extraction as text generation and our methods for addressing them.</p>
+<h3>3.1 Entity Order</h3>
+<p>One peculiarity of treating information extraction tasks in a text-to-database formulation is that the correct output sequence is not uniquely determined; in particular, any ordering of key-value pairs is</p>
+<p>a correct output. Language models trained with teacher forcing, however, only consider one correct output string. Using such a loss, our model may be penalized for producing valid responses. Unfortunately, training on all possible permutations increases the computational requirements by a factor of $n$ ! where $n$ is the length of the sequence. Instead, we choose to encourage robustness to entity order by evaluating with respect to different randomly-ordered output sequences per epoch. We find that this simple solution works reasonably well in practice, achieving gains over fixed output orderings.</p>
+<h3>3.2 Standardization</h3>
+<p>The standardization of output values results in a discrepancy between the supervision offered by database records and the text that exists in the document. For instance, if the entity of interest is a due date that exists in YY/MM/DD format in the database but in textual format (e.g. Month Day, Year) in the document, correctly predicting the provided database label requires that a model not only identify the relevant part of the text, but also translate that text into the format given in the label. The latter must be learned without explicit supervision of an intermediate value (e.g. the exact value as seen in the document) and often requires learning non-trivial multi-token to multi-token mappings. For instance, even translating between words with different capitalization can change tokenization drastically, e.g. ("Barack", " Obama") vs ("B", "AR", "ACK", " ", "OB", "AMA"). To alleviate this effect, we preprocess the input text before tokenization so that candidate text spans more closely align with the database output, e.g. if outputs are all lowercase, we would lowercase all the text before feeding it into the model.</p>
+<h3>3.3 Processing Long Input Sequences</h3>
+<p>Transformer-based language models are typically trained on subsequences of 512 to 1024 tokens at a time because of the memory complexity of the attention operation (Vaswani et al., 2017; Wang et al., 2020), but many information extraction tasks require processing documents that may be tens of thousands of tokens in length. In the sequencelabeling problem formulation, this limitation can be overcome by "chunking" the document into either sentences or windows that contain a fixed number of tokens (Dai et al., 2019).</p>
+<p>Unfortunately, this chunking paradigm breaks down when applied to a text-generation setting. Using each chunk and the target sequence independently is ill-formed, as many document chunks may contain no information relevant to producing the target sequence. If the information present in the target sequence is not derivable from the input subsequence supplied, the loss encourages the undesirable behavior of producing likely output sequences not relevant to the input. Without knowing where in the document target values are derived we cannot effectively break the document up into manageable subsequences with appropriate labels per chunk.</p>
+<h3>3.3.1 Fusion-in-Decoder</h3>
+<p>As the aforementioned chunking scheme is not viable for our approach, we address the issue of long input sequences by taking inspiration from the fusion-in-decoder method (Izacard and Grave, 2020). First proposed for applications in opendomain question answering, fusion-in-decoder provides a means for encoder-decoder language models to independently encode many subsequences but aggregate information from all subsequences in the decoder. In Izacard and Grave (2020), fusion-indecoder is applied to different documents returned by a retriever, whereas we apply a similar method to permit conditioning on many chunks from a single long document. Rather than a quadratic dependency on overall sequence length, the fusion-in-decoder method requires $O\left(c^{2} m\right)$ compute and memory, where $c$ is the chunk size and $m$ is the number of fixed-size chunks processed by the encoder. By only permitting dense attention within a given chunk in the encoder and restricting chunks to a fixed size, the memory and compute complexity is made linear with the length of the document.</p>
+<h3>3.3.2 Gradient Checkpointing Scheme</h3>
+<p>Even with these algorithmic optimizations, the memory requirements of processing long documents remain high and gradient checkpointing is required at training time. Gradient checkpointing allows trading compute for memory by caching only a portion of intermediate activations and recomputing the remaining activations during the backwards pass (Chen et al., 2016). We use this standard approach for the decoder, but for the encoder we add an additional layer of gradient checkpointing per-encoder stack, illustrated in figure 2. When using a batch size of 1 at training time, this approach allows us to train on 64 blocks of 512</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Gradient checkpointing scheme used to make training on long input sequences tractable. We compute a full forward pass of the model, computing the loss and caching the activations of each encoded chunk and each of the inter-block activations of the decoder (indicated by dashed red lines). These cached activations are used in conjunction with a second forward pass through the decoder in order to compute the gradients of the decoders parameters. For each block in the encoder, we then recompute the forward pass to cache the inter-block activations (indicated by solid blue lines). A final forward pass through the encoder allows computing gradients with respect to the parameters of the encoder.</p>
+<p>tokens at full precision with only 11GB of VRAM. This translates to an overall sequence length of over 32,000 tokens.</p>
+<h3>3.4 Output Format Experiments</h3>
+<p>To test what output formats are most easily generated by T5, we experiment with multiple output formats on a joint intent detection and slot-filling task, ATIS [Hemphill et al. (1990)]. Output formats tested include XML, JSON, and Python's string representation, a close cousin to JSON. As the T5 vocab is missing some tokens necessary for representing these formats (e.g. "{" and "}"), some of</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Intent</th>
+<th>Entity</th>
+<th>Parse Failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YAML</td>
+<td>.970</td>
+<td>.951</td>
+<td>.003</td>
+</tr>
+<tr>
+<td>XML</td>
+<td>.969</td>
+<td>.949</td>
+<td>.002</td>
+</tr>
+<tr>
+<td>JSON</td>
+<td>.972</td>
+<td>.949</td>
+<td>.002</td>
+</tr>
+<tr>
+<td>Python string</td>
+<td>.971</td>
+<td>.950</td>
+<td>.004</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Performance on ATIS joint intent and slot filling task by output format. Output format used has negligible impact on task performance. Reported intent and entity scores are micro F1. Across all output formats, generated content failed format validation only 0.26% of the time.</p>
+<p>The extra IDs present in the T5 vocab were assigned to these tokens.</p>
+<p>Although the lack of the requisite tokens in the vocabulary implies that T5 has not been exposed to data in these formats during pre-training, we found that all output formats were viable targets for the task and performed similarly, as shown in Table 1. We opt to use Python's str format in subsequent experiments, due in part to its shorter output sequence length relative to XML. This shorter output length translates directly to shorter training and prediction times.</p>
+<h3>4 Results</h3>
+<p>We evaluate our method on a number of datasets covering direct extraction and end-to-end information extraction, the results of which are included in Tables 2.</p>
+<p>One of the primary strengths of our approach is its ability to learn to extract and standardize data from documents given only the desired answer for training signal. We demonstrate these strengths on three datasets: Kleister-NDA, Kleister-Charity <em>Graliński et al. (2020)</em> and DeepForm <em>Stacey Svetlichnaya (2020)</em>. Each of these datasets provides a set of documents paired with ground truth values, but does not provide information about where ground truth values occurred in the source document. Some of these ground truth values appear verbatim whilst others have been transformed to a standardized format. For the Kleister and DeepForm datasets the baselines used in the original papers apply a pipeline approach, where custom heuristics are used to align records to text spans in the input document and re-cast the problem as a sequence-labeling task. At prediction time per-field standardization and selection rules are applied to the model predictions in order to translate extracted spans back to a canonical form that matches the</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Doc2Dict F1</th>
+<th>Pipeline F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepForm</td>
+<td>0.900</td>
+<td>0.761</td>
+</tr>
+<tr>
+<td>Kleister-NDA</td>
+<td>0.809</td>
+<td>0.777</td>
+</tr>
+<tr>
+<td>Kleister-Charity</td>
+<td>0.561</td>
+<td>0.801</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Results for Kleister-NDA, Kleister-Charity and DeepForm. In two of three tasks of interest, we outperform the baseline despite not requiring token-level supervision. Although we under-perform the baseline on Kleister-Charity, we believe that the comparative ease and reduced cost of obtaining the required training data has the opportunity to result in significant benefits for large scale practical applications.
+desired output.
+Additionally, we would like to draw some conclusions about how token-level supervision compares to a sequence-to-sequence formulation when entity standardization is not required. As an indicator of relative performance we compare a RoBERTa model trained with token-level annotations to our Doc2Dict method. We test on the ATIS intent detection dataset as well as the OntoNotes 5.0 NER dataset [Pradhan et al. (2013)].</p>
+<h3>4.1 Metrics</h3>
+<p>For the Kleister datasets we use uncased F1 metrics to match the original task paper [Graliński et al. (2020)]. For DeepForm we use uncased entity-level F1 and report macro F1 as an overall score. For ATIS and OntoNotes entity-level micro F1 is reported.</p>
+<h3>4.2 Data Preprocessing</h3>
+<p>For Kleister and DeepForm, we opt to lowercase both the source and the targets and remove any commas that occur directly after a number in the source text. This is an effort to rectify some of the problems resulting from inconsistent tokenization, mentioned previously in Section 3.2 and discussed at length in Section 5.1. The relevant metrics are insensitive to case so this transformation does not effect metrics. Ablations for these transformations can be seen in Table 4.</p>
+<p>For the DeepForm and ATIS datasets, our output format is a Python dictionary format.
+{'key': value, ...}
+For the Kleister and OntoNotes datasets, our output format is a set of tuples, which allows us to represent keys that have multiple values.
+${($ 'key', value), ...}
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Name and number standardization is substantially more difficult than date standardization, which we attribute to tokenization differences caused by the standardization operation in these two tasks. See Section 5.1 for experimental details.</p>
+<h2>5 Limitations and Future Work</h2>
+<h3>5.1 Tokenizer Limitations</h3>
+<p>Although our work shows that sequence to sequence information extraction models are a viable alternative to token-level sequence-labeling tasks when database records are available for use as supervision, we hypothesize that T5's choice of tokenizer may make learning to jointly extract and standardize information more difficult than necessary.</p>
+<p>In order to validate this hypothesis we opt to study the task of learning standardization rules in isolation to understand what kinds of standardization rules are most tractable to learn. Below, we experiment with three synthetic datasets. For all experiments we use the pre-trained T5 base checkpoint and measure how performance varies as dataset size is increased. Experiment results are presented in Figure 3.</p>
+<h3>5.1.1 Date Standardization</h3>
+<p>The first synthetic dataset explores the difficulty in translating from a variety of date formats to a standard form. Random dates between 1950 and 2021 were generated using Python's datetime module and formatted using a family of 10 unique format strings. The model is tasked with translating these varied date formats to a canonical " $\% \mathrm{Y} / \% \mathrm{~m} / \% \mathrm{~d}$ " form. As observed in our main results, we found this translation to be easily learnable - the model completes the task with nearly perfect accuracy after only observing 2500 examples.</p>
+<table>
+<thead>
+<tr>
+<th>Doc2Dict</th>
+<th>F1</th>
+<th>Baseline F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OntoNotes</td>
+<td>0.865</td>
+<td>$\mathbf{0 . 8 9 6}$</td>
+</tr>
+<tr>
+<td>ATIS</td>
+<td>0.959</td>
+<td>$\mathbf{0 . 9 8 7}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: The baseline model is a RoBERTa model [liu2019robert] with CRF output layer that has access to gold standard token-level annotations as training signal. Even without this additional supervision, our model is able to produce very reasonable results on OntoNotes and ATIS datasets.</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th></th>
+<th>F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Charity</td>
+<td>Base</td>
+<td>0.503</td>
+</tr>
+<tr>
+<td>Charity</td>
+<td>+ Lowercased</td>
+<td>0.533</td>
+</tr>
+<tr>
+<td>Charity</td>
+<td>+ Comma Stripping</td>
+<td>0.561</td>
+</tr>
+<tr>
+<td>NDA</td>
+<td>Base</td>
+<td>0.716</td>
+</tr>
+<tr>
+<td>NDA</td>
+<td>+ Shuffled Epochs</td>
+<td>0.759</td>
+</tr>
+<tr>
+<td>NDA</td>
+<td>+ Lowercased</td>
+<td>0.797</td>
+</tr>
+<tr>
+<td>NDA</td>
+<td>+ Comma Stripping</td>
+<td>0.809</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Ablations to explore the impact of our dataset preprocessing. Comma stripping is stripping all commas that proceed a number, Lowercased is making the input and targets lowercase and Shuffled Epochs is reordering target values between every epoch (details in Section 3.1). Shuffled Epochs is not included for Kleister-Charity as there is a one to one mapping between key and value.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: With T5's default tokenizer, we find learned standardization is imperfect even at 50k training examples. However, constraining T5's vocabulary to single character tokens makes the number standardization task trivial by ensuring tokens can be copied directly from the input. Unfortunately, this change increases overall sequence length significantly, and we refrain from applying this modification in our main experimental results.</p>
+<h3>5.1.2 Name Lowercasing</h3>
+<p>The second synthetic dataset tests the model's ability to learn to translate names with varying capitalization to a lowercase form. Of the input data, $5 \%$ is lowercase, $20 \%$ is uppercase, and the remaining $75 \%$ has the first letter of every word capitalized. Names are drawn at random from a gazetteer of roughly 18,000 names. In contrast to the date standardization task, at 2500 samples our exact match accuracy is only around $80 \%$. Even at the full 50,000 samples we observe an error rate of $2.5 \%$, an indicator that this mapping is not trivial to learn. We hypothesize that this difficulty in learning to solve this task is due to the difference in the input and output sequence tokenization induced by the lowercasing operation (described previously in Section 3.2).</p>
+<h3>5.1.3 Number Standardization</h3>
+<p>Finally, we test the model's ability to convert from integer values sampled uniformly between one thousand and one billion to a more human readable format that includes commas and two decimal points of precision. A value of " 123456789 " would be converted to " $123,456,789.00$ " - the encoderdecoder model must learn to insert commas where appropriate and emit ". 00 " at the end of the sequence. Similar to the lowercasing task, we observe a failure rate of $5 \%$ even when training on the full dataset of 50,000 samples.</p>
+<h3>5.1.4 Tokenizer Modifications</h3>
+<p>To validate our hypothesis that the poor performance on the number and name standardization datasets are due to the tokenization differences in the input and output sequences preventing a copying heuristic from being learned, we experiment with restricting the vocabulary of T5 to aid in copying number values. In particular, we modify the tokenizer to produce only single character tokens for numeric values. In Figure 4, we show that this simple modification makes the standardization task trivial for the T5 model to solve, suggesting future work on tokenization may be key to making learned</p>
+<p>normalization practical.</p>
+<h3>5.2 Conclusion</h3>
+<p>We devise a new formulation for information extraction which directly exploits existing database records as training data, a much less labor-intensive approach than existing sequence-extraction methods. Paired with simple data preprocessing techniques and a strategy that enables processing long documents, our method can achieve comparable results to hand-crafted pipelines on several real-world datasets.</p>
+<p>Future work could incorporate constrained generation to avoid unparseable outputs, permutationinvariant losses to better address the issue of entity order, and information extraction-specific pretraining to help with learning implicit standardization. Moreover, as the fusion-in-decoder formulation does not allow for attention across chunks in the encoder, we hypothesize that methods which allow for long-range attention in the encoder during pre-training may lead to better task performance. Additionally, since document layout understanding is important for accurate information extraction (e.g. extraction of cell values in tables and forms), incorporating strategies to include the spatial location of tokens in their input representations, such as done in (Xu et al., 2020), could improve the general performance in our approach for information extraction. Finally, although not explored in this work, our flexible output format permits representing outputs with more complex structure and may prove a promising direction for approaching other information extraction tasks like relation extraction. Regardless, in its current form, Doc2Dict represents an easy, reproducible baseline for future information extraction tasks and paves the way towards practical information extraction processes.</p>
+<h2>6 Acknowledgements</h2>
+<p>We thank Luke Metz, Rahil Dedhia, Slater Victoroff and Matthew Bayer for their invaluable feedback on early drafts of this paper.</p>
+<h2>References</h2>
+<p>Héctor Martínez Alonso, Djamé Seddah, and Benoît Sagot. 2016. From noisy questions to minecraft texts: Annotation challenges in extreme syntax scenario. In NUT@COLING.</p>
+<p>Jacob Andreas, Andreas Vlachos, and Stephen Clark. 2013. Semantic parsing as machine translation. In</p>
+<p>Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers), pages 47-52, Sofia, Bulgaria. Association for Computational Linguistics.
+T. Chen, B. Xu, C. Zhang, and Carlos Guestrin. 2016. Training deep nets with sublinear memory cost. ArXiv, abs/1604.06174.</p>
+<p>Jason P.C. Chiu and Eric Nichols. 2016. Named entity recognition with bidirectional LSTM-CNNs. Transactions of the Association for Computational Linguistics, 4:357-370.</p>
+<p>Ronan Collobert, J. Weston, L. Bottou, Michael Karlen, K. Kavukcuoglu, and P. Kuksa. 2011. Natural language processing (almost) from scratch. J. Mach. Learn. Res., 12:2493-2537.</p>
+<p>Zihang Dai, Z. Yang, Yiming Yang, J. Carbonell, Quoc V. Le, and R. Salakhutdinov. 2019. Transformer-xl: Attentive language models beyond a fixed-length context. In $A C L$.
+J. Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. Bert: Pre-training of deep bidirectional transformers for language understanding. In NAACL-HLT.</p>
+<p>Abbas Ghaddar and Phillippe Langlais. 2018. Robust lexical features for improved neural network namedentity recognition. In Proceedings of the 27th International Conference on Computational Linguistics, pages 1896-1907, Santa Fe, New Mexico, USA. Association for Computational Linguistics.</p>
+<p>Filip Graliński, Tomasz Stanisławek, Anna Wróblewska, Dawid Lipiński, Agnieszka Kaliska, Paulina Rosalska, Bartosz Topolski, and Przemysław Biecek. 2020. Kleister: A novel task for information extraction involving long documents with complex layout.</p>
+<p>Charles T. Hemphill, John J. Godfrey, and George R. Doddington. 1990. The ATIS spoken language systems pilot corpus. In Speech and Natural Language: Proceedings of a Workshop Held at Hidden Valley, Pennsylvania, June 24-27,1990.</p>
+<p>Ehsan Hosseini-Asl, B. McCann, Chien-Sheng Wu, Semih Yavuz, and R. Socher. 2020. A simple language model for task-oriented dialogue. ArXiv, abs/2005.00796.
+J. Howard and Sebastian Ruder. 2018. Universal language model fine-tuning for text classification. In $A C L$.</p>
+<p>Zhiheng Huang, W. Xu, and Kai Yu. 2015. Bidirectional lstm-crf models for sequence tagging. ArXiv, abs/1508.01991.</p>
+<p>Gautier Izacard and E. Grave. 2020. Leveraging passage retrieval with generative models for open domain question answering. ArXiv, abs/2007.01282.</p>
+<p>Guillaume Lample, Miguel Ballesteros, Sandeep Subramanian, Kazuya Kawakami, and Chris Dyer. 2016. Neural architectures for named entity recognition. In Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 260-270, San Diego, California. Association for Computational Linguistics.</p>
+<p>Ning Li, Bethany Keller, Mark Butler, and Daniel Matthew Cer. 2020. Seqgensql - a robust sequence generation model for structured query language. ArXiv, abs/2011.03836.</p>
+<p>Ying Lin, Huai zhong Ji, Fei Huang, and L. Wu. 2020a. A joint neural model for information extraction with global features. In $A C L$.</p>
+<p>Zhaojiang Lin, Andrea Madotto, Genta Indra Winata, and Pascale Fung. 2020b. Mintl: Minimalist transfer learning for task-oriented dialogue systems.</p>
+<p>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. 2019. Roberta: A robustly optimized BERT pretraining approach. CoRR, abs/1907.11692.</p>
+<p>Bodhisattwa Majumder, Navneet Potti, Sandeep Tata, James B. Wendt, Qi Zhao, and Marc Najork. 2020. Representation learning for information extraction from form-like documents. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics (ACL 2020), pages 6495-6504.
+B. McCann, N. Keskar, Caiming Xiong, and R. Socher. 2018. The natural language decathlon: Multitask learning as question answering. ArXiv, abs/1806.08730.</p>
+<p>Tapas Nayak and H. T. Ng. 2020. Effective modeling of encoder-decoder architecture for joint entity and relation extraction. ArXiv, abs/1911.09886.
+R. Palm, Florian Laws, and O. Winther. 2019. Attend, copy, parse end-to-end information extraction from documents. 2019 International Conference on Document Analysis and Recognition (ICDAR), pages 329-336.</p>
+<p>Giovanni Paolini, Ben Athiwaratkun, Jason Krone, Jie Ma, Alessandro Achille, RISHITA ANUBHAI, Cicero Nogueira dos Santos, Bing Xiang, and Stefano Soatto. 2021. Structured prediction as translation between augmented natural languages. In International Conference on Learning Representations.</p>
+<p>Baolin Peng, C. Li, Jin chao Li, Shahin Shayandeh, L. Liden, and Jianfeng Gao. 2020. Soloist: Fewshot task-oriented dialog with a single pre-trained auto-regressive model. ArXiv, abs/2005.05298.</p>
+<p>Sameer Pradhan, Alessandro Moschitti, Nianwen Xue, Hwee Tou Ng, Anders Björkelund, Olga Uryupina,</p>
+<p>Yuchen Zhang, and Zhi Zhong. 2013. Towards robust linguistic analysis using OntoNotes. In Proceedings of the Seventeenth Conference on Computational Natural Language Learning, pages 143-152, Sofia, Bulgaria. Association for Computational Linguistics.</p>
+<p>Sameer Pradhan, Alessandro Moschitti, Nianwen Xue, Olga Uryupina, and Yuchen Zhang. 2012. CoNLL2012 shared task: Modeling multilingual unrestricted coreference in OntoNotes. In Joint Conference on EMNLP and CoNLL - Shared Task, pages 1-40, Jeju Island, Korea. Association for Computational Linguistics.
+A. Radford, Jeffrey Wu, R. Child, David Luan, Dario Amodei, and Ilya Sutskever. 2019. Language models are unsupervised multitask learners.</p>
+<p>Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, M. Matena, Yanqi Zhou, W. Li, and Peter J. Liu. 2020. Exploring the limits of transfer learning with a unified text-to-text transformer. J. Mach. Learn. Res., 21:140:1-140:67.</p>
+<p>Clément Sage, A. Aussem, V. Eglin, H. Elghazel, and Jérémy Espinas. 2020. End-to-end extraction of structured information from business documents with pointer-generator networks. In SPNLP@EMNLP.
+B. Settles, M. Craven, and Lewis A. Friedland. 2008. Active learning with real annotation costs.</p>
+<p>Jonathan Stray Stacey Svetlichnaya. 2020. Project deepform: Extract information from documents.</p>
+<p>Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. 2014. Sequence to sequence learning with neural networks. In NIPS.</p>
+<p>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, L. Kaiser, and Illia Polosukhin. 2017. Attention is all you need. ArXiv, abs/1706.03762.</p>
+<p>Sinong Wang, Belinda Z. Li, Madian Khabsa, Han Fang, and Hao Ma. 2020. Linformer: Self-attention with linear complexity. ArXiv, abs/2006.04768.</p>
+<p>Yiheng Xu, Minghao Li, Lei Cui, Shaohan Huang, Furu Wei, and M. Zhou. 2020. Layoutlm: Pretraining of text and layout for document image understanding. Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \&amp; Data Mining.</p>
+<p>Xiangrong Zeng, Daojian Zeng, Shizhu He, Kang Liu, and Jun Zhao. 2018. Extracting relational facts by an end-to-end neural model with copy mechanism. In $A C L$.</p>
+<p>Ruixue Zhang, W. Yang, Luyun Lin, Zhengkai Tu, Yuqing Xie, Zihang Fu, Yuhao Xie, Luchen Tan, Kun Xiong, and Jimmy Lin. 2020. Rapid adaptation of bert for information extraction on domain-specific business documents. ArXiv, abs/2002.01861.</p>
+<p>Victor Zhong, Caiming Xiong, and Richard Socher. 2017. Seq2sql: Generating structured queries from natural language using reinforcement learning. CoRR, abs/1709.00103.</p>
+<h2>A Task Descriptions and Additional Experimental Details</h2>
+<h2>A. 1 Kleister-NDA and Kleister-Charity</h2>
+<p>For the Kleister datasets, we use the train, dev and test splits provided by the original paper and report uncased F1 scores (Graliński et al., 2020). Alongside the documents, the Kleister datasets provide outputs from several OCR providers. For each dataset we use the OCR provider that yielded the best metrics in the original paper: pdf2djvu for Kleister-NDA and Textract for Kleister-Charity. For each input sequence the Kleister dataset provides a set of "slots" to be filled; we concatenate this list of expected values to the beginning of the input sequence but do not enforce that responses for each slot are generated.</p>
+<p>Kleister-NDA Statistics In order to validate the claim that heuristic alignment of normalized entities with the source text of the document leads to sub-par targets, we manually produce token-level annotations for a set of 100 Kleister-NDA documents. We then attempt to automatically annotate the documents using a simple regular expression to search for near-exact matches in the source document. The matching procedure permits the inclusion of additional spaces, periods, or commas as well as variation in capitalization. Results of this evaluation are included in Table 5.</p>
+<p>For the "Jurisdiction" and "Party" labels we observe high recall, with all "Jurisdiction" labels and all but 7 "Party" labels having near-exact matches in the source document. Term and Effective Date labels are more varied in their presentation in the source document, with more than a fifth of relevant labels being missed by automatic annotation. Perhaps more concerning, we also observe a high false positive rate for all classes, with precision scores varying from 0.25 to 0.72 . In other words, automatic annotations frequently match irrelevant mentions in the source document.</p>
+<p>Kleister-Charity Results We hypothesize that the poor performance of our approach on the Kleister-Charity task is due to several factors. First, documents in this task are significantly longer on average than the documents from other datasets (See Table 8.) Approximately $6.5 \%$ of the documents in this task exceed our 32 k token limit and are truncated. This may require our model to produce a response for which it does not have access to supporting evidence. Second, several of</p>
+<p>Table 5: Statistics relating to fuzzy matching on the Kleister-NDA dataset. Automatically-labeled spans that overlap with ground truth annotations are considered true positives, those that do not are considered false positives.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Recall</th>
+<th>Precision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Effective Date</td>
+<td>0.60</td>
+<td>0.58</td>
+</tr>
+<tr>
+<td>Jurisdiction</td>
+<td>1.00</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td>Party</td>
+<td>0.94</td>
+<td>0.42</td>
+</tr>
+<tr>
+<td>Term</td>
+<td>0.72</td>
+<td>0.72</td>
+</tr>
+</tbody>
+</table>
+<p>the Kliester-Charity fields commonly appear in tables (namely, "Income" and "Spending") instead of longer-form natural language. While this should also be a challenge for the baseline, we note that the chunking scheme used in Text2DB may exacerbate this issue by making it likely that a table cell value is not included in the same chunk as its corresponding header.</p>
+<p>Kleister Error Analysis We selected a sample of 20 documents from the Kleister-Charity and Kleister-NDA test sets in order to perform a qualitative error analysis. Overall, errors were similar to those seen in any information extraction pipeline. We most commonly observed missed, erroneous, or partial matches akin to those produced by typical sequence-labeling models.</p>
+<p>We also occasionally observed errors unique to the text-generation problem framing. One such example are errors we attribute to a failure to copy a value from input to output. This seemed to be most prevalent in the Kleister-NDA post code field, where many of the extracted values were similar but not exactly the same as values that appeared in the document. In one case, we observed a field key predicted as a value in a case where the correct extracted value started with the same few tokens as a key: "Basic Income Earth Network (Bien)" became "basic income annually in british pounds". Another error mode unique to the text-generation framing is that of hallucinating plausible but invalid continuations of observed entities. In one instance, our model extended the name of the town "Sutton" to "Sutton-upon-Thames".</p>
+<p>It is worth noting that we observed no errors that could be described as "standardization errors", in cases such as dates and term where heavy transformations are applied by the model, the outputs were always correctly formed.</p>
+<h2>A. 2 DeepForm</h2>
+<p>The DeepForm dataset is composed of PDF disclosures of advertising expenditures from US political campaigns. The ground truth for the dataset includes values which have been manually recorded in an effort to make the political process more transparent. Information about the location on the page where entities were found is not available, and existing benchmarks on the task employ a complex fuzzy matching process that attempts to align extracted values with candidate tokens from the source documents. We selected the labels "Gross Amount", "Committee", "Agency" and "Call Sign" to include in our experiments. DeepForm does not provide any standardised splits for the data, and because the source documents are continuously pulled from a 3rd party website, the documents that are included in the dataset can vary depending on the time in which the dataset is downloaded. For this reason we run our own baselines for DeepForm. We use the pdf-to-text pipeline and fuzzy matching procedure from the DeepForm codebase and finetune a RoBERTa model (Liu et al., 2019) with a conditional random field output layer as our baseline. At prediction we select the most confident candidate prediction. Additionally, we write simple output standardization rules for gross amount to remove any leading dollar signs and to convert the numbers back into the format used for input.</p>
+<h2>A. 3 OntoNotes 5.0</h2>
+<p>For OntoNotes, we attempt to reproduce the train, dev and test splits as reported in Chiu and Nichols (2016) and Ghaddar and Langlais (2018). To this end, we utilized the train and dev splits as produced by the script provided in the CoNLL-2012 task (Pradhan et al., 2012), and the test split as produced by the script provided alongside Pradhan et al. (2013). Finally, following Ghaddar and Langlais (2018) we exclude the New Testament portion, as it does not contain gold standard NER labels.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Beam Size</th>
+<th style="text-align: right;">Epochs</th>
+<th style="text-align: right;">Chunks</th>
+<th style="text-align: right;">Lowercase</th>
+<th style="text-align: right;">Shuffled Epochs</th>
+<th style="text-align: right;">Strip Commas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">Yes</td>
+<td style="text-align: right;">Yes</td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">Yes</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">Yes</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm Baseline</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Best hyper parameters for each run. Learning rate was always $6.25 e-5$ and batch size always 1.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">Label</th>
+<th style="text-align: right;">Doc2Dict F1</th>
+<th style="text-align: right;">Baseline F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Gross Amount</td>
+<td style="text-align: right;">0.853</td>
+<td style="text-align: right;">$\mathbf{0 . 9 8}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Comittee</td>
+<td style="text-align: right;">$\mathbf{0 . 8 4 4}$</td>
+<td style="text-align: right;">0.615</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Agency</td>
+<td style="text-align: right;">$\mathbf{0 . 9 0 7}$</td>
+<td style="text-align: right;">0.721</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Callsign</td>
+<td style="text-align: right;">$\mathbf{0 . 9 9 6}$</td>
+<td style="text-align: right;">0.727</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deepform</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">$\mathbf{0 . 9}$</td>
+<td style="text-align: right;">0.761</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Party</td>
+<td style="text-align: right;">$\mathbf{0 . 7 6 1}$</td>
+<td style="text-align: right;">0.701</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Juristiction</td>
+<td style="text-align: right;">$\mathbf{0 . 9 6 1}$</td>
+<td style="text-align: right;">0.938</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Effective Date</td>
+<td style="text-align: right;">$\mathbf{0 . 8 3 6}$</td>
+<td style="text-align: right;">0.82</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Term</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">$\mathbf{0 . 6 0 8}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">$\mathbf{0 . 8 0 9}$</td>
+<td style="text-align: right;">0.777</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Street</td>
+<td style="text-align: right;">0.571</td>
+<td style="text-align: right;">$\mathbf{0 . 6 8 2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Charity Name</td>
+<td style="text-align: right;">0.665</td>
+<td style="text-align: right;">$\mathbf{0 . 7 2 4}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Income</td>
+<td style="text-align: right;">0.168</td>
+<td style="text-align: right;">$\mathbf{0 . 7 0 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Postcode</td>
+<td style="text-align: right;">0.580</td>
+<td style="text-align: right;">$\mathbf{0 . 8 3 6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Charity Number</td>
+<td style="text-align: right;">0.827</td>
+<td style="text-align: right;">$\mathbf{0 . 9 6 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Town</td>
+<td style="text-align: right;">0.659</td>
+<td style="text-align: right;">$\mathbf{0 . 8 3 3}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Report Date</td>
+<td style="text-align: right;">0.932</td>
+<td style="text-align: right;">$\mathbf{0 . 9 5 7}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Spending</td>
+<td style="text-align: right;">0.124</td>
+<td style="text-align: right;">$\mathbf{0 . 6 8 5}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">0.561</td>
+<td style="text-align: right;">$\mathbf{0 . 8 0 1}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: Full Per-field Results for Kleister-NDA, Kleister-Charity and DeepForm.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">Split</th>
+<th style="text-align: right;">Num Docs</th>
+<th style="text-align: right;">Min Length</th>
+<th style="text-align: right;">Max Length</th>
+<th style="text-align: right;">Mean length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Train</td>
+<td style="text-align: right;">5981</td>
+<td style="text-align: right;">272</td>
+<td style="text-align: right;">114994</td>
+<td style="text-align: right;">3715</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepForm</td>
+<td style="text-align: left;">Test</td>
+<td style="text-align: right;">2567</td>
+<td style="text-align: right;">268</td>
+<td style="text-align: right;">93450</td>
+<td style="text-align: right;">3676</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Train</td>
+<td style="text-align: right;">254</td>
+<td style="text-align: right;">817</td>
+<td style="text-align: right;">26109</td>
+<td style="text-align: right;">3802</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Dev</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">494</td>
+<td style="text-align: right;">10418</td>
+<td style="text-align: right;">4070</td>
+</tr>
+<tr>
+<td style="text-align: left;">NDA</td>
+<td style="text-align: left;">Test</td>
+<td style="text-align: right;">203</td>
+<td style="text-align: right;">751</td>
+<td style="text-align: right;">14074</td>
+<td style="text-align: right;">3802</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Train</td>
+<td style="text-align: right;">1729</td>
+<td style="text-align: right;">509</td>
+<td style="text-align: right;">96669</td>
+<td style="text-align: right;">12246</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Dev</td>
+<td style="text-align: right;">440</td>
+<td style="text-align: right;">379</td>
+<td style="text-align: right;">122258</td>
+<td style="text-align: right;">13950</td>
+</tr>
+<tr>
+<td style="text-align: left;">Charity</td>
+<td style="text-align: left;">Test</td>
+<td style="text-align: right;">609</td>
+<td style="text-align: right;">520</td>
+<td style="text-align: right;">365630</td>
+<td style="text-align: right;">14272</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Dataset statistics measures in tokens of T5's tokenizer.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{1}$ The code is released at https://github.com/ IndicoDataSolutions/Doc2Dict.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

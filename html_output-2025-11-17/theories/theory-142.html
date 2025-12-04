@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottleneck-Driven Exploration Difficulty Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-142</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-142</p>
+                <p><strong>Name:</strong> Bottleneck-Driven Exploration Difficulty Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory about navigation complexity in text worlds that relates graph-topology features (diameter, clustering, dead-ends, door constraints) to exploration efficiency and optimal policy structure, based on the following results.</p>
+                <p><strong>Description:</strong> Navigation difficulty in text worlds and spatial environments is primarily determined by the presence and structure of bottlenecks in the state graph. Bottlenecks are defined as states, edges, or state-action sequences that must be traversed to reach high-reward regions. Their difficulty is characterized by: (1) the number of steps required to reach them from the start (depth), (2) the number of alternative paths available (redundancy), (3) whether they require conditional access (keys, items, state changes), (4) their visibility or discoverability from prior states, and (5) whether they involve perceptual aliasing or ambiguous observations. Environments with multiple sequential bottlenecks create exponentially increasing exploration difficulty, requiring policies with explicit subgoal detection, backtracking capabilities, memory of attempted paths, and mechanisms to detect when bottlenecks have been passed. The theory predicts that exploration efficiency is inversely proportional to bottleneck depth and complexity, and directly proportional to the number of alternative paths and the visibility of bottleneck requirements.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2024</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Derived From)</h2>
+            <p><strong>Derived From:</strong> <span class="empty-note">None</span></p>
+            <p><strong>Change Log:</strong> <span class="empty-note">No change log entries.</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Evaluations of this Theory</h2>
+            <p class="empty-note">No evaluations of this theory.</p>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Details)</h2>
+
+            <h3>Theory Statements</h3>
+            <ol>
+                <li>Exploration difficulty increases exponentially with the number of sequential bottlenecks in the state graph, with difficulty proportional to product of individual bottleneck difficulties.</li>
+                <li>Bottleneck difficulty is proportional to: (distance from start) × (1/number of alternative paths) × (conditional access complexity) × (1/visibility from prior states).</li>
+                <li>Policies without explicit bottleneck detection mechanisms will converge to suboptimal local maxima before critical bottlenecks, with convergence probability increasing with bottleneck depth.</li>
+                <li>Backtracking capability is necessary when bottlenecks have low alternative path counts (<3) or when initial path selection has high failure probability.</li>
+                <li>Memory of attempted paths is required when the number of sequential bottlenecks exceeds the effective horizon of the policy's temporal credit assignment mechanism.</li>
+                <li>Intrinsic rewards based on state-space expansion, knowledge-graph growth, or novelty detection can effectively guide exploration toward bottlenecks by providing intermediate learning signals.</li>
+                <li>Bottlenecks that require conditional access (keys, items, state changes) are exponentially harder than simple traversal bottlenecks, with difficulty scaling with the number of prerequisites.</li>
+                <li>Perceptual aliasing at or near bottlenecks increases difficulty by a multiplicative factor, as agents cannot distinguish whether they have passed the bottleneck or are in a similar-looking state.</li>
+                <li>Temporal commitment (maintaining a policy for multiple steps) is necessary for bottlenecks deeper than the policy's single-step exploration horizon.</li>
+                <li>Bottleneck visibility (whether requirements are observable before reaching the bottleneck) reduces difficulty by enabling proactive planning rather than reactive discovery.</li>
+            </ol>
+            <h3>Supporting Evidence</h3>
+<ol>
+    <li>In Zork1, the dark cellar bottleneck (requiring lamp to be lit) critically determines agent progress; agents without long-term memory fail to pass this bottleneck. KG-A2C with knowledge graph memory achieves score ~34 vs ~9.9 for TDQN. <a href="../results/extraction-result-1220.html#e1220.0" class="evidence-link">[e1220.0]</a> <a href="../results/extraction-result-1184.html#e1184.1" class="evidence-link">[e1184.1]</a> <a href="../results/extraction-result-1205.html#e1205.0" class="evidence-link">[e1205.0]</a> </li>
+    <li>In Montezuma's Revenge, locked doors requiring keys create bottlenecks; hierarchical policies with entity-relation goals achieve +400 reward vs 0 for flat DQN. Domain knowledge preserving room/key identity yields 238 rooms discovered vs ~35 without. <a href="../results/extraction-result-1357.html#e1357.1" class="evidence-link">[e1357.1]</a> <a href="../results/extraction-result-1365.html#e1365.0" class="evidence-link">[e1365.0]</a> </li>
+    <li>Grid mazes with bugtraps and narrow gaps (bottlenecks) increase redundant expansions for naive heuristics; PHIL's memory reduces expansions by up to 82.3% on Gaps+Forest dataset. <a href="../results/extraction-result-1356.html#e1356.0" class="evidence-link">[e1356.0]</a> <a href="../results/extraction-result-1356.html#e1356.1" class="evidence-link">[e1356.1]</a> </li>
+    <li>In text adventures, bottleneck nodes in quest graphs cause agents to prematurely converge to locally high-reward trajectories; intrinsic KG-growth rewards help detect bottlenecks and MC!Q*BERT with bottleneck detection consistently passes critical bottlenecks. <a href="../results/extraction-result-1184.html#e1184.1" class="evidence-link">[e1184.1]</a> <a href="../results/extraction-result-1220.html#e1220.2" class="evidence-link">[e1220.2]</a> </li>
+    <li>Maze topologies with multiple bottlenecks (Gaps+Forest) show largest relative improvements for memory-augmented heuristics vs baselines; attention-based GNNs perform best on complex bottleneck topologies. <a href="../results/extraction-result-1356.html#e1356.1" class="evidence-link">[e1356.1]</a> </li>
+    <li>In House3D navigation, tasks with higher plan-distance (more semantic bottlenecks) show monotonic decrease in success; BRM's advantage increases with plan-distance, achieving 41.1% success vs 22.5% for pure LSTM at H=1000. <a href="../results/extraction-result-1362.html#e1362.1" class="evidence-link">[e1362.1]</a> </li>
+    <li>Real-world event-space navigation with portal blockages (bottlenecks) benefits from learned policies that remember blocked edges; RPP-Hybrid reduces travel distance by 10.4% in Trial 1 and 5.1% in Trial 2. <a href="../results/extraction-result-1245.html#e1245.2" class="evidence-link">[e1245.2]</a> </li>
+    <li>In deterministic chain MDPs, reaching distant reward states requires committing to multi-step sequences; bootstrapped DQN with temporal commitment scales gracefully while shallow exploration (epsilon-greedy, per-step Thompson) fails exponentially with chain length. <a href="../results/extraction-result-1189.html#e1189.0" class="evidence-link">[e1189.0]</a> </li>
+    <li>In ViZDoom mazes requiring memory of colored indicator to select correct tower, Neural Map with GRU achieves 78.3% success on training map and 66.6% on unseen maps vs 52.4% for LSTM without spatial memory. <a href="../results/extraction-result-1348.html#e1348.1" class="evidence-link">[e1348.1]</a> </li>
+    <li>CoinCollector text games with dead-end distractor rooms (bottlenecks requiring backtracking) show episodic discovery bonus substantially improves over cumulative bonus; recurrence becomes crucial with more distractors. <a href="../results/extraction-result-1174.html#e1174.0" class="evidence-link">[e1174.0]</a> <a href="../results/extraction-result-1361.html#e1361.0" class="evidence-link">[e1361.0]</a> </li>
+    <li>Real robot navigation in event space with narrow doorways and posts (geometric bottlenecks) benefits from deliberate exploration (HLC) that discovers high-connectivity passages; SemaFORR achieves 70.6% success vs 46.17% for ablated system. <a href="../results/extraction-result-1180.html#e1180.0" class="evidence-link">[e1180.0]</a> <a href="../results/extraction-result-1180.html#e1180.1" class="evidence-link">[e1180.1]</a> </li>
+    <li>Knowledge graph construction helps identify bottlenecks through entity relationships; KG-DQN converges ~40% faster than baselines on TextWorld by using graph to prune actions and identify required objects. <a href="../results/extraction-result-1349.html#e1349.1" class="evidence-link">[e1349.1]</a> <a href="../results/extraction-result-1205.html#e1205.0" class="evidence-link">[e1205.0]</a> </li>
+    <li>In ViZDoom maze2 (complex, long-distance), GAM with recurrent graph attention achieves 100% success vs 10% for baselines; multi-step message passing helps propagate goal information across bottlenecks. <a href="../results/extraction-result-1161.html#e1161.0" class="evidence-link">[e1161.0]</a> </li>
+    <li>Hierarchical policies with subgoal decomposition handle bottlenecks better; modular sketch-guided agents in CliffEnv learn locomotion primitives that can be composed to traverse long narrow paths. <a href="../results/extraction-result-1354.html#e1354.2" class="evidence-link">[e1354.2]</a> </li>
+    <li>In hedge maze with temporary barriers (bottlenecks), human success negatively correlates with number of turns (r=-0.847, p=0.008); novel route generation (62.6% direct, 90.1% detour) indicates graph-based planning around bottlenecks. <a href="../results/extraction-result-1351.html#e1351.0" class="evidence-link">[e1351.0]</a> </li>
+</ol>            <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>In a text world with 3 sequential bottlenecks each requiring specific items, policies with explicit subgoal detection will achieve >5x higher success than policies without, with the gap increasing exponentially with bottleneck count.</li>
+                <li>Adding a single bottleneck requiring a 10-step detour to a previously solvable maze will reduce success rates of reactive policies by >40%, while memory-based policies will show <20% reduction.</li>
+                <li>Environments where bottlenecks are visible from the start (e.g., locked doors in view) will be easier than environments where bottlenecks are discovered only after exploration, with a predicted 2-3x improvement in sample efficiency.</li>
+                <li>In grid mazes, increasing the number of bottlenecks from 1 to 3 will increase the number of node expansions for non-memory-based search by a factor of 4-8x, while memory-based search will increase by only 1.5-2x.</li>
+                <li>Policies with episodic memory reset will perform better than cumulative memory on bottleneck-heavy environments with dead-ends, showing 20-40% improvement in exploration efficiency.</li>
+                <li>Hierarchical policies that can detect and cache bottleneck-passing strategies will show near-constant sample complexity as bottleneck count increases, while flat policies will show exponential scaling.</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>There may be a critical threshold in the number of sequential bottlenecks (possibly 5-7) beyond which even sophisticated policies fail without human-level reasoning or external guidance.</li>
+                <li>The interaction between bottleneck difficulty and perceptual aliasing may create super-linear difficulty increases that current theories don't predict, potentially requiring fundamentally new exploration mechanisms.</li>
+                <li>Stochastic bottlenecks (where success probability < 1) may require fundamentally different exploration strategies than deterministic bottlenecks, possibly involving risk-sensitive planning or distributional RL.</li>
+                <li>Bottlenecks that require precise timing or coordination of multiple actions may be qualitatively harder than sequential bottlenecks, potentially requiring model-based planning or hierarchical decomposition.</li>
+                <li>The optimal memory architecture for bottleneck navigation may depend on bottleneck structure in ways not yet understood, with different architectures (episodic, semantic, spatial) being optimal for different bottleneck types.</li>
+                <li>Bottlenecks in continuous state spaces may have fundamentally different properties than discrete bottlenecks, potentially requiring different theoretical frameworks to characterize difficulty.</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding environments with many bottlenecks where reactive policies outperform memory-based policies would challenge the theory's core claim about memory necessity.</li>
+                <li>Demonstrating that intrinsic rewards based on state-space expansion do not help with bottleneck discovery in a controlled setting would contradict the theory's prediction about intrinsic motivation.</li>
+                <li>Showing that backtracking capability provides no advantage in low-alternative-path bottlenecks would invalidate that specific claim.</li>
+                <li>Finding cases where temporal commitment (maintaining a policy for multiple steps) does not improve performance on deep bottlenecks would challenge the theory's prediction about exploration depth.</li>
+                <li>Demonstrating that bottleneck visibility does not affect difficulty would contradict the theory's claim about the importance of observability.</li>
+                <li>Finding environments where the number of sequential bottlenecks does not correlate with exploration difficulty would fundamentally challenge the theory.</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>The theory doesn't specify how to automatically detect bottlenecks in novel environments without ground-truth knowledge or extensive exploration. </li>
+    <li>The interaction between bottleneck structure and reward sparsity is not fully characterized; sparse terminal rewards may interact with bottlenecks in complex ways. <a href="../results/extraction-result-1372.html#e1372.8" class="evidence-link">[e1372.8]</a> </li>
+    <li>How bottlenecks in continuous state spaces differ from discrete state spaces is not addressed; continuous bottlenecks may have different geometric properties. <a href="../results/extraction-result-1354.html#e1354.2" class="evidence-link">[e1354.2]</a> </li>
+    <li>The theory doesn't account for how perceptual aliasing specifically at bottleneck locations affects difficulty beyond general visibility concerns. <a href="../results/extraction-result-1198.html#e1198.0" class="evidence-link">[e1198.0]</a> <a href="../results/extraction-result-1348.html#e1348.1" class="evidence-link">[e1348.1]</a> </li>
+    <li>The role of stochasticity in bottleneck traversal is mentioned but not fully theorized; probabilistic bottlenecks may require different strategies. <a href="../results/extraction-result-1245.html#e1245.2" class="evidence-link">[e1245.2]</a> </li>
+    <li>How bottlenecks interact with different reward structures (dense vs sparse, shaped vs unshaped) is not fully characterized. <a href="../results/extraction-result-1361.html#e1361.0" class="evidence-link">[e1361.0]</a> <a href="../results/extraction-result-1365.html#e1365.0" class="evidence-link">[e1365.0]</a> </li>
+    <li>The theory doesn't address how bottlenecks in multi-agent settings differ from single-agent settings. </li>
+</ol>            <h3>Existing Theory Comparison</h3>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+            <p><strong>Explanation:</strong> No explanation provided.</p>
+            <p><strong>References:</strong> <ul>
+    <li>Ecoffet et al. (2019) Go-Explore: a New Approach for Hard-Exploration Problems [Addresses detachment and derailment in bottleneck-heavy environments; introduces concepts of returning to promising states]</li>
+    <li>Kulkarni et al. (2016) Hierarchical Deep Reinforcement Learning: Integrating Temporal Abstraction and Intrinsic Motivation [Discusses bottlenecks in Montezuma's Revenge and hierarchical goal-setting for bottleneck navigation]</li>
+    <li>Eysenbach et al. (2019) Diversity is All You Need [Related work on discovering bottleneck states through diversity-driven exploration]</li>
+    <li>Savinov et al. (2018) Semi-parametric Topological Memory for Navigation [Addresses bottleneck navigation through topological memory and visual shortcuts]</li>
+    <li>Pathak et al. (2017) Curiosity-driven Exploration by Self-supervised Prediction [Related work on intrinsic motivation for exploration in sparse-reward environments with bottlenecks]</li>
+    <li>Osband et al. (2016) Deep Exploration via Bootstrapped DQN [Addresses deep exploration and temporal commitment necessary for bottleneck navigation in chain MDPs]</li>
+</ul>
+        </div>
+
+        <div class="section">
+            <h2>Theory Components (Debug)</h2>
+            <pre><code>{
+    "theory_name": "Bottleneck-Driven Exploration Difficulty Theory",
+    "theory_description": "Navigation difficulty in text worlds and spatial environments is primarily determined by the presence and structure of bottlenecks in the state graph. Bottlenecks are defined as states, edges, or state-action sequences that must be traversed to reach high-reward regions. Their difficulty is characterized by: (1) the number of steps required to reach them from the start (depth), (2) the number of alternative paths available (redundancy), (3) whether they require conditional access (keys, items, state changes), (4) their visibility or discoverability from prior states, and (5) whether they involve perceptual aliasing or ambiguous observations. Environments with multiple sequential bottlenecks create exponentially increasing exploration difficulty, requiring policies with explicit subgoal detection, backtracking capabilities, memory of attempted paths, and mechanisms to detect when bottlenecks have been passed. The theory predicts that exploration efficiency is inversely proportional to bottleneck depth and complexity, and directly proportional to the number of alternative paths and the visibility of bottleneck requirements.",
+    "supporting_evidence": [
+        {
+            "text": "In Zork1, the dark cellar bottleneck (requiring lamp to be lit) critically determines agent progress; agents without long-term memory fail to pass this bottleneck. KG-A2C with knowledge graph memory achieves score ~34 vs ~9.9 for TDQN.",
+            "uuids": [
+                "e1220.0",
+                "e1184.1",
+                "e1205.0"
+            ]
+        },
+        {
+            "text": "In Montezuma's Revenge, locked doors requiring keys create bottlenecks; hierarchical policies with entity-relation goals achieve +400 reward vs 0 for flat DQN. Domain knowledge preserving room/key identity yields 238 rooms discovered vs ~35 without.",
+            "uuids": [
+                "e1357.1",
+                "e1365.0"
+            ]
+        },
+        {
+            "text": "Grid mazes with bugtraps and narrow gaps (bottlenecks) increase redundant expansions for naive heuristics; PHIL's memory reduces expansions by up to 82.3% on Gaps+Forest dataset.",
+            "uuids": [
+                "e1356.0",
+                "e1356.1"
+            ]
+        },
+        {
+            "text": "In text adventures, bottleneck nodes in quest graphs cause agents to prematurely converge to locally high-reward trajectories; intrinsic KG-growth rewards help detect bottlenecks and MC!Q*BERT with bottleneck detection consistently passes critical bottlenecks.",
+            "uuids": [
+                "e1184.1",
+                "e1220.2"
+            ]
+        },
+        {
+            "text": "Maze topologies with multiple bottlenecks (Gaps+Forest) show largest relative improvements for memory-augmented heuristics vs baselines; attention-based GNNs perform best on complex bottleneck topologies.",
+            "uuids": [
+                "e1356.1"
+            ]
+        },
+        {
+            "text": "In House3D navigation, tasks with higher plan-distance (more semantic bottlenecks) show monotonic decrease in success; BRM's advantage increases with plan-distance, achieving 41.1% success vs 22.5% for pure LSTM at H=1000.",
+            "uuids": [
+                "e1362.1"
+            ]
+        },
+        {
+            "text": "Real-world event-space navigation with portal blockages (bottlenecks) benefits from learned policies that remember blocked edges; RPP-Hybrid reduces travel distance by 10.4% in Trial 1 and 5.1% in Trial 2.",
+            "uuids": [
+                "e1245.2"
+            ]
+        },
+        {
+            "text": "In deterministic chain MDPs, reaching distant reward states requires committing to multi-step sequences; bootstrapped DQN with temporal commitment scales gracefully while shallow exploration (epsilon-greedy, per-step Thompson) fails exponentially with chain length.",
+            "uuids": [
+                "e1189.0"
+            ]
+        },
+        {
+            "text": "In ViZDoom mazes requiring memory of colored indicator to select correct tower, Neural Map with GRU achieves 78.3% success on training map and 66.6% on unseen maps vs 52.4% for LSTM without spatial memory.",
+            "uuids": [
+                "e1348.1"
+            ]
+        },
+        {
+            "text": "CoinCollector text games with dead-end distractor rooms (bottlenecks requiring backtracking) show episodic discovery bonus substantially improves over cumulative bonus; recurrence becomes crucial with more distractors.",
+            "uuids": [
+                "e1174.0",
+                "e1361.0"
+            ]
+        },
+        {
+            "text": "Real robot navigation in event space with narrow doorways and posts (geometric bottlenecks) benefits from deliberate exploration (HLC) that discovers high-connectivity passages; SemaFORR achieves 70.6% success vs 46.17% for ablated system.",
+            "uuids": [
+                "e1180.0",
+                "e1180.1"
+            ]
+        },
+        {
+            "text": "Knowledge graph construction helps identify bottlenecks through entity relationships; KG-DQN converges ~40% faster than baselines on TextWorld by using graph to prune actions and identify required objects.",
+            "uuids": [
+                "e1349.1",
+                "e1205.0"
+            ]
+        },
+        {
+            "text": "In ViZDoom maze2 (complex, long-distance), GAM with recurrent graph attention achieves 100% success vs 10% for baselines; multi-step message passing helps propagate goal information across bottlenecks.",
+            "uuids": [
+                "e1161.0"
+            ]
+        },
+        {
+            "text": "Hierarchical policies with subgoal decomposition handle bottlenecks better; modular sketch-guided agents in CliffEnv learn locomotion primitives that can be composed to traverse long narrow paths.",
+            "uuids": [
+                "e1354.2"
+            ]
+        },
+        {
+            "text": "In hedge maze with temporary barriers (bottlenecks), human success negatively correlates with number of turns (r=-0.847, p=0.008); novel route generation (62.6% direct, 90.1% detour) indicates graph-based planning around bottlenecks.",
+            "uuids": [
+                "e1351.0"
+            ]
+        }
+    ],
+    "theory_statements": [
+        "Exploration difficulty increases exponentially with the number of sequential bottlenecks in the state graph, with difficulty proportional to product of individual bottleneck difficulties.",
+        "Bottleneck difficulty is proportional to: (distance from start) × (1/number of alternative paths) × (conditional access complexity) × (1/visibility from prior states).",
+        "Policies without explicit bottleneck detection mechanisms will converge to suboptimal local maxima before critical bottlenecks, with convergence probability increasing with bottleneck depth.",
+        "Backtracking capability is necessary when bottlenecks have low alternative path counts (&lt;3) or when initial path selection has high failure probability.",
+        "Memory of attempted paths is required when the number of sequential bottlenecks exceeds the effective horizon of the policy's temporal credit assignment mechanism.",
+        "Intrinsic rewards based on state-space expansion, knowledge-graph growth, or novelty detection can effectively guide exploration toward bottlenecks by providing intermediate learning signals.",
+        "Bottlenecks that require conditional access (keys, items, state changes) are exponentially harder than simple traversal bottlenecks, with difficulty scaling with the number of prerequisites.",
+        "Perceptual aliasing at or near bottlenecks increases difficulty by a multiplicative factor, as agents cannot distinguish whether they have passed the bottleneck or are in a similar-looking state.",
+        "Temporal commitment (maintaining a policy for multiple steps) is necessary for bottlenecks deeper than the policy's single-step exploration horizon.",
+        "Bottleneck visibility (whether requirements are observable before reaching the bottleneck) reduces difficulty by enabling proactive planning rather than reactive discovery."
+    ],
+    "new_predictions_likely": [
+        "In a text world with 3 sequential bottlenecks each requiring specific items, policies with explicit subgoal detection will achieve &gt;5x higher success than policies without, with the gap increasing exponentially with bottleneck count.",
+        "Adding a single bottleneck requiring a 10-step detour to a previously solvable maze will reduce success rates of reactive policies by &gt;40%, while memory-based policies will show &lt;20% reduction.",
+        "Environments where bottlenecks are visible from the start (e.g., locked doors in view) will be easier than environments where bottlenecks are discovered only after exploration, with a predicted 2-3x improvement in sample efficiency.",
+        "In grid mazes, increasing the number of bottlenecks from 1 to 3 will increase the number of node expansions for non-memory-based search by a factor of 4-8x, while memory-based search will increase by only 1.5-2x.",
+        "Policies with episodic memory reset will perform better than cumulative memory on bottleneck-heavy environments with dead-ends, showing 20-40% improvement in exploration efficiency.",
+        "Hierarchical policies that can detect and cache bottleneck-passing strategies will show near-constant sample complexity as bottleneck count increases, while flat policies will show exponential scaling."
+    ],
+    "new_predictions_unknown": [
+        "There may be a critical threshold in the number of sequential bottlenecks (possibly 5-7) beyond which even sophisticated policies fail without human-level reasoning or external guidance.",
+        "The interaction between bottleneck difficulty and perceptual aliasing may create super-linear difficulty increases that current theories don't predict, potentially requiring fundamentally new exploration mechanisms.",
+        "Stochastic bottlenecks (where success probability &lt; 1) may require fundamentally different exploration strategies than deterministic bottlenecks, possibly involving risk-sensitive planning or distributional RL.",
+        "Bottlenecks that require precise timing or coordination of multiple actions may be qualitatively harder than sequential bottlenecks, potentially requiring model-based planning or hierarchical decomposition.",
+        "The optimal memory architecture for bottleneck navigation may depend on bottleneck structure in ways not yet understood, with different architectures (episodic, semantic, spatial) being optimal for different bottleneck types.",
+        "Bottlenecks in continuous state spaces may have fundamentally different properties than discrete bottlenecks, potentially requiring different theoretical frameworks to characterize difficulty."
+    ],
+    "negative_experiments": [
+        "Finding environments with many bottlenecks where reactive policies outperform memory-based policies would challenge the theory's core claim about memory necessity.",
+        "Demonstrating that intrinsic rewards based on state-space expansion do not help with bottleneck discovery in a controlled setting would contradict the theory's prediction about intrinsic motivation.",
+        "Showing that backtracking capability provides no advantage in low-alternative-path bottlenecks would invalidate that specific claim.",
+        "Finding cases where temporal commitment (maintaining a policy for multiple steps) does not improve performance on deep bottlenecks would challenge the theory's prediction about exploration depth.",
+        "Demonstrating that bottleneck visibility does not affect difficulty would contradict the theory's claim about the importance of observability.",
+        "Finding environments where the number of sequential bottlenecks does not correlate with exploration difficulty would fundamentally challenge the theory."
+    ],
+    "unaccounted_for": [
+        {
+            "text": "The theory doesn't specify how to automatically detect bottlenecks in novel environments without ground-truth knowledge or extensive exploration.",
+            "uuids": []
+        },
+        {
+            "text": "The interaction between bottleneck structure and reward sparsity is not fully characterized; sparse terminal rewards may interact with bottlenecks in complex ways.",
+            "uuids": [
+                "e1372.8"
+            ]
+        },
+        {
+            "text": "How bottlenecks in continuous state spaces differ from discrete state spaces is not addressed; continuous bottlenecks may have different geometric properties.",
+            "uuids": [
+                "e1354.2"
+            ]
+        },
+        {
+            "text": "The theory doesn't account for how perceptual aliasing specifically at bottleneck locations affects difficulty beyond general visibility concerns.",
+            "uuids": [
+                "e1198.0",
+                "e1348.1"
+            ]
+        },
+        {
+            "text": "The role of stochasticity in bottleneck traversal is mentioned but not fully theorized; probabilistic bottlenecks may require different strategies.",
+            "uuids": [
+                "e1245.2"
+            ]
+        },
+        {
+            "text": "How bottlenecks interact with different reward structures (dense vs sparse, shaped vs unshaped) is not fully characterized.",
+            "uuids": [
+                "e1361.0",
+                "e1365.0"
+            ]
+        },
+        {
+            "text": "The theory doesn't address how bottlenecks in multi-agent settings differ from single-agent settings.",
+            "uuids": []
+        }
+    ],
+    "conflicting_evidence": [
+        {
+            "text": "In some environments, Go-Explore with domain knowledge can solve bottleneck-heavy games, but the approach requires determinism and state-reset capabilities not available in all domains, suggesting bottleneck difficulty may be domain-dependent.",
+            "uuids": [
+                "e1365.0"
+            ]
+        },
+        {
+            "text": "Simple heuristics like nearest-neighbor can sometimes navigate bottleneck-heavy road networks effectively (NN achieves 0.8314 on Munich vs NOGE 0.6458), suggesting topology-specific exceptions where local greedy policies suffice.",
+            "uuids": [
+                "e1217.6",
+                "e1217.8"
+            ]
+        },
+        {
+            "text": "In very small environments (e.g., 4-room Home world), reactive policies can achieve 100% success despite bottlenecks, suggesting a size threshold below which bottlenecks don't significantly impact difficulty.",
+            "uuids": [
+                "e1352.0"
+            ]
+        },
+        {
+            "text": "In some grid topologies (ladder graphs), classical DFS outperforms learned policies (DFS ~0.753 vs NOGE 0.6046), suggesting that certain regular bottleneck structures are better handled by simple traversal rules.",
+            "uuids": [
+                "e1217.3"
+            ]
+        }
+    ],
+    "special_cases": [
+        "In deterministic environments with state-save/restore capabilities, bottlenecks can be overcome through archival exploration methods like Go-Explore, which can achieve near-perfect performance by eliminating derailment.",
+        "Bottlenecks that are visible or signaled in advance (e.g., locked doors in view) may be 2-3x easier to handle than hidden bottlenecks discovered only through exploration.",
+        "Environments with many parallel bottlenecks (multiple independent paths to goal) may be easier than those with sequential bottlenecks, as parallel bottlenecks provide redundancy.",
+        "Bottlenecks requiring multiple simultaneous conditions (e.g., having key AND being in correct state) may be exponentially harder than single-condition bottlenecks.",
+        "Stochastic bottlenecks (where traversal success is probabilistic) may require risk-sensitive planning and multiple attempts, fundamentally changing the exploration strategy.",
+        "Bottlenecks in partially observable environments may be harder to detect and navigate, as agents cannot determine if they have passed the bottleneck without additional observations.",
+        "Bottlenecks that change over time or depend on previous actions may require temporal reasoning and cannot be solved by static planning.",
+        "Very short chains or small environments (diameter &lt;5) may not show bottleneck effects as strongly, as reactive policies can explore exhaustively.",
+        "Bottlenecks in continuous state spaces may have different geometric properties (e.g., narrow passages) that require different navigation strategies than discrete bottlenecks."
+    ],
+    "existing_theory": {
+        "likely_classification": "closely-related-to-existing",
+        "references": [
+            "Ecoffet et al. (2019) Go-Explore: a New Approach for Hard-Exploration Problems [Addresses detachment and derailment in bottleneck-heavy environments; introduces concepts of returning to promising states]",
+            "Kulkarni et al. (2016) Hierarchical Deep Reinforcement Learning: Integrating Temporal Abstraction and Intrinsic Motivation [Discusses bottlenecks in Montezuma's Revenge and hierarchical goal-setting for bottleneck navigation]",
+            "Eysenbach et al. (2019) Diversity is All You Need [Related work on discovering bottleneck states through diversity-driven exploration]",
+            "Savinov et al. (2018) Semi-parametric Topological Memory for Navigation [Addresses bottleneck navigation through topological memory and visual shortcuts]",
+            "Pathak et al. (2017) Curiosity-driven Exploration by Self-supervised Prediction [Related work on intrinsic motivation for exploration in sparse-reward environments with bottlenecks]",
+            "Osband et al. (2016) Deep Exploration via Bootstrapped DQN [Addresses deep exploration and temporal commitment necessary for bottleneck navigation in chain MDPs]"
+        ]
+    },
+    "theory_type_general_specific": "specific",
+    "reflected_from_theory_index": 1,
+    "type": "specific"
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>
