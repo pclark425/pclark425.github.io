@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8129 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8129</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8129</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-149.html">extraction-schema-149</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <p><strong>Paper ID:</strong> paper-276408119</p>
+                <p><strong>Paper Title:</strong> <a href="https://export.arxiv.org/pdf/2502.11771v2.pdf" target="_blank">The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It</a></p>
+                <p><strong>Paper Abstract:</strong> The ability of large language models (LLMs) to validate their output and identify potential errors is crucial for ensuring robustness and reliability. However, current research indicates that LLMs struggle with self-correction, encountering significant challenges in detecting errors. While studies have explored methods to enhance self-correction in LLMs, relatively little attention has been given to understanding the models'internal mechanisms underlying error detection. In this paper, we present a mechanistic analysis of error detection in LLMs, focusing on simple arithmetic problems. Through circuit analysis, we identify the computational subgraphs responsible for detecting arithmetic errors across four smaller-sized LLMs. Our findings reveal that all models heavily rely on $\textit{consistency heads}$--attention heads that assess surface-level alignment of numerical values in arithmetic solutions. Moreover, we observe that the models'internal arithmetic computation primarily occurs in higher layers, whereas validation takes place in middle layers, before the final arithmetic results are fully encoded. This structural dissociation between arithmetic computation and validation seems to explain why smaller-sized LLMs struggle to detect even simple arithmetic errors.</p>
+                <p><strong>Cost:</strong> 0.016</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e8129.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e8129.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Qwen-2.5-1.5B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Qwen-2.5-1.5B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A 1.5B-parameter instruction-tuned transformer model studied in this paper; used to analyze how smaller LLMs compute arithmetic and validate results via mechanistic interpretability.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Qwen-2.5-1.5B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Instruction-tuned transformer, ~1.5B parameters (reported in the paper as a smaller-sized LLM). Uses standard transformer blocks; tokenization for numbers uses a one-digit tokenization scheme for some Qwen variants (noted in the paper).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Single-digit addition producing two-digit results (primary); additional experiments on subtraction, multiplication, division with analogous two-digit outputs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Validation is dominated by 'consistency heads' — attention heads in middle layers (layers ~4–15) that attend between digits of the arithmetic result and the final numeric answer to check surface-level alignment; arithmetic computation (correctly producing the sum) is implemented in a different circuit concentrated in higher layers (upper layers, e.g., >20), resulting in a structural dissociation between computation (higher layers) and validation (middle layers).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Token-wise edge attribution patching (EAP) to identify circuits; attention-head patching (replace attention matrices scaled by α); activation/representation patching of the residual stream (adding hidden representations from upper to lower layers); linear probes trained on residual-stream hidden states to measure where the correct result is linearly encoded.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Behavioral detection: models can compute arithmetic result perfectly (100% correct prediction of equation result). Error-detection accuracy: Qwen-2.5-1.5B detects single-position errors (arithmetic result or numeric answer) with moderate accuracy (paper reports this model as worst among studied for those errors, ~60% on both error types); for prompts containing a consistent error at both positions (result & final answer) the accuracy drops to 12.39% ± 6.00 (Table 2). Circuits for error detection are very sparse (100–900 edges for template-specific circuits; soft-intersection circuits as small as a few dozen to a few hundred edges) and achieve faithfulness ≈99–101% by the paper's metric.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Primary failure: the model relies on surface-level digit alignment checks (consistency), so when both the arithmetic result and the final numeric answer contain the same incorrect two-digit value (a 'consistent error'), the model often labels the reasoning as 'valid' (fails to detect the mistake). Other issues: structural dissociation means the re-computed correct result in higher layers is not available to the middle-layer validation mechanism; incomplete circuit discovery can leave remaining consistency heads unpatched so interventions may not always flip behavior.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Edge attribution patching (EAP) finds circuits concentrated in middle layers at the [answer-second] token position; attention analysis of identified consistency heads (e.g., L12H0/L12H2/L12H10/L13H0/L13H1/L13H10) shows high attention when digits align and low when misalign; patching a small set of consistency heads (six heads specified in Table 4) with activations from single-error runs flips model predictions from 'valid' to 'invalid' for consistent-error prompts; linear probes show correct arithmetic result is linearly decodable only in higher layers; adding (patching) the higher-layer residual representation into a lower layer improves detection for consistent errors by ~81% (Figure 8). Identified error-detection circuits achieve near-100% faithfulness when reconstructed.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Patching the small set of consistency heads does not always flip behavior in the reverse direction (sing-error → patched from consistent-error) — likely because additional consistency heads exist outside the patched set (incomplete circuit discovery). EAP is a linear approximation of activation patching and may omit nonlinear interactions; circuit completeness is not guaranteed. Some template/model-specific variations (edge counts, layer distributions) exist. Larger-model tests (70B/32B) also show the consistent-error failure mode, indicating this isn't only a small-model artifact.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It', 'publication_date_yy_mm': '2025-02'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8129.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e8129.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Qwen-2.5-Math-1.5B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Qwen-2.5-Math-1.5B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A math-finetuned 1.5B instruction-tuned Qwen variant; used as a contrast to the base Qwen model to study arithmetic computation and validation mechanisms.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Qwen-2.5-Math-1.5B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Instruction-tuned transformer variant (~1.5B parameters) further finetuned for math; architecture similar to Qwen-2.5 but with math-specialized finetuning described in cited model docs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Single-digit addition producing two-digit results (primary); also evaluated on subtraction, multiplication, division settings in extended experiments.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Same qualitative mechanism as base Qwen: consistency-head-driven validation in middle layers that checks digit alignment; arithmetic computation circuit concentrated in higher layers. For this math-specialized variant, consistency heads are fewer (identified heads: L13H0, L13H1) but the same dissociation is observed.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Edge attribution patching (token-wise EAP) to identify circuits; attention-head activation patching (scaling α values specific to this model in experiments); linear probes; residual-stream addition interventions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Behavioral detection: near-perfect detection on single-position errors (paper states Qwen-2.5-Math-1.5B achieves near-perfect accuracy for the considered error types). However, for consistent errors at both result and answer positions the model's accuracy drops dramatically (reported 3.37% ± 2.06 in Table 2). Models still perfectly compute arithmetic result (100% accuracy for re-computing equation result). Circuits identified achieve high faithfulness; soft-intersection circuits may be extremely sparse (paper notes possible extreme sparsity, e.g., some circuits contain only ~20 edges).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Very poor detection of consistent errors (both positions wrong but aligned) despite excellent ability to compute the correct result; reliance on surface-level consistency checks rather than comparing to the re-computed result.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Token-wise EAP identifies middle-layer edges concentrated at [answer-second]; attention visualization for the identified consistency heads shows alignment-sensitive attention patterns; patching experiments on these heads produce causal changes in detection behavior (improving detection when injecting inconsistency signals). Linear probes decode correct results mostly from upper layers; residual-stream addition (moving upper-layer representations down) improves detection for consistent errors in this and other models.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Extreme circuit sparsity for some soft-intersection circuits (e.g., only ~20 edges) suggests identification fragility and sensitivity to thresholds; EAP limitations and incompleteness apply. Even with math finetuning, the model can still fail to validate when validation machinery does not access the computed result.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It', 'publication_date_yy_mm': '2025-02'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8129.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e8129.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Llama-3.2-3B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Llama-3.2-3B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A 3B-parameter instruction-tuned Llama-3.2 variant studied to compare architectures and scales in arithmetic computation and validation mechanisms.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Llama-3.2-3B-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Instruction-tuned transformer model ~3B parameters (Llama-3.2 family). Standard transformer blocks and multi-head attention; included to test generality across architectures and scales.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Single-digit addition to two-digit results (main); also evaluated on subtraction, multiplication, division.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Middle-layer consistency-head mechanism for validation (identified heads: L4H14, L5H3, L7H11, L8H1, L10H5, L10H18) that checks digit alignment; arithmetic computation circuit concentrated in higher layers, separate from the validation circuit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Token-wise EAP for circuit discovery; attention-head patching (scaling factor α used in patching procedure); linear probing of residual-stream hidden states; residual-stream addition from higher to lower layers to bridge computation and validation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Behavioral detection: can compute result correctly (probes and behavior); performance on single-position error detection is high for many cases (paper reports high detection on single-position errors; exact table values vary by operation). For consistent errors (result & answer), accuracy in Table 2 is 12.27% ± 9.08 (severe drop). Residual-stream addition interventions produced more modest gains for Llama compared to other models.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Same primary failure mode: reliance on consistency checks leads to failure to detect consistent errors. Layer dissociation causes the computed result to be unavailable to the validation heads. Llama showed smaller benefit from residual-stream bridging interventions, indicating model-specific differences in how information flows.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>EAP reveals circuits concentrated in middle layers at answer tokens; attention patterns of identified heads show digit-alignment sensitive behavior (Figures for Llama in Appendix); patching the identified consistency heads produces causal changes in detection for subtraction/division experiments; linear probes show correct result encoded predominantly in higher layers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Llama's modest gains from residual bridging suggest either (i) different internal representations making a simple add-in intervention less effective, or (ii) incomplete identification of all validation components. EAP approximation and circuit-completeness caveats apply.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It', 'publication_date_yy_mm': '2025-02'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8129.3">
+                <h3 class="extraction-instance">Extracted Data Instance 3 (e8129.3)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Phi-3-Mini-4k</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Phi-3-Mini-4k-Instruct (Phi-3-Mini-3.8B)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A ~3.8B instruction-tuned Phi-3-mini model (4k context) used to test whether the observed validation/computation dissociation and consistency-head reliance generalize across models.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Phi-3-Mini-4k-Instruct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Instruction-tuned transformer model ~3.8B parameters, 4k context length variant (Phi-3 family); included to evaluate generality across different training and finetuning regimes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Single-digit addition producing two-digit results (primary), plus experiments on subtraction, multiplication, division.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Also uses middle-layer consistency heads (identified heads: L10H1, L10H5, L10H14, L14H19, L16H18) that check alignment between digits; computation circuit concentrated in upper layers but this model shows somewhat stronger middle-layer probe accuracy (unlike others) indicating partial encoding of results earlier.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Token-wise EAP for circuit discovery; attention-head patching; linear probes on residual stream; residual-stream addition from higher to lower layers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Behavioral detection: computes arithmetic results successfully (probes show near-perfect decoding in upper layers); for single-position errors detection accuracy is high (see Table 1/7); for consistent errors the model performs best among studied smaller models with accuracy 40.98% ± 18.41 (Table 2), i.e., still substantially degraded but better than other models. Linear probes show moderate probe accuracy already in middle layers (unlike other models).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Same core failure: reliance on surface-level consistency leads to mislabeling consistent-error prompts as 'valid', but Phi-3 shows partial robustness (higher middle-layer encoding and higher consistent-error detection rate). Some circuits include more MLP and higher-layer edges than other models (variation in circuit structure).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>EAP finds middle-layer circuits concentrated at [answer-second] and a subset of higher-layer edges at the final token; attention visualizations for the identified consistency heads exhibit the same alignment-sensitive attention patterns; patching the consistency heads improves detection (Figure 18); linear probes decode result earlier (middle layers) compared to other models, consistent with Phi-3's relatively higher consistent-error detection.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Phi-3's differences (more middle-layer encodings, larger higher-layer edge set) show the dissociation is not identical across architectures; EAP still approximate, circuit completeness caveat applies. Even in this model consistent errors present a substantial challenge (≈41% accuracy only).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It', 'publication_date_yy_mm': '2025-02'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Edge Attribution Patching <em>(Rating: 2)</em></li>
+                <li>Attribution patching <em>(Rating: 2)</em></li>
+                <li>How does gpt-2 compute greater-than?: Interpreting mathematical abilities in a pre-trained language model <em>(Rating: 2)</em></li>
+                <li>A mechanistic interpretation of arithmetic reasoning in language models using causal mediation analysis <em>(Rating: 2)</em></li>
+                <li>Arithmetic without algorithms: Language models solve math with a bag of heuristics <em>(Rating: 2)</em></li>
+                <li>Locating and editing factual associations in gpt <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8129",
+    "paper_id": "paper-276408119",
+    "extraction_schema_id": "extraction-schema-149",
+    "extracted_data": [
+        {
+            "name_short": "Qwen-2.5-1.5B",
+            "name_full": "Qwen-2.5-1.5B-Instruct",
+            "brief_description": "A 1.5B-parameter instruction-tuned transformer model studied in this paper; used to analyze how smaller LLMs compute arithmetic and validate results via mechanistic interpretability.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Qwen-2.5-1.5B-Instruct",
+            "model_description": "Instruction-tuned transformer, ~1.5B parameters (reported in the paper as a smaller-sized LLM). Uses standard transformer blocks; tokenization for numbers uses a one-digit tokenization scheme for some Qwen variants (noted in the paper).",
+            "arithmetic_task_type": "Single-digit addition producing two-digit results (primary); additional experiments on subtraction, multiplication, division with analogous two-digit outputs.",
+            "mechanism_or_representation": "Validation is dominated by 'consistency heads' — attention heads in middle layers (layers ~4–15) that attend between digits of the arithmetic result and the final numeric answer to check surface-level alignment; arithmetic computation (correctly producing the sum) is implemented in a different circuit concentrated in higher layers (upper layers, e.g., &gt;20), resulting in a structural dissociation between computation (higher layers) and validation (middle layers).",
+            "probing_or_intervention_method": "Token-wise edge attribution patching (EAP) to identify circuits; attention-head patching (replace attention matrices scaled by α); activation/representation patching of the residual stream (adding hidden representations from upper to lower layers); linear probes trained on residual-stream hidden states to measure where the correct result is linearly encoded.",
+            "performance_metrics": "Behavioral detection: models can compute arithmetic result perfectly (100% correct prediction of equation result). Error-detection accuracy: Qwen-2.5-1.5B detects single-position errors (arithmetic result or numeric answer) with moderate accuracy (paper reports this model as worst among studied for those errors, ~60% on both error types); for prompts containing a consistent error at both positions (result & final answer) the accuracy drops to 12.39% ± 6.00 (Table 2). Circuits for error detection are very sparse (100–900 edges for template-specific circuits; soft-intersection circuits as small as a few dozen to a few hundred edges) and achieve faithfulness ≈99–101% by the paper's metric.",
+            "error_types_or_failure_modes": "Primary failure: the model relies on surface-level digit alignment checks (consistency), so when both the arithmetic result and the final numeric answer contain the same incorrect two-digit value (a 'consistent error'), the model often labels the reasoning as 'valid' (fails to detect the mistake). Other issues: structural dissociation means the re-computed correct result in higher layers is not available to the middle-layer validation mechanism; incomplete circuit discovery can leave remaining consistency heads unpatched so interventions may not always flip behavior.",
+            "evidence_for_mechanism": "Edge attribution patching (EAP) finds circuits concentrated in middle layers at the [answer-second] token position; attention analysis of identified consistency heads (e.g., L12H0/L12H2/L12H10/L13H0/L13H1/L13H10) shows high attention when digits align and low when misalign; patching a small set of consistency heads (six heads specified in Table 4) with activations from single-error runs flips model predictions from 'valid' to 'invalid' for consistent-error prompts; linear probes show correct arithmetic result is linearly decodable only in higher layers; adding (patching) the higher-layer residual representation into a lower layer improves detection for consistent errors by ~81% (Figure 8). Identified error-detection circuits achieve near-100% faithfulness when reconstructed.",
+            "counterexamples_or_challenges": "Patching the small set of consistency heads does not always flip behavior in the reverse direction (sing-error → patched from consistent-error) — likely because additional consistency heads exist outside the patched set (incomplete circuit discovery). EAP is a linear approximation of activation patching and may omit nonlinear interactions; circuit completeness is not guaranteed. Some template/model-specific variations (edge counts, layer distributions) exist. Larger-model tests (70B/32B) also show the consistent-error failure mode, indicating this isn't only a small-model artifact.",
+            "uuid": "e8129.0",
+            "source_info": {
+                "paper_title": "The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It",
+                "publication_date_yy_mm": "2025-02"
+            }
+        },
+        {
+            "name_short": "Qwen-2.5-Math-1.5B",
+            "name_full": "Qwen-2.5-Math-1.5B-Instruct",
+            "brief_description": "A math-finetuned 1.5B instruction-tuned Qwen variant; used as a contrast to the base Qwen model to study arithmetic computation and validation mechanisms.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Qwen-2.5-Math-1.5B-Instruct",
+            "model_description": "Instruction-tuned transformer variant (~1.5B parameters) further finetuned for math; architecture similar to Qwen-2.5 but with math-specialized finetuning described in cited model docs.",
+            "arithmetic_task_type": "Single-digit addition producing two-digit results (primary); also evaluated on subtraction, multiplication, division settings in extended experiments.",
+            "mechanism_or_representation": "Same qualitative mechanism as base Qwen: consistency-head-driven validation in middle layers that checks digit alignment; arithmetic computation circuit concentrated in higher layers. For this math-specialized variant, consistency heads are fewer (identified heads: L13H0, L13H1) but the same dissociation is observed.",
+            "probing_or_intervention_method": "Edge attribution patching (token-wise EAP) to identify circuits; attention-head activation patching (scaling α values specific to this model in experiments); linear probes; residual-stream addition interventions.",
+            "performance_metrics": "Behavioral detection: near-perfect detection on single-position errors (paper states Qwen-2.5-Math-1.5B achieves near-perfect accuracy for the considered error types). However, for consistent errors at both result and answer positions the model's accuracy drops dramatically (reported 3.37% ± 2.06 in Table 2). Models still perfectly compute arithmetic result (100% accuracy for re-computing equation result). Circuits identified achieve high faithfulness; soft-intersection circuits may be extremely sparse (paper notes possible extreme sparsity, e.g., some circuits contain only ~20 edges).",
+            "error_types_or_failure_modes": "Very poor detection of consistent errors (both positions wrong but aligned) despite excellent ability to compute the correct result; reliance on surface-level consistency checks rather than comparing to the re-computed result.",
+            "evidence_for_mechanism": "Token-wise EAP identifies middle-layer edges concentrated at [answer-second]; attention visualization for the identified consistency heads shows alignment-sensitive attention patterns; patching experiments on these heads produce causal changes in detection behavior (improving detection when injecting inconsistency signals). Linear probes decode correct results mostly from upper layers; residual-stream addition (moving upper-layer representations down) improves detection for consistent errors in this and other models.",
+            "counterexamples_or_challenges": "Extreme circuit sparsity for some soft-intersection circuits (e.g., only ~20 edges) suggests identification fragility and sensitivity to thresholds; EAP limitations and incompleteness apply. Even with math finetuning, the model can still fail to validate when validation machinery does not access the computed result.",
+            "uuid": "e8129.1",
+            "source_info": {
+                "paper_title": "The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It",
+                "publication_date_yy_mm": "2025-02"
+            }
+        },
+        {
+            "name_short": "Llama-3.2-3B",
+            "name_full": "Llama-3.2-3B-Instruct",
+            "brief_description": "A 3B-parameter instruction-tuned Llama-3.2 variant studied to compare architectures and scales in arithmetic computation and validation mechanisms.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Llama-3.2-3B-Instruct",
+            "model_description": "Instruction-tuned transformer model ~3B parameters (Llama-3.2 family). Standard transformer blocks and multi-head attention; included to test generality across architectures and scales.",
+            "arithmetic_task_type": "Single-digit addition to two-digit results (main); also evaluated on subtraction, multiplication, division.",
+            "mechanism_or_representation": "Middle-layer consistency-head mechanism for validation (identified heads: L4H14, L5H3, L7H11, L8H1, L10H5, L10H18) that checks digit alignment; arithmetic computation circuit concentrated in higher layers, separate from the validation circuit.",
+            "probing_or_intervention_method": "Token-wise EAP for circuit discovery; attention-head patching (scaling factor α used in patching procedure); linear probing of residual-stream hidden states; residual-stream addition from higher to lower layers to bridge computation and validation.",
+            "performance_metrics": "Behavioral detection: can compute result correctly (probes and behavior); performance on single-position error detection is high for many cases (paper reports high detection on single-position errors; exact table values vary by operation). For consistent errors (result & answer), accuracy in Table 2 is 12.27% ± 9.08 (severe drop). Residual-stream addition interventions produced more modest gains for Llama compared to other models.",
+            "error_types_or_failure_modes": "Same primary failure mode: reliance on consistency checks leads to failure to detect consistent errors. Layer dissociation causes the computed result to be unavailable to the validation heads. Llama showed smaller benefit from residual-stream bridging interventions, indicating model-specific differences in how information flows.",
+            "evidence_for_mechanism": "EAP reveals circuits concentrated in middle layers at answer tokens; attention patterns of identified heads show digit-alignment sensitive behavior (Figures for Llama in Appendix); patching the identified consistency heads produces causal changes in detection for subtraction/division experiments; linear probes show correct result encoded predominantly in higher layers.",
+            "counterexamples_or_challenges": "Llama's modest gains from residual bridging suggest either (i) different internal representations making a simple add-in intervention less effective, or (ii) incomplete identification of all validation components. EAP approximation and circuit-completeness caveats apply.",
+            "uuid": "e8129.2",
+            "source_info": {
+                "paper_title": "The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It",
+                "publication_date_yy_mm": "2025-02"
+            }
+        },
+        {
+            "name_short": "Phi-3-Mini-4k",
+            "name_full": "Phi-3-Mini-4k-Instruct (Phi-3-Mini-3.8B)",
+            "brief_description": "A ~3.8B instruction-tuned Phi-3-mini model (4k context) used to test whether the observed validation/computation dissociation and consistency-head reliance generalize across models.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Phi-3-Mini-4k-Instruct",
+            "model_description": "Instruction-tuned transformer model ~3.8B parameters, 4k context length variant (Phi-3 family); included to evaluate generality across different training and finetuning regimes.",
+            "arithmetic_task_type": "Single-digit addition producing two-digit results (primary), plus experiments on subtraction, multiplication, division.",
+            "mechanism_or_representation": "Also uses middle-layer consistency heads (identified heads: L10H1, L10H5, L10H14, L14H19, L16H18) that check alignment between digits; computation circuit concentrated in upper layers but this model shows somewhat stronger middle-layer probe accuracy (unlike others) indicating partial encoding of results earlier.",
+            "probing_or_intervention_method": "Token-wise EAP for circuit discovery; attention-head patching; linear probes on residual stream; residual-stream addition from higher to lower layers.",
+            "performance_metrics": "Behavioral detection: computes arithmetic results successfully (probes show near-perfect decoding in upper layers); for single-position errors detection accuracy is high (see Table 1/7); for consistent errors the model performs best among studied smaller models with accuracy 40.98% ± 18.41 (Table 2), i.e., still substantially degraded but better than other models. Linear probes show moderate probe accuracy already in middle layers (unlike other models).",
+            "error_types_or_failure_modes": "Same core failure: reliance on surface-level consistency leads to mislabeling consistent-error prompts as 'valid', but Phi-3 shows partial robustness (higher middle-layer encoding and higher consistent-error detection rate). Some circuits include more MLP and higher-layer edges than other models (variation in circuit structure).",
+            "evidence_for_mechanism": "EAP finds middle-layer circuits concentrated at [answer-second] and a subset of higher-layer edges at the final token; attention visualizations for the identified consistency heads exhibit the same alignment-sensitive attention patterns; patching the consistency heads improves detection (Figure 18); linear probes decode result earlier (middle layers) compared to other models, consistent with Phi-3's relatively higher consistent-error detection.",
+            "counterexamples_or_challenges": "Phi-3's differences (more middle-layer encodings, larger higher-layer edge set) show the dissociation is not identical across architectures; EAP still approximate, circuit completeness caveat applies. Even in this model consistent errors present a substantial challenge (≈41% accuracy only).",
+            "uuid": "e8129.3",
+            "source_info": {
+                "paper_title": "The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It",
+                "publication_date_yy_mm": "2025-02"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Edge Attribution Patching",
+            "rating": 2,
+            "sanitized_title": "edge_attribution_patching"
+        },
+        {
+            "paper_title": "Attribution patching",
+            "rating": 2,
+            "sanitized_title": "attribution_patching"
+        },
+        {
+            "paper_title": "How does gpt-2 compute greater-than?: Interpreting mathematical abilities in a pre-trained language model",
+            "rating": 2,
+            "sanitized_title": "how_does_gpt2_compute_greaterthan_interpreting_mathematical_abilities_in_a_pretrained_language_model"
+        },
+        {
+            "paper_title": "A mechanistic interpretation of arithmetic reasoning in language models using causal mediation analysis",
+            "rating": 2,
+            "sanitized_title": "a_mechanistic_interpretation_of_arithmetic_reasoning_in_language_models_using_causal_mediation_analysis"
+        },
+        {
+            "paper_title": "Arithmetic without algorithms: Language models solve math with a bag of heuristics",
+            "rating": 2,
+            "sanitized_title": "arithmetic_without_algorithms_language_models_solve_math_with_a_bag_of_heuristics"
+        },
+        {
+            "paper_title": "Locating and editing factual associations in gpt",
+            "rating": 1,
+            "sanitized_title": "locating_and_editing_factual_associations_in_gpt"
+        }
+    ],
+    "cost": 0.01597075,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><p>The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It
+25 Sep 2025</p>
+<p>Leonardo Bertolazzi leonardo.bertolazzi@unitn.it 
+DISI
+University of Trento
+Italy</p>
+<p>Philipp Mondorf p.mondorf@lmu.de 
+MaiNLP
+Center for Information and Language Processing
+LMU Munich
+Germany</p>
+<p>Munich Center for Machine Learning (MCML)
+MunichGermany</p>
+<p>Barbara Plank b.plank@lmu.de 
+MaiNLP
+Center for Information and Language Processing
+LMU Munich
+Germany</p>
+<p>Munich Center for Machine Learning (MCML)
+MunichGermany</p>
+<p>Raffaella Bernardi raffaella.bernardi@unibz.it 
+Free University of Bozen-Bolzano
+Italy</p>
+<p>Abhimanyu Dubey 
+Abhinav Jauhri 
+Abhinav Pandey 
+Abhishek Kadian 
+Ahmad Al-Dahle 
+Aiesha Letman 
+Akhil Mathur 
+Alan Schelten 
+Amy Yang 
+Nelson Elhage 
+Neel Nanda 
+Catherine Olsson 
+Tom Henighan 
+Nicholas Joseph 
+Ben Mann 
+Amanda Askell 
+Yuntao Bai 
+Anna Chen 
+Tom Conerly 
+Nova Dassarma 
+Dawn Drain 
+Deep Ganguli 
+Zac Hatfield-Dodds 
+Danny Hernandez 
+Andy Jones 
+Jackson Kernion 
+Liane Lovitt 
+Kamal 
+The Validation Gap: A Mechanistic Analysis of How Language Models Compute Arithmetic but Fail to Validate It
+25 Sep 20254AF7FF30CCAE2C11B5803F079726A8B7arXiv:2502.11771v2[cs.CL]Qwen-25-15B Qwen-25-Math-15B Llama-32-3B Phi-3-Mini-38B
+The ability of large language models (LLMs) to validate their output and identify potential errors is crucial for ensuring robustness and reliability.However, current research indicates that LLMs struggle with self-correction, encountering significant challenges in detecting errors.While studies have explored methods to enhance self-correction in LLMs, relatively little attention has been given to understanding the models' internal mechanisms underlying error detection.In this paper, we present a mechanistic analysis of error detection in LLMs, focusing on simple arithmetic problems.Through circuit analysis, we identify the computational subgraphs responsible for detecting arithmetic errors across four smaller-sized LLMs.Our findings reveal that all models heavily rely on consistency heads-attention heads that assess surface-level alignment of numerical values in arithmetic solutions.Moreover, we observe that the models' internal arithmetic computation primarily occurs in higher layers, whereas validation takes place in middle layers, before the final arithmetic results are fully encoded.This structural dissociation between arithmetic computation and validation seems to explain why smaller-sized LLMs struggle to detect even simple arithmetic errors.</p>
+<p>Introduction</p>
+<p>In recent years, large language models have demonstrated notable performance across a variety of reasoning tasks, including arithmetic problemsolving (Sawada et al., 2023;Phan et al., 2025;Liu et al., 2024a;Achiam et al., 2023).However, a gap appears to exist between the models' ability to generate solutions and their capacity to validate them effectively (Huang et al., 2024;Hong et al., 2024;Jiang et al., 2024).Specifically, while LLMs are often able to correct mistakes once they have</p>
+<p>invalid</p>
+<p>Figure 1: A schematic overview of the structurally dissociated circuits responsible for arithmetic computation and validation.While the models' internal arithmetic computation primarily occurs in higher layers, validation takes place in mid-to-lower layers, before the final arithmetic results are fully encoded (see Section 4.3).</p>
+<p>been identified, they struggle to detect errors in the first place (Tyen et al., 2024;Kamoi et al., 2024a,b).</p>
+<p>Several studies have proposed methods to enhance LLMs' ability to detect errors and correct their own output (Welleck et al., 2023;Ye et al., 2023;Gou et al., 2024).However, comparatively little attention has been given to understanding why current models inherently struggle with error detection (Hong et al., 2024;Kamoi et al., 2024a;Li et al., 2024).In particular, few studies have examined the internal mechanisms responsible for error detection in LLMs (Liu et al., 2024b).</p>
+<p>In this paper, we seek to bridge this gap by presenting a mechanistic analysis of error detection in LLMs, focusing on math word problems involving basic addition.We examine four LLMs-Qwen-2.5-(Math)-1.5B-Instruct(Yang et al., 2024a,b), Llama-3.2-3B-Instruct (Dubey et al., 2024), andPhi-3-Mini-4k-Instruct (Abdin et al., 2024)-to understand how these models detect arithmetic errors and why they struggle with this task.Specifically, we identify and analyze the computational subgraphs (or circuits) responsible for error detection, examining the role of identified modules within the broader task context.Additionally, we analyze how these circuits compare to those involved in computing arithmetic results, seeking to understand the structural differences between arithmetic computation and validation in LLMs.To the best of our knowledge, this is the first study to examine arithmetic error detection in LLMs through the lens of mechanistic interpretability.Our findings reveal:</p>
+<p>• Circuits for detecting arithmetic errors are structurally similar across different models.</p>
+<p>• The error detection process is governed by consistency heads-attention heads located in lower to middle layers that check for surfacelevel alignment of numerical values in the arithmetic solution.By patching a small subset of these heads, we can effectively control the models' error detection behavior.</p>
+<p>• The mechanisms for arithmetic computation and validation appear to be structurally dissociated.While the models' internal arithmetic computation is predominantly conducted in higher layers, validation is performed in middle layers, before the final arithmetic results are fully encoded (see Figure 1).</p>
+<p>• Adding latent activations from higher layers to the residual stream in lower layers significantly enhances the models' ability to detect errors, effectively closing the validation gap. 1ur analysis shows that mechanistic interpretability can offer valuable insights into how models detect-or fail to detect-arithmetic errors.While focused on smaller LLMs and basic math word problems, we hope that this work provides a foundation for future work to study error detection in larger models and more complex tasks.</p>
+<p>Background</p>
+<p>A common goal in interpretability research is to gain a deeper understanding of the internal mechanisms that drive the behavior of language models for a given task (Ferrando et al., 2024;Mueller et al., 2024;Bereska and Gavves, 2024).The circuit framework seeks to achieve this by identifying model components that causally influence the model's task output (Elhage et al., 2021;Wang et al., 2023;Hanna et al., 2023).In essence, a circuit refers to the computational subgraph C ⊂ G = (V, E) that represents the task-relevant flow of information across the model's layers (Conmy et al., 2023;Bhaskar et al., 2024).A node v ∈ V in this graph can represent different components, depending on the desired level of granularity-ranging from entire attention or MLP layers, to individual attention heads, to single neurons (Mueller et al., 2024).An edge e ij = (v i , v j ) ∈ E denotes a connection between two nodes, where the output of the source node v i serves as the input to the destination node v j .The total input received by a node v j can be expressed as e ij = (v i ,v j ) ∈ Ev j z i where z i represents the activation of node v i and E v j denotes the set of incoming edges to v j .</p>
+<p>Circuit Identification.A method for identifying circuits in language models is activation patching (Vig et al., 2020;Geiger et al., 2021;Meng et al., 2022).The key idea is to intervene on the latent activations of components in the computation graph G to measure their indirect effect (Pearl, 2001) on the model's output.Adopting the terminology of Zhang and Nanda (2024), activation patching requires three forward passes to determine a component's indirect effect for a given input:</p>
+<ol>
+<li>
+<p>Clean run: run the model on a clean prompt X clean , for which the model generates the desired task-specific output y clean .Cache the component's latent activations, denoted as z i .</p>
+</li>
+<li>
+<p>Corrupted run: run the model on a corrupted prompt X corrupt , for which the model generates a related but altered output y corrupt .</p>
+</li>
+<li>
+<p>Patched run: run the model on X corrupt , but this time, replace the component's activations associated with X corrupt with the cached activations z i from the clean run.</p>
+</li>
+</ol>
+<p>Finally, the indirect effect is calculated by comparing the output of the patched run to that of the corrupted run using a predefined metric P. 2 If the component under consideration causally influences the model's task output, the patched activations should shift the prediction y corrupt toward y clean .The above reasoning is:</p>
+<p>Clean prompt</p>
+<p>Jane initially has 5 apples.After buying 8 more apples, how many apples does she have?</p>
+<p>To solve this, we add 5 + 8 = 16.Thus, Jane has a total of 13 apples.</p>
+<p>The above reasoning is:</p>
+<p>Corrupt prompt</p>
+<p>Jane initially has 5 apples.After buying 8 more apples, how many apples does she have?</p>
+<p>To solve this, we add 5 + 8 = 13.Thus, Jane has a total of 13 apples.</p>
+<p>The above reasoning is: invalid valid Figure 2: Our data generation setup.We use eight templates to generate samples that consist of a simple arithmetic problem, its corresponding solution, and a final statement assessing the solution's validity.Words enclosed in [square brackets] serve as placeholders for components that are substituted with specific content.For each generated sample, a pair of (clean, corrupt) prompts is derived.Counterintuitively, clean prompts contain errors, as they represent prompts for which the model exhibits the desired error detection behavior (predicting "invalid").</p>
+<p>As performing these steps for every model component and sample can become computationally expensive, several approximations trade off computational cost against accuracy (Syed et al., 2024;Nanda, 2024;Hanna et al., 2024).In this work, we consider edge attribution patching (EAP) (Syed et al., 2024), a linear approximation of activation patching requiring only two forward and one backward pass.EAP focuses on the indirect effect of edges e ij ∈ E, which represent inputs to a node v j from earlier nodes v i .Specifically, the causal influence is approximated using the absolute attribution score |∇ z P|, which measures the change in P under the intervention (for further details, see Appendix B).Once these scores are computed, the top-k edges with the highest absolute attribution values are selected to define the circuit C.Although EAP is only a linear approximation of activation patching, it has been successfully employed in studies to identify circuits within language models for tasks such as indirect object identification, subjectverb agreement, and greater-than attribution (Syed et al., 2024;Hanna et al., 2024;Miller et al., 2024).</p>
+<p>Circuits for Arithmetic Error Detection</p>
+<p>In this section, we present the dataset used to study arithmetic error detection in LLMs.Additionally, we outline our use of edge attribution patching to identify circuits responsible for the task.</p>
+<p>Dataset.In this study, we focus on simple math word problems.As illustrated in Figure 2, we employ templates to systematically generate data (Wang et al., 2023;Hanna et al., 2023).Each sample consists of a basic arithmetic problem, its corresponding solution, and a final statement that evaluates the solution's validity.Samples derived from the same template maintain a consistent sentence structure but incorporate variable components such as [names] or numerical [values] (left box in Figure 2).To analyze the models' error detection mechanisms, we introduce simple arithmetic errors into the sample's solution statement.Specifically, we consider two types of errors separately: i) a miscalculation of the arithmetic result, and ii) an incorrect final numeric answer.Note that the perturbed sample forms our clean prompt, for which models can successfully detect the arithmetic error (see upper-right box in Figure 2, showing an error for the arithmetic result).Additionally, we construct a corrupt prompt without errors, for which models predict the solution to be "valid" (lower-right box).We use single-digit numerical values that sum to a two-digit arithmetic result across all templates and samples.The introduced errors always correspond to a different, incorrect two-digit number ranging from 10 to 19.</p>
+<p>For each template, we generate 6,000 pairs of (clean, corrupt) prompts.We use eight different templates that vary in syntactic structure and token length while preserving the fundamental task logic.Each type of error (arithmetic result vs. final numeric answer) is examined separately.In total, we obtain a dataset of 6,000 (clean, corrupt) prompt pairs for each template T {1:8} per error type.For further details on the data generation process and templates, please refer to Appendix C.</p>
+<p>Method.As described in Section 2, we employ edge attribution patching (EAP) (Syed et al., 2024) to identify circuits responsible for arithmetic error detection in LLMs.For each template T i , we use 5,000 pairs of (clean, corrupt) prompts to determine the circuit-specifically, the set of edges C i = E i ⊂ E-that causally influences the model's error detection behavior (see Section 2 for more details).Since all samples within a template contain the same number of tokens, we apply token-wise EAP, which allows us to assess the causal impact of edges at each token position of the prompt.Following Syed et al. (2024), the absolute attribution score |∇ z P| is computed using the average logit difference related to the models' answer tokens ("valid", "invalid") as metric P (see Appendix B for further details).Once the attribution scores are obtained, we use the template's remaining 1,000 (clean, corrupt) prompt pairs to find the minimal set of top-k edges for which the circuit achieves a faithfulness score between 99%-101%.For a more detailed explanation of the search procedure and the computation of the faithfulness score, please refer to Appendix B.2 and B.3.Soft Intersection Circuit.After identifying a circuit C i for each template T i ∈ {T 1 , . . ., T 8 }, we aim to find a final subset of edges E C ⊂ E that generalizes across all templates T i , ensuring high faithfulness.To achieve this, we compute the soft intersection circuit, which includes edges present in at least 1 8 ≤ τ ≤ 8 8 of the identified circuits {C 1 , . . ., C 8 }.The soft intersection is defined through a membership function that determines the proportion of identified circuits in which a given edge e ∈ E appears:
+f (e) = 1 8 8 i=1 1 C i (e)(1)
+where 1 C i (e) is an indicator function that assigns a value of 1 if e ∈ C i and 0 otherwise.Consequently, f (e) takes values in {0, 1 8 , . . ., 8 8 }.The soft intersection circuit is then formally defined as
+C (τ ) = E C (τ ) = {e ∈ E | f (e) ≥ τ }.
+This formulation allows for a flexible trade-off: setting τ = 1 8 yields the union of all identified circuits, while τ = 8 8 results in their strict intersection.3By varying τ from 1 8 to 8 8 , we balance faithfulness against the numbers of edges considered, progressively filtering out template-specific redundant edges.</p>
+<p>Models.In this study, we consider four different LLMs-Qwen-2.5-(Math)-1.5B-Instruct(Yang et al., 2024a,b), Llama-3.2-3B-Instruct (Dubey et al., 2024), andPhi-3-Mini-4k-Instruct (Abdin et al., 2024), to assess the influence of varying architectures, model scales, and finetuning procedures (particularly for math).Appendix D.1 provides details about models and prompts.Our code is publicly available at: https://github.com/mainlp/validation-gap.</p>
+<p>Experiments</p>
+<p>Before identifying circuits, we ensure that all models are capable of detecting the types of arithmetic errors described in Section 3. Specifically, we randomly generate 5,000 (clean, corrupt) prompt pairs for each template and evaluate whether the models predict tokens that correctly indicate the validity of the presented solutions (we expect predictions such as "invalid", "incorrect", or "wrong" for clean prompts, and "valid", "correct", or "right" for corrupt prompts).Table 1 summarizes the models' average accuracy along with the standard deviation across templates.A pair is considered correctly classified if the model's highest logit falls within the set of correct labels for the clean and corrupt prompts, respectively.We observe that all models are able to detect the type of errors considered, with Qwen-2.5-Math-1.5Bachieving near-perfect accuracy, while Qwen-2.5-1.5Bperforms worst with approximately 60% accuracy for both error types.</p>
+<p>In the subsequent circuit identification process, we filter the generated prompt pairs to ensure that for all samples, the models predict the desired outputs, i.e., y clean ∈ {"invalid", "incorrect", "wrong"} and y corrupt ∈ {"valid", "correct", "right"} (see Section 2).</p>
+<p>Identified Circuits</p>
+<p>As described in Section 3, we employ edge attribution patching to identify circuits C i = E i ⊂ E that achieve faithfulness scores between 99% and 101% for each template T i ∈ {T 1 , . . .T 8 }.We find that for all models, only 100 to 900 edges (less than 0.1% of total edges) are sufficient to achieve around 100% faithfulness for the task.Due to space constraints, we present the faithfulness scores and the corresponding number of edges for each circuit in Table 12 in the Appendix-categorized by model, template, and error type.Once a circuit is identified for each template, we compute the soft intersection circuit C (τ ) as outlined in Section 3. Figure 3 illustrates the faithfulness scores and associated edge counts of the soft intersection circuits for Qwen-2.5-1.5Bacross different threshold values τ ∈ { 1 8 , . . ., 8 8 }.For errors at the position of the arithmetic result (e.g., "5 + 8 = 16"), the soft intersection circuit C</p>
+<p>(5/8) result achieves an average faithfulness of around 100%, effectively generalizing across all templates, while retaining only 245 edges (red circles in Figure 3a).For errors at the position of the final numeric answer (e.g., ". . . 5 + 8 = 13.Thus, Jane has 16 apples."),even the strict intersection (τ = 8 8 ) yields an almost perfect average faithfulness score across all templates, with the number of relevant edges reduced to 53 (see Figure 3b).In subsequent analyses, we focus on C</p>
+<p>(5/8) result and C (8/8) answer for Qwen-2.5-1.5B.Notably, similar results can be found for all models, as presented in Appendix E.1, Figures 11 to 13.</p>
+<p>A visualization of Qwen-2.5-1.5B'scircuit C (8/8) answer for detecting errors at the position of the final numeric answer is shown in Figure 4.As mentioned in Section 3, we employ token-wise EAP.This means that we identify edges for each token position of the prompt.Figure 4 shows that most edges are concentrated at the position of the second digit of the final numeric answer ([answer-  second])4 in the middle layers 4 to 15 of the model.For example, this corresponds to the position of the 6 in ". . . 5 + 8 = 13.Thus, Jane has 16 apples."Additionally, a smaller number of edges appear in higher layers 21 to 27 at the final token position of the prompt ("is"), predominantly connecting MLP layers with the final residual output.Interestingly, this structural pattern appears consistent across all models (see Figures 31 to 33 answer , and evaluate the faithfulness of the resulting circuit.Despite comprising only 49 edges, the intersected circuit achieves an average faithfulness score of 78.60%±7.46%on samples involving errors in the arithmetic result and 82.50% ± 5.08% on samples with errors at the final numeric answer.Notably, these observations are consistent across all models considered.Corresponding results are provided in Appendix E.2, specifically in Table 5 and 6.</p>
+<p>Decoding the Error Detection Process</p>
+<p>Once we obtain a soft intersection circuit C (τ ) , we can analyze its components to gain deeper insights into the model's error detection mechanisms.For instance, Figure 4 illustrates that C (8/8) answer contains several edges that connect attention heads in the model's middle layers 8 to 15 at the position of the error ([answer-second]).To better understand the function of such attention heads, we compute their average attention scores over a set of input prompts.Figure 5 shows the average scores of the second attention head in layer 12 present in Qwen-2.5-1.5B'sC</p>
+<p>(5/8) result circuit.Specifically, we visualize attention scores for four different sets of prompts: i) prompts with an error at the position of the arithmetic result, ii) prompts with an error at the position of the final numeric answer, iii) prompts without errors, and iv) prompts with a consistent error at both the arithmetic result and the final numeric answer (e.g., ". . . 5 + 8 = 16.Thus, Jane has 16 apples.").Two notable attention patterns emerge.For prompts where an error is present either at the position of the arithmetic result (e.g., ". . . 5 + 8 = 16.Thus, Jane has 13 apples.")or at the position of the final numeric answer (e.g., ". . . 5 + 8 = 13.Thus, Jane has 16 apples."),we observe high attention scores between the first digit of the arithmetic result ([resultfirst]) and the first digit of the final numeric answer ([answer-first]), but not for the corresponding second digits ([result-second] and [answer-second], respectively).In contrast, for prompts without errors or those with consistent errors at both positions (e.g., ". . . 5 + 8 = 16.Thus, Jane has 16 apples."),we observe high average attention scores for both the first and second digits of the result and the final numeric answer.In essence, we observe that the attention head exhibits high average attention scores when the digits of the arithmetic result and the final numeric answer align.We refer to such attention heads as consistency heads-attention heads that assess surface-level alignment of numerical values in the solution prompt.Notably, we Error Type Qwen-2.5-1.5BQwen-2.5-Math-1.5BLlama-3.2-3BPhi-3-Mini-3.8B</p>
+<p>Result &amp; Answer 12.39 ± 6.00 3.37 ± 2.06 12.27 ± 9.08 40.98 ± 18.41</p>
+<p>Table 2: Accuracy of models in correctly classifying the solutions' validity of (clean, corrupt) prompt pairs where clean prompts contain a consistent error at both the position of the arithmetic result and the position of the final numeric answer.Values represent the mean accuracy across all templates, reported with their standard deviations.</p>
+<p>find several consistency heads across all models (see Figures 16a and 17a in the Appendix).Additionally, we observe (in)consistency heads, which display high attention scores for numerical values that misalign (Figures 14b to 17b in the Appendix).</p>
+<p>Consistency Heads Govern Arithmetic Error Detection.We hypothesize that consistency heads in the lower to middle layers of the models play an important role in the arithmetic error detection process.This hypothesis has two major implications: i) models may struggle to distinguish between samples without errors and those containing a consistent error at both the position of the arithmetic result and the final numeric answer (e.g., ". . . 5 + 8 = 16.Thus, Jane has 16 apples.");and ii) a small subset of consistency heads can significantly influence the models' arithmetic error detection behavior.To test our hypothesis, we first evaluate models on 1,000 (clean, corrupt) prompt pairs for each template, where clean prompts contain a consistent error at both error positions.As shown in Table 2, all models exhibit significant difficulties in detecting these type of errors.For instance, Qwen-2.5-1.5Bachieves an average accuracy of only 12.39% ± 6.00%, indicating a strong bias toward labeling prompts with a consistent error as "valid".Even for Phi-3-Mini-4k-Instruct, the accuracy drops from about 89% when detecting errors at either the arithmetic result or the final numeric answer (see Table 1) to 40.98% ± 18.41% when both positions contain a consistent error.Next, we analyze the influence of individual consistency heads on the model's error detection behavior through two complementary experiments.First, when Qwen-2.5-1.5B is given a prompt with a consistent error at both positions (for which it incorrectly predicts "valid"), we patch the latent activations of six consistency heads (see Table 4 in the Appendix for the exact heads) with the corresponding activations from a prompt containing a single error at the arithmetic result (for which the model correctly predicts "invalid").If consistency heads indeed govern error detection, the model should change its initial prediction from "valid" to "in-valid" under this intervention.Second, we perform the reverse: running the model on a single-error prompt (correctly predicted as "invalid"), we patch the activations of the consistency heads with those from a consistent-error prompt.In this case, we would expect the intervention to reduce the error detection accuracy.</p>
+<p>Figure 6 shows the resulting changes in detection accuracy (predicting "invalid") for Qwen-2.5-1.5B.As expected, the first intervention (ConsErr[heads := SingErr]) reliably flips the model's prediction from "valid" to "invalid," demonstrating that inconsistency signals injected via these heads can causally alter the model's output.By contrast, the reverse intervention (SingErr[heads := ConsErr]) changes the prediction from "invalid" to "valid" only in some cases.Similar results hold across all models (see Figure 18 in the Appendix).A plausible explanation might be that the model has more consistency heads than the ones we patch, which still signal an inconsistency for the given prompt.This touches upon the problem of completeness in circuit discovery, where circuits that can faithfully reproduce the model's task behavior are not guaranteed to in-Figure 6: Error detection accuracy of Qwen-2.5-1.5Bbefore and after patching six consistency heads.On the left, we evaluate the model on consistent-error prompts and patch activations from a single-error run; on the right, we evaluate on single-error prompts and patch with activations from a consistent-error run.As a control, we patch six randomly chosen attention heads.clude all components involved in the model's task behavior (Mondorf et al., 2025).For details on the patching procedure, we refer to Appendix D.4.</p>
+<p>Dissociation of Arithmetic Validation and Computation</p>
+<p>Our findings presented in Section 4.2 suggest that the considered models tend to rely on surface-level consistency checks rather than re-evaluating the given arithmetic equation and comparing the result with the final numeric answer.Notably, we find that all models achieve 100% accuracy in predicting the correct result of the arithmetic equation provided in each prompt (e.g., 5+8 = ?).However, we hypothesize that this correctly predicted result is not used for validation.To better understand the relationship between the models' arithmetic computation and validation procedures, we identify another set of circuits responsible for computing the correct arithmetic result at the position of the arithmetic equation, following a similar procedure as described in Section 3.For further details on the identification process, please refer to Appendix D.3.Interestingly, we find that for all models, the identified arithmetic circuits predominantly contain edges in higher layers (due to space constraints, visualizations of these circuits are provided in Figures 22 to 25 in the Appendix).This structural dissociation between the circuits responsible for arithmetic computation and those involved in validation seems to explain the models' difficulties in detecting basic arithmetic errors.Specifically, although the models can successfully re-compute the result of a given arithmetic equation, the final arithmetic outcome is not fully encoded when the model checks for numeric consistency in middle layers.To support this hypothesis, we train a linear probe to predict the correct arithmetic result based on the hidden states of the model's residual stream (for training details, see Appendix D.5). Figure 7 shows the probe's accuracy across different layers of Qwen-2.5-1.5B and selected token positions.Only in the higher layers (after the consistency check) does the model's residual stream linearly encode information about the correct arithmetic result.Interestingly, similar patterns are observed for other models, too (see Figure 20 in the Appendix).</p>
+<p>We demonstrate that by "bridging" the gap between arithmetic computation and validation, the model's error detection capacity for prompts with consistent errors at both error positions can be significantly enhanced.Figure 8 shows the error detection accuracy of Qwen-2.5-1.5Bbefore and after we add the hidden representation of the residual stream from layer 22 at token position [result-first] to the residual stream of layer 1 at token position [result-second] (essentially "moving" information from the top yellow layers in Figure 7 to lower layers).Notably, this approach improves the model's ability to detect consistent errors by 81%.Furthermore, accuracy on samples containing errors only at the position of the arithmetic result does not decline markedly, suggesting that the added representation enhances rather than overwrites existing information.A similar trend for other models is presented in Figure 21 in the Appendix.</p>
+<p>Consistency Heads in Other Arithmetic Operations</p>
+<p>Given the important role of consistency heads in our experiments on addition, we conduct further analyses to investigate whether their influence extends to other arithmetic operations.To this end, we generate new math word problems involving subtraction, multiplication, and division, using the same template structure with the two key error positions at the arithmetic result and the final numeric answer. 6As for addition, we first evaluate the models' error detection accuracy on 1,000 prompt pairs per template.Similarly, we find that all models (except for Phi-3-Mini-4k-Instruct) encounter greater difficulty in detecting consistent errors at both error positions compared to single-position errors.</p>
+<p>Complete results for all models and operations are reported in Table 7 in the Appendix.</p>
+<p>Next, for models that struggle with consistent errors, we replicate the consistency head patching experiment presented in Section 4.2, this time for prompts involving other arithmetic operations.Focusing on Qwen-2.5-1.5B,we evaluate the model on subtraction and division prompts with consistent errors at both positions, where it incorrectly judged the reasoning as "valid," and patch the latent activations of the consistency heads with those obtained from prompts containing an error only at the arithmetic result.Notably, across all operations, we patch the same consistency heads ini-tially identified with prompts involving additions (Table 4 in the Appendix).Figure 9 shows the change in error detection accuracy, indicating that the causal role of consistency heads in error detection extends beyond addition.Similar effects are observed for Qwen-2.5-Math-1.5Band Llama-3.2-3B(Figure 19 in the Appendix).</p>
+<p>Finally, we find that some larger models, such as Llama-3.1-70B,similarly struggle with detecting consistent arithmetic errors, as shown in Table 8 in the Appendix.This may indicate that, to some extent, these models also rely on consistency heads-a direction that future work could explore.</p>
+<p>Related Work</p>
+<p>Self-correction in LLMs.Self-correction in LLMs refers to the ability of models to correct their own generated output (Kamoi et al., 2024b;Huang et al., 2024;Madaan et al., 2023).Recent studies (Tyen et al., 2024;Kamoi et al., 2024a) suggest that LLMs tend to struggle with intrinsic self-correction, especially with detecting errors in their own output (Huang et al., 2024;Tyen et al., 2024;Kamoi et al., 2024b).While most studies focus on improving the models' ability to selfcorrect (Kamoi et al., 2024b;Madaan et al., 2023;Chen et al., 2024;Zhao et al., 2023), we study error detection from a mechanistic point of view.</p>
+<p>Arithmetic and Error Detection in LLMs.The underlying processes of arithmetic reasoning and error detection have been studied independently in LLMs so far.Several studies (Stolfo et al., 2023;Zhang et al., 2024;Nikankin et al., 2024) use causal mediation analysis (Pearl, 2001) to identify circuits that account for how LLMs process arithmetic operations.As of now, only few studies have analyzed self-correction in LLMs beyond the models' generated output (Li et al., 2024;Liu et al., 2024b).</p>
+<p>Conclusion</p>
+<p>This paper presents a mechanistic analysis of arithmetic error detection in LLMs.Our findings reveal that smaller-sized LLMs heavily rely on consistency heads-attention heads that evaluate surfacelevel alignment of numerical values in an arithmetic solution.Moreover, we highlight a structural dissociation between the models' arithmetic computation and validation processes.Finally, we show that bridging this gap can significantly improve the models' arithmetic error detection capacity.</p>
+<p>Limitations</p>
+<p>While our study provides new insights into the mechanisms underlying arithmetic error detection in LLMs, several limitations exist that can be addressed by future work.</p>
+<p>Task Design.This study focuses on examining the error detection behavior of LLMs in the context of simple arithmetic tasks.Specifically, we analyze math word problems involving the addition of two single-digit numbers that yield a two-digit result, as described in Section 3. Future research could extend these findings to other arithmetic operations, such as subtraction, multiplication, and division, or explore their applicability to more complex mathematical problems.It would also be valuable to investigate how these insights generalize to other domains, such as logical or causal reasoning tasks.</p>
+<p>Model Selection.As discussed in Sections 1 and 3, our analysis is limited to four smaller-sized LLMs.Although we observe consistent patterns across various model architectures, sizes, and finetuning procedures (particularly within the mathematical domain), future research could investigate how these findings extend to larger models with more advanced arithmetic capabilities.Our behavioral experiments with models such as Llama-3.1-70B-Instruct and Qwen-2.5-32B-Instruct(see Table 8 in the Appendix) show that even larger LLMs tend to struggle more with consistent errors at both error positions, compared to detecting an error present only at the position of the arithmetic result or the final answer.This may indicate that, similarly to smaller models, these models-at least to some extent-rely on consistency heads that are susceptible to the validation gap.We believe this is a promising direction for future work to explore.</p>
+<p>Circuit Identification Method.As highlighted in Section 2, edge attribution patching (Syed et al., 2024) serves as a linear approximation of activation patching (Vig et al., 2020).It involves a trade-off between accuracy and computational efficiency.Notably, circuits identified using EAP are not guaranteed to be complete (Wang et al., 2023).Although the circuits identified in this study are highly sparse (comprising less than 0.1% of the total edges) and achieve near-perfect task faithfulness (see Section 4), future research should explore how these circuits compare to those identified through more exact methods.use can be found in Appendix F. Furthermore, a detailed account of the data used in this work is provided in Section 3 and Appendix C.</p>
+<p>B Circuit Discovery Details</p>
+<p>B.1 Edge Attribution Patching</p>
+<p>Attribution patching (Nanda, 2024), and specifically edge attribution patching (EAP) (Syed et al., 2024), is a computationally efficient linear approximation of activation patching to estimate the effect of interventions on latent activations.Following the activation patching terminology proposed by Zhang and Nanda (2024), consider a clean prompt X clean and a corrupted prompt X corr .EAP approximates the change in a predefined metric P on the model's output when a specific activation z is patched from its corrupted value z(X corr ) to its clean value z(X clean ).This approximation is formulated using a first-order Taylor expansion around the corrupted input X corr .Specifically, EAP approximates f z (X corr ; z(X clean )) − f z (X corr ; z(X corr )) as:
+f z (X corr ; z(X clean )) − f z (X corr ; z(X corr )) ≈ (z(X clean ) − z(X corr )) • ∂f z ∂z z=z(Xcorr)
+where f z (X, z) = P(M z (X; z)) represents the metric P applied to the patched model M z .Here, M z (X; z) denotes the model M where the activation z is replaced with the value z for input X.</p>
+<p>To compute the gradient ∂fz ∂z z=z(Xcorr)</p>
+<p>, a backward pass is performed on the corrupted input X corr with respect to the activation z.The absolute value of the resulting score, often referred to as the absolute attribution score
+|∇ z P| = |(z(X clean ) − z(X corr )) • ∂fz ∂z z=z(Xcorr)
+|, quantifies the estimated influence of patching activation z.This facilitates efficient circuit identification in EAP by ranking edges according to these scores.</p>
+<p>B.2 Faithfulness Metric</p>
+<p>Let (X clean , X corr ) i represent a pair of clean and corrupt prompts within a dataset of size N .For each input, let C(X i,clean ) and C(X i,corr ) denote the logits of the clean and corrupt answer tokens in the circuit's output, and let M (X i,clean ) and M (X i,corr ) be the corresponding logits for the full model.In this study, we define the faithfulness as the logit difference recovered:
+1 N N i=1 C(X i,clean ) − C(X i,corr ) M (X i,clean ) − M (X i,corr ) × 100
+(2) A faithfulness score of 100% indicates that the circuit preserves the same logit difference as the full model, thus effectively recovering the model's task behavior.</p>
+<p>B.3 Circuit Identification Process</p>
+<p>To identify a minimal set of edges whose circuit achieves a faithfulness score between 99% and 101%, we employ an iterative search process.Starting from the sorted absolute attribution scores, denoted by |∇ z P|, we initially select the top-k edges and evaluate the corresponding circuit.In each iteration, we then add the next n edges from this sorted list and re-evaluate the faithfulness of the resulting circuit.The search stops as soon as a circuit with a faithfulness score (see Equation 2) within the desired interval (99% to 101%) is found.In our experiments, we set k = 100 and n = 20.</p>
+<p>C Dataset C.1 Templates</p>
+<p>We generate our dataset of clean and corrupt prompts based on the templates in Table 9.</p>
+<p>These templates have a set of variables, namely [instruction], [person], [object], [verb],</p>
+<p>[pronoun], [num1], [num2], [num3], each of which can be assigned different values.Table 11 lists all possible values.For the numerical variables, we use single-digit numerical values ([num1] and [num2]) that add to a two-digit arithmetic result ([num3]).To ensure that each variable assignment occupies the same position in the token sequence within a template, we retain only variables that are tokenized as a single token for each model.For the [instruction] variable, we include only instructions that share the same number of tokens.Finally, for the [correct_pair] variable, we select assignments where labels are tokenized as a single token across models.</p>
+<p>For other operations (subtraction, multiplication, and division) we follow the same procedure and construct eight templates for each operation (see Table 10).These templates use the same variable structure as addition, with subtraction including also a [verb] variable.For the numerical variables, we restrict number pairs to ensure two-digit Model Parameters Layers Hidden Dim Num Heads License  3: Properties of the models studied in this work.provide details on the number of parameters, layers, the hidden dimension size of the residual stream, and the number of attention heads for each model.Model weights were obtained from their respective Hugging Face repositories, accessible via the model names listed in the tables.Additionally, we specify the licenses under which the models are distributed.</p>
+<p>results: subtraction uses 2-digit minus 1-digit inputs yielding a 2-digit result, multiplication uses 2-digit times 1-digit inputs yielding a 2-digit result, and division uses 2-digit dividends and 1-digit divisors producing 2-digit quotients.</p>
+<p>C.2 Aligning Token Positions Across Templates</p>
+<p>Since we employ token-specific EAP to identify relevant edges at specific token positions, the same element (e.g., the arithmetic result or the final numeric answer token) might appear at different token positions depending on the specific template (see Table 9).This variation in token positions makes it difficult to determine whether edges from two different template-specific circuits appear at semantically similar tokens (e.g., the arithmetic result in template 1 at token position 13 and the arithmetic result in template 2 at token position 16).To address this challenge, we assign shared abstract labels to corresponding elements across templates.Examples of such labels include [op1-in-eq], [op2-in-eq],</p>
+<p>[equals], [result-first], [result-second],</p>
+<p>[answer-first], and [answer-second], which represent the two operands of the addition, the equal sign, and the digits of the arithmetic result and the numeric answer, respectively.Mapping tokens to a shared set of labels enables us to compute the soft intersection circuits between templates -allowing for the comparison of circuits associated with semantically equivalent elements without being confounded by their varying positions within the sequence.</p>
+<p>D Experiment Details</p>
+<p>D.1 Models</p>
+<p>Details of the models used in this study are presented in Table 3. Specifically, we include information on the number of parameters, the number of layers, the size of the hidden model dimension, the number of attention heads per attention block, and the respective model licenses.All models are instruction-tuned and expect a series of special tokens (e.g., to indicate the beginning of the user prompt or the end of a turn).Therefore, we wrap all prompts in the respective chat templates of the models7 .When applicable, we use the models' default system prompts.</p>
+<p>D.2 Edge Overlap</p>
+<p>To quantify the proportion of shared edges between two circuits, C 1 and C 2 , we compute both the Intersection over Union (IoU) and the Intersection over Minimum (IoM).</p>
+<p>As discussed in Section 3, we employ tokenlevel EAP to identify relevant edges for each token position t in the prompt.Therefore, the set of edges e (t) ij ∈ E = C is determined by the specific token position t.When computing the IoU and IoM between two circuits, the intersection and union of edge sets are computed separately for each token position.Specifically, we define the two metrics as:
+IoU(C result , C answer ) = |C result ∩ C answer | |C result ∪ C answer | ,(3)IoM(C result , C answer ) = |C result ∩ C answer | min(|C result |, |C answer |)
+(4) This provides an efficient way of measuring the degree of edge overlap at each token position in the analyzed circuits.</p>
+<p>D.3 Circuits for Arithmetic Computation</p>
+<p>To gain a deeper understanding of the relationship between models' mechanisms for arithmetic computation and validation, we identify an additional</p>
+<p>Model Attention Heads Consistency</p>
+<p>Qwen-2.5-1.5B-InstructL12H0, L12H2, L12H10, L13H0, L13H1, L13H10</p>
+<p>Qwen-2.5-Math-1.5B-InstructL13H0, L13H1
+Llama-3.2-3B-Instruct L4H14, L5H3, L7H11, L8H1, L10H5, L10H18 Phi-3-Mini-4k-Instruct L10H1, L10H5, L10H14, L14H19, L16H18 Random Qwen-2.5-1.5B-Instruct L1H0, L4H9, L9H6, L10H5, L11H8, L27H9 Qwen-2.5-Math-1.5B-Instruct L4H9, L27H5 Llama-3.2-3B-Instruct L1H1, L4H19, L9H16, L10H15, L11H23, L27H12 Phi-3-Mini-4k-Instruct L0H25, L3H18, L8H25, L20H19, L23H28
+Table 4: Attention heads used in the patching experiment.Consistency heads refer to attention heads that demonstrate a behavior consistent with the pattern shown in Figure 5, assessing numerical alignment between the digits of the arithmetic result and the final numeric answer.In contrast, random heads are arbitrarily selected attention heads not classified as consistency heads, serving as a control group for comparison in the experiment.</p>
+<p>set of circuits responsible for correctly computing the arithmetic result at the position of the equation (e.g., "5 + 8 = 13").This process involves generating a new set of (clean, corrupt) prompt pairs for each template T i ∈ {T 1 , . . ., T 8 }.</p>
+<p>We construct these datasets based on the data samples used for identifying circuits for arithmetic error detection (as described in Section 3).Specifically, we first truncate both clean and corrupt prompts at the position of the equation sign (e.g., "'...5 + 8 =").Next, we modify the corrupt prompt by replacing the numbers with a different set of numbers that produces an alternative result (e.g., "...3 + 9 =").This process results in two prompts-neither containing any errors yet-where the next token is expected to be the correct outcome of the arithmetic equation (e.g., "13" for the clean prompt and "12" for the corrupt prompt).The corresponding labels represent the correct results for each prompt.</p>
+<p>Using the new sets of clean and corrupt prompt pairs, we aim to identify the model components involved in computing the correct arithmetic result.We follow the same steps described in Section 3 and Appendix B.3 to identify circuits for each template.Finally, we compute the corresponding soft intersection circuits, which are responsible for generating the correct arithmetic result across templates.</p>
+<p>D.4 Patching Consistency Heads</p>
+<p>To evaluate the influence of individual consistency heads on the models' error detection behavior, we conduct two complementary patching interventions.In the first intervention, we run models on prompts X both , which contain a consistent error at both the arithmetic result and the final numeric answer (for which models tend to incorrectly predict "valid"), and patch the latent activations of the consistency heads listed in Table 4 with activations from prompts X result , where the error appears only at the arithmetic result (for which models typically predict "invalid").This intervention is expected to increase the rate of "invalid" predictions.In the second, reverse intervention, we run models on prompts X result and patch the same heads with activations from X both .This setup is expected to decrease the rate of "invalid" predictions.</p>
+<p>Specifically, for an attention head h, let A h (X) denote its attention matrix for a given prompt X.</p>
+<p>The patching operation we perform is defined as
+A h (X target ) = α • A h (X source )
+, where α is a scaling factor that controls the influence of the patched activation.For the first intervention, we set α to 3.1 for Qwen-2.5-1.5B-Instruct and Llama-3.2-3B-Instruct, and to 3.3 and 3.4 for Qwen-2.5-Math-1.5B-Instructand Phi-3-Mini-4k-Instruct, respectively.For the second intervention, we set α = 1.0 for all models.We perform the patching over 1, 000 prompt pairs.As a control setup for this experiment, we compare the result to patching randomly selected attention heads that are not labeled as consistency heads (see the full list in Table 4).</p>
+<p>D.5 Linear Probes</p>
+<p>We train linear probes on the hidden states of the models' residual stream to test whether a specific layer linearly encodes information about the correct result of the arithmetic equation within the prompts described in Section 3. The probes are trained separately for each layer and a set of selected token positions.For each layer and token position, we use a training set of 500 hidden states per template (i.e., 4,000 samples in total per layer and token position) and a test set of 100 samples per template (i.e., 800 samples in total).The hidden states are collected from prompts where both the arithmetic result and the numeric answer contain consistent errors.All probes are trained for one epoch using the Adam optimizer with a learning rate of 0.001.</p>
+<p>E Additional Results</p>
+<p>In this section, we present the results of additional experiments we conducted.</p>
+<p>E.1 Error Detection Circuits</p>
+<p>As described in Section 4.1, we identify a circuit with faithfulness score between 99% and 101% for each template T i ∈ {T 1 , . . .T 8 }.Table 12 provides a comparison between the size of the identified circuits, their exact faithfulness scores, and the total number of edges in the full computational graph for all models and templates.</p>
+<p>Once a circuit is identified for each template, we compute the soft intersection circuit C (τ ) to derive a final circuit that generalizes across templates, as described in Section 3.For each model, we analyze the faithfulness scores and edge counts for different threshold values τ in the soft intersection circuit C (τ ) .</p>
+<p>Figure 10 illustrates the faithfulness scores and number of edges for the soft intersection circuit C (τ ) of Qwen-2.5-1.5B-Instructacross various threshold values τ .Specifically, Figure 10a displays values for the circuit responsible for detecting errors at the position of the arithmetic results, while Figure 10b shows values for an error at the final numeric answer.The red circles indicate the circuits that offer the best balance between faithfulness and size.For detecting arithmetic errors at the position of the arithmetic result, the optimal threshold is τ = 5 8 , while for detecting errors at the final numeric answer, the strict intersection at τ = 8 8 provides the best trade-off.The corresponding circuits are visualized in Figures 26 and 30, respectively.</p>
+<p>Similar results for Qwen-2.5-Math-1.5B-Instructare shown in Figure 11, where the optimal circuits are C</p>
+<p>Model</p>
+<p>IoU IoM</p>
+<p>Qwen-2.5-1.5B-Instruct0.20 0.92 Qwen-2.5-Math-1.5B-Instruct0.30 0.91 Llama-3.2-3B-Instruct0.59 0.75 Phi-3-Mini-4k-Instruct 0.80 0.91  13 provides the results for Phi-3-Mini-4k-Instruct, where the best soft intersection circuits are C (7/8) result and C (6/8) answer , shown in Figures 29 and 33.</p>
+<p>Across all models and error types, a consistent structural pattern emerges.The most relevant edges are concentrated in the middle layers at the position of the final numeric answer.Additionally, a smaller subset of edges appears in the higher layers at the final token position of the prompt, primarily connecting MLP layers with the final residual output.Phi-3-Mini-4k-Instruct exhibits a slight variation, displaying a larger set of edges in the higher layers at the final token position.While many of these edges involve MLP components, others include attention head output matrices.Both types contribute to the residual stream forming the model's final output.Nonetheless, this model also exhibits a concentration of edges in the middle layers at the numeric answer position, consistent with the overall pattern observed in other models.</p>
+<p>E.2 Edge Overlap of Error Detection Circuits</p>
+<p>Table 5 shows the the Intersection over Union (IoU) and Intersection over Minimum (IoM) between the error detection circuits C result and C answer for each model.Notably, the IoM between the two circuits remains consistently ≥ 0.75 across all models.Meanwhile, IoU values exhibit greater variability, ranging from 0.20 for Qwen-2.5-1.5B-Instruct to 0.80 for Phi-3-Mini-4k-Instruct.This variability is primarily attributable to the size differences between circuits.Specifically, the circuits responsible for detecting errors at the position of the final numeric answer are generally smaller, with particularly pronounced size reductions for the Qwen family of models (refer to Table 12).</p>
+<p>Circuit Qwen-2.5-1.5BQwen-2.5-Math-1.5BLlama-3.2-3BPhi-3-Mini-3.8BTable 6: Faithfulness scores for the intersection (∩) and union (∪) between the final soft intersection circuits</p>
+<p>Result
+C (τ )
+result and C</p>
+<p>(τ )</p>
+<p>answer computed for each model.For Qwen-2.5-1.5B-Instruct, the intersection and union between C Table 6 reports the faithfulness results obtained from the intersection C result ∩ C answer and union C result ∪ C answer of the error detection circuits across models.The union circuits exhibit near-perfect faithfulness for both error types across all models, achieving faithfulness scores ≥ 97.00%.In contrast, the faithfulness of the intersection circuits is generally lower, although it remains above 70.00%for models such as Qwen-2.5-1.5B-Instruct,Llama-3.2-3B-Instruct, and Phi-3-Mini-4k-Instruct.The lowest faithfulness is observed for the intersection circuit of Qwen-2.5-Math-1.5B-Instruct,likely due to its extreme sparsity, containing only 20 edges in total.</p>
+<p>E.3 Detection of Consistent Errors</p>
+<p>As outlined in Section 4.2, we expect models to struggle with differentiating between errorfree samples and those containing a consistent error in both the arithmetic result and the final numeric answer.We evaluate models on a dataset of 1,000 (clean, corrupt) prompt pairs for each template T i ∈ {T 1 , . . ., T 8 }, where the clean prompts contain a consistent error at both specified positions.As mentioned in Section 4, a prompt pair is considered correctly classified if the model predicts the clean prompt as erroneous (y clean ∈ {invalid, incorrect, wrong}) and the corrupt prompt as error-free (y corrupt ∈ {valid, correct, right}).The respective accuracy of all models is summarized in Table 2. Overall, the results indicate that the models perform poorly on this task.For instance, Qwen-2.5-Math-1.5B-Instructachieves an average accuracy of only 3.37% ± 2.06%.Among the evaluated models, Phi-3-Mini-4k-Instruct demonstrates the best performance, with an average accuracy of 40.98% ± 18.41%.</p>
+<p>To study how these findings transfer to larger models, we additionally evaluate the performance of LLaMA-3.1-70B-Instruct and Qwen-2.5-32B-Instruct on different types of errors.As shown in Table 8, we observe that, similar to the smaller models, both larger LLMs struggle more with detecting a consistent error at both error positions (result &amp; answer) than with detecting an error present at only the arithmetic result or the final numeric answer.In particular, the average accuracy of LLaMA-3.1-70B-Instruct for consistent errors is 44.67% ± 10.50%, a drop of more than half compared to its 100.0%± 0.00% accuracy on detecting errors present only at the position of the arithmetic result or the final numeric answer.</p>
+<p>E.4 Consistency Heads</p>
+<p>As mentioned in Section 4.2, we find that consistency heads play an important role in the model's arithmetic error detection process.These heads exhibit high average attention scores when the digits of the arithmetic result either align or misalign with the final numeric answer.Figures 14a and 14b illustrate examples of attention scores for two of these heads in Qwen-2.5-1.5B-Instruct.Similar patterns are presented for Qwen-2.5-Math-1.5B-Instruct in Figures 15a and 15b, for Llama-3.2-3B-Instruct in Figures 16a and 16b, and for Phi-3-Mini-4k-Instruct in Figures 17a and 17b.A comprehensive list of all identified consistency heads for each model is provided in Table 4.</p>
+<p>Operation Error Type</p>
+<p>Qwen2.5-1.5BLlama-3.2-3BPhi-3-Mini-3.8BQwen2.5-Math-1.5B</p>
+<p>E.5 Consistency Heads Patching</p>
+<p>Figure 18 shows the models' accuracy in detecting consistent errors at both the position of the arithmetic result and the final numeric answer, before and after patching a small subset of consistency heads, as outlined in Section 4.3.For the exact list of patched heads, please refer to Table 4. Consistent with the results reported in Section 4.3 for Qwen-2.5-1.5B-Instruct,we observe a significant improvement in accuracy for Qwen-2.5-Math-1.5B-Instruct,Llama-3.2-3B-Instruct, and Phi-3-Mini-4k-Instruct.</p>
+<p>E.6 Computation Circuits</p>
+<p>As outlined in Section D.3, we identify the circuits responsible for predicting the correct arithmetic result of the equations in the prompts described in Section 3.</p>
+<p>E.7 Accuracy of Linear Probes</p>
+<p>The results of the probing experiment, detailed in Section 4.3 and Appendix D.5, are presented for Qwen-2.5-Math-1.5B-Instruct,Llama-3.2-3B-Instruct, and Phi-3-Mini-4k-Instruct in Figure 20.</p>
+<p>The findings indicate that for all models, nearperfect accuracy is achieved by probes trained on the hidden representations of the residual stream in the upper layers.Notably, Phi-3-Mini-4k-Instruct is the only model that demonstrates significant probe accuracy in the middle layers.</p>
+<p>E.8 Residual Stream Patching</p>
+<p>To bridge the gap between the models' circuits responsible for arithmetic computation and validation, we add the hidden representation from higher layers-where the correct arithmetic result is linearly encoded (see Figure 20-to lower layers.Specifically, for Qwen-2.5-Math-1.5B-Instruct,we intervene on layer 1 using the hidden representation from layer 22.For Llama-3.2-3B-Instruct, the intervention is performed on layer 2 using the hidden representation from layer 16, while for Phi-3-Mini-4k-Instruct, layer 1 is modified using the hidden representation from layer 24.The results of these interventions are depicted in Figure 21.</p>
+<p>Qwen-2.5-1.5B-Instruct,Qwen-2.5-Math-1.5B-Instruct,and Phi-3-Mini-4k-Instruct exhibit significant improvements in accuracy following these interventions.In contrast, Llama-3.2-3B-Instructdemonstrates a more modest performance gain.We attribute this difference to the simplicity of our approach and consider this a promising direction for further investigation.</p>
+<p>F Implementation Details</p>
+<p>For the majority of our circuit identification experiments, we used the AutoCircuit library developed by Miller et al. (2024).For the remaining experiments, we relied on the TransformerLens library by Nanda and Bloom (2022).All models were loaded with bfloat16 precision.The experiments were conducted on a single A100 GPU with 80GB of memory, consuming approximately 350 GPU hours in total.Additionally, GitHub Copilot was used as an assistant tool for parts of the project's source code development, and ChatGPT was used to correct minor grammatical errors.To better compare circuit sizes, we also present the total number of edges per token position for each model.Left: Qwen models (Qwen-2.5 and Qwen-2.5-Math)from templates 1-8; Right: Llama-3.2 and Phi-3-Mini models from templates 1-8.         Figure 20: The linear probe's accuracy across all layers of Qwen-2.5-Math-1.5B-Instruct(Figure 20a), Llama-3.2-3B-Instruct(Figure 20b), and Phi-3-Mini-4k-Instruct (Figure 20c) at selected token positions.Only in higher layers, the probe is able to achieve predict the correct arithmetic result perfectly.For Qwen-2.5-Math-1.5B-Instructand Phi-3-Mini-4k-Instruct, we observe moderate accuracies also in middle layers.For Qwen-2.5-Math-1.5B-Instruct(Figure 21a), the residual steams' hidden representation from layer 22 is added to the one in layer 1.For Llama-3.2-3B-Instruct (Figure 21b), we add the representation from layer 16 to layer 2, and for Phi-3-Mini-4k-Instruct (Figure 21c), the representation from layer 24 is added to layer 1.    Figure 26: The arithmetic result error identification circuit C</p>
+<p>(5/8) result of Qwen-2.5-1.5B-Instructobtained after taking the soft intersection between all template circuits with a threshold value of τ = 5 8 .result of Phi-3-Mini-4k-Instruct obtained after taking the soft intersection between all template circuits with a threshold value of τ = 7 8 .</p>
+<p>Figure 30: The numeric answer error identification circuit C (8/8) answer of Qwen-2.5-1.5B-Instructobtained after taking the soft intersection between all template circuits with with a threshold value of τ = 8 8 .</p>
+<p>Figure 31: The numeric answer error identification circuit C (8/8) answer of Qwen-2.5-Math-1.5B-Instructobtained after taking the soft intersection between all template circuits with with a threshold value of τ = 8 8 .</p>
+<p>Figure 32: The numeric answer error identification circuit C (8/8) answer of Llama-3.2-3B-Instructobtained after taking the soft intersection between all template circuits with with a threshold value of τ = 8 8 .</p>
+<p>Figure 33: The numeric answer error identification circuit C (6/8) answer of Phi-3-Mini-4k-Instruct obtained after taking the soft intersection between all template circuits with with a threshold value of τ = 6 8 .</p>
+<p>initially has [num1] [object].After [verb] [num2] more [object], how many [object] does [pronoun] have?To solve this, we add [num1] + [num2] = [result].Thus, [name] has a total of [answer] [object].The above reasoning is: Template 1 [name] initially has [num1] [object].After [verb] [num2] more object], how many [object] does [pronoun] have?To solve this, we add [num1] + [num2] = [result].Thus, [name] has a total of [answer] [object].</p>
+<p>Figure 3 :
+3
+Figure 3: The number of edges and faithfulness scores averaged across all templates (with standard deviation) of the soft intersection circuit for different τ values.Red circles mark the circuit that best balances size and faithfulness.</p>
+<p>Figure 4 :
+4
+Figure 4: The soft intersection circuit C (8/8) answer , representing the set of edges that causally influence the output of Qwen-2.5-1.5B when detecting errors at the position of the final numeric answer.Attention heads are abbreviated as A.layer.head.K(ey)/V(alue)/Q(uery)/O(ut), while MLPs are represented as MLP in/out layer.Corresponding token positions are indicated by the labels at the bottom.</p>
+<p>Figure 5 :
+5
+Figure5: Attention patterns of a consistency head in Qwen-2.5-1.5B(head 2 in layer 12).Reported scores are averaged over 5,000 prompts where (left) an error is present at the position of the arithmetic result, (second to left) an error is present at the position of the final numeric answer, (second to right) no error is present, and (right) a consistent error is present at both considered positions.</p>
+<p>in the Appendix) and even across error types (Figures 26 to 29 in the Appendix).One Circuit for Arithmetic Error Detection.The structural similarity between circuits identified for the two distinct error types is further supported by their edge overlap.When computing the Intersection overMinimum (IoM)</p>
+<p>Figure 7 :
+7
+Figure 7: The linear probe's accuracy across all layers of Qwen-2.5-1.5B at selected token positions.</p>
+<p>Figure 8 :
+8
+Figure 8: Error detection accuracy of Qwen-2.5-1.5B on (clean, corrupt) prompt pairs where (left) the clean prompt contains a consistent error at both error positions, and (right) an error is present only at the position of the arithmetic result.The blue intervention bar denotes the result after adding the hidden representation of the residual stream in layer 22 (at [result-first]) to the residual stream of layer 1 (at [result-second]).</p>
+<p>Figure 9 :
+9
+Figure9: Error detection accuracy of Qwen-2.5-1.5Bbefore and after patching six consistency heads.We evaluate the model on consistent-error prompts related to subtraction (left) or division (right) and patch activations from a single-error run.As a control, we patch six randomly chosen attention heads.</p>
+<p>answer , depicted in Figures27 and 31.For Llama-3.2-3B-Instruct, the corresponding results are displayed in Figure12, with optimal</p>
+<p>answer are calculated.For Qwen-2.5-Math-1.5B-Instruct,they are computed for C last two rows show the number of edges of the resulting circuits.</p>
+<p>Figure 10 :Figure 11 :Figure 12 :Figure 13 :
+10111213
+Figure 10: The number of edges and average faithfulness scores of the soft intersection circuit for different threshold values, τ .Red circles indicate the soft intersection circuit that best trade offs size with faithfulness.Results are shown for Qwen-2.5-1.5B-Instruct.</p>
+<p>(a) consistency head L12H2.(b) (in)consistency head L13H1.</p>
+<p>Figure 14 :
+14
+Figure 14: Attention patterns of two consistency heads in Qwen-2.5-1.5B-Instruct.Reported scores are averaged over 5,000 prompts where (left) an error is present at the position of the arithmetic result, (second to left) an error is present at the position of the final numeric answer, (second to right) no error is present, and (right) a consistent error is present at both considered positions.</p>
+<p>Figure 15 :
+15
+Figure 15: Attention patterns of two consistency heads in Qwen-2.5-Math-1.5B-Instruct.Reported scores are averaged over 5,000 prompts where (left) an error is present at the position of the arithmetic result, (second to left) an error is present at the position of the final numeric answer, (second to right) no error is present, and (right) a consistent error is present at both considered positions.</p>
+<p>(a) consistency head L4H14.(b) (in)consistency head L8H1.</p>
+<p>Figure 16 :
+16
+Figure 16: Attention patterns of two consistency heads in Llama-3.2-3B-Instruct.Reported scores are averaged over 5,000 prompts where (left) an error is present at the position of the arithmetic result, (second to left) an error is present at the position of the final numeric answer, (second to right) no error is present, and (right) a consistent error is present at both considered positions.Note that Llama-3.2 does not tokenize numbers digit-by-digit.</p>
+<p>Figure 17 :
+17
+Figure 17: Attention patterns of two consistency heads in Phi-3-Mini-4k-Instruct. Reported scores are averaged over 5,000 prompts where (left) an error is present at the position of the arithmetic result, (second to left) an error is present at the position of the final numeric answer, (second to right) no error is present, and (right) a consistent error is present at both considered positions.</p>
+<p>Figure 18 :
+18
+Figure 18: Accuracy of models on (clean, corrupt) prompt pairs, where the clean prompt contains a consistent error at both error positions.The blue intervention bar represents the result after patching a set of consistency heads (for a list of heads, please refer to Table4in the Appendix).In contrast, the orange bar indicates the accuracy after patching a set of randomly chosen attention heads that are not labeled as consistency heads.</p>
+<p>Figure 21 :
+21
+Figure 21: Accuracy of models on (clean, corrupt) prompt pairs where (left) the clean prompt contains a consistent error at both error positions (invalid result &amp; answer), and (right) an error is present only at the position of the arithmetic result (invalid result).The blue intervention bar denotes the result after adding the hidden representation of the residual stream in layer higher layers (at [result-first]) to the residual stream in lower layers (at [result-second]).For Qwen-2.5-Math-1.5B-Instruct(Figure21a), the residual steams' hidden representation from layer 22 is added to the one in layer 1.For Llama-3.2-3B-Instruct (Figure21b), we add the representation from layer 16 to layer 2, and for Phi-3-Mini-4k-Instruct (Figure21c), the representation from layer 24 is added to layer 1.</p>
+<p>Figure 22 :
+22
+Figure 22: The computation circuit C (8/8) computation of Qwen-2.5-1.5B-Instructobtained after taking the soft intersection between all template circuits with a threshold value of τ = 8 8 .</p>
+<p>Figure 23 :
+23
+Figure 23: The computation circuit C (8/8) computation of Qwen-2.5-Math-1.5B-Instructobtained after taking the soft intersection between all template circuits with a threshold value of τ = 8 8 .</p>
+<p>Figure 24 :
+24
+Figure 24: The computation circuit C (8/8) computation of Llama-3.2-3B-Instructobtained after taking the soft intersection between all template circuits with a threshold value of τ = 8 8 .</p>
+<p>Figure 25 :
+25
+Figure 25: The computation circuit C (8/8) computation of Phi-3-Mini-4k-Instruct obtained after taking the soft intersection between all template circuits with a threshold value of τ = 8 8 .</p>
+<p>Figure 27 :
+27
+Figure 27: The arithmetic result error identification circuit C (7/8) result of Qwen-2.5-Math-1.5B-Instructobtained after taking the soft intersection between all template circuits with a threshold value of τ = 7 8 .</p>
+<p>Figure 29 :
+29
+Figure 29: The arithmetic result error identification circuit C (7/8)</p>
+<p>Table 1 :
+1
+Accuracy of models in correctly classifying the solutions' validity of (clean, corrupt) prompt pairs.Values represent the mean accuracy across all templates, reported with their corresponding standard deviation.</p>
+<p>Table 5 :
+5
+The edge overlap between the two error detection circuits in terms of their Intersection over Union (IoU) and Intersection over Minimum (IoM).The metrics quantify the proportion of edges shared by both circuits while considering the token position in which an edge appears.
+circuits C(7/8) result and C(8/8) answer , visualized in Figures 28and 32. Finally, Figure</p>
+<p>Table 7 :
+7
+Accuracy of models in correctly classifying the solutions' validity of (clean, corrupt) prompt pairs across different arithmetic operations and error types.Values represent the mean accuracy across all templates, reported with their corresponding standard deviation.Cells highlighted in red indicate cases where the accuracy for Result &amp; Answer is notably lower than for Numeric Answer and Arithmetic Result.
+Arithmetic Result 71.51 ± 11.5099.66 ± 0.5797.56 ± 5.7493.54 ± 11.09SubtractionNumeric Answer Result &amp; Answer70.05 ± 11.57 8.68 ± 4.9899.60 ± 0.65 14.08 ± 2.0197.60 ± 5.68 99.64 ± 0.7893.61 ± 10.77 14.33 ± 1.60Arithmetic Result 55.30 ± 19.46 78.53 ± 31.4799.54 ± 0.7394.00 ± 13.68MultiplicationNumeric Answer Result &amp; Answer55.22 ± 18.50 78.89 ± 31.11 62.88 ± 17.26 42.73 ± 30.7399.54 ± 0.62 99.65 ± 0.4595.03 ± 13.12 80.96 ± 9.25Arithmetic Result 59.86 ± 19.08 86.44 ± 13.0494.52 ± 12.3599.30 ± 0.92DivisionNumeric Answer Result &amp; Answer60.06 ± 18.07 86.76 ± 12.97 50.90 ± 15.84 11.79 ± 7.9994.18 ± 12.72 99.14 ± 1.5099.53 ± 0.69 57.95 ± 13.89</p>
+<p>Table 12
+12presents the size and faithful-ness of the respective circuits for all models andtemplates. Results for the faithfulness scores andsizes of the soft intersection circuits C (τ ) for differ-ent threshold values τ for all models are shown inFigures 10c, 11c, 12c, and 13c, respectively. Thefinal circuits are visualized in Figures 22, 23, 24,and 25.Error TypeQwen-2.5-32B Llama-3.1-70BArithmetic Result98.93 ± 1.57100.00 ± 0.00Numeric Answer99.51 ± 0.09100.00 ± 0.00Result &amp; Answer80.13 ± 9.6544.76 ± 10.50</p>
+<p>Table 8 :
+8
+Accuracy of bigger models in correctly classifying the solutions' validity of (clean, corrupt) prompt pairs with different error types.Values represent the mean accuracy across all templates, reported with their corresponding standard deviation.</p>
+<p>Table 10 :
+10
+Templates used for other arithmetic operations.We created 8 templates for each operation, including[instruction], [person], [object], [pronoun], [num1], [num2],[num3] as variable components.The subtraction template also has a [verb] variable, for which we use the following verbs: "lost", "sold", "gave away", "donated", "threw away",
+TemplateTaskTotal EdgesNum EdgesFaithfulnessTemplateTaskTotal EdgesNum EdgesFaithfulnessInv. Result84715281100.00Inv. Result38997119099.281Inv. Answer84715101100.571Inv. Answer389971294100.00Computation8471514099.04Computation38997116099.10Inv. Result84715440100.40Inv. Result38997138099.502Inv. Answer84715115100.002Inv. Answer389971282100.00Computation8471510099.21Computation38997110099.14Qwen-2.5-1.5B-Instruct3 4Inv. Result Inv. Answer Computation Inv. Result Inv. Answer84715 84715 84715 84715 84715522 120 300 261 208100.00 100.00 99.13 100.49 100.57Llama-3.2-3B-Instruct3 4Inv. Result Inv. Answer Computation Inv. Result Inv. Answer389971 389971 389971 389971 389971187 280 100 180 38299.10 99.52 100.00 99.32 99.25Computation8471510499.20Computation38997111899.59Inv. Result84715721100.00Inv. Result38997122099.585Inv. Answer8471512099.295Inv. Answer389971241100.00Computation84715280100.00Computation38997116099.22Inv. Result8471514299.47Inv. Result38997144399.286Inv. Answer84715163100.416Inv. Answer389971240100.00Computation8471512099.15Computation389971100100.00Inv. Result8471520099.42Inv. Result38997118099.047Inv. Answer84715104100.677Inv. Answer389971561100.52Computation8471526099.60Computation38997118099.09Inv. Result8471520199.52Inv. Result38997122199.218Inv. Answer84715112100.608Inv. Answer38997120099.19Computation8471514099.15Computation38997111999.53Inv. Result8471514199.46Inv Result159288128599.251Inv. Answer8471520099.451Inv. Answer159288158199.24Computation8471510199.27Computation159288116199.46Inv. Result84715241100.00Inv. Result159288150099.252Inv. Answer84715101100.002Inv. Answer159288148099.25Qwen-2.5-Math-1.5B-Instruct3 4Computation Inv. Result Inv. Answer Computation Inv. Result Inv. Answer Computation84715 84715 84715 84715 84715 84715 84715100 340 100 101 320 100 12099.27 100.00 100.00 99.56 99.01 100.00 99.26Phi-3-Mini-4k-Instruct3 4Computation Inv. Result Inv. Answer Computation Inv. Result Inv. Answer Computation1592881 1592881 1592881 1592881 1592881 1592881 1592881122 855 683 240 371 504 14499.08 99.24 99.25 99.47 99.15 99.13 99.08Inv. Result8471531899.42Inv. Result159288150499.215Inv. Answer8471510299.405Inv. Answer159288150099.20Computation8471512299.61Computation159288114599.49Inv. Result8471510299.47Inv. Result159288156999.226Inv. Answer8471518799.456Inv. Answer159288142299.22Computation8471510099.53Computation159288114099.42Inv. Result8471532199.53Inv. Result159288188699.207Inv. Answer8471532399.537Inv. Answer159288160599.21Computation8471510099.59Computation159288112099.03Inv. Result8471532199.42Inv. Result159288162599.228Inv. Answer84715100100.008Inv. Answer159288148199.23Computation8471510099.55Computation159288114699.50</p>
+<p>Table 12 :
+12
+The faithfulness score and the number of edges of the circuit identified for each model, template, and task.</p>
+<p>By validation gap, we mean both the structural separation and the performance gap between arithmetic computation and validation in LLMs.
+This metric typically evaluates differences in logits or output probabilities relative to the clean output y clean .
+Note that since we employ token-wise EAP to identify relevant edges per token position, we assign abstract yet meaningful labels to each token position, ensuring transferability across templates. Further details on this labeling process can be found in Appendix C.2.
+Note that Qwen-2.5 uses a one-digit tokenization scheme; i.e., the number 16 is encoded into two separate tokens.
+Detailed information on the computation of the edge overlap between circuits can be found in Appendix D.2.
+See Table10in the Appendix for the full set of templates and variables considered when generating data for other arithmetic operations.
+huggingface.co/docs/transformers/chat_templating.
+Table 9: The 8 problem templates including [instruction], [person], [object], [pronoun], [num1], [num2],[num3] as variable components. While samples within a template contain the same number of tokens, samples across templates vary in length due to differences in their non-variable parts.
+AcknowledgmentsWe would like to thank ELLIS-the European Laboratory for Learning and Intelligent Systems-as the collaboration that led to this paper started at a workshop organized by Raquel Fernández and Sandro Pezzelle at MFO, the Oberwolfach Research Institute for Mathematics in the German Black Forest, on behalf of the ELLIS NLP program.We are also grateful to the members of the MaiNLP lab for their valuable feedback, with special thanks to Michael Hedderich, Robert Litschko, Diego Frassinelli, Rob van der Goot, Siyao Peng, Yang Janet Liu, Xinpeng Wang, Verena Blaschke, Raoyuan Zhao, Elena Senger, Felicia Körner, Soh-Eun Shim, Andreas Säuberli, Florian Eichin, Shijia Zhou, and Beiduo Chen.We further thank the anonymous reviewers for their insightful comments and suggestions.RB acknowledges the generous support of Amazon Alexa, whose donation helped make this work possible.Finally, we acknowledge the support for BP through the ERC Consolidator Grant DIALECT 101043235.Variable Assignments[person]Aaron, Adam, Alan, Alex, Alice, Amy, Anderson, Andre, Andrew, Andy, Anna, Anthony, Arthur, Austin, Blake, Brandon, Brian, Carter, Charles, Charlie, Christian, Christopher, Clark, Cole, Collins, Connor, Crew, Crystal, Daniel, David, Dean, Edward, Elizabeth, Emily, Eric, Eva, Ford, Frank, George, Georgia, Graham, Grant, Henry, Ian, Jack, Jacob, Jake, James, Jamie, Jane, Jason, Jay, Jennifer, Jeremy, Jessica, John, Jonathan, Jordan
+Jyoti Marah Abdin, Hany Aneja, Ahmed Awadalla, Ammar Awadallah, Nguyen Ahmad Awan, Amit Bach, Arash Bahree, Jianmin Bakhtiari, Bao, arXiv:2404.14219Harkirat Behl, and 1 others. 2024. Phi-3 technical report: A highly capable language model locally on your phone. arXiv preprint</p>
+<p>Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, arXiv:2303.08774Shyamal Anadkat, and 1 others. 2023. Gpt-4 technical report. arXiv preprint</p>
+<p>Mechanistic interpretability for AI safety -a review. Leonard Bereska, Stratis Gavves, Transactions on Machine Learning Research. Survey Certification. 2024Expert Certification</p>
+<p>Finding transformer circuits with edge pruning. Adithya Bhaskar, Alexander Wettig, Dan Friedman, Danqi Chen, The Thirty-eighth Annual Conference on Neural Information Processing Systems. 2024</p>
+<p>Teaching large language models to self-debug. Xinyun Chen, Maxwell Lin, Nathanael Schärli, Denny Zhou, The Twelfth International Conference on Learning Representations. 2024</p>
+<p>Towards automated circuit discovery for mechanistic interpretability. Arthur Conmy, Augustine Mavor-Parker, Aengus Lynch, Stefan Heimersheim, Adrià Garriga-Alonso, Advances in Neural Information Processing Systems. Curran Associates, Inc202336</p>
+<p>How does gpt-2 compute greater-than?: Interpreting mathematical abilities in a pre-trained language model. Michael Hanna, Ollie Liu, Alexandre Variengien, Advances in Neural Information Processing Systems. 202336</p>
+<p>Have faith in faithfulness: Going beyond circuit overlap when finding model mechanisms. Michael Hanna, Sandro Pezzelle, Yonatan Belinkov, ICML 2024 Workshop on Mechanistic Interpretability. 2024</p>
+<p>A closer look at the self-verification abilities of large language models in logical reasoning. Ruixin Hong, Hongming Zhang, Xinyu Pang, Dong Yu, Changshui Zhang, 10.18653/v1/2024.naacl-long.52Proceedings of the 2024 Conference of the North American Chapter. Long Papers. the 2024 Conference of the North American ChapterMexico City, MexicoAssociation for Computational Linguistics20241</p>
+<p>Large language models cannot self-correct reasoning yet. Jie Huang, Xinyun Chen, Swaroop Mishra, Steven Huaixiu, Adams Wei Zheng, Xinying Yu, Denny Song, Zhou, The Twelfth International Conference on Learning Representations. 2024</p>
+<p>Self-[in]correct: Llms struggle with refining self-generated responses. Dongwei Jiang, Jingyu Zhang, Orion Weller, Nathaniel Weir, Benjamin Van Durme, Daniel Khashabi, 10.48550/arXiv.2404.04298CoRR, abs/2404.042982024</p>
+<p>Evaluating LLMs at detecting errors in LLM responses. Ryo Kamoi, Sarkar Snigdha, Sarathi Das, Renze Lou, Jihyun Janice Ahn, Yilun Zhao, Xiaoxin Lu, Nan Zhang, Yusen Zhang, Ranran Haoran, Sujeeth Reddy Zhang, Salika Vummanthala, Shaobo Dave, Arman Qin, Wenpeng Cohan, Rui Yin, Zhang, First Conference on Language Modeling. 2024a</p>
+<p>When can LLMs actually correct their own mistakes? a critical survey of selfcorrection of LLMs. Ryo Kamoi, Yusen Zhang, Nan Zhang, Jiawei Han, Rui Zhang, 10.1162/tacl_a_00713Transactions of the Association for Computational Linguistics. 122024b</p>
+<p>Confidence matters: Revisiting intrinsic selfcorrection capabilities of large language models. Loka Li, Guangyi Chen, Yusheng Su, Zhenhao Chen, Yixuan Zhang, Eric Xing, Kun Zhang, 10.48550/arXiv.2402.12563CoRR, abs/2402.125632024</p>
+<p>Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bochao Wu, Chengda Lu, Chenggang Zhao, Chengqi Deng, Chenyu Zhang, arXiv:2412.19437Chong Ruan, and 1 others. 2024a. Deepseek-v3 technical report. arXiv preprint</p>
+<p>Intrinsic self-correction for enhanced morality: An analysis of internal mechanisms and the superficial hypothesis. Guangliang Liu, Haitao Mao, Jiliang Tang, Kristen Johnson, 10.18653/v1/2024.emnlp-main.918Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing. the 2024 Conference on Empirical Methods in Natural Language ProcessingMiami, Florida, USA2024bAssociation for Computational Linguistics</p>
+<p>Self-refine: Iterative refinement with self-feedback. Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, Shashank Gupta, Bodhisattwa Prasad Majumder, Katherine Hermann, Sean Welleck, Amir Yazdanbakhsh, Peter Clark, Thirty-seventh Conference on Neural Information Processing Systems. 2023</p>
+<p>Locating and editing factual associations in gpt. Kevin Meng, David Bau, Alex Andonian, Yonatan Belinkov, Advances in Neural Information Processing Systems. 202235</p>
+<p>Transformer circuit evaluation metrics are not robust. Joseph Miller, Bilal Chughtai, William Saunders, First Conference on Language Modeling. 2024</p>
+<p>Circuit compositions: Exploring modular structures in transformer-based language models. Philipp Mondorf, Sondre Wold, Barbara Plank, 10.18653/v1/2025.acl-long.727Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics. Long Papers. the 63rd Annual Meeting of the Association for Computational LinguisticsVienna, AustriaAssociation for Computational Linguistics20251</p>
+<p>David Bau, and Yonatan Belinkov. 2024. The quest for the right mediator: A history, survey, and theoretical grounding of causal interpretability. Aaron Mueller, Jannik Brinkmann, Millicent L Li, Samuel Marks, Koyena Pal, Nikhil Prakash, Can Rager, Aruna Sankaranarayanan, Sen Arnab, Jiuding Sharma, Eric Sun, Todd, 10.48550/arXiv.2408.01416CoRR, abs/2408.01416</p>
+<p>Neel Nanda, Attribution patching. Neel Nanda's Website. 2024</p>
+<p>Neel Nanda, Joseph Bloom, Transformerlens. 2022</p>
+<p>Arithmetic without algorithms: Language models solve math with a bag of heuristics. Yaniv Nikankin, Anja Reusch, Aaron Mueller, Yonatan Belinkov, arXiv:2410.212722024Preprint</p>
+<p>Direct and indirect effects. Judea Pearl, Proceedings of the Seventeenth Conference on Uncertainty in Artificial Intelligence, UAI'01. the Seventeenth Conference on Uncertainty in Artificial Intelligence, UAI'01San Francisco, CA, USAMorgan Kaufmann Publishers Inc2001</p>
+<p>Long Phan, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, Hugh Zhang, Sean Shi, Michael Choi, Anish Agrawal, arXiv:2501.14249Arnav Chopra, and 1 others. 2025. Humanity's last exam. arXiv preprint</p>
+<p>ARB: Advanced reasoning benchmark for large language models. Tomohiro Sawada, Daniel Paleka, Alexander Havrilla, Pranav Tadepalli, Paula Vidas, Alexander Kranias, John Nay, Kshitij Gupta, Aran Komatsuzaki, The 3rd Workshop on Mathematical Reasoning and AI at NeurIPS'23. 2023</p>
+<p>A mechanistic interpretation of arithmetic reasoning in language models using causal mediation analysis. Alessandro Stolfo, Yonatan Belinkov, Mrinmaya Sachan, 10.18653/v1/2023.emnlp-main.435Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing. the 2023 Conference on Empirical Methods in Natural Language ProcessingSingaporeAssociation for Computational Linguistics2023</p>
+<p>Attribution patching outperforms automated circuit discovery. Aaquib Syed, Can Rager, Arthur Conmy, 10.18653/v1/2024.blackboxnlp-1.25Proceedings of the 7th BlackboxNLP Workshop: Analyzing and Interpreting Neural Networks for NLP. the 7th BlackboxNLP Workshop: Analyzing and Interpreting Neural Networks for NLPMiami, Florida, USAssociation for Computational Linguistics2024</p>
+<p>LLMs cannot find reasoning errors, but can correct them given the error location. Gladys Tyen, Hassan Mansoor, Victor Carbune, Peter Chen, Tony Mak, 10.18653/v1/2024.findings-acl.826Findings of the Association for Computational Linguistics: ACL 2024. Bangkok, ThailandAssociation for Computational Linguistics2024</p>
+<p>Interpretability in the wild: a circuit for indirect object identification in GPT-2 small. Jesse Vig, Sebastian Gehrmann, Yonatan Belinkov, Sharon Qian, Daniel Nevo, Yaron Singer, Stuart Shieber, The Eleventh International Conference on Learning Representations. Alexandre Variengien, Arthur Conmy, Buck Shlegeris, Jacob Steinhardt, Kevin Ro WangCurran Associates, Inc2020. 202333Advances in Neural Information Processing Systems</p>
+<p>Generating sequences by learning to self-correct. Sean Welleck, Ximing Lu, Peter West, Faeze Brahman, Tianxiao Shen, Daniel Khashabi, Yejin Choi, The Eleventh International Conference on Learning Representations. 2023</p>
+<p>An Yang, Baosong Yang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Zhou, Chengpeng Li, Chengyuan Li, Dayiheng Liu, Fei Huang, Guanting Dong, Haoran Wei, Huan Lin, Jialong Tang, Jialin Wang, Jian Yang, Jianhong Tu, Jianwei Zhang, Jianxin Ma, 10.48550/arXiv.2407.10671CoRR, abs/2407.10671others. 2024a. Qwen2 technical report. 43</p>
+<p>An Yang, Beichen Zhang, Binyuan Hui, Bofei Gao, Bowen Yu, Chengpeng Li, Dayiheng Liu, Jianhong Tu, Jingren Zhou, arXiv:2409.12122Junyang Lin, and 1 others. 2024b. Qwen2.5-math technical report: Toward mathematical expert model via self-improvement. arXiv preprint</p>
+<p>Selfee: Iterative self-revising llm empowered by selffeedback generation. Seonghyeon Ye, Yongrae Jo, Doyoung Kim, Sungdong Kim, Hyeonbin Hwang, Minjoon Seo, 2023Blog post</p>
+<p>Towards best practices of activation patching in language models: Metrics and methods. Fred Zhang, Neel Nanda, The Twelfth International Conference on Learning Representations. 2024</p>
+<p>Interpreting and improving large language models in arithmetic calculation. Wei Zhang, Chaoqun Wan, Yonggang Zhang, Yiu-Ming Cheung, Xinmei Tian, Xu Shen, Jieping Ye, Proceedings of the 41st International Conference on Machine Learning. the 41st International Conference on Machine Learning2024ICML'24. JMLR.org</p>
+<p>Verify-and-edit: A knowledge-enhanced chain-of-thought framework. Ruochen Zhao, Xingxuan Li, Shafiq Joty, Chengwei Qin, Lidong Bing, 10.18653/v1/2023.acl-long.320Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics. Long Papers. the 61st Annual Meeting of the Association for Computational LinguisticsToronto, CanadaAssociation for Computational Linguistics20231</p>
+<p>Details of our circuit identification process are described in Section 3, Appendix B.3 and D.3. Documentation of our computational budget and the software we Templates 1-8 [instruction. A Reproducibility Statement To ensure the reproducibility of our experiments, we make all code publicly. Problem: [person] has [num1] [object]. [pronoun] [verb] [num2] more [object. How many [object] does [pronoun] have now? Reasoning: [person] has [num1] + [num2] = [num3] [object</p>
+<p>. After, num2] more, how many [object] does [pronoun] have in total? Reasoning: To solve this, we add [num1] and [num2]: [num1] + [num2] = [num3</p>
+<p>. Therefore, object</p>
+<p>Answer: The above reasoning is [instruction] Problem: Initially. object]. [pronoun] then [verb] [num2] additional [object</p>
+<p>Answer: The above reasoning is. instruction] Problem: [person] originally owns [num1] [object</p>
+<p>. After, num2] additional [object], how many does [pronoun] have altogether? Reasoning: a simple addition gives us [num1] + [num2] = [num3</p>
+<p>. Therefore, object] now. Answer: The above reasoning is [instruction] Problem: [person] possesses [num1] [object] at first. If [pronoun] [verb] [num2] more [object], what is the total count? Reasoning: Adding them gives: [num1] + [num2] = [num3</p>
+<p>. Consequently, object</p>
+<p>Answer: The above reasoning is [instruction] Problem. Thus, object] in total. num2] more. How many [object] does [pronoun] have now? Reasoning: Let's add them up: [num1] + [num2] = [num3</p>
+<p>. Therefore, object</p>
+<p>Answer: The above reasoning is Subtraction Templates 1-8 Multiplication Templates. </p>
+<p>. After, how many [object] does [pronoun] have left? Reasoning: To solve this, we subtract [num2] from [num1]: [num1] -[num2] = [num3</p>
+<p>. Therefore, object</p>
+<p>. Therefore, object] in total. Answer: The above reasoning is [instruction] Problem: [person] starts with [num1] [object</p>
+<p>Answer: The above reasoning is [instruction] Problem: Initially. Therefore, can fill [num3] containers. possesses [num1] [object]. [pronoun] then [verb] [num2] [object</p>
+<p>What's the remaining amount of. object] that [pronoun] has? Reasoning: We calculate: [num1] (original) -[num2] (removed</p>
+<p>Answer: The above reasoning is [instruction] Problem: [person]'s collection of [object] decreases from [num1] to an unknown amount after. pos- sesses [num1Answer: The above reasoning is [instruction] Problem: Initially. Reasoning: To find the remaining total. we subtract: [num1] -[num2] = [num3] (final amount). Thus, [person] ends up with [num3] [object]. Answer: The above reasoning is [instruction] Problem: Initially, [person] receives [num1] [object] each month. After [num2] months, what's the total amount of [object] that [pronoun] has received? Reasoning: We calculate: [num1] (per month) × [num2] (months) = [num3] (total). So, [person] has received [num3] [object. object]. [pronoun] wants to arrange them in rows with [num2] [object] per row. What's the total number of rows that can be formed? Reasoning: We calculate: [num1] (total) ÷ [num2] (per row) = [num3] (rows). So, [person] can form [num3] rows. Answer: The above reasoning is [instruction] Problem: [person] originally owns [num1] [object</p>
+<p>. After, num2] [object], how many does [pronoun] have left? Reasoning: A simple subtraction gives us [num1] -[num2] = [num3</p>
+<p>. Therefore, object] remaining. Answer: The above reasoning is [instruction] Problem: [person] originally gets [num1] [object] per visit. After [num2] visits, how many [object] has [pronoun] gotten altogether? Reasoning: A simple multiplication gives us [num1] × [num2] = [num3</p>
+<p>. Therefore, object] in total. Answer: The above reasoning is [instruction] Problem: [person] originally owns [num1] [object</p>
+<p>. Therefore, num3] recipients can get [object</p>
+<p>. Consequently, object] left. Answer: The above reasoning is [instruction] Problem: [person] earns [num1] [object] per task at first. If [pronoun] completes [num2] tasks, what is the total count of [object]? Reasoning: Multiplying them gives: [num1] × [num2] = [num3</p>
+<p>. Consequently, pronoun] earns [num3] [object] in total. Answer: The above reasoning is [instruction] Problem: [person] possesses [num1] [object] at first. If [pronoun] arranges [num2] [object] in each pile, what is the total number of piles? Reasoning: Dividing them gives: [num1] ÷ [num2] = [num3]. Consequently, [person] can make [num3] piles. Answer: The above reasoning is [instruction] Problem: [num1] [object] belong to [person]. [pronoun] [verb] [num2] of them. What's the remainder? Reasoning: By subtraction, we get [num1] -[num2] = [num3</p>
+<p>. Thus, object] remaining. Answer: The above reasoning is [instruction] Problem: [person] finds [num1] [object] each time [pronoun] searches. After [num2] searches, what's the total? Reasoning: By multiplication, we get [num1] × [num2] = [num3</p>
+<p>. Thus, object] in total. Answer: The above reasoning is [instruction] Problem: [num1] [object] belong to [person]. [pronoun] places [num2] [object] in each box. What's the total number of boxes needed? Reasoning: By division, we get [num1] ÷ [num2] = [num3</p>
+<p>Answer: The above reasoning is [instruction] Problem. Thus, How many [object] does [pronoun] have left? Reasoning: Let's subtract them: [num1] -[num2] = [num3</p>
+<p>. Therefore, object] remaining. Answer: The above reasoning is [instruction] Problem: [person] produces [num1] [object] per session and then has [num2] sessions. How many [object] are there in total? Reasoning: Let's multiply them: [num1] × [num2] = [num3</p>
+<p>. Therefore, there are [num3] [object] altogether. Answer: The above reasoning is [instruction] Problem: [person] begins with [num1] [object] and then organizes [num2] [object] per shelf. How many shelves does [pronoun] need? Reasoning: Let's divide them: [num1] ÷ [num2] = [num3</p>
+<p>Therefore, shelves. Answer: The above reasoning is. </p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

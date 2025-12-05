@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-9912 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-9912</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-9912</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-169.html">extraction-schema-169</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of comparisons between LLM-as-a-judge and human evaluations, focusing on what is lost, degraded, or different when using LLMs as judges instead of humans.</div>
+                <p><strong>Paper ID:</strong> paper-2416459e2ff3124c17af353df582b41beaceeb59</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/2416459e2ff3124c17af353df582b41beaceeb59" target="_blank">BERT is Robust! A Case Against Synonym-Based Adversarial Examples in Text Classification</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> This paper investigates four word substitution-based attacks on BERT and concludes that BERT is a lot more robust than research on attacks suggests.</p>
+                <p><strong>Paper Abstract:</strong> Deep Neural Networks have taken Natural Language Processing by storm. While this led to incredible improvements across many tasks, it also initiated a new research field, questioning the robustness of these neural networks by attacking them. In this paper, we investigate four word substitution-based attacks on BERT. We combine a human evaluation of individual word substitutions and a probabilistic analysis to show that between 96% and 99% of the analyzed attacks do not preserve semantics, indicating that their success is mainly based on feeding poor data to the model. To further confirm that, we introduce an efficient data augmentation procedure and show that many adversarial examples can be prevented by including data similar to the attacks during training. An additional post-processing step reduces the success rates of state-of-the-art attacks below 5%. Finally, by looking at more reasonable thresholds on constraints for word substitutions, we conclude that BERT is a lot more robust than research on attacks suggests.</p>
+                <p><strong>Cost:</strong> 0.004</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-9912",
+    "paper_id": "paper-2416459e2ff3124c17af353df582b41beaceeb59",
+    "extraction_schema_id": "extraction-schema-169",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0041147499999999995,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>BERT is Robust! A Case Against Synonym-Based Adversarial Examples in Text Classification</h1>
+<p>Jens Hauser Zhao Meng<em> Damián Pascual</em> Roger Wattenhofer<br>ETH Zurich, Switzerland<br>{jehauser, zhmeng, dpascual, wattenhofer}@ethz.ch</p>
+<h4>Abstract</h4>
+<p>Deep Neural Networks have taken Natural Language Processing by storm. While this led to incredible improvements across many tasks, it also initiated a new research field, questioning the robustness of these neural networks by attacking them. In this paper, we investigate four word substitution-based attacks on BERT. We combine a human evaluation of individual word substitutions and a probabilistic analysis to show that between $96 \%$ and $99 \%$ of the analyzed attacks do not preserve semantics, indicating that their success is mainly based on feeding poor data to the model. To further confirm that, we introduce an efficient data augmentation procedure and show that many adversarial examples can be prevented by including data similar to the attacks during training. An additional post-processing step reduces the success rates of state-of-the-art attacks below 5\%. Finally, by looking at more reasonable thresholds on constraints for word substitutions, we conclude that BERT is a lot more robust than research on attacks suggests.</p>
+<h2>1 Introduction</h2>
+<p>Research in computer vision (Szegedy et al., 2014; Goodfellow et al., 2015) and speech recognition (Carlini and Wagner, 2018) has shown that neural networks are sensitive to changes that are imperceptible to humans. These insights led to extensive research on attacks for creating these so-called adversarial examples, especially in the field of computer vision. Looking for similar issues in NLP is natural, and researchers proposed several different attacks over the last years. However, contrary to computer vision, adversarial examples in NLP are never completely invisible, as discrete characters or words have to be exchanged. This brings up the question: How good are these attacks? Do they reveal issues in current models, or are they just introducing nonsense?</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>In this paper, we show that despite the general consensus that textual adversarial attacks should preserve semantics, striving for ever-higher success rates seems to be more important when implementing them. We combine a human evaluation with a simple probabilistic analysis to show that between $96 \%$ and $99 \%$ of the adversarial examples on BERT (Devlin et al., 2019) created by four different attacks do not preserve semantics. Additionally, we propose a two-step procedure consisting of data augmentation and post-processing for defending against adversarial examples ${ }^{1}$. While this sounds contradictive at first, the results show that we can eliminate a large portion of the successful attacks by simply including data similar to the adversarial examples and further detect many of the remaining adversarial examples in a post-processing step. Compared to traditional adversarial training strategies, our method is much more efficient and can be used as a baseline defense for researchers looking into new and better attacks.</p>
+<h2>2 Related Work</h2>
+<p>Papernot et al. (2016) was the first to introduce adversarial examples in the text domain. In the following years, a range of different attacks have been proposed. Alzantot et al. (2018) use a populationbased optimization algorithm for creating adversarial examples, Zhang et al. (2019) use Metropolis Hastings (Metropolis et al., 1953; Hastings, 1970). Further word substitution based attacks were proposed by Ren et al. (2019); Jin et al. (2020); Li et al. (2020) and Garg and Ramakrishnan (2020). They are discussed in more detail in Section 3.1.</p>
+<p>Regarding adversarial defense, some papers introducing attacks incorporate the created adversarial examples during training (Alzantot et al., 2018; Ren et al., 2019). However, due to the high cost of running the attacks, they cannot create suffi-</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p>ciently many adversarial examples and achieve only minor improvements in robustness. <em>Wang et al. (2021a)</em> suggest Synonym Encoding Method (SEM), a method that uses an encoder that maps clusters of synonyms to the same embedding. Such a method works well but also impedes the expressiveness of the network. <em>Wang et al. (2021b)</em> propose a method for fast adversarial training called Fast Gradient Projection Method (FGPM). However, their method is limited to models with noncontextual word vectors as input. On BERT, <em>Meng et al. (2021)</em> use a geometric attack that allows for creating adversarial examples in parallel and therefore leads to faster adversarial training. Another line of work is around certified robustness through Interval Bound Propagation <em>Jia et al. (2019); Huang et al. (2019)</em>, but these approaches currently do not scale to large models and datasets.</p>
+<p>There is little work criticizing or questioning current synonym-based adversarial attacks in NLP, <em>Morris et al. (2020a)</em> find that adversarial attacks often do not preserve semantics using a human evaluation. They propose to increase thresholds on frequently used metrics for the similarity of word embeddings and sentence embeddings. However, they only investigate a single attack on BERT.</p>
+<h2>3 Background</h2>
+<p>For a classifier $f:{\mathcal{S}}\rightarrow{\mathcal{Y}}$ and some correctly classified input $s\in{\mathcal{S}}$, an adversarial example is an input $s_{pert}\in{\mathcal{S}}$, such that $\operatorname{sim}(s,s_{pert}) \geq t_{s i m}$ and $f(s) \neq f\left(s_{p e r t}\right)$, where $\operatorname{sim}\left(s, s_{p e r t}\right) \geq t_{s i m}$ is a constraint on the similarity of $s$ and $s_{\text {pert }}$. For text classification, $s=\left{w^{1}, w^{2}, \ldots, w^{n}\right}$ is a sequence of words. Common notions of similarity are the cosine similarity of counter-fitted word vectors <em>Mrkšić et al. (2016)</em>, which we will denote as $\cos <em e="e" p="p" r="r" t="t">{c v}\left(w^{i}, w</em>\right)$ or the cosine similarity of sentence embeddings from the Universal Sentence Encoder (USE) }^{i<em>Cer et al. (2018)</em>, which we will denote as $\cos <em e="e" p="p" r="r" t="t">{u s e}\left(s, s</em>$ to get two sentence vectors and then calculate the cosine similarity. The same holds for $\cos }\right)$. Note that this is a slight abuse of notation since $s$ and $s_{p e r t}$ are just sequences of words. The notation should be interpreted as follows: We first apply USE to $s$ and $s_{p e r t<em e="e" p="p" r="r" t="t">{c v}\left(w^{i}, w</em>$. Also, note that whenever we talk about the cosine similarity of words, it refers to the cosine similarity of words in the counter-fitted embedding. Similarly, USE score refers to the cosine similarity of sentence embeddings from the USE.}^{i}\right)$, where we first get the counterfitted word vectors of $w^{i}$ and $w_{p e r t}^{i</p>
+<h3>3.1 Attacks</h3>
+<p>We use four different attacks for our experiments. All of them are based on the idea of exchanging words with other words of similar meaning. The attacks differ in the search method for defining the order of words to replace, in the strategy of choosing the candidate set for replacement words, and in the constraints. To better interpret the results of our analysis, we give a brief summary of the four attacks. Particularly, we are interested in how the attacks build the candidate sets for replacement and in what constraints exist.</p>
+<p>TextFooler <em>Jin et al. (2020)</em> propose TextFooler, which builds its candidate set from the 50 nearest neighbors in a vector space of counterfitted word embeddings. The constraints are $\cos <em e="e" p="p" r="r" t="t">{c v}\left(w^{i}, w</em>\right) \geq 0.5 \forall i$ and $\cos }^{i<em e="e" p="p" r="r" t="t">{u s e}\left(s, s</em>$.}\right) \geq$ $0.878^{2</p>
+<p>Probability Weighted Word Saliency (PWWS) PWWS <em>Ren et al. (2019)</em> uses WordNet ${ }^{3}$ synonyms to construct a candidate set. It uses no additional constraints.</p>
+<p>BERT-Attack <em>Li et al. (2020)</em> suggest an attack based on BERT itself. BERT-Attack uses a BERT masked-language model (MLM) to propose 48 possible replacements. The constraints are $\cos <em e="e" p="p" r="r" t="t">{u s e}\left(s, s</em>\right) \geq 0.2$ and a maximum of $40 \%$ of all words can be replaced.</p>
+<p>BAE <em>Garg and Ramakrishnan (2020)</em> propose another attack based on a BERT MLM. BAE uses the top 50 candidates of the MLM and tries to enforce semantic similarity by requiring $\cos <em e="e" p="p" r="r" t="t">{u s e}\left(s, s</em>\right) \geq$ 0.936 .</p>
+<p>An attack is successful for a given input $s$, if it finds an adversarial example $s_{p e r t}$ satisfying all constraints. The attack success rate is then defined as the number of successful attacks divided by the number of attempted attacks.</p>
+<h2>4 Setup</h2>
+<p>We use the BERT-base-uncased model provided by the Hugging Face Transformers *Wolf et al. (</p>
+<p>2019) for all our experiments and rely on TextAttack (Morris et al., 2020b) for the implementations of the different attacks. We fine-tuned BERT for two epochs on AG News and Yelp and then randomly sampled 1000 examples from each test-set for running the attacks. The clean accuracies of our models are 94.57% on AG News and 97.31% on Yelp. The attack success rates of the different attacks are shown in Table 1.</p>
+<p>It is interesting that BAE, which requires a much higher sentence similarity than BERT-Attack, is a lot less effective despite being otherwise similar. But is a high sentence similarity sufficient to ensure semantic similarity? This is part of what we wanted to investigate using a human evaluation.</p>
+<h2>5 Quality of Adversarial Examples</h2>
+<p>To investigate the quality of adversarial examples, we conducted a human evaluation on word substitutions performed by the different attacks. In the following, we call such a word substitution a perturbation. A probabilistic analysis is then used to generalize the results on perturbations to attacks.</p>
+<h3>5.1 Human Evaluation</h3>
+<p>For the human evaluation, we rely on labor crowdsourced from Amazon Mechanical Turk. We limited our worker pool to workers in the United States and the United Kingdom who completed over 5000 HITs with over 98% success rate. We collected 100 pairs of [original word, attack word] for every attack and another 100 pairs for every attack where the context is included with a window size of 11. For the word-pairs, inspired by Morris et al. (2020a), we asked the workers to react to the following claim: "In general, replacing the first word with the second word preserves the meaning of the sentence." For the words with context, we presented the two text fragments on top of each other, highlighted the changed word, and asked the workers: "In general, the change preserves the meaning of the text fragment." In both cases the workers had seven answers to choose from: "Strongly Disagree", "Disagree", "Somewhat Disagree", "Neutral", "Somewhat Agree", "Agree", "Strongly Agree". We convert these answers to a scale from 1-7.</p>
+<p>Table 2 shows the results of this human analysis.</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Attack Success Rate (%)</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>TextFooler</td>
+<td>PWWS</td>
+<td>BERT-Attack</td>
+<td>BAE</td>
+</tr>
+<tr>
+<td>AG News</td>
+<td>84.99</td>
+<td>64.95</td>
+<td>79.43</td>
+<td>14.27</td>
+</tr>
+<tr>
+<td>Yelp</td>
+<td>90.47</td>
+<td>92.23</td>
+<td>93.47</td>
+<td>31.50</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Attack success rates of the different attacks on fine-tuned BERT-base-uncased models.</p>
+<p>Contrary to what is suggested in papers proposing the attacks, our results show that humans generally tend to disagree that the newly introduced word preserves the meaning. This holds for all attacks and regardless of whether we show the word with or without context. We believe this difference is mainly due to how the text is shown to the judges and what question is posed. For example, asking "Are these two text documents similar?" on two long text documents that only differ by a few words is likely to get a higher agreement because the workers will not bother going into the details. Therefore, we believe it is critical to show the passages that are changed.</p>
+<p>Regarding the different attacks, it becomes clear from this evaluation that building a candidate set from the first 48 or 50 candidates proposed by a MLM does not work without an additional constraint on the word similarity. The idea of BERT-based attacks is to only propose words that make sense in the context, however, fitting into the context and preserving semantics is not the same thing. The results on BAE further make it clear that a high sentence similarity according to the USE score is no guarantee for semantic similarity. PWWS and TextFooler receive similar scores for word similarity, but the drop in score for PWWS when going from word similarity to text similarity indicates that while the synonyms retrieved from WordNet are often somewhat related to the original word, the relation is often the wrong one for the given context. TextFooler receives the highest scores in this analysis, but even for TextFooler, just 22% and 24% of the perturbations were rated above 5, which corresponds to "Somewhat Agree".</p>
+<h3>5.2 Probabilistic Estimation of Valid Attacks</h3>
+<p>The human evaluation is based on individual perturbations. An attack usually changes multiple words and therefore consists of multiple perturbations. This begs the question: How many of the successful attacks are actually valid attacks? To answer this question, we need to define valid attacks and</p>
+<p>| Attack | Word Similarity | | | Text Similarity | | |
+| | Avg. (1-7) | Above 5 (\%) | Above 6 (\%) | Avg. (1-7) | Above 5 (\%) | Above 6 (\%) |
+| --- | --- | --- | --- | --- | --- | --- |
+| TextFooler | 3.88 | 22 | 7 | 3.47 | 24 | 12 |
+| PWWS | 3.83 | 21 | 6 | 2.70 | 13 | 6 |
+| BERT-Attack | 2.27 | 4 | 4 | 2.55 | 7 | 3 |
+| BAE | 1.64 | 0 | 0 | 1.85 | 3 | 2 |</p>
+<p>Table 2: Average human scores on a scale from 1-7 and the percentage of scores above 5 and 6 (corresponding to the answers "Somewhat Agree" and "Agree") for the different attacks and when the words were shown with (text similarity) or without (word similarity) context.
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Probability that an attack is valid according to our probabilistic analysis, for the different attacks and for different thresholds $T_{h}$.
+valid perturbations.
+Definition 5.1 (Valid Perturbation). A valid perturbation is a perturbation that receives a human score above some threshold $T_{h}$.
+Definition 5.2 (Valid Attack). A valid attack is an attack consisting of valid perturbations only.</p>
+<p>Sensible values for $T_{h}$ are in the range 56 , which corresponds to "Somewhat Agree" to "Agree". In order to get an estimate for the percentage of valid attacks, we perform a simple probabilistic analysis. Let $A_{v a l}, P_{v a l}$ and $A_{v a l}^{i}$ denote the events of a valid attack, a valid perturbation and a valid attack consisting of exactly $i$ perturbations. Further, let $p(i)$ denote the probability that an attack perturbs $i$ words. Using that notation, we can approximate the probability that a successful attack is valid as</p>
+<p>$$
+\begin{aligned}
+p\left(A_{v a l}\right) &amp; =\sum_{i=1}^{N} p(i) p\left(A_{v a l}^{i}\right) \
+&amp; \approx \sum_{i=1}^{N} p(i) p\left(P_{v a l}\right)^{i}
+\end{aligned}
+$$</p>
+<p>where $N$ is the maximal number of allowed perturbations. With the data from Amazon Mechanical</p>
+<p>Turk and the collected adversarial examples, we can get an unbiased estimate for this probability as</p>
+<p>$$
+\hat{p}\left(A_{v a l}\right)=\sum_{i=1}^{N} \hat{p}(i)\left(\frac{\operatorname{count}\left[S_{h} \geq T_{h}\right]}{n_{p e r t}}\right)^{i}
+$$</p>
+<p>where $S_{h}$ is the average score of the workers for a perturbation, $n_{\text {pert }}$ is the total number of perturbations analyzed by the workers for any given attack, and $\hat{p}(i)$ can be estimated using counts. The results of this analysis are shown in Figure 1 as a function of the threshold $T_{h}$. It can be seen that if we require an average score of 5 for all perturbations, we can expect around $4 \%$ of the successful attacks from TextFooler to be valid, slightly less for PWWS, below 2\% for BERT-Attack, and just around 1\% for BAE. In other words, between $96 \%$ and $99 \%$ of the successful attacks can not be considered valid according to the widely accepted requirement that adversarial examples should preserve semantics.</p>
+<p>This analysis assumes that perturbations are independent of each other, which is not true because every perturbation impacts the following perturbations. Nevertheless, we argue that this approximation tends to result in optimistic estimates on the true number of valid attacks for the following reasons: 1) When an attack is already almost successful, all attacks except for PWWS try to maximize sentence similarity on the last perturbation, making the last perturbation generally weaker. 2) We strongly assume that in a sentence with multiple changes, a human is generally less likely to say that the meaning is preserved, even if the individual perturbations are considered valid.</p>
+<h3>5.3 Metrics vs. Human</h3>
+<p>Figure 2 shows the probability that a perturbation is considered valid (for $T_{h}=5$ ) as a function of cosine similarity of words and as a function of USE score. The plots are based on the 400 words with context from the different attacks which were</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: The probability that a perturbation is considered valid by a human, as a function of cosine similarity of words (left) and USE score (right). <em>T<sub>h</sub></em> is set to 5, i.e. an average score of 5 is required to be considered valid.</p>
+<p>judged by humans. We use left-aligned buckets of size 0.05, i.e., the probability of a valid perturbation for a given cosine similarity <em>x</em> and metric <em>m</em> ∈ {<em>cos<sub>cv</sub></em>(·, ·), <em>cos<sub>use</sub></em>(·, ·)}, is estimated as</p>
+<p>$$\frac{\text{count}[(S_h \ge T_h) \land (m \in [x, x + 0.05))]}{\text{count}[m \in [x, x + 0.05)]}.\tag{3}$$</p>
+<p>It can be observed that there is a strong positive correlation between both metrics and the probability that a perturbation is considered valid, confirming both the validity of such metrics and the quality of our human evaluation. However, the exact probabilities have to be interpreted with care, as the analysis based on one variable does not consider the conditional dependence between the two metrics.</p>
+<h2>6 Adversarial Defense</h2>
+<p>We have shown that current attacks use lenient constraints and, therefore, mostly produce adversarial examples that should not be considered valid, but finding suitable thresholds on the constraints is difficult. Morris et al. (2020a) try to find these thresholds by choosing the value where humans "Agree" (on a slightly different scale) on average and find thresholds of 0.90 on the word similarity and 0.98 on the sentence similarity score. However, this misses all the perturbations which were considered valid by the workers at lower scores (see Figure 2). Before discussing other thresholds, we show that we can avoid many adversarial examples even for low thresholds.</p>
+<p>Our procedure consists of two steps, where the first step prepares for the second. The first step is a data augmentation procedure and looks as follows:</p>
+<h3>Step 1</h3>
+<p>a) Initialize thresholds <em>t<sub>rr</sub></em> ∈ (0, 100] for the maximal percentage of words to augment, and <em>t<sub>cv</sub></em> ∈ (0, 1) for a threshold on cosine similarity of words.</p>
+<p>b) During training of the model, for every batch, calculate the gradients to get the <em>t<sub>rr</sub></em> percent of most important words for every input. The union of the words considered as stop-words by the four attacks is filtered out.</p>
+<p>c) Then, for every word marked as important according to b), a candidate set <em>C</em> is built out of all words in a counter-fitted embedding with cosine similarity greater than <em>t<sub>cv</sub></em>.</p>
+<p>d) To account for the fact that all attacks tend to favor words with low cosine similarity (see Appendix D), the replacement <em>v<sub>i</sub></em> ∈ <em>C</em> for the original word <em>w</em> is chosen with probability:</p>
+<p>$$p(v_i) = \frac{1 - \cos_{cv}(w, v_i)}{\sum_{v_j \in C} 1 - \cos_{cv}(w, v_j)}.\tag{4}$$</p>
+<p>This skews the probability towards words with lower cosine similarity.</p>
+<p>e) Finally, the perturbed batch with the changed words is concatenated to the original batch.</p>
+<p>The data augmentation procedure makes the model more robust against attack words with cosine similarity greater <em>t<sub>cv</sub></em>. If we expect BERT to be robust against these kinds of replacements, this is the least we should do. Otherwise, we cannot expect the model to generalize to the attack's input space, which is significantly larger than the input space during fine-tuning.</p>
+<p>We can further improve the robustness with a post-processing step that builds on this robustness to random substitutions.</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Method</th>
+<th>Clean Acc. (%)</th>
+<th>Attack Success Rate (%)</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>TextFooler</td>
+<td>PWWS_{cv50}</td>
+<td>BERT-Attack_{cv50}</td>
+<td>BAE_{cv50}</td>
+</tr>
+<tr>
+<td></td>
+<td>Normal</td>
+<td>94.57</td>
+<td>84.99</td>
+<td>16.38</td>
+<td>20.72</td>
+<td>0.32</td>
+</tr>
+<tr>
+<td></td>
+<td>DA</td>
+<td>94.82</td>
+<td>52.37</td>
+<td>10.73</td>
+<td>18.61</td>
+<td>-</td>
+</tr>
+<tr>
+<td>AG News</td>
+<td>DA+PP</td>
+<td>93.84 $\pm$ 0.07</td>
+<td>3.93 $\pm$ 0.41</td>
+<td>2.55 $\pm$ 0.31</td>
+<td>3.73 $\pm$ 0.29</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>DA+MA_{5}</td>
+<td>93.72 $\pm$ 0.12</td>
+<td>14.11 $\pm$ 0.48</td>
+<td>4.61 $\pm$ 0.41</td>
+<td>7.52 $\pm$ 0.48</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Normal+PP</td>
+<td>87.89 $\pm$ 0.16</td>
+<td>10.32 $\pm$ 0.48</td>
+<td>5.0 $\pm$ 0.31</td>
+<td>5.59 $\pm$ 0.36</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Normal</td>
+<td>97.31</td>
+<td>90.47</td>
+<td>33.26</td>
+<td>49.53</td>
+<td>0.41</td>
+</tr>
+<tr>
+<td></td>
+<td>DA</td>
+<td>97.10</td>
+<td>29.79</td>
+<td>10.52</td>
+<td>16.49</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Yelp</td>
+<td>DA+PP</td>
+<td>96.59 $\pm$ 0.06</td>
+<td>4.37 $\pm$ 0.39</td>
+<td>2.54 $\pm$ 0.15</td>
+<td>4.86 $\pm$ 0.33</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>DA+MA_{5}</td>
+<td>95.40 $\pm$ 0.10</td>
+<td>10.23 $\pm$ 0.59</td>
+<td>4.62 $\pm$ 0.36</td>
+<td>7.38 $\pm$ 0.38</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Normal+PP</td>
+<td>94.50 $\pm$ 0.08</td>
+<td>6.07 $\pm$ 0.47</td>
+<td>5.22 $\pm$ 0.48</td>
+<td>7.35 $\pm$ 0.61</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Effectiveness of defense procedure for different attacks modified with constraint on cosine-similarity of words.</p>
+<h2>Step 2</h2>
+<p>a) For every text that should be classified, $N$ versions are created where $t_{r r} \%$ of the words (which are not stop-words) are selected uniformly at random and are exchanged by another uniformly sampled word from a candidate set $\mathcal{C}$ consisting of all words with cosinesimilarity above $t_{c v}$.
+b) The outputs of the model (logits) are added up for the $N$ versions and the final prediction is made according to the maximum value. Formally, let $l_{j}(s)$ denote the value of the $j$-th logit for some input $s$. Then the prediction $y_{\text {pred }}$ is made according to</p>
+<p>$$
+y_{\text {pred }}=\underset{j}{\arg \max } \sum_{i=1}^{N} l_{j}\left(s_{i}\right)
+$$</p>
+<p>This procedure can be applied for any threshold $t_{c v} \in(0,1)$, but it only makes sense if we expect an attack to use the same or a higher threshold. We always set $t_{c v}$ to the same value as the attack uses. Further, we set $t_{r r}=40$ and $N=8$ in all our experiments, and we use the same thresholds for both steps.</p>
+<h2>7 Defense Results</h2>
+<p>In Table 3, we show the effect of the procedure on the different attacks modified with the constraint that the cosine-similarity between original word and attack word should be above 0.5 . The notation is the following: Normal stands for a model fine-tuned normally. DA stands for a model finetuned with data augmentation, and PP stands for post-processing. $\mathrm{MA}_{5}$ is a baseline for our postprocessing procedure that replaces $5 \%$ of all tokens with the [MASK] token (see Appendix B). The results show that up to two-thirds of the attacks can be prevented using data augmentation. This indicates that adversarial examples for text classification are closely related to the data on which the model is fine-tuned. The attacks try to create examples that are out-of-distribution with respect to the training data. Additionally, between $70 \%$ and $92 \%$ of the attacks can be reverted using our postprocessing procedure, resulting in attack success rates below 5\% for all attacks. For TextFooler, this corresponds to a decrease in attack success rate of more than $95 \%$. Because the post-processing step is probabilistic, we ran it ten times for every combination of dataset and attack. We show the mean and standard deviation of the ten resulting attack success rates. Compared to the mask-baseline, our post-processing procedure can revert significantly more attacks while having a smaller impact on the clean accuracy. Table 3 also shows that the postprocessing step should always be preceded by data augmentation. While applying post-processing in isolation still reverts many attacks, the clean accuracy drops significantly, especially on AG News.</p>
+<h3>7.1 Adjusted Thresholds</h3>
+<p>Table 3 shows that with the constraint on cosine similarity of words added, TextFooler is by far the most effective attack, at least before postprocessing. There is a simple reason for this, TextFooler already has that constraint and is the only attack out of the four to choose its candidate set directly from the counter-fitted embedding used to calculate the cosine similarity. On the other end of the spectrum, BAE's attacks success rate drops close to zero. This is because the intersection of the set of words proposed by the MLM, the set</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Method</th>
+<th>Attack Success Rate (%)</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td>TF_{cv50}</td>
+<td>TF${}_{cv50}^{\text{user88}}$</td>
+<td>TF${}_{cv70}^{\text{user85}}$</td>
+<td>TF${}_{cv70}^{\text{user90}}$</td>
+<td>TF${}_{cv80}^{\text{user90}}$</td>
+</tr>
+<tr>
+<td>AG News</td>
+<td>Normal</td>
+<td>88.79</td>
+<td>24.95</td>
+<td>22.52</td>
+<td>11.63</td>
+<td>7.51</td>
+</tr>
+<tr>
+<td></td>
+<td>DA</td>
+<td>55.58</td>
+<td>16.11</td>
+<td>10.79</td>
+<td>7.12</td>
+<td>4.50</td>
+</tr>
+<tr>
+<td></td>
+<td>DA+PP</td>
+<td>$4.49 \pm 0.39$</td>
+<td>$3.31 \pm 0.28$</td>
+<td>$2.07 \pm 0.16$</td>
+<td>$1.91 \pm 0.17$</td>
+<td>$0.99 \pm 0.17$</td>
+</tr>
+<tr>
+<td>Yelp</td>
+<td>Normal</td>
+<td>91.40</td>
+<td>49.22</td>
+<td>42.59</td>
+<td>25.18</td>
+<td>11.09</td>
+</tr>
+<tr>
+<td></td>
+<td>DA</td>
+<td>38.46</td>
+<td>13.74</td>
+<td>10.34</td>
+<td>7.78</td>
+<td>2.87</td>
+</tr>
+<tr>
+<td></td>
+<td>DA+PP</td>
+<td>$5.04 \pm 0.35$</td>
+<td>$3.9 \pm 0.34$</td>
+<td>$2.12 \pm 0.21$</td>
+<td>$2.28 \pm 0.17$</td>
+<td>$0.71 \pm 0.13$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Effectiveness of defense procedure for different combinations of thresholds.
+of words with cosine similarity greater than 0.5 , and the set of words keeping the USE score above 0.936 is small and leaves the attack not much room. A similar observation can be made for PWWS, although not as pronounced.</p>
+<p>However, there is one more reason why TextFooler is more effective compared to the other attacks, despite an additional constraint on the USE score. While attacking a piece of text, this constraint on the USE score is not checked between the current perturbed text $s_{\text {pert }}$ and the original text $s$, but instead between the current perturbed text $s_{\text {pert }}$ and the previous version $s_{\text {pert }}^{\prime}$. This means that by perturbing one word at a time, the effective USE score between $s$ and $s_{\text {pert }}$ can be a lot lower than the threshold suggests. When discussing the effect of raising thresholds to higher levels, we do so by relying on TextFooler as the underlying attack because it is the most effective, but we adjust the constraint on the USE score to always compare to the original text. We believe this is the right way to implement this constraint, and more importantly, it is consistent with how we gathered data from Amazon Mechanical Turk.</p>
+<p>Table 4 shows the results from our defense procedure when the thresholds on TextFooler are adjusted. $\mathrm{TF}<em _cv50="{cv50" _text="\text">{\text {cv50 }}$ corresponds to TextFooler without the constraint on the USE score. Comparing with Table 3 confirms that the original implementation of the USE constraint only had a small impact. $\mathrm{TF}</em>$ corresponds to TextFooler with $\cos }}^{\text {user88 }<em _pert="{pert" _text="\text">{c v}\left(w^{i}, w</em>\right) \geq 0.5 \forall i$ and $\cos }}^{i<em _pert="{pert" _text="\text">{\text {use }}\left(s, s</em>\right) \geq$ 0.88 ( 0.878 to be precise), the same thresholds as in the original implementation, but without allowing to drift away from the original text as discussed above. This already decreases the attack success rate significantly. Using data augmentation, we can decrease the attack success rate by more than a factor of 5 compared to what we saw originally ( 84.99 to 16.11 and 90.47 to 13.74). This shows that by preventing TextFooler from using that lit-
+tle trick and some data augmentation, we can decrease the attack success rate to values far from the ones suggested in their paper. When increasing the thresholds on the constraints (compare to Figure 2 to see that these are still not particularly strong constraints), it becomes even more evident that BERT is a lot more robust than work on attacks suggests. Especially if we allow for post-processing.}</p>
+<h3>7.2 Comparing data augmentation with adversarial training</h3>
+<p>While adversarial training provides the model with data from the true distribution generated by an attack, our data augmentation procedure only approximates that distribution. The goal is to trade robustness for speed. However, it turns out that our procedure can even be superior to true adversarial training in some cases. We compare to two different strategies for adversarial training. $\mathrm{ADV}_{\text {naive }}$ denotes the simplest procedure for adversarial training in text classification: collect adversarial examples on the training set and then train a new model on the extended dataset consisting of both adversarial examples and original training data. We used TextFooler to collect these adversarial examples. On the complete training set, this resulted in 103'026 adversarial examples on AG News and 179'335 adversarial examples on Yelp. For a more sophisticated version for adversarial training, we follow Meng et al. (2021) by creating adversarial examples on-the-fly during training. We denote this method as ADV (corresponds to ADV in their paper).</p>
+<p>A comparison of the results on AG News and Yelp is shown in Table 5. Interestingly, $\mathrm{ADV}_{\text {naive }}$ did not result in an improvement on Yelp. We hypothesize that this is because Yelp is easier to attack, resulting in weaker training data for the extended dataset. For example, $26 \%$ of the created adversarial examples on Yelp differ by only one or two words from the original text, on AG News</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Clean Acc. (\%)</th>
+<th style="text-align: center;">Training Time (h:min)</th>
+<th style="text-align: center;">Epochs</th>
+<th style="text-align: center;">Attack Success Rate (\%)</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">TextFooler</td>
+<td style="text-align: center;">$\mathrm{PWWS}_{\text {cv50 }}$</td>
+<td style="text-align: center;">BERT-Attack ${ }_{\text {cv50 }}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">AG News</td>
+<td style="text-align: center;">Normal</td>
+<td style="text-align: center;">94.57</td>
+<td style="text-align: center;">0:19</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">84.99</td>
+<td style="text-align: center;">16.38</td>
+<td style="text-align: center;">20.72</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">DA</td>
+<td style="text-align: center;">94.82</td>
+<td style="text-align: center;">5:33</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">52.37</td>
+<td style="text-align: center;">10.73</td>
+<td style="text-align: center;">18.61</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ADV</td>
+<td style="text-align: center;">92.83</td>
+<td style="text-align: center;">160:15</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">34.54</td>
+<td style="text-align: center;">6.50</td>
+<td style="text-align: center;">9.38</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ADV $_{\text {native }}$</td>
+<td style="text-align: center;">94.26</td>
+<td style="text-align: center;">45:14</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">56.20</td>
+<td style="text-align: center;">12.50</td>
+<td style="text-align: center;">17.44</td>
+</tr>
+<tr>
+<td style="text-align: center;">Yelp</td>
+<td style="text-align: center;">Normal</td>
+<td style="text-align: center;">97.31</td>
+<td style="text-align: center;">0:32</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">90.47</td>
+<td style="text-align: center;">33.26</td>
+<td style="text-align: center;">49.53</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">DA</td>
+<td style="text-align: center;">97.10</td>
+<td style="text-align: center;">9:08</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">29.79</td>
+<td style="text-align: center;">10.52</td>
+<td style="text-align: center;">16.49</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ADV</td>
+<td style="text-align: center;">95.94</td>
+<td style="text-align: center;">107:56</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">59.52</td>
+<td style="text-align: center;">14.64</td>
+<td style="text-align: center;">25.52</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ADV $_{\text {native }}$</td>
+<td style="text-align: center;">96.65</td>
+<td style="text-align: center;">56:53</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">95.12</td>
+<td style="text-align: center;">33.09</td>
+<td style="text-align: center;">47.61</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Comparison of data augmentation and adversarial training.
+this holds for just $11 \%$ of the adversarial examples. Furthermore, the average word replace rate on Yelp is $16 \%$ compared to $24 \%$ on AG News. The same argument would also explain why, quite surprisingly, we reach higher robustness on Yelp with our data augmentation procedure compared to ADV. To be fair, it must be said that we did not train ADV until convergence on Yelp due to computational constraints. Overall, lower computation time is precisely the biggest advantage of our method. Considering that the training data increases by a factor of two, the overhead per epoch is only around $50 \%$ compared to normal training.</p>
+<h2>8 Limitations</h2>
+<p>In practice, the post-processing step cannot be decoupled from a black-box attack. It would be interesting to see how successful an attack is when the whole system, including post-processing, is regarded as a single black-box model. We hypothesize that it would remain challenging because the attacker can rely much less on its search method for finding the right words to replace.</p>
+<p>The method is also not applicable if a deterministic answer is required. However, in many applications such as spam filters or fake news detection, we are only interested in making a correct decision as often as possible while being robust to a potential attack.</p>
+<h2>9 Discussion \&amp; Conclusion</h2>
+<p>Using a human evaluation, we have shown that most perturbations introduced through adversarial attacks do not preserve semantics. This is contrary to what is generally claimed in papers introducing these attacks. We believe the main reason for this discrepancy is that researchers working on attacks have not paid enough attention to preserving semantics because attacks with new state-of-the-art
+success rates are easier to publish. However, in order to find meaningful adversarial examples that could help us better understand current models, we need to get away from that line of thinking. For example, 10-20\% attack success rate with valid adversarial examples and a good analysis on them is much more valuable than 80-90\% attack success rate by introducing nonsensical words. We hope this work encourages researchers to think more carefully about appropriate perturbations to text which do not change semantics.</p>
+<p>Our results on data augmentation show that a significant amount of adversarial examples can be prevented when including perturbations during training that could stem from an attack. It is debatable whether changing $40 \%$ of the words with a randomly chosen word from a candidate set still constitutes a valid input, but this is only necessary because the attacks have that amount of freedom. The more appropriate the allowed perturbations for an attack, the more appropriate is our data augmentation procedure, which can easily be adapted for other candidate sets. Compared to adversarial training, our method scales to large datasets and multiple epochs of training, making it an excellent baseline defense method for researchers working on new attacks and defenses. The post-processing step completes our defense procedure and shows that attacks can largely be prevented in a probabilistic setting without a severe impact on the clean accuracy. In practice, this means that most attacks can at least be detected. Whether or not this twostep procedure will prevent the same amount of attacks when the whole model is considered a probabilistic black-box is up for future investigation.</p>
+<h2>References</h2>
+<p>Moustafa Alzantot, Yash Sharma, Ahmed Elgohary, Bo-Jhang Ho, Mani Srivastava, and Kai-Wei Chang. 2018. Generating natural language adversarial examples. In EMNLP.</p>
+<p>Nicholas Carlini and David Wagner. 2018. Audio adversarial examples: Targeted attacks on speech-to-text. In IEEE Security and Privacy Workshops (SPW).</p>
+<p>Daniel Cer, Yinfei Yang, Sheng-yi Kong, Nan Hua, Nicole Limtiaco, Rhomni St. John, Noah Constant, Mario Guajardo-Cespedes, Steve Yuan, Chris Tar, Brian Strope, and Ray Kurzweil. 2018. Universal sentence encoder for english. In EMNLP.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. Bert: Pre-training of deep bidirectional transformers for language understanding. In NAACL-HLT.</p>
+<p>Siddhant Garg and Goutham Ramakrishnan. 2020. Bae: Bert-based adversarial examples for text classification. In EMNLP.</p>
+<p>Ian J. Goodfellow, Jonathon Shlens, and Christian Szegedy. 2015. Explaining and harnessing adversarial examples. In $I C L R$.</p>
+<p>W Keith Hastings. 1970. Monte carlo sampling methods using markov chains and their applications.</p>
+<p>Po-Sen Huang, Robert Stanforth, Johannes Welbl, Chris Dyer, Dani Yogatama, Sven Gowal, Krishnamurthy Dvijotham, and Pushmeet Kohli. 2019. Achieving verified robustness to symbol substitutions via interval bound propagation. In EMNLP$I J C N L P$.</p>
+<p>Robin Jia, Aditi Raghunathan, Kerem Göksel, and Percy Liang. 2019. Certified robustness to adversarial word substitutions. In EMNLP-IJCNLP.</p>
+<p>Di Jin, Zhijing Jin, Joey Tianyi Zhou, and Peter Szolovits. 2020. Is bert really robust? a strong baseline for natural language attack on text classification and entailment. In $A A A I$.</p>
+<p>Linyang Li, Ruotian Ma, Qipeng Guo, Xiangyang Xue, and Xipeng Qiu. 2020. Bert-attack: Adversarial attack against bert using bert. In EMNLP.</p>
+<p>Zhao Meng, Yihan Dong, Mrinmaya Sachan, and Roger Wattenhofer. 2021. Self-supervised contrastive learning with adversarial perturbations for robust pretrained language models. arXiv preprint arXiv:2107.07610.</p>
+<p>Zhao Meng and Roger Wattenhofer. 2020. A geometryinspired attack for generating natural language adversarial examples. In COLING.</p>
+<p>Nicholas Metropolis, Arianna W Rosenbluth, Marshall N Rosenbluth, Augusta H Teller, and Edward Teller. 1953. Equation of state calculations by fast computing machines. The journal of chemical physics, 21(6):1087-1092.</p>
+<p>John Morris, Eli Lifland, Jack Lanchantin, Yangfeng Ji, and Yanjun Qi. 2020a. Reevaluating adversarial examples in natural language. In EMNLP Findings.</p>
+<p>John Morris, Eli Lifland, Jin Yong Yoo, Jake Grigsby, Di Jin, and Yanjun Qi. 2020b. Textattack: A framework for adversarial attacks, data augmentation, and adversarial training in nlp. In EMNLP System Demonstrations.</p>
+<p>Nikola Mrkšić, Diarmuid Ó Séaghdha, Blaise Thomson, Milica Gasic, Lina M Rojas Barahona, Pei-Hao Su, David Vandyke, Tsung-Hsien Wen, and Steve Young. 2016. Counter-fitting word vectors to linguistic constraints. In NAACL-HLT.</p>
+<p>Nicolas Papernot, Patrick McDaniel, Ananthram Swami, and Richard Harang. 2016. Crafting adversarial input sequences for recurrent neural networks. In MILCOM IEEE Military Communications Conference.</p>
+<p>Shuhuai Ren, Yihe Deng, Kun He, and Wanxiang Che. 2019. Generating natural language adversarial examples through probability weighted word saliency. In $A C L$.</p>
+<p>Christian Szegedy, Wojciech Zaremba, Ilya Sutskever, Joan Bruna, Dumitru Erhan, Ian J. Goodfellow, and Rob Fergus. 2014. Intriguing properties of neural networks. In $I C L R$.</p>
+<p>Xiaosen Wang, Yichen Yang, Yihe Deng, and Kun He. 2021a. Adversarial training with fast gradient projection method against synonym substitution based text attacks. In UAI.</p>
+<p>Xiaosen Wang, Yichen Yang, Yihe Deng, and Kun He. 2021b. Adversarial training with fast gradient projection method against synonym substitution based text attacks. In AAAI.</p>
+<p>Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz, et al. 2019. Huggingface's transformers: State-of-the-art natural language processing. arXiv preprint arXiv:1910.03771.</p>
+<p>Huangzhao Zhang, Hao Zhou, Ning Miao, and Lei Li. 2019. Generating fluent adversarial examples for natural languages. In $A C L$.</p>
+<p>Xiang Zhang, Junbo Zhao, and Yann LeCun. 2015. Character-level convolutional networks for text classification. NeurIPS.</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>N</th>
+<th>Reverted Attacks (Mean/Std) (\%)</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td>TextFooler</td>
+<td>$\mathrm{PWWS}_{c v 50}$</td>
+<td>BERT-Att $_{c v 50}$</td>
+</tr>
+<tr>
+<td>AG</td>
+<td>4</td>
+<td>92.13 / 0.65</td>
+<td>75.39 / 3.35</td>
+<td>78.7 / 1.94</td>
+</tr>
+<tr>
+<td></td>
+<td>8</td>
+<td>92.49 / 0.79</td>
+<td>76.27 / 2.87</td>
+<td>79.94 / 1.54</td>
+</tr>
+<tr>
+<td></td>
+<td>16</td>
+<td>92.81 / 0.53</td>
+<td>78.24 / 1.95</td>
+<td>80.17 / 0.85</td>
+</tr>
+<tr>
+<td></td>
+<td>32</td>
+<td>92.97 / 0.24</td>
+<td>76.57 / 1.61</td>
+<td>81.07 / 0.88</td>
+</tr>
+<tr>
+<td>Yelp</td>
+<td>4</td>
+<td>83.94 / 1.49</td>
+<td>74.31 / 3.28</td>
+<td>68.56 / 3.02</td>
+</tr>
+<tr>
+<td></td>
+<td>8</td>
+<td>85.33 / 1.32</td>
+<td>75.88 / 1.4</td>
+<td>70.5 / 1.97</td>
+</tr>
+<tr>
+<td></td>
+<td>16</td>
+<td>85.81 / 1.26</td>
+<td>76.37 / 1.88</td>
+<td>70.81 / 1.12</td>
+</tr>
+<tr>
+<td></td>
+<td>32</td>
+<td>86.26 / 0.74</td>
+<td>76.96 / 0.79</td>
+<td>71.31 / 2.16</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Effectiveness of post-processing for different number of versions.</p>
+<h2>A Number of versions in post-processing</h2>
+<p>In order to understand the impact of the number of versions $N$ created during the post-processing step, we can make the following analysis: Let us consider the augmented inputs as instances of a discrete random variable $X$. For $x \in X$ and a classification problem with $K$ classes, let $l_{\text {correct }}(x)$ denote the value of the logit corresponding to the correct label and $l_{j}(x)$ denote the value of the $j$ th logit corresponding to a wrong label, such that $j \in{1, \ldots, K-1}$. We are only interested in the differences $g_{j}(x)=l_{\text {correct }}(x)-l_{j}(x)$. Ideally, we would like to make a decision based on the expectations of $g_{j}(X)$. An attack should be reverted if and only if</p>
+<p>$$
+\mathrm{E}\left[g_{j}(X)\right]=\sum_{x \in X} g_{j}(x) p_{X}(x) \geq 0 \quad \forall j
+$$</p>
+<p>where $p_{X}(x)=\frac{1}{|X|}$. Because we cannot enumerate over all instances $x$, we approximate this with sums over just $N$ instances</p>
+<p>$$
+\sum_{i=1}^{N} \frac{g_{j}\left(x_{i}\right)}{N} \geq 0 \quad \forall j
+$$</p>
+<p>These are unbiased estimates of the expectations in (6) for any choice of $N$. By multiplying with $N$ and plugging in the definition of $g_{j}(x)$, it can be verified that a decision based on (7) reverts the same attacks as a decision based on (5). The expectation estimates become more and more accurate as we increase $N$. Since we are making a discrete decision based on whether the expectations are $\geq 0$, the estimate is more likely to be correct with more samples. If we assume that the true expectation is positive in most cases, this means we can generally expect a higher number of reverted attacks for higher $N$. Being more precise on the estimate</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Clean Acc. (\%)</th>
+<th style="text-align: center;">Reverted (\%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">AG News</td>
+<td style="text-align: center;">$\mathrm{MA}_{5}$</td>
+<td style="text-align: center;">93.62</td>
+<td style="text-align: center;">63.24</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{10}$</td>
+<td style="text-align: center;">92.14</td>
+<td style="text-align: center;">62.76</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{20}$</td>
+<td style="text-align: center;">87.30</td>
+<td style="text-align: center;">57.34</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{30}$</td>
+<td style="text-align: center;">76.25</td>
+<td style="text-align: center;">50.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">Yelp</td>
+<td style="text-align: center;">$\mathrm{MA}_{5}$</td>
+<td style="text-align: center;">95.19</td>
+<td style="text-align: center;">59.0</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{10}$</td>
+<td style="text-align: center;">93.98</td>
+<td style="text-align: center;">61.42</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{20}$</td>
+<td style="text-align: center;">90.53</td>
+<td style="text-align: center;">60.83</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$\mathrm{MA}_{30}$</td>
+<td style="text-align: center;">86.91</td>
+<td style="text-align: center;">59.25</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: By masking random tokens instead of exchanging words, more than half of the attacks can be reverted. However, the clean accuracy drops.
+also means we generally tend to make the same decision every time on the same example, therefore reducing the variance in the reverted attack rate. Table 6 shows results on reverted attacks for $4,8,16$ and 32 versions and generally confirms this. However, the results are already quite good with just four versions, so this is a trade-off between speed and accuracy, as creating $N$ versions increases the batch size during inference by a factor $N$.</p>
+<h2>B Baseline for post-processing</h2>
+<p>Instead of replacing words with other words in Step 2 of our defense procedure, one could also think of other ways of slightly perturbing the adversarial examples to flip the label back to the correct one. To show that our method is superior to such simple perturbations, Table 7 shows the results of a baseline procedure in which we replace randomly chosen words with the [MASK] token. Indeed, averaged over TextFooler, PWWS, and BERT-Attack, up to $63 \%$ of the adversarial examples on AG News can be reverted by masking just $5 \%$ of the words. However, further improving on that by masking more tokens fails, and the clean accuracy drops substantially. This is contrary to our procedure, in which we exchange $40 \%$ of the words with just a minimal decrease in accuracy.</p>
+<h2>C Word Frequencies</h2>
+<p>We observe that attacks frequently introduce words that rarely occur during training. Table 8 shows median word occurrences (Occ. column) of original words and attack words in the training set for different attacks. The results are quite striking and a further justification for using data augmentation. It is also interesting to see that BERT-Attack acts differently in that regard. We assume this is because BERT-Attack has the weakest constraints (no</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Distribution of cosine similarities of words.</p>
+<p>constraint on cosine similarity of words and a weak constraint on USE). This could allow BERT-Attack to find more effective perturbations than other attacks that have to choose from a set of more similar words and then rely on the ones the model does not know.</p>
+<p>Table 8 further shows that attacks often use words with higher relative frequency in other classes. Column GT reveals the percentage of times that the original words and attack words have the highest relative frequency (word occurrences in class divided by the total number of words in the same class) in the ground truth class. It can be observed that attacks often introduce words with higher relative frequency in a different class. This is an interesting observation as no one would be surprised by the success of such perturbations if we were dealing with a bag-of-words model.</p>
+<h3>D Cosine Similarities of Words</h3>
+<p>In a counter-fitted embedding, perfect synonyms are supposed to have a cosine similarity of 1 and perfect antonyms are supposed to have a cosine similarity of 0. Figure 3 shows the distribution of cosine similarities for the four attacks on both datasets.</p>
+<h3>E Details on Human Evaluation</h3>
+<p>We relied on workers with at least 5000 HITs and over 98% success rate. For the word-pairs, we showed the workers 100 pairs of words in a google form. In order to ensure a good quality of work, we included some hand-designed test cases at several places and rejected workers with strange answers on these word-pairs. These test cases were [<em>good</em>, <em>bad</em>], [<em>help</em>, <em>hindrance</em>] (expected answer "Strongly Disagree" or "Disagree") and [<em>sofa</em>, <em>couch</em>], [<em>seldom</em>, <em>rarely</em>] (expected answer "Strongly Agree" or "Agree"). In a first test run, surprisingly, many workers agreed on antonyms like good and bad, which is why we added a note with an example and emphasized that this is about whether the meaning is preserved and not about whether both words fit into the same context. Workers were paid 2.0$ for one HIT with 100 pairs and 4 test cases. We showed every pair of words to ten workers and calculated the mean. A screenshot of the form can be found in Figure 5. For the words with context, we used the amazon internal form because it allowed for a clearer presentation of the two text fragments (see Figure 4). We always presented five pairs of text fragments in one HIT and rejected workers that submitted the hit within less than 60s to ensure quality. Workers were paid 0.5$ for one HIT with five pairs. We showed every pair of text fragments to five workers and calculated the mean.</p>
+<h3>F Datasets</h3>
+<p>For our experiments, we use two different text classification datasets: AG News and Yelp. On Yelp, we only used the examples consisting of 80 words or less. Especially comparing to ADV would have</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Attack</th>
+<th>Orig. Word</th>
+<th></th>
+<th>Att. Word</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td>Occ.</td>
+<td>GT (%)</td>
+<td>Occ.</td>
+<td>GT (%)</td>
+</tr>
+<tr>
+<td>AG News</td>
+<td>TextFooler</td>
+<td>736</td>
+<td>67.31</td>
+<td>18</td>
+<td>24.63</td>
+</tr>
+<tr>
+<td></td>
+<td>PWWS</td>
+<td>889</td>
+<td>60.04</td>
+<td>24</td>
+<td>16.06</td>
+</tr>
+<tr>
+<td></td>
+<td>BERT-Att.</td>
+<td>585</td>
+<td>65.92</td>
+<td>344</td>
+<td>22.91</td>
+</tr>
+<tr>
+<td></td>
+<td>BAE</td>
+<td>617</td>
+<td>52.66</td>
+<td>4</td>
+<td>9.31</td>
+</tr>
+<tr>
+<td>Yelp</td>
+<td>TextFooler</td>
+<td>4240</td>
+<td>72.79</td>
+<td>19</td>
+<td>44.60</td>
+</tr>
+<tr>
+<td></td>
+<td>PWWS</td>
+<td>5715</td>
+<td>74.56</td>
+<td>13</td>
+<td>33.76</td>
+</tr>
+<tr>
+<td></td>
+<td>BERT-Att.</td>
+<td>4521</td>
+<td>75.27</td>
+<td>3398</td>
+<td>35.55</td>
+</tr>
+<tr>
+<td></td>
+<td>BAE</td>
+<td>4601</td>
+<td>76.03</td>
+<td>44</td>
+<td>41.87</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Median word occurrences of original words and attack words in training set (Occ.) and percentage of times that words have the highest relative frequency in ground truth class (GT).</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 5: Screenshot of the Google form used to evaluate similarity of words.
+been much harder otherwise. Statistics of the two datasets are displayed in Table 9.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: right;">Labels</th>
+<th style="text-align: center;">Train</th>
+<th style="text-align: center;">Test</th>
+<th style="text-align: center;">Avg Len</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">AG News</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: center;">$120^{\prime} 000$</td>
+<td style="text-align: center;">$7^{\prime} 600$</td>
+<td style="text-align: center;">43.93</td>
+</tr>
+<tr>
+<td style="text-align: left;">Yelp</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: center;">$199^{\prime} 237$</td>
+<td style="text-align: center;">$13^{\prime} 548$</td>
+<td style="text-align: center;">45.69</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9: Statistics of the two datasets.</p>
+<p>AG News (Zhang et al., 2015) is a topic classification dataset. It is contructed out of titles and headers from news articles categorized into the four classes World, Sports, Business, and Sci/Tech.
+Yelp (Zhang et al., 2015) is a binary sentiment classification dataset. It contains reviews from Yelp, reviews with one or two stars are considered negative, reviews with 3 or 4 stars are considered positive.</p>
+<h2>G Implementation</h2>
+<p>Training We use bert-base-uncased from huggingface ${ }^{6}$ for all our experiments. The normal</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup>models were fine-tuned for two epochs with a learning rate of $2 \mathrm{e}-5$. We restrict the maximum input length to 128 tokens. For the training with dataaugmentation, we train for 12 epochs with a starting learning rate of $2 \mathrm{e}-5$ and linear schedule. We evaluate the robustness on an additional held-out dataset after every epoch. For a threshold of 0.5 on the cosine similarity of words, the robustness reaches its peak after the last epoch. However, we find that two or three epochs are already enough for larger thresholds on cosine similarity of words. All our experiments are conducted on a single RTX 3090.</p>
+<p>Attacks We use TextAttack ${ }^{7}$ for the implementations of all attacks, including the ones with adjusted thresholds. For adversarial training, we adapt the code from Meng and Wattenhofer (2020).</p>
+<p><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{6}$ https://huggingface.co/transformers/&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{7}$ https://textattack.readthedocs.io/en/ latest/&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

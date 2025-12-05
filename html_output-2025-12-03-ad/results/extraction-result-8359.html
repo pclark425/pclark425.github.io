@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8359 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8359</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8359</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-149.html">extraction-schema-149</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <p><strong>Paper ID:</strong> paper-9ca329408813d209b1dcb36936f7f9cba82506bd</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/9ca329408813d209b1dcb36936f7f9cba82506bd" target="_blank">Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Learning Representations</p>
+                <p><strong>Paper TL;DR:</strong> This work shows that extrapolation can be enabled by simply changing the position representation method, though it finds that current methods do not allow for efficient extrapolation, and introduces a simpler and more efficient position method, Attention with Linear Biases (ALiBi).</p>
+                <p><strong>Paper Abstract:</strong> Since the introduction of the transformer model by Vaswani et al. (2017), a fundamental question has yet to be answered: how does a model achieve extrapolation at inference time for sequences that are longer than it saw during training? We first show that extrapolation can be enabled by simply changing the position representation method, though we find that current methods do not allow for efficient extrapolation. We therefore introduce a simpler and more efficient position method, Attention with Linear Biases (ALiBi). ALiBi does not add positional embeddings to word embeddings; instead, it biases query-key attention scores with a penalty that is proportional to their distance. We show that this method trains a 1.3 billion parameter model on input sequences of length 1024 that extrapolates to input sequences of length 2048, achieving the same perplexity as a sinusoidal position embedding model trained on inputs of length 2048 but training 11% faster and using 11% less memory. ALiBi's inductive bias towards recency also leads it to outperform multiple strong position methods on the WikiText-103 benchmark.</p>
+                <p><strong>Cost:</strong> 0.007</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Investigating the limitations of the transformers with simple arithmetic tasks <em>(Rating: 2)</em></li>
+                <li>Compositionality decomposed: How do neural networks generalise? <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8359",
+    "paper_id": "paper-9ca329408813d209b1dcb36936f7f9cba82506bd",
+    "extraction_schema_id": "extraction-schema-149",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Investigating the limitations of the transformers with simple arithmetic tasks",
+            "rating": 2
+        },
+        {
+            "paper_title": "Compositionality decomposed: How do neural networks generalise?",
+            "rating": 1
+        }
+    ],
+    "cost": 0.007005249999999999,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation</h1>
+<p>Ofir Press ${ }^{1,2} \quad$ Noah A. Smith ${ }^{1,3} \quad$ Mike Lewis ${ }^{2}$<br>${ }^{1}$ Paul G. Allen School of Computer Science \&amp; Engineering, University of Washington<br>${ }^{2}$ Facebook AI Research<br>${ }^{3}$ Allen Institute for AI<br>ofirp@cs.washington.edu</p>
+<h4>Abstract</h4>
+<p>Since the introduction of the transformer model by Vaswani et al. (2017), a fundamental question has yet to be answered: how does a model achieve extrapolation at inference time for sequences that are longer than it saw during training? We first show that extrapolation can be enabled by simply changing the position representation method, though we find that current methods do not allow for efficient extrapolation. We therefore introduce a simpler and more efficient position method, Attention with Linear Biases (ALiBi). ALiBi does not add positional embeddings to word embeddings; instead, it biases query-key attention scores with a penalty that is proportional to their distance. We show that this method trains a 1.3 billion parameter model on input sequences of length 1024 that extrapolates to input sequences of length 2048, achieving the same perplexity as a sinusoidal position embedding model trained on inputs of length 2048 but training $11 \%$ faster and using $11 \%$ less memory. ALiBi's inductive bias towards recency also leads it to outperform multiple strong position methods on the WikiText-103 benchmark. ${ }^{1}$</p>
+<h2>1 INTRODUCTION</h2>
+<p>When constructing a transformer-based language model, a major design decision is the length of training sequences, denoted $L$ herein, which has to date been equivalent to the length of inference sequences. More context, achieved by larger $L$, improves predictions at inference time. But longer sequences are more expensive to train on. ${ }^{2}$</p>
+<p>Before transformers, RNN language models were trained on shorter- $L$ sequences and assumed to generalize to longer contexts at inference time (Mikolov et al., 2010; Mikolov \&amp; Zweig, 2012; Zaremba et al., 2014). Vaswani et al. (2017), introducing the transformer, speculated that it "may [...] extrapolate to sequence lengths longer than the ones encountered during training." We define extrapolation as a model's ability to continue performing well as the number of input tokens during validation increases beyond the number of tokens on which the the model was trained. We find that transformer language models (LMs) that use sinusoidal position embeddings have very weak extrapolation abilities; see Figure 1.</p>
+<p>We demonstrate that this failure to extrapolate is caused by the position embedding method. As shown in Figure 1, recent alternatives to the original sinusoidal position method (Su et al., 2021; Raffel et al., 2020) have improved extrapolation. However, the better of these, the T5 bias, is considerably slower than the sinusoidal approach and uses extra memory and parameters (Figure 2).</p>
+<p>We therefore introduce Attention with Linear Biases (ALiBi) to facilitate efficient extrapolation. ALiBi negatively biases attention scores with a linearly decreasing penalty proportional to the distance between the relevant key and query. Our simple approach eliminates position embeddings.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Extrapolation: as the (validation-set's) input sequence gets longer ( $x$-axis), current position methods (sinusoidal, rotary, and T5) show degraded perplexity ( $y$-axis, lower is better), but our method (§3) does not. Models were trained on WikiText-103 with sequences of $L=512$ (left) or $L=1,024$ (right) tokens. T5 ran out of memory on our 32GB GPU. For more detail on exact perplexities and runtimes, see Tables 2 and 3 in the appendix.</p>
+<p>Compared to a sinusoidal model trained on the same input length, our method requires no additional runtime or parameters and incurs a negligible ( $0-0.7 \%$ ) memory increase. ALiBi can be implemented by changing only a few lines of existing transformer code.
+Using ALiBi , a transformer LM can be trained on short- $L$ sequences and therefore at much lower cost, and it can still be reliably applied to long sequences at runtime. For example, a 1.3 billion parameter LM trained on $L=1024$ tokens with ALiBi achieves the same perplexity as a sinusoidal model trained on $L=2048$ when both are tested on sequences of 2048 tokens, even though our model is $11 \%$ faster and uses $11 \%$ less memory.</p>
+<p>Though performance peaks at around two times the number of tokens that the model was trained on, ALiBi maintains strong performance even on sequences of length 10,000. In recently explored settings where NLP training examples are given as context to an LM (Brown et al., 2020), our approach will allow exposure to more examples. Additionally, it enables generation of longer outputs.</p>
+<h1>2 CURRENT APPROACHES DO NOT EXTRAPOLATE EFFICIENTLY</h1>
+<p>We show for the first time that the sinusoidal position method, which technically should be able to extrapolate, in practice has very limited extrapolation capabilities. Though the rotary position method improves over the sinusoidal one, it still does not achieve satisfying results. Holding everything else constant, we are the first to observe that the T5 bias method leads to better extrapolation than either of these, and so we conclude that extrapolation ability depends heavily on the position embedding. Unfortunately, the T5 bias is computationally costly (Figure 2).</p>
+<h3>2.1 BACKGROUND AND EXPERIMENTAL SETUP</h3>
+<p>A transformer LM receives a list of tokens and outputs a probability distribution representing its prediction for the next token. We call the input list the current input subsequence since the inputs to language models are typically subsequences from (much longer) training or evaluation sequences. During both training and perplexity evaluation (i.e., scoring a fixed sequence), many predictions can be calculated at once; this is done using a "causal mask" that ensures each position's prediction is influenced only by tokens to its left. Let $L$ be the length of each input subsequence during training; it includes $L$ predictions, which on average have access to $\frac{L+1}{2}$ tokens of (left) context. To explore a model's extrapolation abilities, we are interested in cases where sequences of length $L_{\text {valid }}&gt;L$ are considered at evaluation time. When $L$ differs between inference and training, we use $L$ to refer to the length of subsequences during training and $L_{\text {valid }}$ to refer to their length at validation.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: A comparison of batched training, inference speed and memory use of the sinusoidal, rotary, T5 bias, and our ALiBi position methods. The speed differences between our method and the sinusoidal are within $1 \%$ during training and $3 \%$ for inference, which is insignificant on our hardware. ALiBi uses 100 MB of extra memory when training on input lengths 1024 and 3072 in this setting. Memory usage is lower in all approaches when training on 3072 tokens (compared to 1024) since we break batches into multiple updates. See Table 1 in the appendix for exact numbers.</p>
+<p>Nonoverlapping Inference To train on or evaluate a sequence longer than $L$ tokens, it is typical to segment the sequence into $L$-length subsequences and train on or evaluate them independently. Unless otherwise stated, we use nonoverlapping inference to report perplexity scores.</p>
+<p>Extrapolation During Inference Formally, the functions that define a transformer layer are agnostic to input length; ${ }^{3}$ they map from some arbitrary, unfixed number of input vectors to the same number of output vectors. When transformers are applied to data that is inherently sequential, like text, positional information is injected into the inputs in various ways.</p>
+<p>Vaswani et al. (2017) discussed two options for embedding positions into vectors to be added to word embeddings: learning embeddings for specific positions and unlearned sinusoidal embeddings. They observed similar performance between these two but preferred the sinusoidal approach, which they argued might extrapolate to longer input sequences during inference. We find that this model cannot extrapolate to more than a few dozen tokens beyond $L .^{4}$</p>
+<p>Experiment Setup We first test the extrapolation abilities of various position methods on the WikiText-103 corpus (Merity et al., 2016) using the transformer language model of Baevski \&amp; Auli (2018). We use this model because of its prominent role in recent language modeling developments (Khandelwal et al., 2020; Press et al., 2021). The training set is about 103 million tokens from English Wikipedia (half a gigabyte). The model has 16 transformer layers of dimension 1024, with 8 heads, and a feedforward inner dimension of 4096. This model ties the word embedding and softmax matrices (Press \&amp; Wolf, 2017; Inan et al., 2017). In our experiments, other than varying the position method and training subsequence length, we modify no other hyperparameters, including the random seed and number of training epochs (205).</p>
+<h1>2.2 Measuring Extrapolation</h1>
+<p>Sinusoidal Position Embeddings Sinusoidal position embeddings (Vaswani et al., 2017; §3.5) are constant, non-learned vectors that are added to token embeddings on input to the first layer of the transformer. They are frequently used in transformer language modeling (Baevski \&amp; Auli, 2018; Lewis et al., 2021) and machine translation (Vaswani et al., 2017; Ott et al., 2018) models. We first consider the unmodified model of Baevski \&amp; Auli (2018), which uses sinusoidal position embeddings, and train it on $L=512$ tokens; we then run inference with it on the validation set on $L+k$ tokens, with $k$ ranging from 0 to 15,000 . Figure 1 (left) and the corresponding Table 2 (in the appendix) show that while the model improves perplexity up to $k=20$, performance stops improving and stays steady from $k=20$ to $k=50$ and then begins degrading. Similar results are obtained for a model trained with $L=1024$ tokens (Figure 1 (right) and Table 3 in the appendix). That model improves for up to $L_{\text {valid }}=L+50$ tokens, after which performance declines.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Rotary Position Embeddings The rotary method was introduced by Su et al. (2021) and has recently been popularized by the open source GPT-3 (Brown et al., 2020) implementation GPTJ (Wang \&amp; Komatsuzaki, 2021). Instead of adding sinusoidal embeddings at the bottom of the transformer, they multiply the keys and queries of every attention layer by sinusoidal embeddings.
+Unlike the sinusoidal or learned positional embedding approach, the rotary method injects position information into the model at every layer, not just at the initial one. In addition, it adds no position information to the values of the self-attention sublayer. The output of a self-attention sublayer is a linearly transformed, weighted sum of the input value vectors; therefore, by not inserting position information into the values, the outputs of each transformer-layer contain no explicit position information. We suspect that this segregation of position information may be beneficial for extrapolation, and we draw inspiration from it in the design of our method (§3).
+We apply the rotary position embedding method to our Baevski \&amp; Auli baseline. ${ }^{5}$ The perplexity results (Figure 1 and Appendix Tables 2 and 3) are better than the sinusoidal approach: the model with $L=512(L=1024)$ improves perplexity with up to $k=200(k=100)$ more tokens than it saw during training, but this comes at the cost of slower training and inference (Figure 2).</p>
+<p>T5 Bias Though most models use trained or sinusoidal position embeddings, the T5 model of Raffel et al. (2020) uses a relative position method (Shaw et al., 2018; Huang et al., 2019) that adds no position information to word embeddings (as in the previous method). Instead, it modifies the way attention values are computed. We refer to this as the "T5 bias" method. ${ }^{6}$ To compute attention values in the unmodified transformer, we compute the dot product of every query with every relevant key and then softmax these attention values. In this method, we compute the attention values as before, but then we add a learned, shared bias to each query-key score that is dependent on just the distance between the query and key. Therefore, all query-key scores where the query and key distance are zero (i.e., the query and key represent the same token) get a specific learned bias, all scores where the query and key are one word away get a different learned bias, and so on, up to a certain point, from where multiple different distances share the same learned bias (which might be beneficial for extrapolation). As in the rotary method, the T5 bias injects position information into the model at every layer and integrates no explicit position information into the self-attention value vectors.</p>
+<p>Raffel et al. (2020) propose that the T5 bias may allow extrapolation, but they did not report experiments testing this. Here, we show that the T5 bias does allow language models to extrapolate. We do this by again modifying the Baevski \&amp; Auli model, this time to insert the T5 bias into it. ${ }^{7}$</p>
+<p>As Figure 1 shows, the T5 bias improves perplexity with longer sequences than the ones it was trained on, i.e., $k=600(k=800)$ extra tokens for a model trained on $L=512(L=1024)$ input tokens. Unfortunately, this impressive performance comes at a cost: training is at least twice as slow as with the sinusoidal model. Therefore, this model's extrapolation ability provides no efficiency advantage. For example, to do inference on 1024 tokens, we could either train the sinusoidal model with $L=1024$ or train the T5 bias model on $L=512$ tokens and extrapolate to 1024 for inference. However, the $L=1024$ sinusoidal model runs at 28.5 k words per second (WPS), while the $L=$ 512 T5 bias model runs at 14.4 k WPS (Appendix Table 1), so there is no speedup when training on shorter sequences with this method. ${ }^{8}$</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: When computing attention scores for each head, our linearly biased attention method, ALiBi , adds a constant bias (right) to each attention score ( $\mathbf{q}<em j="j">{i} \cdot \mathbf{k}</em>$ is a head-specific scalar that is set and not learned throughout training. We show that our method for setting $m$ values generalizes to multiple text domains, models and training compute budgets. When using ALiBi, we do not add positional embeddings at the bottom of the network.}$, left). As in the unmodified attention sublayer, the softmax function is then applied to these scores, and the rest of the computation is unmodified. $\mathbf{m</p>
+<h1>3 ATTENTION WITH LINEAR BIASES (ALIBI)</h1>
+<p>In the transformer model of Vaswani et al. (2017), position embeddings are added to the word embeddings at the bottom of the network. For an input subsequence of length $L$, the attention sublayer computes the attention scores for the $i$ th query $\mathbf{q}_{i} \in \mathbb{R}^{1 \times d},(1 \leq i \leq L)$ in each head, given the first $i$ keys $\mathbf{K} \in \mathbb{R}^{i \times d}$, where $d$ is the head dimension:</p>
+<p>$$
+\operatorname{softmax}\left(\mathbf{q}_{i} \mathbf{K}^{\top}\right)
+$$</p>
+<p>These attention scores are then multiplied by the values to return the output of the attention sublayer. ${ }^{9}$
+When using ALiBi, we do not add position embeddings at any point in the network. The only modification we apply is after the query-key dot product, where we add a static, non-learned bias: ${ }^{10}$</p>
+<p>$$
+\operatorname{softmax}\left(\mathbf{q}_{i} \mathbf{K}^{\top}+m \cdot[-(i-1), \ldots,-2,-1,0]\right)
+$$</p>
+<p>where scalar $m$ is a head-specific slope fixed before training. Figure 3 offers a visualization.
+For our models with 8 heads, the slopes that we used are the geometric sequence: $\frac{1}{2^{1}}, \frac{1}{2^{2}}, \ldots, \frac{1}{2^{8}}$. For models that require 16 heads, we interpolate those 8 slopes by geometrically averaging every consecutive pair, resulting in the geometric sequence that starts at $\frac{1}{\sqrt{2}}$ and has the ratio of $\frac{1}{\sqrt{2}}$ : $\frac{1}{2^{0.5}}, \frac{1}{2^{1}}, \frac{1}{2^{1.5}}, \ldots, \frac{1}{2^{8}}$. In general, for $n$ heads, our set of slopes is the geometric sequence that starts at $2^{\frac{-2}{n}}$ and uses that same value as its ratio.</p>
+<p>In $\S 4$, we observe that this set of slopes works on a wide variety of text domains and model sizes. Therefore, we do not believe that it is necessary to tune these slope values every time a new model is trained on a new dataset. This makes our method similar to the sinusoidal approach, where the hyperparameters (the start and end of the geometric progression of wavelengths) were set once by Vaswani et al. (2017) and then reused in different models of different sizes on different datasets.</p>
+<p>ALiBi has an inductive bias towards recency; it penalizes attention scores between distant query-key pairs, with the penalty increasing as the distance between a key and a query grows. The different heads increase their penalties at different rates, depending on the slope magnitude.</p>
+<p>We initially experimented with making the slopes trainable, but this did not yield strong extrapolation results. ${ }^{11}$ A brief manual exploration of around ten slope sets led us to discover the set of slopes that we finally picked. Our main insight from this exploration is that the slope sets that work best are those with slopes in the $(0,1)$ range, with the slopes' density increasing as we get closer to 0 . We also found our method to be robust to slope choice. Even randomly sampling from the exponential distribution worked well in some cases (although that method had high variance).</p>
+<p>Since ALiBi is a relative position method, we add position information at every layer to the keys and queries but not to the values, as is done in the T5 bias and rotary methods. We hypothesize that these properties might be beneficial for extrapolation.</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Implementation. ALiBi is easy to implement, with all changes accomplished in a few lines of code. We implement it by modifying the mask matrix by adding the linear biases to it (in practice, when training a transformer LM, query $\mathbf{q}_{i}$ attends only to keys 1 to $i$; this is implemented by adding a mask matrix to the query-key dot product before the softmax operation is applied). This means that there is no runtime penalty when using our method since we add no operations to the network.</p>
+<p>Compared to the sinusoidal model trained on the same input lengths, AliBi incurs a memory increase (up to 100 MB in some of our experiments): in the unmodified transformer, the mask is of size $L \times L$; when using ALiBi , the mask is a slightly larger $n \times L \times L$ (where $n$ is the number of heads) since the linear biases added for each head uses a different slope. But, as we show, ALiBi enables training on much smaller sequences while still achieving (and occasionally surpassing) results obtained using sinusoidal embeddings on longer sequences, which saves multiple gigabytes of memory.</p>
+<h1>4 ReSults</h1>
+<p>We first show that on WikiText103 ALiBi is efficient and enables training models with short input subsequences that outperform strong baselines even when the ALiBi models extrapolate to more than six times the number of tokens that they were trained on. We then take the same hyperparameters for our method (the set of slopes) that worked on WikiText-103 and show that - with no modification - they provide strong results on a dataset in a very different domain: books. Finally, we show that a 1.3B parameter model trained with AliBi on a much larger ( 461 GB ) dataset with much more compute provides a superior alternative to the sinusoidal method since it achieves similar perplexity scores while running faster and using less memory (since it is trained on shorter inputs).</p>
+<p>While multiple alternatives to the position methods presented in Vaswani et al. (2017) have been proposed, few have been adopted in large ( 1 B or more parameter) LMs since that setting is much more challenging than the smaller scale experiments. GPT-3 and Jurassic-1 (Lieber et al., 2021) use the learned position embedding method from Vaswani et al., and GPT-J uses the rotary method. Our results on the 1.3B parameter model show our method's ability to generalize to larger models, dataset sizes and training durations without retuning the hyperparameter.</p>
+<h3>4.1 Results on WikiText-103 and Toronto BookCorpus</h3>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: ALiBi models trained and evaluated on varying sequence lengths on the WikiText-103 validation set and the sinusoidal baseline (not evaluated on longer sequences). All of our models outperform the sinusoidal ones even when trained on fewer tokens. Appendix Table 5 has exact perplexities, more ALiBi models (trained on fewer tokens), and results for rotary and T5 bias models.</p>
+<p>We first develop our method on the WikiText-103 corpus (Merity et al., 2016), replacing the sinusoidal position embeddings in the language model of Baevski \&amp; Auli (2018) with ALiBi.</p>
+<p>Figure 4 (and the corresponding Appendix Table 5) show our results for models trained with varying numbers of input subsequence tokens $(L)$, extrapolating to longer subsequence lengths on the validation dataset. Our first observation is that, without extrapolation, for every $L$, our models outperform those using the sinusoidal method, sometimes by a significant amount. For example, the Baevski \&amp; Auli model achieves $18.67 \pm 0.24$ (std. dev.) perplexity when trained with $L=3072$ input tokens, but our $L=3072$ model achieves 17.60 perplexity (when both models evaluate with $L_{\text {valid }}=3072$ ).</p>
+<p>Our second observation is that all of our models can extrapolate, and they obtain improved perplexity scores when handling more tokens than they observed during training. For example, our model trained on 512 tokens (which achieves 19.73 perplexity when evaluating subsequences of length 512 in the development set) achieves a perplexity score of 18.40 on the development set when extrapolating to subsequences of length 3072. Surprisingly, this surpasses the score that the $L=$ 3072 sinusoidal model obtains on the development set by a statistically significant margin. Note that all our models trained on $L=512$ to $L=2048$ outperform the sinusoidal baseline trained on $L=3072$ when extrapolating to $L_{\text {valid }}=3072$ even though those models all take much less time to train since they train on shorter subsequences (Appendix Figure 8 compares training speed to perplexity for these models)! The $L=512$ model is 1.84 times faster to train and yet still outperforms the $L=3072$ sinusoidal model when extrapolating to $L_{\text {valid }}=3072$. In addition, training the $L=3072$ sinusoidal model requires a GPU with more than 16 GB of memory to fit the large attention matrices, which our $L=512$ outperforms even though it can be trained on a GPU with much less memory due to much smaller attention matrices.</p>
+<p>Additionally, Table 5 (in the appendix) also shows that, for $L$ s of 1024 and 3072, our method performs better than the rotary and T5 bias models even when $L_{\text {valid }}=L$ (i.e., no extrapolation is occurring). Figure 1 (and the corresponding Appendix Tables 2 and 3) more broadly explore our method vs. the other position methods. They show that the T5 bias (the best of the baselines) improves perplexity until $L_{\text {valid }}$ is around $2 L$, but on the WikiText-103 dataset our method continually improves perplexity until at least around $3 L$, with the $L=512$ model improving perplexity even when $L_{\text {valid }}$ exceeds 12 k tokens. Even when unable to improve perplexity given longer sequences, ALiBi always maintains strong performance as more tokens are added.</p>
+<p>Appendix Table 6 shows that our results on the validation set also transfer to the test set of WikiText103. Currently, almost all models that present results on WikiText-103 use sliding window evaluation (defined in $\S \mathrm{B}$ ) to compute perplexities. We apply that method to our (and to the sinusoidal, rotary and T5 bias) models in Appendix Table 7. We find that our $\mathrm{L}=3072$ model surpasses the performance of Transformer-XL (Dai et al., 2019), the Sandwich (Press et al., 2020), and Shortformer (Press et al., 2021) models. Our results are similar to the ones obtained with staged training (Press et al., 2021) but fall short of results obtained by Routing Transformer (Roy et al., 2020) and kNN-LM (Khandelwal et al., 2020). The methods used in those models are orthogonal to ours, and we hypothesize that combining them with ours might lead to even larger performance increases.</p>
+<p>After developing our method on WikiText-103, in Appendix Section A.3, we run one set of experiments on a different domain (books) using a similar model architecture and without modifying any of the ALiBi hyperparameters (the slopes) and show that our results fully transfer to this new domain. Our models are able to both surpass the sinusoidal baseline when not extrapolating while also outperforming it when extrapolating to longer sequences.</p>
+<h1>4.2 ReSults ON THE CC100+RoBERTA CORPUS</h1>
+<p>Our final set of experiments investigates whether ALiBi transfers to a larger model trained with a larger computational budget on a larger dataset than the ones we previously used. We show that our method achieves strong results in this more challenging setting, obtaining similar performance to the sinusoidal baseline while using significantly less memory, since we train on shorter subsequences.</p>
+<p>The dataset we choose is a combination of the datasets used to train the RoBERTa (Liu et al., 2019) implementation of BERT (Devlin et al., 2019) and the English part of the CC-100 corpus introduced in Conneau et al. (2020), for a total of 461 GB. The RoBERTa training corpus-i.e., the Toronto Book Corpus (Zhu et al., 2015), English Wikipedia, CC-News (Nagel, 2016), OpenWebText (Gokaslan \&amp; Cohen, 2019) and Stories (Trinh \&amp; Le, 2018))—is 161 gigabytes, and the English part of the CC-100 corpus is 300 gigabytes. The validation set contains 649 K tokens.</p>
+<p>Our models for this dataset have 25 transformer layers with 16 heads and a dimension of 2048, with an 8192 hidden dimension of the feedforward sublayers. These models have 1.3B parameters. We train our models for one epoch, which is 50 k updates on 128 V100 GPUs.</p>
+<p>In Figure 5 (left), we compare the validation perplexity for $L_{\text {valid }}=1024$ throughout the training process for an ALiBi model trained with $L=512$ compared to the sinusoidal model trained with $L=1024$. Since our model is trained on shorter sequences, it is $7 \%$ faster and uses 1.6 GB less</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: On the left (right), a 1.3B-parameter ALiBi model trained on 512 (1024) and evaluated on 1024 (2048) tokens during training, compared to the sinusoidal baseline trained on 1024 (2048) tokens. The ALiBi models obtain strong results even though they use $6 \%-11 \%$ less memory since they train on shorter sequences. Appendix Table 11 shows memory use and end-of-training perplexities.
+memory. We halt training of the sinusoidal baseline when our model reaches the end of its training (one epoch). At that time, our model is just 0.06 perplexity away from the baseline even though it was trained on sequences that are half the length of those the baseline used and requires less memory.</p>
+<p>In Figure 5 (right), results become even more impressive, showing that our model trained on $L=$ 1024 outperforms by 0.09 perplexity the sinusoidal model trained on $L=2048$ (when evaluating with $L_{\text {valid }}=2048$ ) even though our model uses 3.1 GB less memory. Our model maintains a lead in perplexity over the sinusoidal model during the entire training process. By sampling five evenly distributed points across the training process, we compute that our $L=1024$ model reaches a given perplexity value, on average, $11 \%$ faster than the sinusoidal model does.</p>
+<p>Since our models in these comparisons use much less memory, they allow for stacking more layers, which would further improve performance (with negligible, if any, runtime cost). To keep our experiments as straightforward as possible, however, we do not add layers to our models.</p>
+<p>Appendix Table 12 presents additional results comparing our models to the sinusoidal baseline when both are trained on the same $L$, showing that ALiBi performs similarly to the sinusoidal baseline when not extrapolating. This contrasts with the results presented on the smaller datasets, where ALiBi consistently outperforms other position methods even when not extrapolating, suggesting that ALiBi's inductive bias provides additional benefits for lower-resource language modeling.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: The ALiBi and sinusoidal models (with both $L=512$ and 1024) trained for 50k updates (1 epoch) on the CC100+RoBERTa corpus, extrapolating on the validation set. ALiBi achieves the best results at around $2 L$ but maintains strong performance even up to 10000 tokens in these experiments.</p>
+<p>Figure 6 shows that our models trained on $L=512$ and $L=1024$ achieve the best results when extrapolating to about double the tokens that they were trained on. Specifically, the $L=512$ model (that obtains 9.79 perplexity when $L_{\text {valid }}=512$ ) achieves its best score (9.3) when extrapolating to</p>
+<p>1012 tokens, and the $L=1024$ model (that obtains 9.16 perplexity when $L_{\text {valid }}=1024$ ) achieves its best score (8.9) when extrapolating to 2024 tokens.</p>
+<p>One possible explanation is that the subsequences the model observes during training are up to $L$ tokens long. When performing inference on subsequences of length $2 L$, half of the subsequences the model consumes are as long as the examples seen during training. When inference is performed on subsequences of length $2 L+1$ or longer, less than half of the predictions the model makes are on subsequences of lengths seen during training, and that might degrade performance.</p>
+<p>The sinusoidal model cannot extrapolate at all in this setting, with its performance degrading for both the $L=512$ and 1024 models as soon as one token more than $L$ is added during evaluation.</p>
+<p>In Appendix B, we find that ALiBi's edge over sinusoidal embeddings is largely explained by its improved avoidance of the early token curse. We posit that future work building on ALiBi might achieve further gains by more efficiently exploiting longer histories.</p>
+<h1>5 Related Work</h1>
+<p>In parallel with our work, Wennberg \&amp; Henter (2021) introduce a relative position method that, like our method, adds a bias to attention scores that is a function of the distance between the key and query elements. Unlike our ALiBi method, which uses a non-learned linear function, their method uses a radial-basis function, with multiple trainable parameters (in our experiments, this led to a slight decrease in runtime). In addition, they present experiments on text classification, not on language modeling. They do not explore extrapolation. The Distance Aware Transformer (Wu et al., 2021) multiplies attention scores by a bias that is a function of the distance between the key and query. This function uses a different, learned parameter in every head. They show results only on text classification. In our experiments (not presented), multiplying attention scores by the bias (instead of adding, as in ALiBi) degraded performance.</p>
+<p>Transformer-XL (Dai et al., 2019) presented a language model that uses a cache and can attend to more tokens during inference than it was trained on (by increasing the length of the cache). However, this work presents results only where output length is limited to the $L$ (the training length), and their relative position method is very slow (Press et al., 2021). The Longformer (Beltagy et al., 2020) adapts models trained on shorter sequences to document-level tasks. However, to achieve this they had to partially train their models on longer sequences. Our ALiBi method enables extrapolation without any additional training on longer sequences.</p>
+<p>To our knowledge, extrapolation has not been previously explored in transformer language modeling, but it has been investigated previously and concurrently with transformers on other tasks, such as machine translation (Rosendahl et al., 2019; Neishi \&amp; Yoshinaga, 2019; Newman et al., 2020; Kiyono et al., 2021), sequence-to-sequence models trained on an artificial dataset (Hupkes et al., 2020), pretrained sequence-to-sequence models tested on arithmetic tasks (Nogueira et al., 2021, Appendix C), models trained with reinforcement learning (Lampinen et al., 2021), image, speech recognition, and machine translation models (Likhomanenko et al., 2021), and protein structure prediction (Jumper et al., 2021, Appendix 1.5).</p>
+<h2>6 CONCLUSION</h2>
+<p>We showed that the sinusoidal position embedding approach does not enable transformers to extrapolate to inputs longer than the ones they were trained on. We then established that extrapolation in transformers can be enabled by just changing the position method. We showed that our ALiBi method offers an extremely simple replacement for existing position approaches and allow models to extrapolate. In addition, when not extrapolating, our method achieves either better perplexity than the sinusoidal method (in models smaller than 1B parameters, trained on less data) or similar perplexity (in larger, billion parameter models trained on much more data). ALiBi is simple to implement and does not slow down runtime or require extra parameters (but does occasionally require a negligible amount of extra memory). Using our method, we sped up the training of a 1.3 billion parameter model evaluated on the same input sequence length as GPT-3 (2048).</p>
+<h1>ACKNOWLEDGMENTS</h1>
+<p>We thank Tim Dettmers, Gabriel Ilharco, Jungo Kasai, Hao Peng, Sewon Min, Sofia Serrano, Sam Shleifer, Luke Zettlemoyer, Julian Michael, Nikolaos Pappas, Yizhong Wang, and the anonymous reviewers for their valuable feedback and fruitful discussions.</p>
+<h1>REFERENCES</h1>
+<p>Alexei Baevski and Michael Auli. Adaptive input representations for neural language modeling. CoRR, abs/1809.10853, 2018. URL http://arxiv.org/abs/1809.10853.</p>
+<p>Iz Beltagy, Matthew E. Peters, and Arman Cohan. Longformer: The long-document transformer. arXiv:2004.05150, 2020.</p>
+<p>Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel M. Ziegler, Jeffrey Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei. Language models are few-shot learners, 2020.</p>
+<p>Alexis Conneau, Kartikay Khandelwal, Naman Goyal, Vishrav Chaudhary, Guillaume Wenzek, Francisco Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer, and Veselin Stoyanov. Unsupervised cross-lingual representation learning at scale. Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, 2020. doi: 10.18653/v1/2020.acl-main.747. URL http://dx.doi.org/10.18653/v1/2020.acl-main. 747.</p>
+<p>Zihang Dai, Zhilin Yang, Yiming Yang, Jaime Carbonell, Quoc Le, and Ruslan Salakhutdinov. Transformer-XL: Attentive language models beyond a fixed-length context. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 2978-2988, Florence, Italy, July 2019. Association for Computational Linguistics. doi: 10.18653/v1/P19-1285. URL https://aclanthology.org/P19-1285.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pp. 4171-4186, Minneapolis, Minnesota, June 2019. Association for Computational Linguistics. doi: 10.18653/v1/N19-1423. URL https: //www.aclweb.org/anthology/N19-1423.</p>
+<p>Aaron Gokaslan and Vanya Cohen. Openwebtext corpus. http://Skylion007.github.io/ OpenWebTextCorpus, 2019.</p>
+<p>Cheng-Zhi Anna Huang, Ashish Vaswani, Jakob Uszkoreit, Ian Simon, Curtis Hawthorne, Noam M. Shazeer, Andrew M. Dai, M. Hoffman, M. Dinculescu, and D. Eck. Music transformer: Generating music with long-term structure. In $I C L R, 2019$.</p>
+<p>Dieuwke Hupkes, Verna Dankers, Mathijs Mul, and Elia Bruni. Compositionality decomposed: How do neural networks generalise? Journal of Artificial Intelligence Research, 67:757-795, April 2020. doi: 10.1613/jair.1.11674. URL https://doi.org/10.1613/jair.1. 11674 .</p>
+<p>Hakan Inan, Khashayar Khosravi, and Richard Socher. Tying word vectors and word classifiers: A loss framework for language modeling. In $I C L R, 2017$. URL https://openreview.net/ forum?id=r1aPbsF1e.
+J. Jumper, Richard Evans, A. Pritzel, Tim Green, Michael Figurnov, O. Ronneberger, Kathryn Tunyasuvunakool, Russ Bates, Augustin Zídek, Anna Potapenko, A. Bridgland, Clemens Meyer, Simon A A Kohl, Andy Ballard, A. Cowie, B. Romera-Paredes, Stanislav Nikolov, Rishub Jain, J. Adler, T. Back, Stig Petersen, D. Reiman, Ellen Clancy, Michal Zielinski, Martin Steinegger, Michalina Pacholska, Tamas Berghammer, S. Bodenstein, D. Silver, Oriol Vinyals, A. Senior, K. Kavukcuoglu, P. Kohli, and D. Hassabis. Highly accurate protein structure prediction with alphafold. Nature, 596:583 - 589, 2021.</p>
+<p>Urvashi Khandelwal, Omer Levy, Dan Jurafsky, Luke Zettlemoyer, and Mike Lewis. Generalization through Memorization: Nearest Neighbor Language Models. In International Conference on Learning Representations (ICLR), 2020.</p>
+<p>Shun Kiyono, Sosuke Kobayashi, Jun Suzuki, and Kentaro Inui. Shape: Shifted absolute position embedding for transformers. ArXiv, abs/2109.05644, 2021.</p>
+<p>Andrew Kyle Lampinen, Stephanie C. Y. Chan, Andrea Banino, and Felix Hill. Towards mental time travel: a hierarchical memory for reinforcement learning agents. CoRR, abs/2105.14039, 2021. URL https://arxiv.org/abs/2105.14039.</p>
+<p>Mike Lewis, Shruti Bhosale, Tim Dettmers, Naman Goyal, and Luke Zettlemoyer. Base layers: Simplifying training of large, sparse models, 2021.</p>
+<p>Opher Lieber, Or Sharir, Barak Lenz, and Yoav Shoham. Jurassic-1: Technical details and evaluation. Technical report, AI21 Labs, August 2021.</p>
+<p>Tatiana Likhomanenko, Qiantong Xu, Ronan Collobert, Gabriel Synnaeve, and Alex Rogozhnikov. CAPE: encoding relative positions with continuous augmented positional embeddings. CoRR, abs/2106.03143, 2021. URL https://arxiv.org/abs/2106.03143.</p>
+<p>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. Roberta: A robustly optimized bert pretraining approach, 2019.</p>
+<p>Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher. Pointer sentinel mixture models, 2016.</p>
+<p>Tomas Mikolov and G. Zweig. Context dependent recurrent neural network language model. 2012 IEEE Spoken Language Technology Workshop (SLT), pp. 234-239, 2012.</p>
+<p>Tomas Mikolov, M. Karafiát, L. Burget, J. Cernocký, and S. Khudanpur. Recurrent neural network based language model. In INTERSPEECH, 2010.</p>
+<p>Sebastian Nagel. Cc-news. https://commoncrawl.org/2016/10/ news-dataset-available/, 2016.</p>
+<p>Sharan Narang, Hyung Won Chung, Yi Tay, William Fedus, Thibault Fevry, Michael Matena, Karishma Malkan, Noah Fiedel, Noam Shazeer, Zhenzhong Lan, Yanqi Zhou, Wei Li, Nan Ding, Jake Marcus, Adam Roberts, and Colin Raffel. Do transformer modifications transfer across implementations and applications?, 2021.</p>
+<p>Masato Neishi and Naoki Yoshinaga. On the relation between position information and sentence length in neural machine translation. In Proceedings of the 23rd Conference on Computational Natural Language Learning (CoNLL), pp. 328-338, Hong Kong, China, November 2019. Association for Computational Linguistics. doi: 10.18653/v1/K19-1031. URL https://aclanthology.org/K19-1031.</p>
+<p>Benjamin Newman, John Hewitt, Percy Liang, and Christopher D. Manning. The eos decision and length extrapolation. In BlackBoxNLP@EMNLP, 2020. URL https://nlp.stanford. edu/pubs/newman2020extrapolation.pdf.</p>
+<p>Rodrigo Nogueira, Zhiying Jiang, and Jimmy J. Li. Investigating the limitations of the transformers with simple arithmetic tasks. ArXiv, abs/2102.13019, 2021.</p>
+<p>Myle Ott, Sergey Edunov, David Grangier, and Michael Auli. Scaling neural machine translation. In Proceedings of the Third Conference on Machine Translation (WMT), 2018.</p>
+<p>Ankur Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit. A decomposable attention model for natural language inference. In Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing, pp. 2249-2255, Austin, Texas, November 2016. Association for Computational Linguistics. doi: 10.18653/v1/D16-1244. URL https: //aclanthology.org/D16-1244.</p>
+<p>Ofir Press and Lior Wolf. Using the output embedding to improve language models. In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics: Volume 2, Short Papers, pp. 157-163, Valencia, Spain, April 2017. Association for Computational Linguistics. URL https://www.aclweb.org/anthology/E17-2025.</p>
+<p>Ofir Press, Noah A. Smith, and Omer Levy. Improving transformer models by reordering their sublayers. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pp. 2996-3005, Online, July 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.acl-main.270. URL https://www.aclweb.org/anthology/2020. acl-main. 270 .</p>
+<p>Ofir Press, Noah A. Smith, and Mike Lewis. Shortformer: Better language modeling using shorter inputs. In Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), pp. 5493-5505, Online, August 2021. Association for Computational Linguistics. URL https://aclanthology.org/2021.acl-long. 427.</p>
+<p>Jack W. Rae, Anna Potapenko, Siddhant M. Jayakumar, Chloe Hillier, and Timothy P. Lillicrap. Compressive transformers for long-range sequence modelling. In International Conference on Learning Representations, 2020. URL https://openreview.net/forum?id= SylKikSYDH.</p>
+<p>Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J. Liu. Exploring the limits of transfer learning with a unified text-totext transformer. Journal of Machine Learning Research, 21(140):1-67, 2020. URL http: //jmlr.org/papers/v21/20-074.html.</p>
+<p>Jan Rosendahl, Viet Anh Khoa Tran, Weiyue Wang, and Hermann Ney. Analysis of positional encodings for neural machine translation. In International Workshop on Spoken Language Translation, Hong Kong, China, November 2019.</p>
+<p>Aurko Roy, Mohammad Saffar, Ashish Vaswani, and David Grangier. Efficient content-based sparse attention with routing transformers, 2020.</p>
+<p>Peter Shaw, Jakob Uszkoreit, and Ashish Vaswani. Self-attention with relative position representations. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 2 (Short Papers), pp. 464-468, New Orleans, Louisiana, June 2018. Association for Computational Linguistics. doi: 10.18653/v1/N18-2074. URL https://www.aclweb.org/anthology/N18-2074.</p>
+<p>Jianlin Su, Yu Lu, Shengfeng Pan, Bo Wen, and Yunfeng Liu. Roformer: Enhanced transformer with rotary position embedding, 2021.</p>
+<p>Trieu H. Trinh and Quoc V. Le. A simple method for commonsense reasoning, 2018.
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Ł ukaz Kaiser, and Illia Polosukhin. Attention is all you need. In I. Guyon, U. V. Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and R. Garnett (eds.), Advances in Neural Information Processing Systems, volume 30. Curran Associates, Inc., 2017. URL https://proceedings.neurips.cc/paper/2017/file/ 3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf.</p>
+<p>Ben Wang and Aran Komatsuzaki. GPT-J-6B: A 6 Billion Parameter Autoregressive Language Model. https://github.com/kingoflolz/mesh-transformer-jax, May 2021.</p>
+<p>Ulme Wennberg and Gustav Eje Henter. The case for translation-invariant self-attention in transformer-based language models, 2021.</p>
+<p>Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu, Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame, Quentin Lhoest, and Alexander M. Rush. Transformers: State-of-the-art natural language processing. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations, pp. 38-45, Online, October 2020. Association for Computational Linguistics. URL https://www.aclweb.org/anthology/ 2020.emnlp-demos.6.</p>
+<p>Chuhan Wu, Fangzhao Wu, and Yongfeng Huang. DA-transformer: Distance-aware transformer. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pp. 2059-2068, Online, June 2021. Association for Computational Linguistics. doi: 10.18653/v1/2021.naacl-main.166. URL https://aclanthology.org/2021.naacl-main.166.</p>
+<p>Wojciech Zaremba, Ilya Sutskever, and Oriol Vinyals. Recurrent neural network regularization, 2014.</p>
+<p>Yukun Zhu, Ryan Kiros, Rich Zemel, Ruslan Salakhutdinov, Raquel Urtasun, Antonio Torralba, and Sanja Fidler. Aligning books and movies: Towards story-like visual explanations by watching movies and reading books. In Proceedings of the IEEE international conference on computer vision, pp. 19-27, 2015.</p>
+<h1>A APPENDIX</h1>
+<h2>A. 1 INTRODUCTION</h2>
+<p>The training speed of transformer LMs gets slower as the input subsequence length $L$ increases. Figure 7 visualizes this.
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 7: Training speed of our model and the sinusoidal baseline trained on different amounts of input subsequence tokens $L$.</p>
+<p>Table 1 contains the runtimes and memory use statistics for models using the various position methods discussed in this work.</p>
+<p>Table 1: The speed (during training and evaluation, in words per second) and memory usage (during training) of the rotary, T5 bias, and ALiBi models compared to the sinusoidal baseline on WikiText103. Training and inference are batched, and speeds are shown for one V100 GPU.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Position Method</th>
+<th style="text-align: center;">Train Length</th>
+<th style="text-align: center;">Speed $(\uparrow)$</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Memory $(\downarrow)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Train</td>
+<td style="text-align: center;">Eval.</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">Sinusoidal</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">28.5 k</td>
+<td style="text-align: center;">82.1 k</td>
+<td style="text-align: center;">15.3 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">26.0 k</td>
+<td style="text-align: center;">77.8 k</td>
+<td style="text-align: center;">19.2 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">15.3 k</td>
+<td style="text-align: center;">42.4 k</td>
+<td style="text-align: center;">15.1 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;">Rotary</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">20.0 k</td>
+<td style="text-align: center;">43.4 k</td>
+<td style="text-align: center;">17.8 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">17.7 k</td>
+<td style="text-align: center;">39.4 k</td>
+<td style="text-align: center;">22.8 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">11.5 k</td>
+<td style="text-align: center;">29.5 k</td>
+<td style="text-align: center;">17.8 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;">T5 Bias</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">14.4 k</td>
+<td style="text-align: center;">21.8 k</td>
+<td style="text-align: center;">16.9 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">13.0 k</td>
+<td style="text-align: center;">20.2 k</td>
+<td style="text-align: center;">20.9 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">4.3 k</td>
+<td style="text-align: center;">4.9 k</td>
+<td style="text-align: center;">15.9 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;">ALiBi</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">28.3 k</td>
+<td style="text-align: center;">85.8 k</td>
+<td style="text-align: center;">15.3 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">25.8 k</td>
+<td style="text-align: center;">76.4 k</td>
+<td style="text-align: center;">19.3 GB</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">15.5 k</td>
+<td style="text-align: center;">42.2 k</td>
+<td style="text-align: center;">15.2 GB</td>
+</tr>
+</tbody>
+</table>
+<p>Tables 2, 3, and 4 show the perplexity and runtime of models using the sinusoidal, rotary T5 bias, and ALiBi position methods when extrapolating to sequences longer than the ones they were trained on. The models used in these tables were trained on $L=512,1024$ and 3072 tokens.</p>
+<p>Table 2: The sinusoidal, rotary, T5 bias and ALiBi models trained on $L=\mathbf{5 1 2}$ on WikiText-103 and evaluated with different values of $L_{\text {valid }}$ on the validation set. Bold shows the best score for each model. Inference speeds (in words per second) are from inference on a GPU with batch size of one.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Inputs</th>
+<th style="text-align: center;">Sinusoidal</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Rotary</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">T5 Bias</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">ALiBi</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+</tr>
+<tr>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">20.05</td>
+<td style="text-align: center;">15046</td>
+<td style="text-align: center;">20.07</td>
+<td style="text-align: center;">10839</td>
+<td style="text-align: center;">19.65</td>
+<td style="text-align: center;">11724</td>
+<td style="text-align: center;">19.73</td>
+<td style="text-align: center;">14726</td>
+</tr>
+<tr>
+<td style="text-align: center;">513</td>
+<td style="text-align: center;">19.98</td>
+<td style="text-align: center;">14925</td>
+<td style="text-align: center;">20.01</td>
+<td style="text-align: center;">10806</td>
+<td style="text-align: center;">19.57</td>
+<td style="text-align: center;">10491</td>
+<td style="text-align: center;">19.62</td>
+<td style="text-align: center;">14965</td>
+</tr>
+<tr>
+<td style="text-align: center;">522</td>
+<td style="text-align: center;">19.93</td>
+<td style="text-align: center;">15116</td>
+<td style="text-align: center;">20.02</td>
+<td style="text-align: center;">11295</td>
+<td style="text-align: center;">19.57</td>
+<td style="text-align: center;">9970</td>
+<td style="text-align: center;">19.64</td>
+<td style="text-align: center;">15316</td>
+</tr>
+<tr>
+<td style="text-align: center;">532</td>
+<td style="text-align: center;">19.91</td>
+<td style="text-align: center;">15358</td>
+<td style="text-align: center;">19.98</td>
+<td style="text-align: center;">10854</td>
+<td style="text-align: center;">19.53</td>
+<td style="text-align: center;">10382</td>
+<td style="text-align: center;">19.61</td>
+<td style="text-align: center;">15383</td>
+</tr>
+<tr>
+<td style="text-align: center;">542</td>
+<td style="text-align: center;">19.91</td>
+<td style="text-align: center;">15076</td>
+<td style="text-align: center;">19.94</td>
+<td style="text-align: center;">10795</td>
+<td style="text-align: center;">19.47</td>
+<td style="text-align: center;">12270</td>
+<td style="text-align: center;">19.57</td>
+<td style="text-align: center;">15301</td>
+</tr>
+<tr>
+<td style="text-align: center;">552</td>
+<td style="text-align: center;">19.91</td>
+<td style="text-align: center;">16394</td>
+<td style="text-align: center;">19.93</td>
+<td style="text-align: center;">12267</td>
+<td style="text-align: center;">19.47</td>
+<td style="text-align: center;">13000</td>
+<td style="text-align: center;">19.54</td>
+<td style="text-align: center;">16540</td>
+</tr>
+<tr>
+<td style="text-align: center;">562</td>
+<td style="text-align: center;">19.91</td>
+<td style="text-align: center;">16646</td>
+<td style="text-align: center;">19.87</td>
+<td style="text-align: center;">12481</td>
+<td style="text-align: center;">19.39</td>
+<td style="text-align: center;">12201</td>
+<td style="text-align: center;">19.49</td>
+<td style="text-align: center;">16385</td>
+</tr>
+<tr>
+<td style="text-align: center;">572</td>
+<td style="text-align: center;">19.95</td>
+<td style="text-align: center;">16934</td>
+<td style="text-align: center;">19.83</td>
+<td style="text-align: center;">12668</td>
+<td style="text-align: center;">19.36</td>
+<td style="text-align: center;">12851</td>
+<td style="text-align: center;">19.46</td>
+<td style="text-align: center;">16881</td>
+</tr>
+<tr>
+<td style="text-align: center;">582</td>
+<td style="text-align: center;">20.13</td>
+<td style="text-align: center;">16961</td>
+<td style="text-align: center;">19.88</td>
+<td style="text-align: center;">12594</td>
+<td style="text-align: center;">19.41</td>
+<td style="text-align: center;">13904</td>
+<td style="text-align: center;">19.48</td>
+<td style="text-align: center;">17064</td>
+</tr>
+<tr>
+<td style="text-align: center;">592</td>
+<td style="text-align: center;">20.18</td>
+<td style="text-align: center;">17243</td>
+<td style="text-align: center;">19.84</td>
+<td style="text-align: center;">13007</td>
+<td style="text-align: center;">19.36</td>
+<td style="text-align: center;">13706</td>
+<td style="text-align: center;">19.43</td>
+<td style="text-align: center;">17289</td>
+</tr>
+<tr>
+<td style="text-align: center;">602</td>
+<td style="text-align: center;">20.40</td>
+<td style="text-align: center;">17502</td>
+<td style="text-align: center;">19.81</td>
+<td style="text-align: center;">12788</td>
+<td style="text-align: center;">19.33</td>
+<td style="text-align: center;">14102</td>
+<td style="text-align: center;">19.38</td>
+<td style="text-align: center;">17141</td>
+</tr>
+<tr>
+<td style="text-align: center;">612</td>
+<td style="text-align: center;">20.59</td>
+<td style="text-align: center;">17637</td>
+<td style="text-align: center;">19.81</td>
+<td style="text-align: center;">12601</td>
+<td style="text-align: center;">19.27</td>
+<td style="text-align: center;">14573</td>
+<td style="text-align: center;">19.38</td>
+<td style="text-align: center;">17661</td>
+</tr>
+<tr>
+<td style="text-align: center;">712</td>
+<td style="text-align: center;">24.86</td>
+<td style="text-align: center;">15614</td>
+<td style="text-align: center;">19.79</td>
+<td style="text-align: center;">12676</td>
+<td style="text-align: center;">19.10</td>
+<td style="text-align: center;">13818</td>
+<td style="text-align: center;">19.14</td>
+<td style="text-align: center;">15637</td>
+</tr>
+<tr>
+<td style="text-align: center;">812</td>
+<td style="text-align: center;">30.82</td>
+<td style="text-align: center;">17151</td>
+<td style="text-align: center;">20.17</td>
+<td style="text-align: center;">13954</td>
+<td style="text-align: center;">18.94</td>
+<td style="text-align: center;">14377</td>
+<td style="text-align: center;">18.99</td>
+<td style="text-align: center;">17210</td>
+</tr>
+<tr>
+<td style="text-align: center;">912</td>
+<td style="text-align: center;">37.42</td>
+<td style="text-align: center;">17200</td>
+<td style="text-align: center;">20.73</td>
+<td style="text-align: center;">13887</td>
+<td style="text-align: center;">18.86</td>
+<td style="text-align: center;">15345</td>
+<td style="text-align: center;">18.88</td>
+<td style="text-align: center;">17619</td>
+</tr>
+<tr>
+<td style="text-align: center;">1012</td>
+<td style="text-align: center;">43.54</td>
+<td style="text-align: center;">16304</td>
+<td style="text-align: center;">21.37</td>
+<td style="text-align: center;">13759</td>
+<td style="text-align: center;">18.79</td>
+<td style="text-align: center;">14240</td>
+<td style="text-align: center;">18.73</td>
+<td style="text-align: center;">16059</td>
+</tr>
+<tr>
+<td style="text-align: center;">1112</td>
+<td style="text-align: center;">50.36</td>
+<td style="text-align: center;">16424</td>
+<td style="text-align: center;">22.01</td>
+<td style="text-align: center;">13891</td>
+<td style="text-align: center;">18.77</td>
+<td style="text-align: center;">14014</td>
+<td style="text-align: center;">18.68</td>
+<td style="text-align: center;">16659</td>
+</tr>
+<tr>
+<td style="text-align: center;">1212</td>
+<td style="text-align: center;">58.01</td>
+<td style="text-align: center;">17294</td>
+<td style="text-align: center;">23.02</td>
+<td style="text-align: center;">15245</td>
+<td style="text-align: center;">18.87</td>
+<td style="text-align: center;">14589</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">17372</td>
+</tr>
+<tr>
+<td style="text-align: center;">1312</td>
+<td style="text-align: center;">63.62</td>
+<td style="text-align: center;">15314</td>
+<td style="text-align: center;">23.93</td>
+<td style="text-align: center;">13698</td>
+<td style="text-align: center;">18.84</td>
+<td style="text-align: center;">13138</td>
+<td style="text-align: center;">18.60</td>
+<td style="text-align: center;">15698</td>
+</tr>
+<tr>
+<td style="text-align: center;">1412</td>
+<td style="text-align: center;">70.75</td>
+<td style="text-align: center;">15663</td>
+<td style="text-align: center;">24.81</td>
+<td style="text-align: center;">13928</td>
+<td style="text-align: center;">18.87</td>
+<td style="text-align: center;">12857</td>
+<td style="text-align: center;">18.59</td>
+<td style="text-align: center;">15860</td>
+</tr>
+<tr>
+<td style="text-align: center;">1512</td>
+<td style="text-align: center;">76.23</td>
+<td style="text-align: center;">15812</td>
+<td style="text-align: center;">25.99</td>
+<td style="text-align: center;">14248</td>
+<td style="text-align: center;">18.91</td>
+<td style="text-align: center;">13752</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">16225</td>
+</tr>
+<tr>
+<td style="text-align: center;">2512</td>
+<td style="text-align: center;">132.41</td>
+<td style="text-align: center;">15254</td>
+<td style="text-align: center;">31.58</td>
+<td style="text-align: center;">13456</td>
+<td style="text-align: center;">20.41</td>
+<td style="text-align: center;">9948</td>
+<td style="text-align: center;">18.41</td>
+<td style="text-align: center;">15204</td>
+</tr>
+<tr>
+<td style="text-align: center;">3512</td>
+<td style="text-align: center;">178.97</td>
+<td style="text-align: center;">13293</td>
+<td style="text-align: center;">35.54</td>
+<td style="text-align: center;">11850</td>
+<td style="text-align: center;">22.91</td>
+<td style="text-align: center;">7847</td>
+<td style="text-align: center;">18.40</td>
+<td style="text-align: center;">13329</td>
+</tr>
+<tr>
+<td style="text-align: center;">4512</td>
+<td style="text-align: center;">209.37</td>
+<td style="text-align: center;">11767</td>
+<td style="text-align: center;">39.15</td>
+<td style="text-align: center;">10485</td>
+<td style="text-align: center;">25.91</td>
+<td style="text-align: center;">6146</td>
+<td style="text-align: center;">18.41</td>
+<td style="text-align: center;">11738</td>
+</tr>
+<tr>
+<td style="text-align: center;">5512</td>
+<td style="text-align: center;">240.44</td>
+<td style="text-align: center;">10168</td>
+<td style="text-align: center;">43.14</td>
+<td style="text-align: center;">9020</td>
+<td style="text-align: center;">29.54</td>
+<td style="text-align: center;">5309</td>
+<td style="text-align: center;">18.36</td>
+<td style="text-align: center;">9986</td>
+</tr>
+<tr>
+<td style="text-align: center;">6512</td>
+<td style="text-align: center;">271.40</td>
+<td style="text-align: center;">9052</td>
+<td style="text-align: center;">47.81</td>
+<td style="text-align: center;">8108</td>
+<td style="text-align: center;">34.48</td>
+<td style="text-align: center;">4680</td>
+<td style="text-align: center;">18.35</td>
+<td style="text-align: center;">9022</td>
+</tr>
+<tr>
+<td style="text-align: center;">7512</td>
+<td style="text-align: center;">293.02</td>
+<td style="text-align: center;">8315</td>
+<td style="text-align: center;">51.12</td>
+<td style="text-align: center;">7483</td>
+<td style="text-align: center;">39.29</td>
+<td style="text-align: center;">4102</td>
+<td style="text-align: center;">18.33</td>
+<td style="text-align: center;">8324</td>
+</tr>
+<tr>
+<td style="text-align: center;">8512</td>
+<td style="text-align: center;">305.65</td>
+<td style="text-align: center;">7259</td>
+<td style="text-align: center;">54.98</td>
+<td style="text-align: center;">6718</td>
+<td style="text-align: center;">43.08</td>
+<td style="text-align: center;">3660</td>
+<td style="text-align: center;">18.34</td>
+<td style="text-align: center;">7366</td>
+</tr>
+<tr>
+<td style="text-align: center;">9512</td>
+<td style="text-align: center;">336.02</td>
+<td style="text-align: center;">6672</td>
+<td style="text-align: center;">57.85</td>
+<td style="text-align: center;">6211</td>
+<td style="text-align: center;">48.90</td>
+<td style="text-align: center;">3370</td>
+<td style="text-align: center;">18.34</td>
+<td style="text-align: center;">6555</td>
+</tr>
+<tr>
+<td style="text-align: center;">10512</td>
+<td style="text-align: center;">341.53</td>
+<td style="text-align: center;">6126</td>
+<td style="text-align: center;">60.77</td>
+<td style="text-align: center;">5575</td>
+<td style="text-align: center;">52.95</td>
+<td style="text-align: center;">3010</td>
+<td style="text-align: center;">18.32</td>
+<td style="text-align: center;">6030</td>
+</tr>
+<tr>
+<td style="text-align: center;">11512</td>
+<td style="text-align: center;">362.74</td>
+<td style="text-align: center;">5994</td>
+<td style="text-align: center;">66.62</td>
+<td style="text-align: center;">5445</td>
+<td style="text-align: center;">61.38</td>
+<td style="text-align: center;">2873</td>
+<td style="text-align: center;">18.32</td>
+<td style="text-align: center;">5882</td>
+</tr>
+<tr>
+<td style="text-align: center;">12512</td>
+<td style="text-align: center;">373.17</td>
+<td style="text-align: center;">5421</td>
+<td style="text-align: center;">69.70</td>
+<td style="text-align: center;">4988</td>
+<td style="text-align: center;">64.94</td>
+<td style="text-align: center;">2602</td>
+<td style="text-align: center;">18.31</td>
+<td style="text-align: center;">5287</td>
+</tr>
+<tr>
+<td style="text-align: center;">13512</td>
+<td style="text-align: center;">382.91</td>
+<td style="text-align: center;">5174</td>
+<td style="text-align: center;">73.27</td>
+<td style="text-align: center;">4692</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.31</td>
+<td style="text-align: center;">4962</td>
+</tr>
+<tr>
+<td style="text-align: center;">14512</td>
+<td style="text-align: center;">399.98</td>
+<td style="text-align: center;">4351</td>
+<td style="text-align: center;">75.52</td>
+<td style="text-align: center;">4103</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.31</td>
+<td style="text-align: center;">4352</td>
+</tr>
+<tr>
+<td style="text-align: center;">15512</td>
+<td style="text-align: center;">406.01</td>
+<td style="text-align: center;">4291</td>
+<td style="text-align: center;">79.25</td>
+<td style="text-align: center;">3969</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.31</td>
+<td style="text-align: center;">4289</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: The sinusoidal, rotary, T5 bias and ALiBi models trained on $L=\mathbf{1 0 2 4}$ on WikiText-103 and evaluated with different values of $L_{\text {valid }}$ on the validation set. Bold shows the best score for each model. Inference speeds (in words per second) are from inference on a GPU with batch size of one.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Inputs</th>
+<th style="text-align: center;">Sinusoidal</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Rotary</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">T5 Bias</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">ALiBi</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+</tr>
+<tr>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">19.34</td>
+<td style="text-align: center;">17002</td>
+<td style="text-align: center;">19.33</td>
+<td style="text-align: center;">14690</td>
+<td style="text-align: center;">18.80</td>
+<td style="text-align: center;">14973</td>
+<td style="text-align: center;">18.66</td>
+<td style="text-align: center;">16951</td>
+</tr>
+<tr>
+<td style="text-align: center;">1025</td>
+<td style="text-align: center;">19.33</td>
+<td style="text-align: center;">16630</td>
+<td style="text-align: center;">19.34</td>
+<td style="text-align: center;">14423</td>
+<td style="text-align: center;">18.82</td>
+<td style="text-align: center;">14635</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">16690</td>
+</tr>
+<tr>
+<td style="text-align: center;">1034</td>
+<td style="text-align: center;">19.27</td>
+<td style="text-align: center;">16589</td>
+<td style="text-align: center;">19.28</td>
+<td style="text-align: center;">14351</td>
+<td style="text-align: center;">18.74</td>
+<td style="text-align: center;">14435</td>
+<td style="text-align: center;">18.60</td>
+<td style="text-align: center;">16707</td>
+</tr>
+<tr>
+<td style="text-align: center;">1044</td>
+<td style="text-align: center;">19.26</td>
+<td style="text-align: center;">16760</td>
+<td style="text-align: center;">19.27</td>
+<td style="text-align: center;">14491</td>
+<td style="text-align: center;">18.72</td>
+<td style="text-align: center;">14644</td>
+<td style="text-align: center;">18.60</td>
+<td style="text-align: center;">16667</td>
+</tr>
+<tr>
+<td style="text-align: center;">1054</td>
+<td style="text-align: center;">19.23</td>
+<td style="text-align: center;">16747</td>
+<td style="text-align: center;">19.26</td>
+<td style="text-align: center;">14503</td>
+<td style="text-align: center;">18.71</td>
+<td style="text-align: center;">14800</td>
+<td style="text-align: center;">18.58</td>
+<td style="text-align: center;">16833</td>
+</tr>
+<tr>
+<td style="text-align: center;">1064</td>
+<td style="text-align: center;">19.21</td>
+<td style="text-align: center;">16676</td>
+<td style="text-align: center;">19.22</td>
+<td style="text-align: center;">14623</td>
+<td style="text-align: center;">18.70</td>
+<td style="text-align: center;">14498</td>
+<td style="text-align: center;">18.55</td>
+<td style="text-align: center;">16941</td>
+</tr>
+<tr>
+<td style="text-align: center;">1074</td>
+<td style="text-align: center;">19.19</td>
+<td style="text-align: center;">16879</td>
+<td style="text-align: center;">19.19</td>
+<td style="text-align: center;">14464</td>
+<td style="text-align: center;">18.65</td>
+<td style="text-align: center;">14670</td>
+<td style="text-align: center;">18.49</td>
+<td style="text-align: center;">16936</td>
+</tr>
+<tr>
+<td style="text-align: center;">1084</td>
+<td style="text-align: center;">19.22</td>
+<td style="text-align: center;">16942</td>
+<td style="text-align: center;">19.23</td>
+<td style="text-align: center;">14650</td>
+<td style="text-align: center;">18.70</td>
+<td style="text-align: center;">14607</td>
+<td style="text-align: center;">18.56</td>
+<td style="text-align: center;">17090</td>
+</tr>
+<tr>
+<td style="text-align: center;">1094</td>
+<td style="text-align: center;">19.24</td>
+<td style="text-align: center;">16771</td>
+<td style="text-align: center;">19.22</td>
+<td style="text-align: center;">14629</td>
+<td style="text-align: center;">18.69</td>
+<td style="text-align: center;">14517</td>
+<td style="text-align: center;">18.54</td>
+<td style="text-align: center;">16880</td>
+</tr>
+<tr>
+<td style="text-align: center;">1104</td>
+<td style="text-align: center;">19.28</td>
+<td style="text-align: center;">16870</td>
+<td style="text-align: center;">19.27</td>
+<td style="text-align: center;">14837</td>
+<td style="text-align: center;">18.69</td>
+<td style="text-align: center;">14635</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">17009</td>
+</tr>
+<tr>
+<td style="text-align: center;">1114</td>
+<td style="text-align: center;">19.29</td>
+<td style="text-align: center;">16795</td>
+<td style="text-align: center;">19.27</td>
+<td style="text-align: center;">14879</td>
+<td style="text-align: center;">18.69</td>
+<td style="text-align: center;">14540</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">17050</td>
+</tr>
+<tr>
+<td style="text-align: center;">1124</td>
+<td style="text-align: center;">19.26</td>
+<td style="text-align: center;">17312</td>
+<td style="text-align: center;">19.18</td>
+<td style="text-align: center;">15121</td>
+<td style="text-align: center;">18.62</td>
+<td style="text-align: center;">14480</td>
+<td style="text-align: center;">18.46</td>
+<td style="text-align: center;">17571</td>
+</tr>
+<tr>
+<td style="text-align: center;">1224</td>
+<td style="text-align: center;">20.54</td>
+<td style="text-align: center;">17901</td>
+<td style="text-align: center;">19.38</td>
+<td style="text-align: center;">15584</td>
+<td style="text-align: center;">18.58</td>
+<td style="text-align: center;">14956</td>
+<td style="text-align: center;">18.40</td>
+<td style="text-align: center;">18013</td>
+</tr>
+<tr>
+<td style="text-align: center;">1324</td>
+<td style="text-align: center;">23.13</td>
+<td style="text-align: center;">16308</td>
+<td style="text-align: center;">19.96</td>
+<td style="text-align: center;">14386</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">13726</td>
+<td style="text-align: center;">18.33</td>
+<td style="text-align: center;">16422</td>
+</tr>
+<tr>
+<td style="text-align: center;">1424</td>
+<td style="text-align: center;">26.45</td>
+<td style="text-align: center;">16217</td>
+<td style="text-align: center;">21.27</td>
+<td style="text-align: center;">14385</td>
+<td style="text-align: center;">18.48</td>
+<td style="text-align: center;">13516</td>
+<td style="text-align: center;">18.28</td>
+<td style="text-align: center;">16121</td>
+</tr>
+<tr>
+<td style="text-align: center;">1524</td>
+<td style="text-align: center;">29.82</td>
+<td style="text-align: center;">16377</td>
+<td style="text-align: center;">22.59</td>
+<td style="text-align: center;">14693</td>
+<td style="text-align: center;">18.42</td>
+<td style="text-align: center;">13587</td>
+<td style="text-align: center;">18.22</td>
+<td style="text-align: center;">16659</td>
+</tr>
+<tr>
+<td style="text-align: center;">1624</td>
+<td style="text-align: center;">34.27</td>
+<td style="text-align: center;">15928</td>
+<td style="text-align: center;">24.34</td>
+<td style="text-align: center;">14228</td>
+<td style="text-align: center;">18.40</td>
+<td style="text-align: center;">12979</td>
+<td style="text-align: center;">18.17</td>
+<td style="text-align: center;">16053</td>
+</tr>
+<tr>
+<td style="text-align: center;">1724</td>
+<td style="text-align: center;">38.24</td>
+<td style="text-align: center;">16640</td>
+<td style="text-align: center;">25.66</td>
+<td style="text-align: center;">14686</td>
+<td style="text-align: center;">18.35</td>
+<td style="text-align: center;">12976</td>
+<td style="text-align: center;">18.15</td>
+<td style="text-align: center;">16607</td>
+</tr>
+<tr>
+<td style="text-align: center;">1824</td>
+<td style="text-align: center;">42.23</td>
+<td style="text-align: center;">16840</td>
+<td style="text-align: center;">27.63</td>
+<td style="text-align: center;">14918</td>
+<td style="text-align: center;">18.30</td>
+<td style="text-align: center;">13071</td>
+<td style="text-align: center;">18.08</td>
+<td style="text-align: center;">16846</td>
+</tr>
+<tr>
+<td style="text-align: center;">1924</td>
+<td style="text-align: center;">46.46</td>
+<td style="text-align: center;">15071</td>
+<td style="text-align: center;">29.64</td>
+<td style="text-align: center;">13452</td>
+<td style="text-align: center;">18.31</td>
+<td style="text-align: center;">11843</td>
+<td style="text-align: center;">18.08</td>
+<td style="text-align: center;">15118</td>
+</tr>
+<tr>
+<td style="text-align: center;">2024</td>
+<td style="text-align: center;">51.09</td>
+<td style="text-align: center;">15591</td>
+<td style="text-align: center;">31.17</td>
+<td style="text-align: center;">13706</td>
+<td style="text-align: center;">18.34</td>
+<td style="text-align: center;">11906</td>
+<td style="text-align: center;">18.05</td>
+<td style="text-align: center;">15557</td>
+</tr>
+<tr>
+<td style="text-align: center;">3024</td>
+<td style="text-align: center;">96.46</td>
+<td style="text-align: center;">13639</td>
+<td style="text-align: center;">35.67</td>
+<td style="text-align: center;">12256</td>
+<td style="text-align: center;">18.62</td>
+<td style="text-align: center;">8480</td>
+<td style="text-align: center;">17.92</td>
+<td style="text-align: center;">13668</td>
+</tr>
+<tr>
+<td style="text-align: center;">4024</td>
+<td style="text-align: center;">144.00</td>
+<td style="text-align: center;">12441</td>
+<td style="text-align: center;">44.30</td>
+<td style="text-align: center;">11203</td>
+<td style="text-align: center;">19.44</td>
+<td style="text-align: center;">7443</td>
+<td style="text-align: center;">17.95</td>
+<td style="text-align: center;">12402</td>
+</tr>
+<tr>
+<td style="text-align: center;">5024</td>
+<td style="text-align: center;">182.31</td>
+<td style="text-align: center;">11431</td>
+<td style="text-align: center;">48.31</td>
+<td style="text-align: center;">10324</td>
+<td style="text-align: center;">20.47</td>
+<td style="text-align: center;">6384</td>
+<td style="text-align: center;">17.92</td>
+<td style="text-align: center;">11394</td>
+</tr>
+<tr>
+<td style="text-align: center;">6024</td>
+<td style="text-align: center;">214.02</td>
+<td style="text-align: center;">10238</td>
+<td style="text-align: center;">54.78</td>
+<td style="text-align: center;">9117</td>
+<td style="text-align: center;">21.76</td>
+<td style="text-align: center;">5577</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">10119</td>
+</tr>
+<tr>
+<td style="text-align: center;">7024</td>
+<td style="text-align: center;">261.86</td>
+<td style="text-align: center;">8785</td>
+<td style="text-align: center;">62.83</td>
+<td style="text-align: center;">7950</td>
+<td style="text-align: center;">23.64</td>
+<td style="text-align: center;">4867</td>
+<td style="text-align: center;">17.93</td>
+<td style="text-align: center;">8779</td>
+</tr>
+<tr>
+<td style="text-align: center;">8024</td>
+<td style="text-align: center;">284.88</td>
+<td style="text-align: center;">8132</td>
+<td style="text-align: center;">64.91</td>
+<td style="text-align: center;">7355</td>
+<td style="text-align: center;">25.79</td>
+<td style="text-align: center;">4377</td>
+<td style="text-align: center;">17.96</td>
+<td style="text-align: center;">8086</td>
+</tr>
+<tr>
+<td style="text-align: center;">9024</td>
+<td style="text-align: center;">310.04</td>
+<td style="text-align: center;">7045</td>
+<td style="text-align: center;">71.91</td>
+<td style="text-align: center;">6380</td>
+<td style="text-align: center;">27.54</td>
+<td style="text-align: center;">3787</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">7001</td>
+</tr>
+<tr>
+<td style="text-align: center;">10024</td>
+<td style="text-align: center;">337.48</td>
+<td style="text-align: center;">6633</td>
+<td style="text-align: center;">77.70</td>
+<td style="text-align: center;">6016</td>
+<td style="text-align: center;">29.54</td>
+<td style="text-align: center;">3582</td>
+<td style="text-align: center;">17.97</td>
+<td style="text-align: center;">6583</td>
+</tr>
+<tr>
+<td style="text-align: center;">11024</td>
+<td style="text-align: center;">358.43</td>
+<td style="text-align: center;">5722</td>
+<td style="text-align: center;">81.15</td>
+<td style="text-align: center;">5219</td>
+<td style="text-align: center;">31.94</td>
+<td style="text-align: center;">3170</td>
+<td style="text-align: center;">18.02</td>
+<td style="text-align: center;">5641</td>
+</tr>
+<tr>
+<td style="text-align: center;">12024</td>
+<td style="text-align: center;">375.95</td>
+<td style="text-align: center;">5560</td>
+<td style="text-align: center;">87.51</td>
+<td style="text-align: center;">5072</td>
+<td style="text-align: center;">33.35</td>
+<td style="text-align: center;">2940</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">5294</td>
+</tr>
+<tr>
+<td style="text-align: center;">13024</td>
+<td style="text-align: center;">393.57</td>
+<td style="text-align: center;">4691</td>
+<td style="text-align: center;">94.74</td>
+<td style="text-align: center;">4383</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">4621</td>
+</tr>
+<tr>
+<td style="text-align: center;">14024</td>
+<td style="text-align: center;">403.52</td>
+<td style="text-align: center;">4905</td>
+<td style="text-align: center;">96.10</td>
+<td style="text-align: center;">4546</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">4827</td>
+</tr>
+<tr>
+<td style="text-align: center;">15024</td>
+<td style="text-align: center;">431.66</td>
+<td style="text-align: center;">4518</td>
+<td style="text-align: center;">99.78</td>
+<td style="text-align: center;">4170</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.96</td>
+<td style="text-align: center;">4447</td>
+</tr>
+<tr>
+<td style="text-align: center;">16024</td>
+<td style="text-align: center;">453.32</td>
+<td style="text-align: center;">4239</td>
+<td style="text-align: center;">106.99</td>
+<td style="text-align: center;">3878</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">4153</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: The sinusoidal, rotary, T5 bias and ALiBi models trained on $L=\mathbf{3 0 7 2}$ on WikiText-103 and evaluated with different values of $L_{\text {valid }}$ on the validation set. Bold shows the best score for each model. Inference speeds (in words per second) are from inference on a GPU with batch size of one.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Inputs</th>
+<th style="text-align: center;">Sinusoidal</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Rotary</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">T5 Bias</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">ALiBi</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+<td style="text-align: center;">PPL ( $\downarrow$ )</td>
+<td style="text-align: center;">WPS ( $\uparrow$ )</td>
+</tr>
+<tr>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">13380</td>
+<td style="text-align: center;">18.57</td>
+<td style="text-align: center;">12548</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">8828</td>
+<td style="text-align: center;">17.60</td>
+<td style="text-align: center;">13866</td>
+</tr>
+<tr>
+<td style="text-align: center;">3073</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">13773</td>
+<td style="text-align: center;">18.57</td>
+<td style="text-align: center;">12474</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">8483</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13793</td>
+</tr>
+<tr>
+<td style="text-align: center;">3082</td>
+<td style="text-align: center;">18.62</td>
+<td style="text-align: center;">13741</td>
+<td style="text-align: center;">18.54</td>
+<td style="text-align: center;">12388</td>
+<td style="text-align: center;">17.95</td>
+<td style="text-align: center;">8698</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13778</td>
+</tr>
+<tr>
+<td style="text-align: center;">3092</td>
+<td style="text-align: center;">18.60</td>
+<td style="text-align: center;">13742</td>
+<td style="text-align: center;">18.48</td>
+<td style="text-align: center;">12458</td>
+<td style="text-align: center;">17.92</td>
+<td style="text-align: center;">8361</td>
+<td style="text-align: center;">17.55</td>
+<td style="text-align: center;">13783</td>
+</tr>
+<tr>
+<td style="text-align: center;">3102</td>
+<td style="text-align: center;">18.65</td>
+<td style="text-align: center;">13701</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">12365</td>
+<td style="text-align: center;">17.94</td>
+<td style="text-align: center;">8764</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13747</td>
+</tr>
+<tr>
+<td style="text-align: center;">3112</td>
+<td style="text-align: center;">18.64</td>
+<td style="text-align: center;">13809</td>
+<td style="text-align: center;">18.51</td>
+<td style="text-align: center;">12449</td>
+<td style="text-align: center;">17.96</td>
+<td style="text-align: center;">8665</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13827</td>
+</tr>
+<tr>
+<td style="text-align: center;">3122</td>
+<td style="text-align: center;">18.68</td>
+<td style="text-align: center;">13722</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">12432</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">8437</td>
+<td style="text-align: center;">17.58</td>
+<td style="text-align: center;">13795</td>
+</tr>
+<tr>
+<td style="text-align: center;">3132</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">13825</td>
+<td style="text-align: center;">18.54</td>
+<td style="text-align: center;">12490</td>
+<td style="text-align: center;">17.97</td>
+<td style="text-align: center;">8653</td>
+<td style="text-align: center;">17.58</td>
+<td style="text-align: center;">13784</td>
+</tr>
+<tr>
+<td style="text-align: center;">3142</td>
+<td style="text-align: center;">18.69</td>
+<td style="text-align: center;">13543</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">12230</td>
+<td style="text-align: center;">17.97</td>
+<td style="text-align: center;">8282</td>
+<td style="text-align: center;">17.61</td>
+<td style="text-align: center;">13572</td>
+</tr>
+<tr>
+<td style="text-align: center;">3152</td>
+<td style="text-align: center;">18.66</td>
+<td style="text-align: center;">13520</td>
+<td style="text-align: center;">18.56</td>
+<td style="text-align: center;">12240</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">8608</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13523</td>
+</tr>
+<tr>
+<td style="text-align: center;">3162</td>
+<td style="text-align: center;">18.71</td>
+<td style="text-align: center;">13501</td>
+<td style="text-align: center;">18.56</td>
+<td style="text-align: center;">12253</td>
+<td style="text-align: center;">18.04</td>
+<td style="text-align: center;">8589</td>
+<td style="text-align: center;">17.62</td>
+<td style="text-align: center;">13598</td>
+</tr>
+<tr>
+<td style="text-align: center;">3172</td>
+<td style="text-align: center;">18.72</td>
+<td style="text-align: center;">13563</td>
+<td style="text-align: center;">18.55</td>
+<td style="text-align: center;">12297</td>
+<td style="text-align: center;">17.99</td>
+<td style="text-align: center;">8583</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13625</td>
+</tr>
+<tr>
+<td style="text-align: center;">3272</td>
+<td style="text-align: center;">18.87</td>
+<td style="text-align: center;">13453</td>
+<td style="text-align: center;">18.55</td>
+<td style="text-align: center;">12148</td>
+<td style="text-align: center;">17.93</td>
+<td style="text-align: center;">8144</td>
+<td style="text-align: center;">17.59</td>
+<td style="text-align: center;">13482</td>
+</tr>
+<tr>
+<td style="text-align: center;">3372</td>
+<td style="text-align: center;">19.46</td>
+<td style="text-align: center;">13533</td>
+<td style="text-align: center;">18.50</td>
+<td style="text-align: center;">12254</td>
+<td style="text-align: center;">17.88</td>
+<td style="text-align: center;">8442</td>
+<td style="text-align: center;">17.52</td>
+<td style="text-align: center;">13565</td>
+</tr>
+<tr>
+<td style="text-align: center;">3472</td>
+<td style="text-align: center;">20.55</td>
+<td style="text-align: center;">13047</td>
+<td style="text-align: center;">18.52</td>
+<td style="text-align: center;">11868</td>
+<td style="text-align: center;">17.95</td>
+<td style="text-align: center;">7857</td>
+<td style="text-align: center;">17.54</td>
+<td style="text-align: center;">13107</td>
+</tr>
+<tr>
+<td style="text-align: center;">3572</td>
+<td style="text-align: center;">21.84</td>
+<td style="text-align: center;">13128</td>
+<td style="text-align: center;">18.50</td>
+<td style="text-align: center;">11882</td>
+<td style="text-align: center;">17.86</td>
+<td style="text-align: center;">7814</td>
+<td style="text-align: center;">17.50</td>
+<td style="text-align: center;">13170</td>
+</tr>
+<tr>
+<td style="text-align: center;">3672</td>
+<td style="text-align: center;">23.04</td>
+<td style="text-align: center;">13106</td>
+<td style="text-align: center;">18.49</td>
+<td style="text-align: center;">11859</td>
+<td style="text-align: center;">17.87</td>
+<td style="text-align: center;">7719</td>
+<td style="text-align: center;">17.48</td>
+<td style="text-align: center;">13196</td>
+</tr>
+<tr>
+<td style="text-align: center;">3772</td>
+<td style="text-align: center;">24.47</td>
+<td style="text-align: center;">13287</td>
+<td style="text-align: center;">18.54</td>
+<td style="text-align: center;">11942</td>
+<td style="text-align: center;">17.85</td>
+<td style="text-align: center;">7579</td>
+<td style="text-align: center;">17.49</td>
+<td style="text-align: center;">13312</td>
+</tr>
+<tr>
+<td style="text-align: center;">3872</td>
+<td style="text-align: center;">25.85</td>
+<td style="text-align: center;">12621</td>
+<td style="text-align: center;">18.40</td>
+<td style="text-align: center;">11272</td>
+<td style="text-align: center;">17.82</td>
+<td style="text-align: center;">7581</td>
+<td style="text-align: center;">17.41</td>
+<td style="text-align: center;">12566</td>
+</tr>
+<tr>
+<td style="text-align: center;">3972</td>
+<td style="text-align: center;">27.21</td>
+<td style="text-align: center;">12379</td>
+<td style="text-align: center;">18.48</td>
+<td style="text-align: center;">11151</td>
+<td style="text-align: center;">17.84</td>
+<td style="text-align: center;">7483</td>
+<td style="text-align: center;">17.41</td>
+<td style="text-align: center;">12324</td>
+</tr>
+<tr>
+<td style="text-align: center;">4072</td>
+<td style="text-align: center;">28.59</td>
+<td style="text-align: center;">12178</td>
+<td style="text-align: center;">18.59</td>
+<td style="text-align: center;">11019</td>
+<td style="text-align: center;">17.88</td>
+<td style="text-align: center;">6974</td>
+<td style="text-align: center;">17.48</td>
+<td style="text-align: center;">12212</td>
+</tr>
+<tr>
+<td style="text-align: center;">5072</td>
+<td style="text-align: center;">45.53</td>
+<td style="text-align: center;">11076</td>
+<td style="text-align: center;">18.80</td>
+<td style="text-align: center;">9887</td>
+<td style="text-align: center;">17.76</td>
+<td style="text-align: center;">6230</td>
+<td style="text-align: center;">17.33</td>
+<td style="text-align: center;">10938</td>
+</tr>
+<tr>
+<td style="text-align: center;">6072</td>
+<td style="text-align: center;">65.01</td>
+<td style="text-align: center;">10114</td>
+<td style="text-align: center;">19.50</td>
+<td style="text-align: center;">9049</td>
+<td style="text-align: center;">17.68</td>
+<td style="text-align: center;">5554</td>
+<td style="text-align: center;">17.26</td>
+<td style="text-align: center;">10133</td>
+</tr>
+<tr>
+<td style="text-align: center;">7072</td>
+<td style="text-align: center;">85.96</td>
+<td style="text-align: center;">8647</td>
+<td style="text-align: center;">20.60</td>
+<td style="text-align: center;">7861</td>
+<td style="text-align: center;">17.83</td>
+<td style="text-align: center;">4820</td>
+<td style="text-align: center;">17.22</td>
+<td style="text-align: center;">8670</td>
+</tr>
+<tr>
+<td style="text-align: center;">8072</td>
+<td style="text-align: center;">102.74</td>
+<td style="text-align: center;">7755</td>
+<td style="text-align: center;">21.60</td>
+<td style="text-align: center;">6991</td>
+<td style="text-align: center;">18.06</td>
+<td style="text-align: center;">4281</td>
+<td style="text-align: center;">17.30</td>
+<td style="text-align: center;">7729</td>
+</tr>
+<tr>
+<td style="text-align: center;">9072</td>
+<td style="text-align: center;">125.99</td>
+<td style="text-align: center;">6953</td>
+<td style="text-align: center;">22.14</td>
+<td style="text-align: center;">6360</td>
+<td style="text-align: center;">18.12</td>
+<td style="text-align: center;">3823</td>
+<td style="text-align: center;">17.26</td>
+<td style="text-align: center;">6939</td>
+</tr>
+<tr>
+<td style="text-align: center;">10072</td>
+<td style="text-align: center;">133.68</td>
+<td style="text-align: center;">6646</td>
+<td style="text-align: center;">23.21</td>
+<td style="text-align: center;">6068</td>
+<td style="text-align: center;">18.37</td>
+<td style="text-align: center;">3579</td>
+<td style="text-align: center;">17.28</td>
+<td style="text-align: center;">6597</td>
+</tr>
+<tr>
+<td style="text-align: center;">11072</td>
+<td style="text-align: center;">161.29</td>
+<td style="text-align: center;">5663</td>
+<td style="text-align: center;">24.39</td>
+<td style="text-align: center;">5158</td>
+<td style="text-align: center;">18.64</td>
+<td style="text-align: center;">3119</td>
+<td style="text-align: center;">17.26</td>
+<td style="text-align: center;">5585</td>
+</tr>
+<tr>
+<td style="text-align: center;">12072</td>
+<td style="text-align: center;">169.55</td>
+<td style="text-align: center;">5567</td>
+<td style="text-align: center;">26.70</td>
+<td style="text-align: center;">5111</td>
+<td style="text-align: center;">18.93</td>
+<td style="text-align: center;">2920</td>
+<td style="text-align: center;">17.24</td>
+<td style="text-align: center;">5397</td>
+</tr>
+<tr>
+<td style="text-align: center;">13072</td>
+<td style="text-align: center;">189.43</td>
+<td style="text-align: center;">5044</td>
+<td style="text-align: center;">29.33</td>
+<td style="text-align: center;">4658</td>
+<td style="text-align: center;">19.10</td>
+<td style="text-align: center;">2735</td>
+<td style="text-align: center;">17.15</td>
+<td style="text-align: center;">4809</td>
+</tr>
+<tr>
+<td style="text-align: center;">14072</td>
+<td style="text-align: center;">203.86</td>
+<td style="text-align: center;">4915</td>
+<td style="text-align: center;">32.21</td>
+<td style="text-align: center;">4616</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.22</td>
+<td style="text-align: center;">4866</td>
+</tr>
+<tr>
+<td style="text-align: center;">15072</td>
+<td style="text-align: center;">221.14</td>
+<td style="text-align: center;">4561</td>
+<td style="text-align: center;">33.47</td>
+<td style="text-align: center;">4292</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.23</td>
+<td style="text-align: center;">4491</td>
+</tr>
+<tr>
+<td style="text-align: center;">16072</td>
+<td style="text-align: center;">231.29</td>
+<td style="text-align: center;">4382</td>
+<td style="text-align: center;">34.51</td>
+<td style="text-align: center;">4099</td>
+<td style="text-align: center;">OOM</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.22</td>
+<td style="text-align: center;">4312</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 8: The training speed and validation perplexity (with $L_{\text {valid }}=3072$ ) for ALiBi models and the sinusoidal model trained with $L=3072$. All our models trained on 512 or more tokens achieve better perplexity than the sinusoidal model even though all of them (except the $L=3072$ ) require less time and memory to train.</p>
+<p>Figure 8 depicts a cross section of Figure 4, showing our models with different train lengths and the sinusoidal baseline, all evaluated on $L_{\text {valid }}=3072$ tokens. We observe that all our models with $512 \leq L&lt;3072$ are faster to train than the sinusoidal model with $L=3072$, but they all achieve greater perplexity scores on the validation set. Our model with $L=3072$ trains just as fast as the sinusoidal one but bests its score by more than one perplexity point; (the standard deviation for the the sinusoidal model with $L=3072$ is 0.24 ).</p>
+<p>Table 5 shows the perplexity values obtained when 8 different ALiBi models, trained on $L$ values between 64 and 3072, extrapolating to $L_{\text {valid }}$ values longer than the ones they were trained on. In addition, we present results for the sinusoidal, rotary and T5 bias models, with $L_{\text {valid }}=L$.</p>
+<p>Table 5: Perplexity when ALiBi extrapolates on the WikiText-103 development set. *For results we present for the sinusoidal, rotary and T5 bias models, $L=L_{\text {valid }}$ (so we do not test the extrapolation abilities of those baselines here).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ALiBi</th>
+<th style="text-align: center;">Evaluation Length</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Train Length</td>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">128</td>
+<td style="text-align: center;">256</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">1536</td>
+<td style="text-align: center;">2048</td>
+<td style="text-align: center;">3072</td>
+</tr>
+<tr>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">28.46</td>
+<td style="text-align: center;">24.70</td>
+<td style="text-align: center;">22.88</td>
+<td style="text-align: center;">22.09</td>
+<td style="text-align: center;">21.73</td>
+<td style="text-align: center;">21.63</td>
+<td style="text-align: center;">21.59</td>
+<td style="text-align: center;">21.53</td>
+</tr>
+<tr>
+<td style="text-align: center;">128</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">23.98</td>
+<td style="text-align: center;">21.70</td>
+<td style="text-align: center;">20.67</td>
+<td style="text-align: center;">20.36</td>
+<td style="text-align: center;">20.29</td>
+<td style="text-align: center;">20.31</td>
+<td style="text-align: center;">20.28</td>
+</tr>
+<tr>
+<td style="text-align: center;">256</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">21.29</td>
+<td style="text-align: center;">19.89</td>
+<td style="text-align: center;">19.29</td>
+<td style="text-align: center;">19.13</td>
+<td style="text-align: center;">19.10</td>
+<td style="text-align: center;">19.03</td>
+</tr>
+<tr>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">19.73</td>
+<td style="text-align: center;">18.81</td>
+<td style="text-align: center;">18.50</td>
+<td style="text-align: center;">18.48</td>
+<td style="text-align: center;">18.40</td>
+</tr>
+<tr>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.66</td>
+<td style="text-align: center;">18.20</td>
+<td style="text-align: center;">18.05</td>
+<td style="text-align: center;">17.96</td>
+</tr>
+<tr>
+<td style="text-align: center;">1536</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.12</td>
+<td style="text-align: center;">17.90</td>
+<td style="text-align: center;">17.72</td>
+</tr>
+<tr>
+<td style="text-align: center;">2048</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.91</td>
+<td style="text-align: center;">17.64</td>
+</tr>
+<tr>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.60</td>
+</tr>
+<tr>
+<td style="text-align: center;">Sinusoidal*</td>
+<td style="text-align: center;">28.03</td>
+<td style="text-align: center;">23.81</td>
+<td style="text-align: center;">21.45</td>
+<td style="text-align: center;">20.05</td>
+<td style="text-align: center;">19.34</td>
+<td style="text-align: center;">19.05</td>
+<td style="text-align: center;">18.87</td>
+<td style="text-align: center;">18.67</td>
+</tr>
+<tr>
+<td style="text-align: center;">Rotary*</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">20.07</td>
+<td style="text-align: center;">19.33</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.57</td>
+</tr>
+<tr>
+<td style="text-align: center;">T5 Bias*</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">19.65</td>
+<td style="text-align: center;">18.80</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.01</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6 compares ALiBi to the sinusoidal, rotary and T5 bias baselines on the test set of WikiText103, and Table 7 compares ALiBi to the current state of the art models on that test set.</p>
+<p>Table 6: Test perplexity and runtime on WikiText-103 for two of our ALiBi models and models that use the sinusoidal, rotary and T5 bias methods.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">Param. $\downarrow$</th>
+<th style="text-align: center;">Train</th>
+<th style="text-align: center;">Inference</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Speed $\uparrow$</td>
+<td style="text-align: center;">Speed $\uparrow$</td>
+<td style="text-align: center;">Valid $\downarrow$</td>
+<td style="text-align: center;">Test $\downarrow$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sinusoidal, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">15.3 k</td>
+<td style="text-align: center;">$\mathbf{1 3 . 6 k}$</td>
+<td style="text-align: center;">18.67</td>
+<td style="text-align: center;">19.38</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rotary, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">$\mathbf{1 1 . 5 k}$</td>
+<td style="text-align: center;">12.2 k</td>
+<td style="text-align: center;">18.57</td>
+<td style="text-align: center;">19.28</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5 Bias, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">4.3 k</td>
+<td style="text-align: center;">7.3 k</td>
+<td style="text-align: center;">18.01</td>
+<td style="text-align: center;">18.73</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\stackrel{\text { ® }}{\approx} L=512, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">28.3 k</td>
+<td style="text-align: center;">$\mathbf{1 3 . 6 k}$</td>
+<td style="text-align: center;">18.40</td>
+<td style="text-align: center;">19.08</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\stackrel{\text { ® }}{\approx} L=3072, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">15.5 k</td>
+<td style="text-align: center;">$\mathbf{1 3 . 6 k}$</td>
+<td style="text-align: center;">$\mathbf{1 7 . 6 0}$</td>
+<td style="text-align: center;">$\mathbf{1 8 . 3 0}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: Valid and test perplexity scores on WikiText-103 for two of our ALiBi models and models that use the sinusoidal, rotary and T5 bias methods with sliding window evaluation (§B and $\mathrm{S}=512$ following (Baevski \&amp; Auli, 2018; Khandelwal et al., 2020; Press et al., 2021)). The sinusoidal model presents our results from training and inference with the model of Baevski \&amp; Auli.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">Param. $\downarrow$</th>
+<th style="text-align: center;">Valid $\downarrow$</th>
+<th style="text-align: center;">Test $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Adaptive Inputs (Baevski \&amp; Auli, 2018)</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">17.97</td>
+<td style="text-align: center;">18.70</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transformer-XL (Dai et al., 2019)</td>
+<td style="text-align: center;">257 M</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">18.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Shortformer (Press et al., 2021)</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">17.47</td>
+<td style="text-align: center;">18.15</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sandwich Transformer (Press et al., 2020)</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.96</td>
+</tr>
+<tr>
+<td style="text-align: left;">Staged Training (Press et al., 2021)</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.56</td>
+</tr>
+<tr>
+<td style="text-align: left;">Compressive Transformer (Rae et al., 2020)</td>
+<td style="text-align: center;">329 M</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">17.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Routing Transformer (Roy et al., 2020)</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">15.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">kNN-LM (Khandelwal et al., 2020)</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">15.81</td>
+<td style="text-align: center;">$\mathbf{1 5 . 7 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sinusoidal, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">17.95</td>
+<td style="text-align: center;">18.67</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rotary, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">17.98</td>
+<td style="text-align: center;">18.72</td>
+</tr>
+<tr>
+<td style="text-align: left;">T5 Bias, $L=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">17.37</td>
+<td style="text-align: center;">18.12</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\stackrel{\text { ® }}{\approx} L=512, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">18.30</td>
+<td style="text-align: center;">19.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\stackrel{\text { ® }}{\approx} L=3072, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">16.97</td>
+<td style="text-align: center;">17.66</td>
+</tr>
+</tbody>
+</table>
+<h1>A. 3 ReSults on the Toronto Book Corpus</h1>
+<p>To ensure that our results are not specific to the WikiText-103 corpus, we next apply our model and the baselines to a different domain while using a similar model architecture and the same ALiBi slopes as those used in the previous subsection.</p>
+<p>We emphasize that our set of slopes was chosen by running experiments on the WikiText-103 corpus, and here we apply that set of slopes to a model trained on a very different text domain. Throughout the entire process of developing this method, we ran only one set of experiments on this domain using the previously selected set of slopes.</p>
+<p>Specifically, we use the Toronto BooksCorpus (Zhu et al., 2015), which has been used to train BERT (Devlin et al., 2019) (in conjuction with the English Wikipedia). The corpus is about 700M tokens ( 2.9 GB ).</p>
+<p>We use the same train/validation/test split as Khandelwal et al. (2020) and their tokenization, which uses BERT's vocabulary of 29 K byte-pair encodings. Since the vocabulary is much smaller than WikiText-103's, we replace the adaptive word embedding and softmax of Baevski \&amp; Auli (2018) with a tied word embedding and softmax matrix (Press \&amp; Wolf, 2017; Inan et al., 2017).</p>
+<p>Our results in Figure 9 (and Table 8) replicate our success on the WikiText-103 dataset. Our model surpasses the sinusoidal baseline when trained on the same amount of input tokens $(L)$ and, in</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 9: ALiBi-enabled models evaluated on different input lengths on the Toronto BookCorpus. Our models extrapolate to longer sequence lengths and outperform the sinusoidal baseline even when trained on much shorter sequences.
+addition, our model is able to extrapolate to longer sequences at inference. This occurs even though our set of slopes was not tuned on this dataset. This result establishes the generality of ALiBi and the particular set of slopes we found and suggests that they may be used on different text domains without further hyperparameter tuning.</p>
+<p>Tables 9 and 10 present the perplexities for our ALiBi models, the baselines, and the current state of the art on the Toronto BookCorpus validation and test sets. Our results here mirror our results on WikiText-103: we improve over the sinusoidal baseline even when AliBi is trained on fewer tokens.</p>
+<p>Table 8: ALiBi models extrapolating on the Toronto BookCorpus development set. *For the results of the sinusoidal models, $L=L_{\text {valid }}$ (so we do not test the extrapolation abilities of those models here).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Evaluation Length</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Train Length</td>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">3072</td>
+</tr>
+<tr>
+<td style="text-align: center;">512</td>
+<td style="text-align: center;">14.29</td>
+<td style="text-align: center;">13.64</td>
+<td style="text-align: center;">13.55</td>
+</tr>
+<tr>
+<td style="text-align: center;">1024</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">13.86</td>
+<td style="text-align: center;">13.52</td>
+</tr>
+<tr>
+<td style="text-align: center;">3072</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">13.15</td>
+</tr>
+<tr>
+<td style="text-align: center;">Sinusoidal*</td>
+<td style="text-align: center;">14.80</td>
+<td style="text-align: center;">14.73</td>
+<td style="text-align: center;">14.46</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9: Validation and test perplexities on the Toronto Book Corpus dataset.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">Param. $\downarrow$</th>
+<th style="text-align: center;">Valid $\downarrow$</th>
+<th style="text-align: center;">Test $\downarrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Sinusoidal, $\mathrm{L}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">14.46</td>
+<td style="text-align: center;">11.67</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\frac{\text { P }}{\text { P }} L_{\text {train }}=512, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">13.55</td>
+<td style="text-align: center;">10.98</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\frac{\text { P }}{\text { P }} L_{\text {train }}=3072, L_{\text {valid }}=3072$</td>
+<td style="text-align: center;">$\mathbf{2 4 7 M}$</td>
+<td style="text-align: center;">$\mathbf{1 3 . 1 5}$</td>
+<td style="text-align: center;">$\mathbf{1 0 . 7 3}$</td>
+</tr>
+</tbody>
+</table>
+<h1>A. 4 ReSults on the CC100+RoBERTA Corpus</h1>
+<p>Table 11 compares our 1.3 billion parameter ALiBi models when extrapolating to two times the number of tokens that they were trained on. We use the sinusoidal model as our baseline, and train it for the same amount of time as we train the ALiBi model that we compare it to (and so since our ALiBi models run faster in this setting, the sinusoidal models complete less updates).</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{9}$ For simplicity we omit the key, query, value and final output projections, dropout, and the scaling factor.
+${ }^{10}$ The ALiBi bias is not multiplied by the $\sqrt{d_{k}}$ scaling factor from Equation 1 of Vaswani et al. (2017).
+${ }^{11}$ In our experiments, trainable slopes also slowed down the training speed by $3 \%$.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

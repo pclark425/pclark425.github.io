@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-9370 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-9370</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-9370</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-164.html">extraction-schema-164</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of large language models (LLMs) being used to predict or assign probabilities to specific future real-world scientific discoveries, including how the probabilities are generated, how accuracy is evaluated, and any results, limitations, or comparisons to other methods.</div>
+                <p><strong>Paper ID:</strong> paper-d65ce2b8300541414bfe51d03906fca72e93523c</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/d65ce2b8300541414bfe51d03906fca72e93523c" target="_blank">On Calibration of Modern Neural Networks</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Machine Learning</p>
+                <p><strong>Paper TL;DR:</strong> It is discovered that modern neural networks, unlike those from a decade ago, are poorly calibrated, and on most datasets, temperature scaling -- a single-parameter variant of Platt Scaling -- is surprisingly effective at calibrating predictions.</p>
+                <p><strong>Paper Abstract:</strong> Confidence calibration -- the problem of predicting probability estimates representative of the true correctness likelihood -- is important for classification models in many applications. We discover that modern neural networks, unlike those from a decade ago, are poorly calibrated. Through extensive experiments, we observe that depth, width, weight decay, and Batch Normalization are important factors influencing calibration. We evaluate the performance of various post-processing calibration methods on state-of-the-art architectures with image and document classification datasets. Our analysis and experiments not only offer insights into neural network learning, but also provide a simple and straightforward recipe for practical settings: on most datasets, temperature scaling -- a single-parameter variant of Platt Scaling -- is surprisingly effective at calibrating predictions.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-9370",
+    "paper_id": "paper-d65ce2b8300541414bfe51d03906fca72e93523c",
+    "extraction_schema_id": "extraction-schema-164",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.005285,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>On Calibration of Modern Neural Networks</h1>
+<p>Chuan Guo ${ }^{<em> 1}$ Geoff Pleiss ${ }^{</em> 1}$ Yu Sun ${ }^{* 1}$ Kilian Q. Weinberger ${ }^{1}$</p>
+<h4>Abstract</h4>
+<p>Confidence calibration - the problem of predicting probability estimates representative of the true correctness likelihood - is important for classification models in many applications. We discover that modern neural networks, unlike those from a decade ago, are poorly calibrated. Through extensive experiments, we observe that depth, width, weight decay, and Batch Normalization are important factors influencing calibration. We evaluate the performance of various post-processing calibration methods on state-of-the-art architectures with image and document classification datasets. Our analysis and experiments not only offer insights into neural network learning, but also provide a simple and straightforward recipe for practical settings: on most datasets, temperature scaling - a singleparameter variant of Platt Scaling - is surprisingly effective at calibrating predictions.</p>
+<h2>1. Introduction</h2>
+<p>Recent advances in deep learning have dramatically improved neural network accuracy (Simonyan \&amp; Zisserman, 2015; Srivastava et al., 2015; He et al., 2016; Huang et al., 2016; 2017). As a result, neural networks are now entrusted with making complex decisions in applications, such as object detection (Girshick, 2015), speech recognition (Hannun et al., 2014), and medical diagnosis (Caruana et al., 2015). In these settings, neural networks are an essential component of larger decision making pipelines.</p>
+<p>In real-world decision making systems, classification networks must not only be accurate, but also should indicate when they are likely to be incorrect. As an example, consider a self-driving car that uses a neural network to detect pedestrians and other obstructions (Bojarski et al., 2016).</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1. Confidence histograms (top) and reliability diagrams (bottom) for a 5-layer LeNet (left) and a 110-layer ResNet (right) on CIFAR-100. Refer to the text below for detailed illustration.</p>
+<p>If the detection network is not able to confidently predict the presence or absence of immediate obstructions, the car should rely more on the output of other sensors for braking. Alternatively, in automated health care, control should be passed on to human doctors when the confidence of a disease diagnosis network is low (Jiang et al., 2012). Specifically, a network should provide a calibrated confidence measure in addition to its prediction. In other words, the probability associated with the predicted class label should reflect its ground truth correctness likelihood.</p>
+<p>Calibrated confidence estimates are also important for model interpretability. Humans have a natural cognitive intuition for probabilities (Cosmides \&amp; Tooby, 1996). Good confidence estimates provide a valuable extra bit of information to establish trustworthiness with the user - especially for neural networks, whose classification decisions are often difficult to interpret. Further, good probability estimates can be used to incorporate neural networks into other probabilistic models. For example, one can improve performance by combining network outputs with a lan-</p>
+<p>guage model in speech recognition (Hannun et al., 2014; Xiong et al., 2016), or with camera information for object detection (Kendall \&amp; Cipolla, 2016).</p>
+<p>In 2005, Niculescu-Mizil \&amp; Caruana (2005) showed that neural networks typically produce well-calibrated probabilities on binary classification tasks. While neural networks today are undoubtedly more accurate than they were a decade ago, we discover with great surprise that modern neural networks are no longer well-calibrated. This is visualized in Figure 1, which compares a 5-layer LeNet (left) (LeCun et al., 1998) with a 110-layer ResNet (right) (He et al., 2016) on the CIFAR-100 dataset. The top row shows the distribution of prediction confidence (i.e. probabilities associated with the predicted label) as histograms. The average confidence of LeNet closely matches its accuracy, while the average confidence of the ResNet is substantially higher than its accuracy. This is further illustrated in the bottom row reliability diagrams (DeGroot \&amp; Fienberg, 1983; Niculescu-Mizil \&amp; Caruana, 2005), which show accuracy as a function of confidence. We see that LeNet is well-calibrated, as confidence closely approximates the expected accuracy (i.e. the bars align roughly along the diagonal). On the other hand, the ResNet's accuracy is better, but does not match its confidence.</p>
+<p>Our goal is not only to understand why neural networks have become miscalibrated, but also to identify what methods can alleviate this problem. In this paper, we demonstrate on several computer vision and NLP tasks that neural networks produce confidences that do not represent true probabilities. Additionally, we offer insight and intuition into network training and architectural trends that may cause miscalibration. Finally, we compare various postprocessing calibration methods on state-of-the-art neural networks, and introduce several extensions of our own. Surprisingly, we find that a single-parameter variant of Platt scaling (Platt et al., 1999) - which we refer to as temperature scaling - is often the most effective method at obtaining calibrated probabilities. Because this method is straightforward to implement with existing deep learning frameworks, it can be easily adopted in practical settings.</p>
+<h2>2. Definitions</h2>
+<p>The problem we address in this paper is supervised multiclass classification with neural networks. The input $X \in \mathcal{X}$ and label $Y \in \mathcal{Y}={1, \ldots, K}$ are random variables that follow a ground truth joint distribution $\pi(X, Y)=$ $\pi(Y \mid X) \pi(X)$. Let $h$ be a neural network with $h(X)=$ $(\hat{Y}, \hat{P})$, where $\hat{Y}$ is a class prediction and $\hat{P}$ is its associated confidence, i.e. probability of correctness. We would like the confidence estimate $\hat{P}$ to be calibrated, which intuitively means that $\hat{P}$ represents a true probability. For example, given 100 predictions, each with confidence of
+0.8 , we expect that 80 should be correctly classified. More formally, we define perfect calibration as</p>
+<p>$$
+\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)=p, \quad \forall p \in[0,1]
+$$</p>
+<p>where the probability is over the joint distribution. In all practical settings, achieving perfect calibration is impossible. Additionally, the probability in (1) cannot be computed using finitely many samples since $\hat{P}$ is a continuous random variable. This motivates the need for empirical approximations that capture the essence of (1).</p>
+<p>Reliability Diagrams (e.g. Figure 1 bottom) are a visual representation of model calibration (DeGroot \&amp; Fienberg, 1983; Niculescu-Mizil \&amp; Caruana, 2005). These diagrams plot expected sample accuracy as a function of confidence. If the model is perfectly calibrated - i.e. if (1) holds - then the diagram should plot the identity function. Any deviation from a perfect diagonal represents miscalibration.</p>
+<p>To estimate the expected accuracy from finite samples, we group predictions into $M$ interval bins (each of size $1 / M$ ) and calculate the accuracy of each bin. Let $B_{m}$ be the set of indices of samples whose prediction confidence falls into the interval $I_{m}=\left(\frac{m-1}{M}, \frac{m}{M}\right]$. The accuracy of $B_{m}$ is</p>
+<p>$$
+\operatorname{acc}\left(B_{m}\right)=\frac{1}{\left|B_{m}\right|} \sum_{i \in B_{m}} \mathbf{1}\left(\hat{y}<em i="i">{i}=y</em>\right)
+$$</p>
+<p>where $\hat{y}<em i="i">{i}$ and $y</em>$ as}$ are the predicted and true class labels for sample $i$. Basic probability tells us that $\operatorname{acc}\left(B_{m}\right)$ is an unbiased and consistent estimator of $\mathbb{P}(\hat{Y}=Y \mid \hat{P} \in I_{m})$. We define the average confidence within bin $B_{m</p>
+<p>$$
+\operatorname{conf}\left(B_{m}\right)=\frac{1}{\left|B_{m}\right|} \sum_{i \in B_{m}} \hat{p}_{i}
+$$</p>
+<p>where $\hat{p}<em m="m">{i}$ is the confidence for sample $i . \quad \operatorname{acc}\left(B</em>\right)$ for all $m \in{1, \ldots, M}$. Note that reliability diagrams do not display the proportion of samples in a given bin, and thus cannot be used to estimate how many samples are calibrated.}\right)$ and $\operatorname{conf}\left(B_{m}\right)$ approximate the left-hand and right-hand sides of (1) respectively for bin $B_{m}$. Therefore, a perfectly calibrated model will have $\operatorname{acc}\left(B_{m}\right)=\operatorname{conf}\left(B_{m</p>
+<p>Expected Calibration Error (ECE). While reliability diagrams are useful visual tools, it is more convenient to have a scalar summary statistic of calibration. Since statistics comparing two distributions cannot be comprehensive, previous works have proposed variants, each with a unique emphasis. One notion of miscalibration is the difference in expectation between confidence and accuracy, i.e.</p>
+<p>$$
+\underset{\hat{P}}{\mathbb{E}}[|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)-p|]
+$$</p>
+<p>Expected Calibration Error (Naeini et al., 2015) - or ECE - approximates (2) by partitioning predictions into $M$ equally-spaced bins (similar to the reliability diagrams) and</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2. The effect of network depth (far left), width (middle left), Batch Normalization (middle right), and weight decay (far right) on miscalibration, as measured by ECE (lower is better).</p>
+<p>Taking a weighted average of the bins' accuracy/confidence difference. More precisely,</p>
+<p>$$
+\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{n} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|, \tag{3}
+$$</p>
+<p>where $n$ is the number of samples. The difference between acc and conf for a given bin represents the calibration gap (red bars in reliability diagrams – e.g. Figure 1). We use ECE as the primary empirical metric to measure calibration. See Section S1 for more analysis of this metric.</p>
+<p><strong>Maximum Calibration Error (MCE).</strong> In high-risk applications where reliable confidence measures are absolutely necessary, we may wish to minimize the worst-case deviation between confidence and accuracy:</p>
+<p>$$
+\max_{p \in [0,1]} \left| \mathbb{P}\left(\hat{Y} = Y \mid \hat{P} = p\right) - p \right|. \tag{4}
+$$</p>
+<p>The Maximum Calibration Error (Naeini et al., 2015) – or MCE – estimates this deviation. Similarly to ECE, this approximation involves binning:</p>
+<p>$$
+\text{MCE} = \max_{m \in {1, \ldots, M}} |acc(B_m) - conf(B_m)|. \tag{5}
+$$</p>
+<p>We can visualize MCE and ECE on reliability diagrams. MCE is the largest calibration gap (red bars) across all bins, whereas ECE is a weighted average of all gaps. For perfectly calibrated classifiers, MCE and ECE both equal 0.</p>
+<p><strong>Negative log likelihood</strong> is a standard measure of a probabilistic model's quality (Friedman et al., 2001). It is also referred to as the cross entropy loss in the context of deep learning (Bengio et al., 2015). Given a probabilistic model $\hat{\pi}(Y|X)$ and $n$ samples, NLL is defined as:</p>
+<p>$$
+\mathcal{L} = -\sum_{i=1}^{n} \log(\hat{\pi}(y_i | x_i)) \tag{6}
+$$</p>
+<p>It is a standard result (Friedman et al., 2001) that, in expectation, NLL is minimized if and only if $\hat{\pi}(Y|X)$ recovers the ground truth conditional distribution $\pi(Y|X)$.</p>
+<h1>3. Observing Miscalibration</h1>
+<p>The architecture and training procedures of neural networks have rapidly evolved in recent years. In this section we identify some recent changes that are responsible for the miscalibration phenomenon observed in Figure 1. Though we cannot claim causality, we find that increased model capacity and lack of regularization are closely related to model miscalibration.</p>
+<p><strong>Model capacity.</strong> The model capacity of neural networks has increased at a dramatic pace over the past few years. It is now common to see networks with hundreds, if not thousands of layers (He et al., 2016; Huang et al., 2016) and hundreds of convolutional filters per layer (Zagoruyko &amp; Komodakis, 2016). Recent work shows that very deep or wide models are able to generalize better than smaller ones, while exhibiting the capacity to easily fit the training set (Zhang et al., 2017).</p>
+<p>Although increasing depth and width may reduce classification error, we observe that these increases negatively affect model calibration. Figure 2 displays error and ECE as a function of depth and width on a ResNet trained on CIFAR-100. The far left figure varies depth for a network with 64 convolutional filters per layer, while the middle left figure fixes the depth at 14 layers and varies the number of convolutional filters per layer. Though even the smallest models in the graph exhibit some degree of miscalibration, the ECE metric grows substantially with model capacity. During training, after the model is able to correctly classify (almost) all training samples, NLL can be further minimized by increasing the confidence of predictions. Increased model capacity will lower training NLL, and thus the model will be more (over)confident on average.</p>
+<p><strong>Batch Normalization</strong> (Ioffe &amp; Szegedy, 2015) improves the optimization of neural networks by minimizing distribution shifts in activations within the neural network's hid-</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" />Figure 3: Test error and NLL of a 110-layer ResNet with stochastic depth on CIFAR-100 during training. NLL is scaled by a constant to fit in the figure. Learning rate drops by 10x at epochs 250 and 375. The shaded area marks between epochs at which the best validation loss and best validation error are produced.</p>
+<p>den layers. Recent research suggests that these normalization techniques have enabled the development of very deep architectures, such as ResNets <em>He et al. (2016)</em> and DenseNets <em>Huang et al. (2017)</em>. It has been shown that Batch Normalization improves training time, reduces the need for additional regularization, and can in some cases improve the accuracy of networks.</p>
+<p>While it is difficult to pinpoint exactly how Batch Normalization affects the final predictions of a model, we do observe that models trained with Batch Normalization tend to be more miscalibrated. In the middle right plot of Figure 2, we see that a 6-layer ConvNet obtains worse calibration when Batch Normalization is applied, even though classification accuracy improves slightly. We find that this result holds regardless of the hyperparameters used on the Batch Normalization model (i.e. low or high learning rate, etc.).</p>
+<p>Weight decay, which used to be the predominant regularization mechanism for neural networks, is decreasingly utilized when training modern neural networks. Learning theory suggests that regularization is necessary to prevent overfitting, especially as model capacity increases <em>Vapnik (1998)</em>. However, due to the apparent regularization effects of Batch Normalization, recent research seems to suggest that models with less L2 regularization tend to generalize better <em>Ioffe &amp; Szegedy (2015)</em>. As a result, it is now common to train models with little weight decay, if any at all. The top performing ImageNet models of 2015 all use an order of magnitude less weight decay than models of previous years <em>He et al. (2016); Simonyan &amp; Zisserman (2015)</em>.</p>
+<p>We find that training with less weight decay has a negative impact on calibration. The far right plot in Figure 2 displays training error and ECE for a 110-layer ResNet with varying amounts of weight decay. The only other forms of regularization are data augmentation and Batch Normalization. We observe that calibration and accuracy are not optimized by the same parameter setting. While the model exhibits both over-regularization and under-regularization with respect to classification error, it does not appear that calibration is negatively impacted by having too much weight decay. Model calibration continues to improve when more regularization is added, well after the point of achieving optimal accuracy. The slight uptick at the end of the graph may be an artifact of using a weight decay factor that impedes optimization.</p>
+<p>NLL can be used to indirectly measure model calibration. In practice, we observe a disconnect between NLL and accuracy, which may explain the miscalibration in Figure 2. This disconnect occurs because neural networks can overfit to NLL without overfitting to the 0/1 loss. We observe this trend in the training curves of some miscalibrated models. Figure 3 shows test error and NLL (rescaled to match error) on CIFAR-100 as training progresses. Both error and NLL immediately drop at epoch 250, when the learning rate is dropped; however, NLL overfits during the remainder of training. Surprisingly, overfitting to NLL is beneficial to classification accuracy. On CIFAR-100, test error drops from $29\%$ to $27\%$ in the region where NLL overfits. This phenomenon renders a concrete explanation of miscalibration: the network learns better classification accuracy at the expense of well-modeled probabilities.</p>
+<p>We can connect this finding to recent work examining the generalization of large neural networks. <em>Zhang et al. (2017)</em> observe that deep neural networks seemingly violate the common understanding of learning theory that large models with little regularization will not generalize well. The observed disconnect between NLL and 0/1 loss suggests that these high capacity models are not necessarily immune from overfitting, but rather, overfitting manifests in probabilistic error rather than classification error.</p>
+<h2>4 Calibration Methods</h2>
+<p>In this section, we first review existing calibration methods, and introduce new variants of our own. All methods are post-processing steps that produce (calibrated) probabilities. Each method requires a hold-out validation set, which in practice can be the same set used for hyperparameter tuning. We assume that the training, validation, and test sets are drawn from the same distribution.</p>
+<h3>4.1 Calibrating Binary Models</h3>
+<p>We first introduce calibration in the binary setting, i.e. $\mathcal{Y}={0,1}$. For simplicity, throughout this subsection,</p>
+<p>we assume the model outputs only the confidence for the positive class. ${ }^{1}$ Given a sample $\mathbf{x}<em i="i">{i}$, we have access to $\hat{p}</em>}-$ the network's predicted probability of $y_{i}=1$, as well as $z_{i} \in \mathbb{R}$ - which is the network's non-probabilistic output, or logit. The predicted probability $\hat{p<em i="i">{i}$ is derived from $z</em>}$ using a sigmoid function $\sigma$; i.e. $\hat{p<em i="i">{i}=\sigma\left(z</em>}\right)$. Our goal is to produce a calibrated probability $\hat{q<em i="i">{i}$ based on $y</em>}, \hat{p<em i="i">{i}$, and $z</em>$.</p>
+<p>Histogram binning (Zadrozny \&amp; Elkan, 2001) is a simple non-parametric calibration method. In a nutshell, all uncalibrated predictions $\hat{p}<em 1="1">{i}$ are divided into mutually exclusive bins $B</em>}, \ldots, B_{M}$. Each bin is assigned a calibrated score $\theta_{m}$; i.e. if $\hat{p<em m="m">{i}$ is assigned to bin $B</em>}$, then $\hat{q<em m="m">{i}=\theta</em>}$. At test time, if prediction $\hat{p<em m="m">{t e}$ falls into bin $B</em>}$, then the calibrated prediction $\hat{q<em m="m">{t e}$ is $\theta</em>$ are chosen to minimize the bin-wise squared loss:}$. More precisely, for a suitably chosen $M$ (usually small), we first define bin boundaries $0=a_{1} \leq a_{2} \leq \ldots \leq a_{M+1}=1$, where the bin $B_{m}$ is defined by the interval $\left(a_{m}, a_{m+1}\right]$. Typically the bin boundaries are either chosen to be equal length intervals or to equalize the number of samples in each bin. The predictions $\theta_{i</p>
+<p>$$
+\min <em 1="1">{\theta</em>}, \ldots, \theta_{M}} \sum_{m=1}^{M} \sum_{i=1}^{n} \mathbf{1}\left(a_{m} \leq \hat{p<em m_1="m+1">{i}&lt;a</em>
+$$}\right)\left(\theta_{m}-y_{i}\right)^{2</p>
+<p>where $\mathbf{1}$ is the indicator function. Given fixed bins boundaries, the solution to (7) results in $\theta_{m}$ that correspond to the average number of positive-class samples in bin $B_{m}$.</p>
+<p>Isotonic regression (Zadrozny \&amp; Elkan, 2002), arguably the most common non-parametric calibration method, learns a piecewise constant function $f$ to transform uncalibrated outputs; i.e. $\hat{q}<em i="i">{i}=f\left(\hat{p}</em>}\right)$. Specifically, isotonic regression produces $f$ to minimize the square loss $\sum_{i=1}^{n}\left(f\left(\hat{p<em i="i">{i}\right)-y</em>$. Because $f$ is constrained to be piecewise constant, we can write the optimization problem as:}\right)^{2</p>
+<p>$$
+\begin{gathered}
+\min <em 1="1">{\substack{\theta</em> \
+a_{1}, \ldots, a_{M+1}}} \sum_{m=1}^{M} \sum_{i=1}^{n} \mathbf{1}\left(a_{m} \leq \hat{p}}, \ldots, \theta_{M<em m_1="m+1">{i}&lt;a</em> \
+\text { subject to } 0=a_{1} \leq a_{2} \leq \ldots \leq a_{M+1}=1 \
+\theta_{1} \leq \theta_{2} \leq \ldots \leq \theta_{M}
+\end{gathered}
+$$}\right)\left(\theta_{m}-y_{i}\right)^{2</p>
+<p>where $M$ is the number of intervals; $a_{1}, \ldots, a_{M+1}$ are the interval boundaries; and $\theta_{1}, \ldots, \theta_{M}$ are the function values. Under this parameterization, isotonic regression is a strict generalization of histogram binning in which the bin boundaries and bin predictions are jointly optimized.</p>
+<p>Bayesian Binning into Quantiles (BBQ) (Naeini et al., 2015) is a extension of histogram binning using Bayesian</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup>model averaging. Essentially, BBQ marginalizes out all possible binning schemes to produce $\hat{q}<em 1="1">{i}$. More formally, a binning scheme $s$ is a pair $(M, \mathcal{I})$ where $M$ is the number of bins, and $\mathcal{I}$ is a corresponding partitioning of $[0,1]$ into disjoint intervals $\left(0=a</em>$} \leq a_{2} \leq \ldots \leq a_{M+1}=1\right)$. The parameters of a binning scheme are $\theta_{1}, \ldots, \theta_{M}$. Under this framework, histogram binning and isotonic regression both produce a single binning scheme, whereas BBQ considers a space $\mathcal{S}$ of all possible binning schemes for the validation dataset $D$. BBQ performs Bayesian averaging of the probabilities produced by each scheme: ${ }^{2</p>
+<p>$$
+\begin{aligned}
+\mathbb{P}\left(\hat{q}<em e="e" t="t">{t e} \mid \hat{p}</em>}, D\right) &amp; =\sum_{s \in \mathcal{S}} \mathbb{P}\left(\hat{q<em e="e" t="t">{t e}, S=s \mid \hat{p}</em>, D\right) \
+&amp; =\sum_{s \in \mathcal{S}} \mathbb{P}\left(\hat{q}<em e="e" t="t">{t e} \mid \hat{p}</em>(S=s \mid D)
+\end{aligned}
+$$}, S=s, D\right) \mathbb{P</p>
+<p>where $\mathbb{P}\left(\hat{q}<em e="e" t="t">{t e} \mid \hat{p}</em>(S=s \mid D)$ can be derived using Bayes' rule:}, S=s, D\right)$ is the calibrated probability using binning scheme $s$. Using a uniform prior, the weight $\mathbb{P</p>
+<p>$$
+\mathbb{P}(S=s \mid D)=\frac{\mathbb{P}(D \mid S=s)}{\sum_{s^{\prime} \in \mathcal{S}} \mathbb{P}\left(D \mid S=s^{\prime}\right)}
+$$</p>
+<p>The parameters $\theta_{1}, \ldots, \theta_{M}$ can be viewed as parameters of $M$ independent binomial distributions. Hence, by placing a Beta prior on $\theta_{1}, \ldots, \theta_{M}$, we can obtain a closed form expression for the marginal likelihood $\mathbb{P}(D \mid S=s)$. This allows us to compute $\mathbb{P}\left(\hat{q}<em e="e" t="t">{t e} \mid \hat{p}</em>, D\right)$ for any test input.</p>
+<p>Platt scaling (Platt et al., 1999) is a parametric approach to calibration, unlike the other approaches. The nonprobabilistic predictions of a classifier are used as features for a logistic regression model, which is trained on the validation set to return probabilities. More specifically, in the context of neural networks (Niculescu-Mizil \&amp; Caruana, 2005), Platt scaling learns scalar parameters $a, b \in \mathbb{R}$ and outputs $\hat{q}<em i="i">{i}=\sigma\left(a z</em>+b\right)$ as the calibrated probability. Parameters $a$ and $b$ can be optimized using the NLL loss over the validation set. It is important to note that the neural network's parameters are fixed during this stage.</p>
+<h3>4.2. Extension to Multiclass Models</h3>
+<p>For classification problems involving $K&gt;2$ classes, we return to the original problem formulation. The network outputs a class prediction $\hat{y}<em i="i">{i}$ and confidence score $\hat{p}</em>}$ for each input $\mathbf{x<em i="i">{i}$. In this case, the network logits $\mathbf{z}</em>}$ are vectors, where $\hat{y<em k="k">{i}=\operatorname{argmax}</em>} z_{i}^{(k)}$, and $\hat{p<em _mathrm_SM="\mathrm{SM">{i}$ is typically derived using the softmax function $\sigma</em>$ :}</p>
+<p>$$
+\sigma_{\mathrm{SM}}\left(\mathbf{z}<em i="i">{i}\right)^{(k)}=\frac{\exp \left(z</em>}^{(k)}\right)}{\sum_{j=1}^{K} \exp \left(z_{i}^{(j)}\right)}, \quad \hat{p<em k="k">{i}=\max </em>
+$$} \sigma_{\mathrm{SM}}\left(\mathbf{z}_{i}\right)^{(k)</p>
+<p>The goal is to produce a calibrated confidence $\hat{q}<em i="i">{i}$ and (possibly new) class prediction $\hat{y}</em>}^{\prime}$ based on $y_{i}, \hat{y<em i="i">{i}, \hat{p}</em>$.}$, and $\mathbf{z}_{i</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Model</th>
+<th>Uncalibrated</th>
+<th>Hist. Binning</th>
+<th>Isotonic</th>
+<th>BBQ</th>
+<th>Temp. Scaling</th>
+<th>Vector Scaling</th>
+<th>Matrix Scaling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Birds</td>
+<td>ResNet 50</td>
+<td>9.19%</td>
+<td>4.34%</td>
+<td>5.22%</td>
+<td>4.12%</td>
+<td>$\mathbf{1.85\%}$</td>
+<td>3.0%</td>
+<td>21.13%</td>
+</tr>
+<tr>
+<td>Cars</td>
+<td>ResNet 50</td>
+<td>4.3%</td>
+<td>$\mathbf{1.74\%}$</td>
+<td>4.29%</td>
+<td>1.84%</td>
+<td>2.35%</td>
+<td>2.37%</td>
+<td>10.5%</td>
+</tr>
+<tr>
+<td>CIFAR-10</td>
+<td>ResNet 110</td>
+<td>4.6%</td>
+<td>0.58%</td>
+<td>0.81%</td>
+<td>$\mathbf{0.54\%}$</td>
+<td>0.83%</td>
+<td>0.88%</td>
+<td>1.0%</td>
+</tr>
+<tr>
+<td>CIFAR-10</td>
+<td>ResNet 110 (SD)</td>
+<td>4.12%</td>
+<td>0.67%</td>
+<td>1.11%</td>
+<td>0.9%</td>
+<td>$\mathbf{0.6\%}$</td>
+<td>0.64%</td>
+<td>0.72%</td>
+</tr>
+<tr>
+<td>CIFAR-10</td>
+<td>Wide ResNet 32</td>
+<td>4.52%</td>
+<td>0.72%</td>
+<td>1.08%</td>
+<td>0.74%</td>
+<td>$\mathbf{0.54\%}$</td>
+<td>0.6%</td>
+<td>0.72%</td>
+</tr>
+<tr>
+<td>CIFAR-10</td>
+<td>DenseNet 40</td>
+<td>3.28%</td>
+<td>0.44%</td>
+<td>0.61%</td>
+<td>0.81%</td>
+<td>$\mathbf{0.33\%}$</td>
+<td>0.41%</td>
+<td>0.41%</td>
+</tr>
+<tr>
+<td>CIFAR-10</td>
+<td>LeNet 5</td>
+<td>3.02%</td>
+<td>1.56%</td>
+<td>1.85%</td>
+<td>1.59%</td>
+<td>$\mathbf{0.93\%}$</td>
+<td>1.15%</td>
+<td>1.16%</td>
+</tr>
+<tr>
+<td>CIFAR-100</td>
+<td>ResNet 110</td>
+<td>16.53%</td>
+<td>2.66%</td>
+<td>4.99%</td>
+<td>5.46%</td>
+<td>$\mathbf{1.26\%}$</td>
+<td>1.32%</td>
+<td>25.49%</td>
+</tr>
+<tr>
+<td>CIFAR-100</td>
+<td>ResNet 110 (SD)</td>
+<td>12.67%</td>
+<td>2.46%</td>
+<td>4.16%</td>
+<td>3.58%</td>
+<td>0.96%</td>
+<td>$\mathbf{0.9\%}$</td>
+<td>20.09%</td>
+</tr>
+<tr>
+<td>CIFAR-100</td>
+<td>Wide ResNet 32</td>
+<td>15.0%</td>
+<td>3.01%</td>
+<td>5.85%</td>
+<td>5.77%</td>
+<td>$\mathbf{2.32\%}$</td>
+<td>2.57%</td>
+<td>24.44%</td>
+</tr>
+<tr>
+<td>CIFAR-100</td>
+<td>DenseNet 40</td>
+<td>10.37%</td>
+<td>2.68%</td>
+<td>4.51%</td>
+<td>3.59%</td>
+<td>1.18%</td>
+<td>$\mathbf{1.09\%}$</td>
+<td>21.87%</td>
+</tr>
+<tr>
+<td>CIFAR-100</td>
+<td>LeNet 5</td>
+<td>4.85%</td>
+<td>6.48%</td>
+<td>2.35%</td>
+<td>3.77%</td>
+<td>$\mathbf{2.02\%}$</td>
+<td>2.09%</td>
+<td>13.24%</td>
+</tr>
+<tr>
+<td>ImageNet</td>
+<td>DenseNet 161</td>
+<td>6.28%</td>
+<td>4.52%</td>
+<td>5.18%</td>
+<td>3.51%</td>
+<td>$\mathbf{1.99\%}$</td>
+<td>2.24%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ImageNet</td>
+<td>ResNet 152</td>
+<td>5.48%</td>
+<td>4.36%</td>
+<td>4.77%</td>
+<td>3.56%</td>
+<td>$\mathbf{1.86\%}$</td>
+<td>2.23%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>SVHN</td>
+<td>ResNet 152 (SD)</td>
+<td>0.44%</td>
+<td>$\mathbf{0.14\%}$</td>
+<td>0.28%</td>
+<td>0.22%</td>
+<td>0.17%</td>
+<td>0.27%</td>
+<td>0.17%</td>
+</tr>
+<tr>
+<td>20 News</td>
+<td>DAN 3</td>
+<td>8.02%</td>
+<td>$\mathbf{3.6\%}$</td>
+<td>5.52%</td>
+<td>4.98%</td>
+<td>4.11%</td>
+<td>4.61%</td>
+<td>9.1%</td>
+</tr>
+<tr>
+<td>Reuters</td>
+<td>DAN 3</td>
+<td>0.85%</td>
+<td>1.75%</td>
+<td>1.15%</td>
+<td>0.97%</td>
+<td>0.91%</td>
+<td>$\mathbf{0.66\%}$</td>
+<td>1.58%</td>
+</tr>
+<tr>
+<td>SST Binary</td>
+<td>TreeLSTM</td>
+<td>6.63%</td>
+<td>1.93%</td>
+<td>$\mathbf{1.65\%}$</td>
+<td>2.27%</td>
+<td>1.84%</td>
+<td>1.84%</td>
+<td>1.84%</td>
+</tr>
+<tr>
+<td>SST Fine Grained</td>
+<td>TreeLSTM</td>
+<td>6.71%</td>
+<td>2.09%</td>
+<td>$\mathbf{1.65\%}$</td>
+<td>2.61%</td>
+<td>2.56%</td>
+<td>2.98%</td>
+<td>2.39%</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: ECE (%) (with $M=15$ bins) on standard vision and NLP datasets before calibration and with various calibration methods. The number following a model’s name denotes the network depth.</p>
+<p>Extension of binning methods. One common way of extending binary calibration methods to the multiclass setting is by treating the problem as $K$ one-versus-all problems <em>Zadrozny &amp; Elkan (2002)</em>. For $k=1,\ldots,K$, we form a binary calibration problem where the label is $\mathbf{1}(y_{i}=k)$ and the predicted probability is $\sigma_{\text{SM}}\left(\mathbf{z}<em i="i">{i}\right)^{(k)}$. This gives us $K$ calibration models, each for a particular class. At test time, we obtain an unnormalized probability vector $[\hat{q}</em>}^{(1)},\ldots,\hat{q<em i="i">{i}^{(K)}]$, where $\hat{q}</em>}^{(k)}$ is the calibrated probability for class $k$. The new class prediction $\hat{y<em i="i">{i}^{\prime}$ is the argmax of the vector, and the new confidence $\hat{q}</em>$. This extension can be applied to histogram binning, isotonic regression, and BBQ.}^{\prime}$ is the max of the vector normalized by $\sum_{k=1}^{K}\hat{q}_{i}^{(k)</p>
+<p>Matrix and vector scaling are two multi-class extensions of Platt scaling. Let $\mathbf{z}<em i="i">{i}$ be the <em>logits vector</em> produced before the softmax layer for input $\mathbf{x}</em>$. <em>Matrix scaling applies</em> a linear transformation $\mathbf{W}\mathbf{z}_{i}+\mathbf{b}$ to the logits:</p>
+<p>$\hat{q}<em k="k">{i}$ $=\max</em>} \sigma_{\text{SM}}\left(\mathbf{W}\mathbf{z<em i="i">{i}+\mathbf{b}\right)^{(k)},$ (8)
+$\hat{y}</em>}^{\prime}$ $=\operatorname*{argmax<em i="i">{k}\left(\mathbf{W}\mathbf{z}</em>.$}+\mathbf{b}\right)^{(k)</p>
+<p>The parameters $\mathbf{W}$ and $\mathbf{b}$ are optimized with respect to NLL on the validation set. As the number of parameters for matrix scaling grows quadratically with the number of classes $K$, we define <em>vector scaling</em> as a variant where $\mathbf{W}$ is restricted to be a diagonal matrix.</p>
+<p>Temperature scaling, the simplest extension of Platt scaling, uses a single scalar parameter $T&gt;0$ for all classes. Given the logit vector $\mathbf{z}_{i}$, the new confidence prediction is</p>
+<p>$\hat{q}<em k="k">{i}=\max</em>.$ (9)} \sigma_{\text{SM}}\left(\mathbf{z}_{i}/T\right)^{(k)</p>
+<p>$T$ is called the temperature, and it “softens” the softmax (i.e. raises the output entropy) with $T&gt;1$. As $T\rightarrow \infty$, the probability $\hat{q}<em i="i">{i}$ approaches $1/K$, which represents maximum uncertainty. With $T=1$, we recover the original probability $\hat{p}</em>}$. As $T \rightarrow 0$, the probability collapses to a point mass (i.e. $\hat{q<em i="i">{i}=1$ ). $T$ is optimized with respect to NLL on the validation set. Because the parameter $T$ does not change the maximum of the softmax function, the class prediction $\hat{y}</em>$ remains unchanged. In other words, }^{\prime<em>temperature scaling does not affect the model’s accuracy.</em></p>
+<p>Temperature scaling is commonly used in settings such as knowledge distillation <em>Hinton et al. (2015)</em> and statistical mechanics <em>Jaynes (1957)</em>. To the best of our knowledge, we are not aware of any prior use in the context of calibrating probabilistic models. The model is equivalent to maximizing the entropy of the output probability distribution subject to certain constraints on the logits (see Section S2).</p>
+<h3>4.3 Other Related Works</h3>
+<p>Calibration and confidence scores have been studied in various contexts in recent years. <em>Kuleshov &amp; Ermon (2016)</em> study the problem of calibration in the online setting, where the inputs can come from a potentially adversarial source. <em>Kuleshov &amp; Liang (2015)</em> investigate how to produce calibrated probabilities when the output space is a structured object. <em>Lakshminarayanan et al. (2016)</em> use ensembles of networks to obtain uncertainty estimates. <em>Pereyra et al. (2017)</em> penalize overconfident predictions as a form of regularization. <em>Hendrycks &amp; Gimpel (2017)</em> use confidence</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>scores to determine if samples are out-of-distribution.
+Bayesian neural networks (Denker \&amp; Lecun, 1990; MacKay, 1992) return a probability distribution over outputs as an alternative way to represent model uncertainty. Gal \&amp; Ghahramani (2016) draw a connection between Dropout (Srivastava et al., 2014) and model uncertainty, claiming that sampling models with dropped nodes is a way to estimate the probability distribution over all possible models for a given sample. Kendall \&amp; Gal (2017) combine this approach with a model that outputs a predictive mean and variance for each data point. This notion of uncertainty is not restricted to classification problems. Additionally, neural networks can be used in conjunction with Bayesian models that output complete distributions. For example, deep kernel learning (Wilson et al., 2016a;b; AlShedivat et al., 2016) combines deep neural networks with Gaussian processes on classification and regression problems. In contrast, our framework, which does not augment the neural network model, returns a confidence score rather than returning a distribution of possible outputs.</p>
+<h2>5. Results</h2>
+<p>We apply the calibration methods in Section 4 to image classification and document classification neural networks. For image classification we use 6 datasets:</p>
+<ol>
+<li>Caltech-UCSD Birds (Welinder et al., 2010): 200 bird species. 5994/2897/2897 images for train/validation/test sets.</li>
+<li>Stanford Cars (Krause et al., 2013): 196 classes of cars by make, model, and year. 8041/4020/4020 images for train/validation/test.</li>
+<li>ImageNet 2012 (Deng et al., 2009): Natural scene images from 1000 classes. 1.3 million/25,000/25,000 images for train/validation/test.</li>
+<li>CIFAR-10/CIFAR-100 (Krizhevsky \&amp; Hinton, 2009): Color images ( $32 \times 32$ ) from 10/100 classes. 45,000/5,000/10,000 images for train/validation/test.</li>
+<li>Street View House Numbers (SVHN) (Netzer et al., 2011): $32 \times 32$ colored images of cropped out house numbers from Google Street View. 598,388/6,000/26,032 images for train/validation/test.</li>
+</ol>
+<p>We train state-of-the-art convolutional networks: ResNets (He et al., 2016), ResNets with stochastic depth (SD) (Huang et al., 2016), Wide ResNets (Zagoruyko \&amp; Komodakis, 2016), and DenseNets (Huang et al., 2017). We use the data preprocessing, training procedures, and hyperparameters as described in each paper. For Birds and Cars, we fine-tune networks pretrained on ImageNet.</p>
+<p>For document classification we experiment with 4 datasets:</p>
+<ol>
+<li>20 News: News articles, partitioned into 20 cate-
+gories by content. 9034/2259/7528 documents for train/validation/test.</li>
+<li>Reuters: News articles, partitioned into 8 categories by topic. 4388/1097/2189 documents for train/validation/test.</li>
+<li>Stanford Sentiment Treebank (SST) (Socher et al., 2013): Movie reviews, represented as sentence parse trees that are annotated by sentiment. Each sample includes a coarse binary label and a fine grained 5-class label. As described in (Tai et al., 2015), the training/validation/test sets contain 6920/872/1821 documents for binary, and 544/1101/2210 for fine-grained.</li>
+</ol>
+<p>On 20 News and Reuters, we train Deep Averaging Networks (DANs) (Iyyer et al., 2015) with 3 feed-forward layers and Batch Normalization. On SST, we train TreeLSTMs (Long Short Term Memory) (Tai et al., 2015). For both models we use the default hyperparmaeters suggested by the authors.</p>
+<p>Calibration Results. Table 1 displays model calibration, as measured by ECE (with $M=15$ bins), before and after applying the various methods (see Section S3 for MCE, NLL, and error tables). It is worth noting that most datasets and models experience some degree of miscalibration, with ECE typically between 4 to $10 \%$. This is not architecture specific: we observe miscalibration on convolutional networks (with and without skip connections), recurrent networks, and deep averaging networks. The two notable exceptions are SVHN and Reuters, both of which experience ECE values below $1 \%$. Both of these datasets have very low error ( $1.98 \%$ and $2.97 \%$, respectively); and therefore the ratio of ECE to error is comparable to other datasets.</p>
+<p>Our most important discovery is the surprising effectiveness of temperature scaling despite its remarkable simplicity. Temperature scaling outperforms all other methods on the vision tasks, and performs comparably to other methods on the NLP datasets. What is perhaps even more surprising is that temperature scaling outperforms the vector and matrix Platt scaling variants, which are strictly more general methods. In fact, vector scaling recovers essentially the same solution as temperature scaling - the learned vector has nearly constant entries, and therefore is no different than a scalar transformation. In other words, network miscalibration is intrinsically low dimensional.</p>
+<p>The only dataset that temperature scaling does not calibrate is the Reuters dataset. In this instance, only one of the above methods is able to improve calibration. Because this dataset is well-calibrated to begin with (ECE $\leq 1 \%$ ), there is not much room for improvement with any method, and post-processing may not even be necessary to begin with. It is also possible that our measurements are affected by dataset split or by the particular binning scheme.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4. Reliability diagrams for CIFAR-100 before (far left) and after calibration (middle left, middle right, far right).</p>
+<p>Matrix scaling performs poorly on datasets with hundreds of classes (i.e. Birds, Cars, and CIFAR-100), and fails to converge on the 1000-class ImageNet dataset. This is expected, since the number of parameters scales quadratically with the number of classes. Any calibration model with tens of thousands (or more) parameters will overfit to a small validation set, even when applying regularization.</p>
+<p>Binning methods improve calibration on most datasets, but do not outperform temperature scaling. Additionally, binning methods tend to change class predictions which hurts accuracy (see Section S3). Histogram binning, the simplest binning method, typically outperforms isotonic regression and BBQ, despite the fact that both methods are strictly more general. This further supports our finding that calibration is best corrected by simple models.</p>
+<p>Reliability diagrams. Figure 4 contains reliability diagrams for 110-layer ResNets on CIFAR-100 before and after calibration. From the far left diagram, we see that the uncalibrated ResNet tends to be overconfident in its predictions. We then can observe the effects of temperature scaling (middle left), histogram binning (middle right), and isotonic regression (far right) on calibration. All three displayed methods produce much better confidence estimates. Of the three methods, temperature scaling most closely recovers the desired diagonal function. Each of the bins are well calibrated, which is remarkable given that all the probabilities were modified by only a single parameter. We include reliability diagrams for other datasets in Section S4.</p>
+<p>Computation time. All methods scale linearly with the number of validation set samples. Temperature scaling is by far the fastest method, as it amounts to a one-dimensional convex optimization problem. Using a conjugate gradient solver, the optimal temperature can be found in 10 iterations, or a fraction of a second on most modern hardware. In fact, even a naive line-search for the optimal temperature is faster than any of the other methods. The computational complexity of vector and matrix scaling are linear and quadratic respectively in the number of classes, reflecting the number of parameters in each method. For CIFAR-100 (K = 100), finding a near-optimal vector scaling solution with conjugate gradient descent requires at least 2 orders of magnitude more time. Histogram binning and isotonic regression take an order of magnitude longer than temperature scaling, and BBQ takes roughly 3 orders of magnitude more time.</p>
+<p>Ease of implementation. BBQ is arguably the most difficult to implement, as it requires implementing a model averaging scheme. While all other methods are relatively easy to implement, temperature scaling may arguably be the most straightforward to incorporate into a neural network pipeline. In Torch7 [collobert2011torch7], for example, we implement temperature scaling by inserting a nn.MulConstant between the logits and the softmax, whose parameter is 1/T. We set T=1 during training, and subsequently find its optimal value on the validation set.4</p>
+<h1>6. Conclusion</h1>
+<p>Modern neural networks exhibit a strange phenomenon: probabilistic error and miscalibration worsen even as classification error is reduced. We have demonstrated that recent advances in neural network architecture and training – model capacity, normalization, and regularization – have strong effects on network calibration. It remains future work to understand why these trends affect calibration while improving accuracy. Nevertheless, simple techniques can effectively remedy the miscalibration phenomenon in neural networks. Temperature scaling is the simplest, fastest, and most straightforward of the methods, and surprisingly is often the most effective.</p>
+<p><sup>4</sup> For an example implementation, see http://github.com/gpleiss/temperature_scaling.</p>
+<h2>Acknowledgments</h2>
+<p>The authors are supported in part by the III-1618134, III1526012, and IIS-1149882 grants from the National Science Foundation, as well as the Bill and Melinda Gates Foundation and the Office of Naval Research.</p>
+<h2>References</h2>
+<p>Al-Shedivat, Maruan, Wilson, Andrew Gordon, Saatchi, Yunus, Hu, Zhiting, and Xing, Eric P. Learning scalable deep kernels with recurrent structure. arXiv preprint arXiv:1610.08936, 2016.</p>
+<p>Bengio, Yoshua, Goodfellow, Ian J, and Courville, Aaron. Deep learning. Nature, 521:436-444, 2015.</p>
+<p>Bojarski, Mariusz, Del Testa, Davide, Dworakowski, Daniel, Firner, Bernhard, Flepp, Beat, Goyal, Prasoon, Jackel, Lawrence D, Monfort, Mathew, Muller, Urs, Zhang, Jiakai, et al. End to end learning for self-driving cars. arXiv preprint arXiv:1604.07316, 2016.</p>
+<p>Caruana, Rich, Lou, Yin, Gehrke, Johannes, Koch, Paul, Sturm, Marc, and Elhadad, Noemie. Intelligible models for healthcare: Predicting pneumonia risk and hospital 30-day readmission. In $K D D, 2015$.</p>
+<p>Collobert, Ronan, Kavukcuoglu, Koray, and Farabet, Clément. Torch7: A matlab-like environment for machine learning. In BigLearn Workshop, NIPS, 2011.</p>
+<p>Cosmides, Leda and Tooby, John. Are humans good intuitive statisticians after all? rethinking some conclusions from the literature on judgment under uncertainty. cognition, 58(1):1-73, 1996.</p>
+<p>DeGroot, Morris H and Fienberg, Stephen E. The comparison and evaluation of forecasters. The statistician, pp. $12-22,1983$.</p>
+<p>Deng, Jia, Dong, Wei, Socher, Richard, Li, Li-Jia, Li, Kai, and Fei-Fei, Li. Imagenet: A large-scale hierarchical image database. In CVPR, pp. 248-255, 2009.</p>
+<p>Denker, John S and Lecun, Yann. Transforming neural-net output levels to probability distributions. In NIPS, pp. 853-859, 1990.</p>
+<p>Friedman, Jerome, Hastie, Trevor, and Tibshirani, Robert. The elements of statistical learning, volume 1. Springer series in statistics Springer, Berlin, 2001.</p>
+<p>Gal, Yarin and Ghahramani, Zoubin. Dropout as a bayesian approximation: Representing model uncertainty in deep learning. In ICML, 2016.</p>
+<p>Girshick, Ross. Fast r-cnn. In ICCV, pp. 1440-1448, 2015.</p>
+<p>Hannun, Awni, Case, Carl, Casper, Jared, Catanzaro, Bryan, Diamos, Greg, Elsen, Erich, Prenger, Ryan, Satheesh, Sanjeev, Sengupta, Shubho, Coates, Adam, et al. Deep speech: Scaling up end-to-end speech recognition. arXiv preprint arXiv:1412.5567, 2014.</p>
+<p>He, Kaiming, Zhang, Xiangyu, Ren, Shaoqing, and Sun, Jian. Deep residual learning for image recognition. In CVPR, pp. 770-778, 2016.</p>
+<p>Hendrycks, Dan and Gimpel, Kevin. A baseline for detecting misclassified and out-of-distribution examples in neural networks. In ICLR, 2017.</p>
+<p>Hinton, Geoffrey, Vinyals, Oriol, and Dean, Jeff. Distilling the knowledge in a neural network. 2015.</p>
+<p>Huang, Gao, Sun, Yu, Liu, Zhuang, Sedra, Daniel, and Weinberger, Kilian. Deep networks with stochastic depth. In ECCV, 2016.</p>
+<p>Huang, Gao, Liu, Zhuang, Weinberger, Kilian Q, and van der Maaten, Laurens. Densely connected convolutional networks. In CVPR, 2017.</p>
+<p>Ioffe, Sergey and Szegedy, Christian. Batch normalization: Accelerating deep network training by reducing internal covariate shift. 2015.</p>
+<p>Iyyer, Mohit, Manjunatha, Varun, Boyd-Graber, Jordan, and Daumé III, Hal. Deep unordered composition rivals syntactic methods for text classification. In ACL, 2015.</p>
+<p>Jaynes, Edwin T. Information theory and statistical mechanics. Physical review, 106(4):620, 1957.</p>
+<p>Jiang, Xiaoqian, Osl, Melanie, Kim, Jihoon, and OhnoMachado, Lucila. Calibrating predictive model estimates to support personalized medicine. Journal of the American Medical Informatics Association, 19(2):263-274, 2012.</p>
+<p>Kendall, Alex and Cipolla, Roberto. Modelling uncertainty in deep learning for camera relocalization. 2016.</p>
+<p>Kendall, Alex and Gal, Yarin. What uncertainties do we need in bayesian deep learning for computer vision? arXiv preprint arXiv:1703.04977, 2017.</p>
+<p>Krause, Jonathan, Stark, Michael, Deng, Jia, and Fei-Fei, Li. 3d object representations for fine-grained categorization. In IEEE Workshop on 3D Representation and Recognition (3dRR), Sydney, Australia, 2013.</p>
+<p>Krizhevsky, Alex and Hinton, Geoffrey. Learning multiple layers of features from tiny images, 2009.</p>
+<p>Kuleshov, Volodymyr and Ermon, Stefano. Reliable confidence estimation via online learning. arXiv preprint arXiv:1607.03594, 2016.</p>
+<p>Kuleshov, Volodymyr and Liang, Percy. Calibrated structured prediction. In NIPS, pp. 3474-3482, 2015.</p>
+<p>Lakshminarayanan, Balaji, Pritzel, Alexander, and Blundell, Charles. Simple and scalable predictive uncertainty estimation using deep ensembles. arXiv preprint arXiv:1612.01474, 2016.</p>
+<p>LeCun, Yann, Bottou, Léon, Bengio, Yoshua, and Haffner, Patrick. Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11):22782324, 1998.</p>
+<p>MacKay, David JC. A practical bayesian framework for backpropagation networks. Neural computation, 4(3): 448-472, 1992.</p>
+<p>Naeini, Mahdi Pakdaman, Cooper, Gregory F, and Hauskrecht, Milos. Obtaining well calibrated probabilities using bayesian binning. In AAAI, pp. 2901, 2015.</p>
+<p>Netzer, Yuval, Wang, Tao, Coates, Adam, Bissacco, Alessandro, Wu, Bo, and Ng, Andrew Y. Reading digits in natural images with unsupervised feature learning. In Deep Learning and Unsupervised Feature Learning Workshop, NIPS, 2011.</p>
+<p>Niculescu-Mizil, Alexandru and Caruana, Rich. Predicting good probabilities with supervised learning. In ICML, pp. 625-632, 2005.</p>
+<p>Pereyra, Gabriel, Tucker, George, Chorowski, Jan, Kaiser, Łukasz, and Hinton, Geoffrey. Regularizing neural networks by penalizing confident output distributions. arXiv preprint arXiv:1701.06548, 2017.</p>
+<p>Platt, John et al. Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. Advances in large margin classifiers, 10(3): $61-74,1999$.</p>
+<p>Simonyan, Karen and Zisserman, Andrew. Very deep convolutional networks for large-scale image recognition. In $I C L R, 2015$.</p>
+<p>Socher, Richard, Perelygin, Alex, Wu, Jean, Chuang, Jason, Manning, Christopher D., Ng, Andrew, and Potts, Christopher. Recursive deep models for semantic compositionality over a sentiment treebank. In EMNLP, pp. $1631-1642,2013$.</p>
+<p>Srivastava, Nitish, Hinton, Geoffrey, Krizhevsky, Alex, Sutskever, Ilya, and Salakhutdinov, Ruslan. Dropout: A simple way to prevent neural networks from overfitting. Journal of Machine Learning Research, 15:1929-1958, 2014.</p>
+<p>Srivastava, Rupesh Kumar, Greff, Klaus, and Schmidhuber, Jürgen. Highway networks. arXiv preprint arXiv:1505.00387, 2015.</p>
+<p>Tai, Kai Sheng, Socher, Richard, and Manning, Christopher D. Improved semantic representations from treestructured long short-term memory networks. 2015.</p>
+<p>Vapnik, Vladimir N. Statistical Learning Theory. WileyInterscience, 1998.</p>
+<p>Welinder, P., Branson, S., Mita, T., Wah, C., Schroff, F., Belongie, S., and Perona, P. Caltech-UCSD Birds 200. Technical Report CNS-TR-2010-001, California Institute of Technology, 2010.</p>
+<p>Wilson, Andrew G, Hu, Zhiting, Salakhutdinov, Ruslan R, and Xing, Eric P. Stochastic variational deep kernel learning. In NIPS, pp. 2586-2594, 2016a.</p>
+<p>Wilson, Andrew Gordon, Hu, Zhiting, Salakhutdinov, Ruslan, and Xing, Eric P. Deep kernel learning. In AISTATS, pp. 370-378, 2016b.</p>
+<p>Xiong, Wayne, Droppo, Jasha, Huang, Xuedong, Seide, Frank, Seltzer, Mike, Stolcke, Andreas, Yu, Dong, and Zweig, Geoffrey. Achieving human parity in conversational speech recognition. arXiv preprint arXiv:1610.05256, 2016.</p>
+<p>Zadrozny, Bianca and Elkan, Charles. Obtaining calibrated probability estimates from decision trees and naive bayesian classifiers. In ICML, pp. 609-616, 2001.</p>
+<p>Zadrozny, Bianca and Elkan, Charles. Transforming classifier scores into accurate multiclass probability estimates. In $K D D$, pp. 694-699, 2002.</p>
+<p>Zagoruyko, Sergey and Komodakis, Nikos. Wide residual networks. In BMVC, 2016.</p>
+<p>Zhang, Chiyuan, Bengio, Samy, Hardt, Moritz, Recht, Benjamin, and Vinyals, Oriol. Understanding deep learning requires rethinking generalization. In $I C L R, 2017$.</p>
+<h1>Supplementary Materials for: On Calibration of Modern Neural Networks</h1>
+<h2>S1. Further Information on Calibration Metrics</h2>
+<p>We can connect the ECE metric with our exact miscalibration definition, which is restated here:</p>
+<p>$$
+\underset{\hat{P}}{\mathbb{E}}\left[\left|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)-p\right|\right]
+$$</p>
+<p>Let $F_{\hat{P}}(p)$ be the cumulative distribution function of $\hat{P}$ so that $F_{\hat{P}}(b)-F_{\hat{P}}(a)=\mathbb{P}(\hat{P} \in[a, b])$. Using the RiemannStieltjes integral we have</p>
+<p>$$
+\begin{aligned}
+&amp; \underset{\hat{P}}{\mathbb{E}}\left[\left|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)-p\right|\right] \
+&amp; =\int_{0}^{1}\left|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)-p\right| d F_{\hat{P}}(p) \
+&amp; \approx \sum_{m=1}^{M}\left|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p_{m})-p_{m}\right| \mathbb{P}\left(\hat{P} \in I_{m}\right)
+\end{aligned}
+$$</p>
+<p>where $I_{m}$ represents the interval of bin $B_{m}$. $\left|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p_{m})-p_{m}\right| \quad$ is closely approximated by $\left|\operatorname{acc}\left(B_{m}\right)-\hat{p}\left(B_{m}\right)\right|$ for $n$ large. Hence ECE using $M$ bins converges to the $M$-term Riemann-Stieltjes sum of $\underset{\hat{P}}{\mathbb{E}}\left[|\mathbb{P}(\hat{Y}=Y \mid \hat{P}=p)-p|\right]$</p>
+<h2>S2. Further Information on Temperature Scaling</h2>
+<p>Here we derive the temperature scaling model using the entropy maximization principle with an appropriate balanced equation.
+Claim 1. Given $n$ samples' logit vectors $\mathbf{z}<em n="n">{1}, \ldots, \mathbf{z}</em>$, temperature scaling is the unique solution $q$ to the following entropy maximization problem:}$ and class labels $y_{1}, \ldots, y_{n</p>
+<p>$$
+\begin{aligned}
+\max <em i="1">{q} &amp; -\sum</em>}^{n} \sum_{k=1}^{K} q\left(\mathbf{z<em i="i">{i}\right)^{(k)} \log q\left(\mathbf{z}</em> \
+\text { subject to } &amp; q\left(\mathbf{z}}\right)^{(k)<em k="1">{i}\right)^{(k)} \geq 0 \quad \forall i, k \
+&amp; \sum</em>}^{K} q\left(\mathbf{z<em i="1">{i}\right)^{(k)}=1 \quad \forall i \
+&amp; \sum</em>
+\end{aligned}
+$$}^{n} z_{i}^{\left(y_{i}\right)}=\sum_{i=1}^{n} \sum_{k=1}^{K} z_{i}^{(k)} q\left(\mathbf{z}_{i}\right)^{(k)</p>
+<p>The first two constraint ensure that $q$ is a probability distribution, while the last constraint limits the scope of distributions. Intuitively, the constraint specifies that the average true class logit is equal to the average weighted logit.</p>
+<p>Proof. We solve this constrained optimization problem using the Lagrangian. We first ignore the constraint $q\left(\mathbf{z}<em 1="1">{i}\right)^{(k)}$ and later show that the solution satisfies this condition. Let $\lambda, \beta</em>$ be the Lagrangian multipliers and define}, \ldots, \beta_{n} \in \mathbb{R</p>
+<p>$$
+\begin{aligned}
+L= &amp; -\sum_{i=1}^{n} \sum_{k=1}^{K} q\left(\mathbf{z}<em i="i">{i}\right)^{(k)} \log q\left(\mathbf{z}</em> \
+&amp; +\lambda \sum_{i=1}^{n}\left[\sum_{k=1}^{K} z_{i}^{(k)} q\left(\mathbf{z}}\right)^{(k)<em i="i">{i}\right)^{(k)}-z</em>\right] \
+&amp; +\sum_{i=1}^{n} \beta_{i} \sum_{k=1}^{K}\left(q\left(\mathbf{z}_{i}\right)^{(k)}-1\right)
+\end{aligned}
+$$}^{\left(y_{i}\right)</p>
+<p>Taking the derivative with respect to $q\left(\mathbf{z}_{i}\right)^{(k)}$ gives</p>
+<p>$$
+\frac{\partial}{\partial q\left(\mathbf{z}<em i="i">{i}\right)^{(k)}} L=-n K-\log q\left(\mathbf{z}</em>
+$$}\right)^{(k)}+\lambda z_{i}^{(k)}+\beta_{i</p>
+<p>Setting the gradient of the Lagrangian $L$ to 0 and rearranging gives</p>
+<p>$$
+q\left(\mathbf{z}<em i="i">{i}\right)^{(k)}=e^{\lambda z</em>
+$$}^{(k)}+\beta_{i}-n K</p>
+<p>Since $\sum_{k=1}^{K} q\left(\mathbf{z}_{i}\right)^{(k)}=1$ for all $i$, we must have</p>
+<p>$$
+q\left(\mathbf{z}<em i="i">{i}\right)^{(k)}=\frac{e^{\lambda z</em>
+$$}^{(k)}}}{\sum_{j=1}^{K} e^{\lambda z_{i}^{(j)}}</p>
+<p>which recovers the temperature scaling model by setting $T=\frac{1}{\lambda}$.</p>
+<p>Figure S1 visualizes Claim 1. We see that, as training continues, the model begins to overfit with respect to NLL (red line). This results in a low-entropy softmax distribution over classes (blue line), which explains the model's overconfidence. Temperature scaling not only lowers the NLL but also raises the entropy of the distribution (green line).</p>
+<h2>S3. Additional Tables</h2>
+<p>Tables S1, S2, and S3 display the MCE, test error, and NLL for all the experimental settings outlined in Section 5.</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure S1. Entropy and NLL for CIFAR-100 before and after calibration. The optimal $T$ selected by temperature scaling rises throughout optimization, as the pre-calibration entropy decreases steadily. The post-calibration entropy and NLL on the validation set coincide (which can be derived from the gradient optimality condition of $T$ ).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Uncalibrated</th>
+<th style="text-align: center;">Hist. Binning</th>
+<th style="text-align: center;">Isotonic</th>
+<th style="text-align: center;">BBQ</th>
+<th style="text-align: center;">Temp. Scaling</th>
+<th style="text-align: center;">Vector Scaling</th>
+<th style="text-align: center;">Matrix Scaling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Birds</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">30.06\%</td>
+<td style="text-align: center;">25.35\%</td>
+<td style="text-align: center;">16.59\%</td>
+<td style="text-align: center;">11.72\%</td>
+<td style="text-align: center;">9.08\%</td>
+<td style="text-align: center;">9.81\%</td>
+<td style="text-align: center;">38.67\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">Cars</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">41.55\%</td>
+<td style="text-align: center;">5.16\%</td>
+<td style="text-align: center;">15.23\%</td>
+<td style="text-align: center;">9.31\%</td>
+<td style="text-align: center;">20.23\%</td>
+<td style="text-align: center;">8.59\%</td>
+<td style="text-align: center;">29.65\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">33.78\%</td>
+<td style="text-align: center;">26.87\%</td>
+<td style="text-align: center;">7.8\%</td>
+<td style="text-align: center;">72.64\%</td>
+<td style="text-align: center;">8.56\%</td>
+<td style="text-align: center;">27.39\%</td>
+<td style="text-align: center;">22.89\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">34.52\%</td>
+<td style="text-align: center;">17.0\%</td>
+<td style="text-align: center;">16.45\%</td>
+<td style="text-align: center;">19.26\%</td>
+<td style="text-align: center;">15.45\%</td>
+<td style="text-align: center;">15.55\%</td>
+<td style="text-align: center;">10.74\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">27.97\%</td>
+<td style="text-align: center;">12.19\%</td>
+<td style="text-align: center;">6.19\%</td>
+<td style="text-align: center;">9.22\%</td>
+<td style="text-align: center;">9.11\%</td>
+<td style="text-align: center;">4.43\%</td>
+<td style="text-align: center;">9.65\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">22.44\%</td>
+<td style="text-align: center;">7.77\%</td>
+<td style="text-align: center;">19.54\%</td>
+<td style="text-align: center;">14.57\%</td>
+<td style="text-align: center;">4.58\%</td>
+<td style="text-align: center;">3.17\%</td>
+<td style="text-align: center;">4.36\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">8.02\%</td>
+<td style="text-align: center;">16.49\%</td>
+<td style="text-align: center;">18.34\%</td>
+<td style="text-align: center;">82.35\%</td>
+<td style="text-align: center;">5.14\%</td>
+<td style="text-align: center;">19.39\%</td>
+<td style="text-align: center;">16.89\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">35.5\%</td>
+<td style="text-align: center;">7.03\%</td>
+<td style="text-align: center;">10.36\%</td>
+<td style="text-align: center;">10.9\%</td>
+<td style="text-align: center;">4.74\%</td>
+<td style="text-align: center;">2.5\%</td>
+<td style="text-align: center;">45.62\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">26.42\%</td>
+<td style="text-align: center;">9.12\%</td>
+<td style="text-align: center;">10.95\%</td>
+<td style="text-align: center;">9.12\%</td>
+<td style="text-align: center;">8.85\%</td>
+<td style="text-align: center;">8.85\%</td>
+<td style="text-align: center;">35.6\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">33.11\%</td>
+<td style="text-align: center;">6.22\%</td>
+<td style="text-align: center;">14.87\%</td>
+<td style="text-align: center;">11.88\%</td>
+<td style="text-align: center;">5.33\%</td>
+<td style="text-align: center;">6.31\%</td>
+<td style="text-align: center;">44.73\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">21.52\%</td>
+<td style="text-align: center;">9.36\%</td>
+<td style="text-align: center;">10.59\%</td>
+<td style="text-align: center;">8.67\%</td>
+<td style="text-align: center;">19.4\%</td>
+<td style="text-align: center;">8.82\%</td>
+<td style="text-align: center;">38.64\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">10.25\%</td>
+<td style="text-align: center;">18.61\%</td>
+<td style="text-align: center;">3.64\%</td>
+<td style="text-align: center;">9.96\%</td>
+<td style="text-align: center;">5.22\%</td>
+<td style="text-align: center;">8.65\%</td>
+<td style="text-align: center;">18.77\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">DenseNet 161</td>
+<td style="text-align: center;">14.07\%</td>
+<td style="text-align: center;">13.14\%</td>
+<td style="text-align: center;">11.57\%</td>
+<td style="text-align: center;">10.96\%</td>
+<td style="text-align: center;">12.29\%</td>
+<td style="text-align: center;">9.61\%</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">ResNet 152</td>
+<td style="text-align: center;">12.2\%</td>
+<td style="text-align: center;">14.57\%</td>
+<td style="text-align: center;">8.74\%</td>
+<td style="text-align: center;">8.85\%</td>
+<td style="text-align: center;">12.29\%</td>
+<td style="text-align: center;">9.61\%</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">SVHN</td>
+<td style="text-align: center;">ResNet 152 (SD)</td>
+<td style="text-align: center;">19.36\%</td>
+<td style="text-align: center;">11.16\%</td>
+<td style="text-align: center;">18.67\%</td>
+<td style="text-align: center;">9.09\%</td>
+<td style="text-align: center;">18.05\%</td>
+<td style="text-align: center;">30.78\%</td>
+<td style="text-align: center;">18.76\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">20 News</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">17.03\%</td>
+<td style="text-align: center;">10.47\%</td>
+<td style="text-align: center;">9.13\%</td>
+<td style="text-align: center;">6.28\%</td>
+<td style="text-align: center;">8.21\%</td>
+<td style="text-align: center;">8.24\%</td>
+<td style="text-align: center;">17.43\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">Reuters</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">14.01\%</td>
+<td style="text-align: center;">16.78\%</td>
+<td style="text-align: center;">44.95\%</td>
+<td style="text-align: center;">36.18\%</td>
+<td style="text-align: center;">25.46\%</td>
+<td style="text-align: center;">18.88\%</td>
+<td style="text-align: center;">19.39\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Binary</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">21.66\%</td>
+<td style="text-align: center;">3.22\%</td>
+<td style="text-align: center;">13.91\%</td>
+<td style="text-align: center;">36.43\%</td>
+<td style="text-align: center;">6.03\%</td>
+<td style="text-align: center;">6.03\%</td>
+<td style="text-align: center;">6.03\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Fine Grained</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">27.85\%</td>
+<td style="text-align: center;">28.35\%</td>
+<td style="text-align: center;">19.0\%</td>
+<td style="text-align: center;">8.67\%</td>
+<td style="text-align: center;">44.75\%</td>
+<td style="text-align: center;">11.47\%</td>
+<td style="text-align: center;">11.78\%</td>
+</tr>
+</tbody>
+</table>
+<p>Table S1. MCE (\%) (with $M=15$ bins) on standard vision and NLP datasets before calibration and with various calibration methods. The number following a model's name denotes the network depth. MCE seems very sensitive to the binning scheme and is less suited for small test sets.</p>
+<h2>S4. Additional Reliability Diagrams</h2>
+<p>We include reliability diagrams for additional datasets: CIFAR-10 (Figure S2) and SST (Figure S3 and Figure S4). Note that, as mentioned in Section 2, the reliability dia-
+grams do not represent the proportion of predictions that belong to a given bin.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Uncalibrated</th>
+<th style="text-align: center;">Hist. Binning</th>
+<th style="text-align: center;">Isotonic</th>
+<th style="text-align: center;">BBQ</th>
+<th style="text-align: center;">Temp. Scaling</th>
+<th style="text-align: center;">Vector Scaling</th>
+<th style="text-align: center;">Matrix Scaling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Birds</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">22.54\%</td>
+<td style="text-align: center;">55.02\%</td>
+<td style="text-align: center;">23.37\%</td>
+<td style="text-align: center;">37.76\%</td>
+<td style="text-align: center;">22.54\%</td>
+<td style="text-align: center;">22.99\%</td>
+<td style="text-align: center;">29.51\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">Cars</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">14.28\%</td>
+<td style="text-align: center;">16.24\%</td>
+<td style="text-align: center;">14.9\%</td>
+<td style="text-align: center;">19.25\%</td>
+<td style="text-align: center;">14.28\%</td>
+<td style="text-align: center;">14.15\%</td>
+<td style="text-align: center;">17.98\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">6.21\%</td>
+<td style="text-align: center;">6.45\%</td>
+<td style="text-align: center;">6.36\%</td>
+<td style="text-align: center;">6.25\%</td>
+<td style="text-align: center;">6.21\%</td>
+<td style="text-align: center;">6.37\%</td>
+<td style="text-align: center;">6.42\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">5.64\%</td>
+<td style="text-align: center;">5.59\%</td>
+<td style="text-align: center;">5.62\%</td>
+<td style="text-align: center;">5.55\%</td>
+<td style="text-align: center;">5.64\%</td>
+<td style="text-align: center;">5.62\%</td>
+<td style="text-align: center;">5.69\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">6.96\%</td>
+<td style="text-align: center;">7.3\%</td>
+<td style="text-align: center;">7.01\%</td>
+<td style="text-align: center;">7.35\%</td>
+<td style="text-align: center;">6.96\%</td>
+<td style="text-align: center;">7.1\%</td>
+<td style="text-align: center;">7.27\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">5.91\%</td>
+<td style="text-align: center;">6.12\%</td>
+<td style="text-align: center;">5.96\%</td>
+<td style="text-align: center;">6.0\%</td>
+<td style="text-align: center;">5.91\%</td>
+<td style="text-align: center;">5.96\%</td>
+<td style="text-align: center;">6.0\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">15.57\%</td>
+<td style="text-align: center;">15.63\%</td>
+<td style="text-align: center;">15.69\%</td>
+<td style="text-align: center;">15.64\%</td>
+<td style="text-align: center;">15.57\%</td>
+<td style="text-align: center;">15.53\%</td>
+<td style="text-align: center;">15.81\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">27.83\%</td>
+<td style="text-align: center;">34.78\%</td>
+<td style="text-align: center;">28.41\%</td>
+<td style="text-align: center;">28.56\%</td>
+<td style="text-align: center;">27.83\%</td>
+<td style="text-align: center;">27.82\%</td>
+<td style="text-align: center;">38.77\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">24.91\%</td>
+<td style="text-align: center;">33.78\%</td>
+<td style="text-align: center;">25.42\%</td>
+<td style="text-align: center;">25.17\%</td>
+<td style="text-align: center;">24.91\%</td>
+<td style="text-align: center;">24.99\%</td>
+<td style="text-align: center;">35.09\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">28.0\%</td>
+<td style="text-align: center;">34.29\%</td>
+<td style="text-align: center;">28.61\%</td>
+<td style="text-align: center;">29.08\%</td>
+<td style="text-align: center;">28.0\%</td>
+<td style="text-align: center;">28.45\%</td>
+<td style="text-align: center;">37.4\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">26.45\%</td>
+<td style="text-align: center;">34.78\%</td>
+<td style="text-align: center;">26.73\%</td>
+<td style="text-align: center;">26.4\%</td>
+<td style="text-align: center;">26.45\%</td>
+<td style="text-align: center;">26.25\%</td>
+<td style="text-align: center;">36.14\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">44.92\%</td>
+<td style="text-align: center;">54.06\%</td>
+<td style="text-align: center;">45.77\%</td>
+<td style="text-align: center;">46.82\%</td>
+<td style="text-align: center;">44.92\%</td>
+<td style="text-align: center;">45.53\%</td>
+<td style="text-align: center;">52.44\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">DenseNet 161</td>
+<td style="text-align: center;">22.57\%</td>
+<td style="text-align: center;">48.32\%</td>
+<td style="text-align: center;">23.2\%</td>
+<td style="text-align: center;">47.58\%</td>
+<td style="text-align: center;">22.57\%</td>
+<td style="text-align: center;">22.54\%</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">ResNet 152</td>
+<td style="text-align: center;">22.31\%</td>
+<td style="text-align: center;">48.1\%</td>
+<td style="text-align: center;">22.94\%</td>
+<td style="text-align: center;">47.6\%</td>
+<td style="text-align: center;">22.31\%</td>
+<td style="text-align: center;">22.56\%</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">SVHN</td>
+<td style="text-align: center;">ResNet 152 (SD)</td>
+<td style="text-align: center;">1.98\%</td>
+<td style="text-align: center;">2.06\%</td>
+<td style="text-align: center;">2.04\%</td>
+<td style="text-align: center;">2.04\%</td>
+<td style="text-align: center;">1.98\%</td>
+<td style="text-align: center;">2.0\%</td>
+<td style="text-align: center;">2.08\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">20 News</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">20.06\%</td>
+<td style="text-align: center;">25.12\%</td>
+<td style="text-align: center;">20.29\%</td>
+<td style="text-align: center;">20.81\%</td>
+<td style="text-align: center;">20.06\%</td>
+<td style="text-align: center;">19.89\%</td>
+<td style="text-align: center;">22.0\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">Reuters</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">2.97\%</td>
+<td style="text-align: center;">7.81\%</td>
+<td style="text-align: center;">3.52\%</td>
+<td style="text-align: center;">3.93\%</td>
+<td style="text-align: center;">2.97\%</td>
+<td style="text-align: center;">2.83\%</td>
+<td style="text-align: center;">3.52\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Binary</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">11.81\%</td>
+<td style="text-align: center;">12.08\%</td>
+<td style="text-align: center;">11.75\%</td>
+<td style="text-align: center;">11.26\%</td>
+<td style="text-align: center;">11.81\%</td>
+<td style="text-align: center;">11.81\%</td>
+<td style="text-align: center;">11.81\%</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Fine Grained</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">49.5\%</td>
+<td style="text-align: center;">49.91\%</td>
+<td style="text-align: center;">48.55\%</td>
+<td style="text-align: center;">49.86\%</td>
+<td style="text-align: center;">49.5\%</td>
+<td style="text-align: center;">49.77\%</td>
+<td style="text-align: center;">48.51\%</td>
+</tr>
+</tbody>
+</table>
+<p>Table S2. Test error (\%) on standard vision and NLP datasets before calibration and with various calibration methods. The number following a model's name denotes the network depth. Error with temperature scaling is exactly the same as uncalibrated.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Uncalibrated</th>
+<th style="text-align: center;">Hist. Binning</th>
+<th style="text-align: center;">Isotonic</th>
+<th style="text-align: center;">BBQ</th>
+<th style="text-align: center;">Temp. Scaling</th>
+<th style="text-align: center;">Vector Scaling</th>
+<th style="text-align: center;">Matrix Scaling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Birds</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">0.9786</td>
+<td style="text-align: center;">1.6226</td>
+<td style="text-align: center;">1.4128</td>
+<td style="text-align: center;">1.2539</td>
+<td style="text-align: center;">0.8792</td>
+<td style="text-align: center;">0.9021</td>
+<td style="text-align: center;">2.334</td>
+</tr>
+<tr>
+<td style="text-align: center;">Cars</td>
+<td style="text-align: center;">ResNet 50</td>
+<td style="text-align: center;">0.5488</td>
+<td style="text-align: center;">0.7977</td>
+<td style="text-align: center;">0.8793</td>
+<td style="text-align: center;">0.6986</td>
+<td style="text-align: center;">0.5311</td>
+<td style="text-align: center;">0.5299</td>
+<td style="text-align: center;">1.0206</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">0.3285</td>
+<td style="text-align: center;">0.2532</td>
+<td style="text-align: center;">0.2237</td>
+<td style="text-align: center;">0.263</td>
+<td style="text-align: center;">0.2102</td>
+<td style="text-align: center;">0.2088</td>
+<td style="text-align: center;">0.2048</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">0.2959</td>
+<td style="text-align: center;">0.2027</td>
+<td style="text-align: center;">0.1867</td>
+<td style="text-align: center;">0.2159</td>
+<td style="text-align: center;">0.1718</td>
+<td style="text-align: center;">0.1709</td>
+<td style="text-align: center;">0.1766</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">0.3293</td>
+<td style="text-align: center;">0.2778</td>
+<td style="text-align: center;">0.2428</td>
+<td style="text-align: center;">0.2774</td>
+<td style="text-align: center;">0.2283</td>
+<td style="text-align: center;">0.2275</td>
+<td style="text-align: center;">0.2229</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">0.2228</td>
+<td style="text-align: center;">0.212</td>
+<td style="text-align: center;">0.1969</td>
+<td style="text-align: center;">0.2087</td>
+<td style="text-align: center;">0.1750</td>
+<td style="text-align: center;">0.1757</td>
+<td style="text-align: center;">0.176</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">0.4688</td>
+<td style="text-align: center;">0.529</td>
+<td style="text-align: center;">0.4757</td>
+<td style="text-align: center;">0.4984</td>
+<td style="text-align: center;">0.459</td>
+<td style="text-align: center;">0.4568</td>
+<td style="text-align: center;">0.4607</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110</td>
+<td style="text-align: center;">1.4978</td>
+<td style="text-align: center;">1.4379</td>
+<td style="text-align: center;">1.207</td>
+<td style="text-align: center;">1.5466</td>
+<td style="text-align: center;">1.0442</td>
+<td style="text-align: center;">1.0485</td>
+<td style="text-align: center;">2.5637</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">ResNet 110 (SD)</td>
+<td style="text-align: center;">1.1157</td>
+<td style="text-align: center;">1.1985</td>
+<td style="text-align: center;">1.0317</td>
+<td style="text-align: center;">1.1982</td>
+<td style="text-align: center;">0.8613</td>
+<td style="text-align: center;">0.8655</td>
+<td style="text-align: center;">1.8182</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">Wide ResNet 32</td>
+<td style="text-align: center;">1.3434</td>
+<td style="text-align: center;">1.4499</td>
+<td style="text-align: center;">1.2086</td>
+<td style="text-align: center;">1.459</td>
+<td style="text-align: center;">1.0565</td>
+<td style="text-align: center;">1.0648</td>
+<td style="text-align: center;">2.5507</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">DenseNet 40</td>
+<td style="text-align: center;">1.0134</td>
+<td style="text-align: center;">1.2156</td>
+<td style="text-align: center;">1.0615</td>
+<td style="text-align: center;">1.1572</td>
+<td style="text-align: center;">0.9026</td>
+<td style="text-align: center;">0.9011</td>
+<td style="text-align: center;">1.9639</td>
+</tr>
+<tr>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">LeNet 5</td>
+<td style="text-align: center;">1.6639</td>
+<td style="text-align: center;">2.2574</td>
+<td style="text-align: center;">1.8173</td>
+<td style="text-align: center;">1.9893</td>
+<td style="text-align: center;">1.6560</td>
+<td style="text-align: center;">1.6648</td>
+<td style="text-align: center;">2.1405</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">DenseNet 161</td>
+<td style="text-align: center;">0.9338</td>
+<td style="text-align: center;">1.4716</td>
+<td style="text-align: center;">1.1912</td>
+<td style="text-align: center;">1.4272</td>
+<td style="text-align: center;">0.8885</td>
+<td style="text-align: center;">0.8879</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">ImageNet</td>
+<td style="text-align: center;">ResNet 152</td>
+<td style="text-align: center;">0.8961</td>
+<td style="text-align: center;">1.4507</td>
+<td style="text-align: center;">1.1859</td>
+<td style="text-align: center;">1.3987</td>
+<td style="text-align: center;">0.8657</td>
+<td style="text-align: center;">0.8742</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">SVHN</td>
+<td style="text-align: center;">ResNet 152 (SD)</td>
+<td style="text-align: center;">0.0842</td>
+<td style="text-align: center;">0.1137</td>
+<td style="text-align: center;">0.095</td>
+<td style="text-align: center;">0.1062</td>
+<td style="text-align: center;">0.0821</td>
+<td style="text-align: center;">0.0844</td>
+<td style="text-align: center;">0.0924</td>
+</tr>
+<tr>
+<td style="text-align: center;">20 News</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">0.7949</td>
+<td style="text-align: center;">1.0499</td>
+<td style="text-align: center;">0.8968</td>
+<td style="text-align: center;">0.9519</td>
+<td style="text-align: center;">0.7387</td>
+<td style="text-align: center;">0.7296</td>
+<td style="text-align: center;">0.9089</td>
+</tr>
+<tr>
+<td style="text-align: center;">Reuters</td>
+<td style="text-align: center;">DAN 3</td>
+<td style="text-align: center;">0.102</td>
+<td style="text-align: center;">0.2403</td>
+<td style="text-align: center;">0.1475</td>
+<td style="text-align: center;">0.1167</td>
+<td style="text-align: center;">0.0994</td>
+<td style="text-align: center;">0.0990</td>
+<td style="text-align: center;">0.1491</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Binary</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">0.3367</td>
+<td style="text-align: center;">0.2842</td>
+<td style="text-align: center;">0.2908</td>
+<td style="text-align: center;">0.2778</td>
+<td style="text-align: center;">0.2739</td>
+<td style="text-align: center;">0.2739</td>
+<td style="text-align: center;">0.2739</td>
+</tr>
+<tr>
+<td style="text-align: center;">SST Fine Grained</td>
+<td style="text-align: center;">TreeLSTM</td>
+<td style="text-align: center;">1.1475</td>
+<td style="text-align: center;">1.1717</td>
+<td style="text-align: center;">1.1661</td>
+<td style="text-align: center;">1.149</td>
+<td style="text-align: center;">1.1168</td>
+<td style="text-align: center;">1.1085</td>
+<td style="text-align: center;">1.1112</td>
+</tr>
+</tbody>
+</table>
+<p>Table S3. NLL (\%) on standard vision and NLP datasets before calibration and with various calibration methods. The number following a model's name denotes the network depth. To summarize, NLL roughly follows the trends of ECE.</p>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure S2. Reliability diagrams for CIFAR-10 before (far left) and after calibration (middle left, middle right, far right).
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure S3. Reliability diagrams for SST Binary and SST Fine Grained before (far left) and after calibration (middle left, middle right, far right).
+<img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure S4. Reliability diagrams for SST Binary and SST Fine Grained before (far left) and after calibration (middle left, middle right, far right).</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{3}$ To highlight the connection with prior works we define temperature scaling in terms of $\frac{1}{T}$ instead of a multiplicative scalar.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{2}$ Because the validation dataset is finite, $\mathcal{S}$ is as well.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

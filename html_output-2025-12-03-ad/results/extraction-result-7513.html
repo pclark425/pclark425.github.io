@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7513 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7513</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7513</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-138.html">extraction-schema-138</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of the use of large language models as text-based simulators for scientific subdomains, including details about the model, domain, simulation task, prompting strategy, evaluation metrics, reported accuracy, baselines, and any factors identified as influencing accuracy.</div>
+                <p><strong>Paper ID:</strong> paper-996445d847f06e99b0bd259345408a0cf1bce87e</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/996445d847f06e99b0bd259345408a0cf1bce87e" target="_blank">Locating and Editing Factual Associations in GPT</a></p>
+                <p><strong>Paper Venue:</strong> Neural Information Processing Systems</p>
+                <p><strong>Paper TL;DR:</strong> An important role for mid-layer feed-forward modules in storing factual associations in autoregressive transformer language models is confirmed and direct manipulation of computational mechanisms may be a feasible approach for model editing.</p>
+                <p><strong>Paper Abstract:</strong> We analyze the storage and recall of factual associations in autoregressive transformer language models, finding evidence that these associations correspond to localized, directly-editable computations. We first develop a causal intervention for identifying neuron activations that are decisive in a model's factual predictions. This reveals a distinct set of steps in middle-layer feed-forward modules that mediate factual predictions while processing subject tokens. To test our hypothesis that these computations correspond to factual association recall, we modify feed-forward weights to update specific factual associations using Rank-One Model Editing (ROME). We find that ROME is effective on a standard zero-shot relation extraction (zsRE) model-editing task, comparable to existing methods. To perform a more sensitive evaluation, we also evaluate ROME on a new dataset of counterfactual assertions, on which it simultaneously maintains both specificity and generalization, whereas other methods sacrifice one or another. Our results confirm an important role for mid-layer feed-forward modules in storing factual associations and suggest that direct manipulation of computational mechanisms may be a feasible approach for model editing. The code, dataset, visualizations, and an interactive demo notebook are available at https://rome.baulab.info/</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7513",
+    "paper_id": "paper-996445d847f06e99b0bd259345408a0cf1bce87e",
+    "extraction_schema_id": "extraction-schema-138",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00591275,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Locating and Editing Factual Associations in GPT</h1>
+<p>Kevin Meng<em><br>MIT CSAIL David Bau</em><br>Northeastern University Alex Andonian<br>MIT CSAIL</p>
+<p>Yonatan Belinkov ${ }^{\dagger}$<br>Technion - IIT</p>
+<h4>Abstract</h4>
+<p>We analyze the storage and recall of factual associations in autoregressive transformer language models, finding evidence that these associations correspond to localized, directly-editable computations. We first develop a causal intervention for identifying neuron activations that are decisive in a model's factual predictions. This reveals a distinct set of steps in middle-layer feed-forward modules that mediate factual predictions while processing subject tokens. To test our hypothesis that these computations correspond to factual association recall, we modify feedforward weights to update specific factual associations using Rank-One Model Editing (ROME). We find that ROME is effective on a standard zero-shot relation extraction (zsRE) model-editing task. We also evaluate ROME on a new dataset of difficult counterfactual assertions, on which it simultaneously maintains both specificity and generalization, whereas other methods sacrifice one or another. Our results confirm an important role for mid-layer feed-forward modules in storing factual associations and suggest that direct manipulation of computational mechanisms may be a feasible approach for model editing. The code, dataset, visualizations, and an interactive demo notebook are available at https://rome.baulab.info/.</p>
+<h2>1 Introduction</h2>
+<p>Where does a large language model store its facts? In this paper, we report evidence that factual associations in GPT correspond to a localized computation that can be directly edited.</p>
+<p>Large language models can predict factual statements about the world (Petroni et al., 2019; Jiang et al., 2020; Roberts et al., 2020). For example, given the prefix "The Space Needle is located in the city of," GPT will reliably predict the true answer: "Seattle" (Figure 1a). Factual knowledge has been observed to emerge in both autoregressive GPT models (Radford et al., 2019; Brown et al., 2020) and masked BERT models (Devlin et al., 2019).</p>
+<p>In this paper, we investigate how such factual associations are stored within GPT-like autoregressive transformer models. Although many of the largest neural networks in use today are autoregressive, the way that they store knowledge remains under-explored. Some research has been done for masked models (Petroni et al., 2019; Jiang et al., 2020; Elazar et al., 2021a; Geva et al., 2021; Dai et al., 2022; De Cao et al., 2021), but GPT has architectural differences such as unidirectional attention and generation capabilities that provide an opportunity for new insights.
+We use two approaches. First, we trace the causal effects of hidden state activations within GPT using causal mediation analysis (Pearl, 2001; Vig et al., 2020b) to identify the specific modules that mediate recall of a fact about a subject (Figure 1). Our analysis reveals that feedforward MLPs at a range of middle layers are decisive when processing the last token of the subject name (Figures 1b,2b,3).
+Second, we test this finding in model weights by introducing a Rank-One Model Editing method (ROME) to alter the parameters that determine a feedfoward layer's behavior at the decisive token.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Causal Traces compute the causal effect of neuron activations by running the network twice: (a) once normally, and (b) once where we corrupt the subject token and then (c) restore selected internal activations to their clean value. (d) Some sets of activations cause the output to return to the original prediction; the light blue path shows an example of information flow. The causal impact on output probability is mapped for the effect of (e) each hidden state on the prediction, (f) only MLP activations, and (g) only attention activations.</p>
+<p>Despite the simplicity of the intervention, we find that ROME is similarly effective to other model-editing approaches on a standard zero-shot relation extraction benchmark (Section 3.2).</p>
+<p>To evaluate ROME's impact on more difficult cases, we introduce a dataset of counterfactual assertions (Section 3.3) that would not have been observed in pretraining. Our evaluations (Section 3.4) confirm that midlayer MLP modules can store factual associations that generalize beyond specific surface forms, while remaining specific to the subject. Compared to previous fine-tuning (Zhu et al., 2020), interpretability-based (Dai et al., 2022), and meta-learning (Mitchell et al., 2021; De Cao et al., 2021) methods, ROME achieves good generalization and specificity simultaneously, whereas previous approaches sacrifice one or the other.</p>
+<h2>2 Interventions on Activations for Tracing Information Flow</h2>
+<p>To locate facts within the parameters of a large pretrained autoregressive transformer, we begin by analyzing and identifying the specific hidden states that have the strongest causal effect on predictions of individual facts. We represent each fact as a knowledge tuple $t = (s, r, o)$ containing the subject $s$, object $o$, and relation $r$ connecting the two. Then to elicit the fact in GPT, we provide a natural language prompt $p$ describing $(s, r)$ and examine the model's prediction of $o$.</p>
+<p>An autoregressive transformer language model $G: \mathcal{X} \to \mathcal{Y}$ over vocabulary $V$ maps a token sequence $x = [x_1, \ldots, x_T] \in \mathcal{X}$, $x_i \in V$ to a probability distribution $y \in \mathcal{Y} \subset \mathbb{R}^{|V|}$ that predicts next-token continuations of $x$. Within the transformer, the $i$th token is embedded as a series of hidden state vectors $h_i^{(l)}$, beginning with $h_i^{(0)} = \text{emb}(x_i) + \text{pos}(i) \in \mathbb{R}^H$. The final output $y = \text{decode}(h_{T}^{(L)})$ is read from the last hidden state.</p>
+<p>We visualize the internal computation of $G$ as a grid (Figure 1a) of hidden states $h_i^{(l)}$ in which each layer $l$ (left $\to$ right) adds global attention $a_i^{(l)}$ and local MLP $m_i^{(l)}$ contributions computed from previous layers, and where each token $i$ (top $\to$ bottom) attends to previous states from other tokens. Recall that, in the autoregressive case, tokens only draw information from past (above) tokens:</p>
+<p>$$
+h_i^{(l)} = h_i^{(l-1)} + a_i^{(l)} + m_i^{(l)} = \text{attn}^{(l)} \left( h_i^{(l-1)}, h_2^{(l-1)}, \ldots, h_i^{(l-1)} \right) \text{ and } m_i^{(l)} = W_{proj}^{(l)} \sigma \left( W_{fc}^{(l)} \gamma \left( a_i^{(l)} + h_i^{(l-1)} \right) \right).
+\tag{1}
+$$</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Average Indirect Effect of individual model components over a sample of 1000 factual statements reveals two important sites. (a) Strong causality at a 'late site' in the last layers at the last token is unsurprising, but strongly causal states at an 'early site' in middle layers at the last subject token is a new discovery. (b) MLP contributions dominate the early site. (c) Attention is important at the late site. Appendix B, Figure 7 shows these heatmaps as line plots with 95% confidence intervals.</p>
+<p>Each layer's MLP is a two-layer neural network parameterized by matrices ( W_{proj}^{(l)} ) and ( W_{fc}^{(l)} ), with rectifying nonlinearity ( \sigma ) and normalizing nonlinearity ( \gamma ). For further background on transformers, we refer to Vaswani et al. (2017).<sup>3</sup></p>
+<h3>2.1 Causal Tracing of Factual Associations</h3>
+<p>The grid of states (Figure 1) forms a <em>causal graph</em> (Pearl, 2009) describing dependencies between the hidden variables. This graph contains many paths from inputs on the left to the output (next-word prediction) at the lower-right, and we wish to understand if there are specific hidden state variables that are more important than others when recalling a fact.</p>
+<p>As Vig et al. (2020b) have shown, this is a natural case for <em>causal mediation analysis</em>, which quantifies the contribution of intermediate variables in causal graphs (Pearl, 2001). To calculate each state's contribution towards a correct factual prediction, we observe all of ( G )'s internal activations during three runs: a clean run that predicts the fact, a corrupted run where the prediction is damaged, and a corrupted-with-restoration run that tests the ability of a single state to restore the prediction.</p>
+<ul>
+<li>In the clean run, we pass a factual prompt ( x ) into ( G ) and collect all hidden activations ( {h_i^{(l)} \mid i \in [1, T], l \in [1, L]} ). Figure 1a provides an example illustration with the prompt: "The Space Needle is in downtown <strong><em>_</em></strong>, for which the expected completion is ( o = ) "Seattle".</li>
+<li>In the baseline corrupted run, the subject is obfuscated from ( G ) before the network runs. Concretely, immediately after ( x ) is embedded as ( [h_1^{(0)}, h_2^{(0)}, \ldots, h_i^{(0)}] ), we set ( h_i^{(0)} := h_i^{(0)} + \epsilon ) for all indices ( i ) that correspond to the subject entity, where ( \epsilon \sim \mathcal{N}(0; \nu)^4 ). ( G ) is then allowed to continue normally, giving us a set of corrupted activations ( {h_i^{(l)} \mid i \in [1, T], l \in [1, L]} ). Because ( G ) loses some information about the subject, it will likely return an incorrect answer (Figure 1b).</li>
+<li>The corrupted-with-restoration run, lets ( G ) run computations on the noisy embeddings as in the corrupted baseline, <em>except</em> at some token ( i ) and layer ( l ). There, we hook ( G ) so that it is forced to output the clean state ( h_i^{(l)} ), future computations execute without further intervention. Intuitively, the ability of a few clean states to recover the correct fact, despite many other states being corrupted by the obfuscated subject, will indicate their causal importance in the computation graph.</li>
+</ul>
+<p>Let ( \mathbb{P}[o] ), ( \mathbb{P}<em><em>[o] ), and ( \mathbb{P}_{</em>, \text{clean } h_i^{(l)}}[o] ) denote the probability of emitting ( o ) under the clean, corrupted, and corrupted-with-restoration runs, respectively; dependence on the input ( x ) is omitted for notational simplicity. The total effect (TE) is the difference between these quantities: ( \text{TE} = \mathbb{P}[o] - \mathbb{P}</em><em>[o] ). The indirect effect (IE) of a specific mediating state ( h_i^{(l)} ) is defined as the difference between the probability of ( o ) under the corrupted version and the probability when that state is set to its clean version, while the subject remains corrupted: ( \text{IE} = \mathbb{P}_{</em>, \text{clean } h_i^{(l)}}[o] - \mathbb{P}_*[o] ). Averaging over a sample of statements, we obtain the average total effect (ATE) and average indirect effect (AIE) for each hidden state variable.<sup>5</sup></p>
+<p><sup>3</sup>Eqn. 1 calculates attention sequentially after the MLP module as in Brown et al. (2020). Our methods also apply to GPT variants such as Wang &amp; Komatsuzaki (2021) that put attention in parallel to the MLP.</p>
+<p><sup>4</sup>We select ( \nu ) to be 3 times larger than the empirical standard deviation of embeddings; see Appendix B.1 for details, and see Appendix B.4 for an analysis of other corruption rules.</p>
+<p><sup>5</sup>One could also compute the direct effect, which flows through other model components besides the chosen mediator. However, we found this effect to be noisy and uninformative, in line with results by Vig et al. (2020b).</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Causal effects with a modified computation graph. (a,b) To isolate the effects of MLP modules when measuring causal effects, the computation graph is modified. (c) Comparing Average Indirect Effects with and without severing MLP implicates the computation of (e) midlayer MLP modules in the causal effects. No similar gap is seen when attention is similarly severed.</p>
+<h1>2.2 Causal Tracing Results</h1>
+<p>We compute the average indirect effect (AIE) over 1000 factual statements (details in Appendix B.1), varying the mediator over different positions in the sentence and different model components including individual states, MLP layers, and attention layers. Figure 2 plots the AIE of the internal components of GPT-2 XL ( 1.5 B parameters). The ATE of this experiment is $18.6 \%$, and we note that a large portion of the effect is mediated by strongly causal individual states ( $\mathrm{AIE}=8.7 \%$ at layer 15) at the last subject token. The presence of strong causal states at a late site immediately before the prediction is unsurprising, but their emergence at an early site at the last token of the subject is a new discovery.
+Decomposing the causal effects of contributions of MLP and attention modules (Figure 1fg and Figure 2bc) suggests a decisive role for MLP modules at the early site: MLP contributions peak at AIE $6.6 \%$, while attention at the last subject token is only AIE $1.6 \%$; attention is more important at the last token of the prompt. Appendix B. 2 further discusses this decomposition.</p>
+<p>Finally, to gain a clearer picture of the special role of MLP layers at the early site, we analyze indirect effects with a modified causal graph (Figure 3). (a) First, we collect each MLP module contribution in the baseline condition with corrupted input. (b) Then, to isolate the effects of MLP modules when measuring causal effects, we modify the computation graph to sever MLP computations at token $i$ and freeze them in the baseline corrupted state so that they are unaffected by the insertion of clean state for $h_{i}^{(i)}$. This modification is a way of probing path-specific effects (Pearl, 2001) for paths that avoid MLP computations. (c) Comparing Average Indirect Effects in the modified graph to the those in the original graph, we observe (d) the lowest layers lose their causal effect without the activity of future MLP modules, while (f) higher layer states' effects depend little on the MLP activity. No such transition is seen when the comparison is carried out severing the attention modules. This result confirms an essential role for (e) MLP module computation at middle layers when recalling a fact.</p>
+<p>Appendix B has results on other autoregressive models and experimental settings. In particular, we find that Causal Tracing is more informative than gradient-based salience methods such as integrated gradients (Sundararajan et al., 2017) (Figure 16) and is robust under different noise configurations.</p>
+<p>We hypothesize that this localized midlayer MLP key-value mapping recalls facts about the subject.</p>
+<h3>2.3 The Localized Factual Association Hypothesis</h3>
+<p>Based on causal traces, we posit a specific mechanism for storage of factual associations: each midlayer MLP module accepts inputs that encode a subject, then produces outputs that recall memorized properties about that subject. Middle layer MLP outputs accumulate information, then the summed information is copied to the last token by attention at high layers.</p>
+<p>This hypothesis localizes factual association along three dimensions, placing it (i) in the MLP modules (ii) at specific middle layers (iii) and specifically at the processing of the subject's last token. It is consistent with the Geva et al. (2021) view that MLP layers store knowledge, and the Elhage et al. (2021) study showing an information-copying role for self-attention. Furthermore, informed by the Zhao et al. (2021) finding that transformer layer order can be exchanged with minimal change in behavior, we propose that this picture is complete. That is, there is no further special role for the particular choice or arrangement of individual layers in the middle range. We conjecture that any fact</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Editing one MLP layer with ROME. To associate Space Needle with Paris, the ROME method inserts a new $\left(k_{<em>}, v_{</em>}\right)$ association into layer $l^{<em>}$, where (a) key $k_{</em>}$ is determined by the subject and (b) value $v_{<em>}$ is optimized to select the object. (c) Hidden state at layer $l^{</em>}$ and token $i$ is expanded to produce (d) the key vector $k_{<em>}$ for the subject. (e) To write new value vector $v_{</em>}$ into the layer, (f) we calculate a rank-one update $\Lambda\left(C^{-1} k_{<em>}\right)^{T}$ to cause $\hat{W}<em>{p r o j}^{(l)} k</em>{</em>}=v_{<em>}$ while minimizing interference with other memories stored in the layer.
+could be equivalently stored in any one of the middle MLP layers. To test our hypothesis, we narrow our attention to a single MLP module at a mid-range layer $l^{</em>}$, and ask whether its weights can be explicitly modified to store an arbitrary fact.</p>
+<h1>3 Interventions on Weights for Understanding Factual Association Storage</h1>
+<p>While Causal Tracing has implicated MLP modules in recalling factual associations, we also wish to understand how facts are stored in weights. Geva et al. (2021) observed that MLP layers (Figure 4cde) can act as two-layer key-value memories, ${ }^{6}$ where the neurons of the first layer $\hat{W}<em j="j" o="o" p="p" r="r">{f s}^{(l)}$ form a key, with which the second layer $\hat{W}</em>$ retrieves an associated value. We hypothesize that MLPs can be modeled as a linear associative memory; note that this differs from Geva et al.'s per-neuron view.}^{(l)</p>
+<p>We test this hypothesis by conducting a new type of intervention: modifying factual associations with Rank-One Model Editing (ROME). Being able to insert a new knowledge tuple $t^{<em>}=\left(s, r, o^{</em>}\right)$ in place of the current tuple $t^{c}=\left(s, r, o^{c}\right)$ with both generalization and specificity would demonstrate fine-grained understanding of the association-storage mechanisms.</p>
+<h3>3.1 Rank-One Model Editing: Viewing the Transformer MLP as an Associative Memory</h3>
+<p>We view $W_{p r o j}^{(l)}$ as a linear associative memory (Kohonen, 1972; Anderson, 1972). This perspective observes that any linear operation $W$ can operate as a key-value store for a set of vector keys $K=\left[k_{1} \mid k_{2} \mid \ldots\right]$ and corresponding vector values $V=\left[v_{1} \mid v_{2} \mid \ldots\right]$, by solving $W K \approx V$, whose squared error is minimized using the Moore-Penrose pseudoinverse: $W=V K^{+}$. Bau et al. (2020) observed that a new key-value pair $\left(k_{<em>}, v_{</em>}\right)$ can be inserted optimally into the memory by solving a constrained least-squares problem. In a convolutional network, Bau et al. solve this using an optimization, but in a fully-connected layer, we can derive a closed form solution:</p>
+<p>$$
+\operatorname{minimize}|\hat{W} K-V| \text { such that } \hat{W} k_{<em>}=v_{</em>} \quad \text { by setting } \hat{W}=W+\Lambda\left(C^{-1} k_{*}\right)^{T}
+$$</p>
+<p>Here $W$ is the original matrix, $C=K K^{T}$ is a constant that we pre-cache by estimating the uncentered covariance of $k$ from a sample of Wikipedia text (Appendix E.5), and $\Lambda=\left(v_{<em>}-W k_{</em>}\right) /\left(C^{-1} k_{<em>}\right)^{T} k_{</em>}$ is a vector proportional to the residual error of the new key-value pair on the original memory matrix (full derivation in Appendix A). Because of this simple algebraic structure, we can insert any fact directly once $\left(k_{<em>}, v_{</em>}\right)$ is computed. All that remains is to choose the appropriate $k_{<em>}$ and $v_{</em>}$.</p>
+<p>Step 1: Choosing $k_{<em>}$ to Select the Subject. Based on the decisive role of MLP inputs at the final subject token (Section 2), we shall choose inputs that represent the subject at its last token as the lookup key $k_{</em>}$. Specifically, we compute $k_{<em>}$ by collecting activations: We pass text $x$ containing the subject $s$ through $G$; then at layer $l^{</em>}$ and last subject token index $i$, we read the value after the non-linearity inside the MLP (Figure 4d). Because the state will vary depending on tokens that</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>precede $s$ in text, we set $k_{*}$ to an average value over a small set of texts ending with the subject $s$ :</p>
+<p>$$
+k_{<em>}=\frac{1}{N} \sum_{j=1}^{N} k\left(x_{j}+s\right), \text { where } k(x)=\sigma\left(W_{f e}^{\left(l^{</em>}\right)} \gamma\left(a_{\left[x\right], i}^{\left(l^{<em>}\right)}+h_{\left[x\right], i}^{\left(l^{</em>}-1\right)}\right)\right)
+$$</p>
+<p>In practice, we sample $x_{j}$ by generating 50 random token sequences of length 2 to 10 using $G$.
+Step 2: Choosing $v_{<em>}$ to Recall the Fact. Next, we wish to choose some vector value $v_{</em>}$ that encodes the new relation $\left(r, o^{<em>}\right)$ as a property of $s$. We set $v_{</em>}=\operatorname{argmin}_{z} \mathcal{L}(z)$, where the objective $\mathcal{L}(z)$ is:</p>
+<p>$$
+\frac{1}{N} \sum_{j=1}^{N} \underbrace{-\log \mathbb{P}<em i="i">{G\left(m</em>^{\left(l^{<em>}\right)}:=z\right)}\left[o^{</em>} \mid x_{j}+p\right]}<em G="G">{\text {(a) Maximizing } o^{<em>} \text { probability }}+\underbrace{D_{\mathrm{KL}}\left(\mathbb{P}<em i="i">{G\left(m</em>^{\left(l^{</em>}\right)}:=z\right)}\left[x \mid p^{\prime}\right] | \mathbb{P}</em>
+$$}\left[x \mid p^{\prime}\right]\right)}_{\text {(b) Controlling essence drift }</p>
+<p>The first term (Eqn. 4a) seeks a vector $z$ that, when substituted as the output of the MLP at the token $i$ at the end of the subject (notated $G\left(m_{j}^{\left(l^{<em>}\right)}:=z\right)$ ), will cause the network to predict the target object $o^{</em>}$ in response to the factual prompt $p$. The second term (Eqn. 4b) minimizes the KL divergence of predictions for the prompt $p^{\prime}$ (of the form " ${$ subject $}$ is a") to the unchanged model, which helps preserve the model's understanding of the subject's essence. To be clear, the optimization does not directly alter model weights; it identifies a vector representation $v_{<em>}$ that, when output at the targeted MLP module, represents the new property $\left(r, o^{</em>}\right)$ for the subject $s$. Note that, similar to $k_{<em>}$ selection, $v_{</em>}$ optimization also uses the random prefix texts $x_{j}$ to encourage robustness under differing contexts.</p>
+<p>Step 3: Inserting the Fact. Once we have computed the pair $\left(k_{<em>}, v_{</em>}\right)$ to represent the full fact $\left(s, r, o^{*}\right)$, we apply Eqn. 2, updating the MLP weights $W_{\text {proj }}^{(l)}$ with a rank-one update that inserts the new key-value association directly. For full implementation details, see Appendix E.5.</p>
+<h1>3.2 Evaluating ROME: Zero-Shot Relation Extraction (zsRE)</h1>
+<p>We wish to test our localized factual association hypothesis: can storing a single new vector association using ROME insert a substantial, generalized factual association into the model?
+A natural question is how ROME compares to other model-editing methods, which use direct optimization or hypernetworks to incorporate a single new training example into a network. For baselines, we examine Fine-Tuning (FT), which applies Adam with early stopping at one layer to minimize $-\log \mathbb{P}\left[o^{*} \mid x\right]$. Constrained Fine-Tuning (FT+L) (Zhu et al., 2020) additionally imposes a parameter-space $L_{\infty}$ norm constraint on weight changes. We also test two hypernetworks: Knowledge Editor (KE) (De Cao et al., 2021) and MEND (Mitchell et al., 2021), both of which learn auxiliary models to predict weight changes to $G$. Further details are described in Appendix E.</p>
+<p>We first evaluate ROME on the Zero-Shot Relation Extraction (zsRE) task used in Mitchell et al. (2021) and De Cao et al. (2021). Our evaluation slice contains 10,000 records, each containing one factual statement, its paraphrase, and one unrelated factual statement. "Efficacy" and "Paraphrase" measure post-edit accuracy $\mathbb{I}\left[o^{*}=\operatorname{argmax}<em G_prime="G^{\prime">{o} \mathbb{P}</em>$ We find that zsRE's specificity score is not a sensitive measure of model damage, since these prompts are sampled from a large space of possible facts, whereas bleedover is most likely to occur on related neighboring subjects. Appendix C has additional experimental details.}}[o]\right]$ of the statement and its paraphrase, respectively, while "Specificity" measures the edited model's accuracy on an unrelated fact. Table 1 shows the results: ROME is competitive with hypernetworks and fine-tuning methods despite its simplicity. We find that it is not hard for ROME to insert an association that can be regurgitated by the model. Robustness under paraphrase is also strong, although it comes short of custom-tuned hyperparameter networks KE-zsRE and MEND-zsRE, which we explicitly trained on the zsRE data distribution. ${ }^{7</p>
+<p>Table 1: zsRE Editing Results on GPT-2 XL.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Editor</th>
+<th style="text-align: center;">Efficacy $\uparrow$</th>
+<th style="text-align: center;">Paraphrase $\uparrow$</th>
+<th style="text-align: center;">Specificity $\uparrow$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GPT-2 XL</td>
+<td style="text-align: center;">$22.2( \pm 0.5)$</td>
+<td style="text-align: center;">$21.3( \pm 0.5)$</td>
+<td style="text-align: center;">$24.2( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">FT</td>
+<td style="text-align: center;">$99.6( \pm 0.1)$</td>
+<td style="text-align: center;">$82.1( \pm 0.6)$</td>
+<td style="text-align: center;">$23.2( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">FT+L</td>
+<td style="text-align: center;">$92.3( \pm 0.4)$</td>
+<td style="text-align: center;">$\mathbf{4 7 . 2}( \pm \mathbf{0 . 7})$</td>
+<td style="text-align: center;">$23.4( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">KE</td>
+<td style="text-align: center;">$65.5( \pm 0.6)$</td>
+<td style="text-align: center;">$61.4( \pm 0.6)$</td>
+<td style="text-align: center;">$24.9( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">KE-zsRE</td>
+<td style="text-align: center;">$92.4( \pm 0.3)$</td>
+<td style="text-align: center;">$90.0( \pm 0.3)$</td>
+<td style="text-align: center;">$23.8( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEND</td>
+<td style="text-align: center;">$75.9( \pm 0.5)$</td>
+<td style="text-align: center;">$65.3( \pm 0.6)$</td>
+<td style="text-align: center;">$24.1( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEND-zsRE</td>
+<td style="text-align: center;">$99.4( \pm 0.1)$</td>
+<td style="text-align: center;">$\mathbf{9 9 . 3}( \pm \mathbf{0 . 1})$</td>
+<td style="text-align: center;">$24.1( \pm 0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ROME</td>
+<td style="text-align: center;">$\mathbf{9 9 . 8}( \pm \mathbf{0 . 0})$</td>
+<td style="text-align: center;">$88.1( \pm 0.5)$</td>
+<td style="text-align: center;">$\mathbf{2 4 . 2}( \pm \mathbf{0 . 5})$</td>
+</tr>
+</tbody>
+</table>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: ROME edits are benchmarked at each layer-and-token combination in GPT-2-XL. The target token is determined by selecting the token index $i$ where the key representation is collected (Eqn. 3). ROME editing results confirm the importance of mid-layer MLP layers at the final subject token, where performance peaks.</p>
+<h3>3.3 Evaluating ROME: Our CounterFact Dataset</h3>
+<p>While standard model-editing metrics on zsRE are a reasonable starting point for evaluating ROME, they do not provide detailed insights that would allow us to distinguish superficial wording changes from deeper modifications that correspond to a meaningful change about a fact.</p>
+<p>In particular, we wish to measure the efficacy of <em>significant</em> changes. <em>Hase et al. (2021)</em> observed that standard model-editing benchmarks underestimate difficulty by often testing only proposals that the model previously scored as likely. We compile a set of more difficult <em>false</em> facts $(s, r, o^{s})$: these counterfactuals start with low scores compared to the correct facts $(s, r, o^{c})$. Our Efficacy Score (ES) is the portion of cases for which we have $\mathbb{P}\left[o^{s}\right]&gt;\mathbb{P}\left[o^{c}\right]$ post-edit, and Efficacy Magnitude (EM) is the mean difference $\mathbb{P}\left[o^{s}\right]-\mathbb{P}\left[o^{c}\right]$. Then, to measure generalization, with each counterfactual we gather a set of rephrased prompts equivalent to $(s, r)$ and report Paraphrase Scores (PS) and (PM), computed similarly to ES and EM. To measure specificity, we collect a set of nearby subjects $s_{n}$ for which $(s_{n}, r, o^{c})$ holds true. Because we do not wish to alter these subjects, we test $\mathbb{P}\left[o^{c}\right]&gt;\mathbb{P}\left[o^{s}\right]$, reporting the success fraction as Neighborhood Score (NS) and difference as (NM). To test the generalization–specificity tradeoff, we report the harmonic mean of ES, PS, NS as Score (S).</p>
+<p>We also wish to measure semantic consistency of $G^{\prime}$’s generations. To do so, we generate text starting with $s$ and report (RS) as the $\cos$ similarity between the unigram TF-IDF vectors of generated texts, compared to reference texts about subjects sharing the target property $o^{s}$. Finally, we monitor fluency degradations by measuring the weighted average of bi- and tri-gram entropies <em>(Zhang et al., 2018)</em> given by $-\sum_{k} f(k) \log_{2} f(k)$, where $f(\cdot)$ is the $n$-gram frequency distribution, which we report as (GE); this quantity drops if text generations are repetitive.</p>
+<p>In order to facilitate the above measurements, we introduce CounterFact, a challenging evaluation dataset for evaluating counterfactual edits in language models. Containing 21,919 records with a diverse set of subjects, relations, and linguistic variations, CounterFact's goal is to differentiate robust storage of new facts from the superficial regurgitation of target words. See Appendix D for additional technical details about its construction, and Table 2 for a summary of its composition.</p>
+<h3>3.4 Confirming the Importance of Decisive States Identified by Causal Tracing</h3>
+<p>In Section 2, we used Causal Tracing to identify decisive hidden states. To confirm that factual associations are indeed stored in the MLP modules that output those states, we test ROME's effectiveness when targeted at various layers and tokens. Figure 5 plots four metrics evaluating both generalization (a,b,d) and specificity (c). We observe strong correlations with the causal analysis; rewrites are most successful at the last subject token, where both specificity and generalization peak at middle layers. Targeting earlier <em>or</em> later tokens results in poor generalization and/or specificity. Furthermore, the layers at which edits generalize best correspond to the middle layers of the early site identified by</p>
+<p>Table 2: CounterFact Composition</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Total</th>
+<th>Per Relation Record</th>
+<th>Per</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Records</td>
+<td>21919</td>
+<td>645</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Subjects</td>
+<td>20391</td>
+<td>624</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Objects</td>
+<td>749</td>
+<td>60</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Counterfactual Statements</td>
+<td>21595</td>
+<td>635</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Paraphrase Prompts</td>
+<td>42876</td>
+<td>1262</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Neighborhood Prompts</td>
+<td>82650</td>
+<td>2441</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Generation Prompts</td>
+<td>62346</td>
+<td>1841</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Comparison to Existing Benchmarks</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>SQuAD.zSRE</th>
+<th>FEVER</th>
+<th>WikiText</th>
+<th>ParaRel</th>
+<th>CF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Efficacy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Generalization</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Bleedover</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Consistency</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Fluency</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: Quantitative Editing Results. 95\% confidence intervals are in parentheses. Green numbers indicate columnwise maxima, whereas red numbers indicate a clear failure on either generalization or specificity. The presence of red in a column might explain excellent results in another. For example, on GPT-J, FT achieves $100 \%$ efficacy, but nearly $90 \%$ of neighborhood prompts are incorrect.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Editor</th>
+<th style="text-align: center;">Score</th>
+<th style="text-align: center;">Efficacy</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Generalization</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Specificity</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Fluency</th>
+<th style="text-align: center;">Consistency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">S $\uparrow$</td>
+<td style="text-align: center;">ES $\uparrow$</td>
+<td style="text-align: center;">EM $\uparrow$</td>
+<td style="text-align: center;">PS $\uparrow$</td>
+<td style="text-align: center;">PM $\uparrow$</td>
+<td style="text-align: center;">NS $\uparrow$</td>
+<td style="text-align: center;">NM $\uparrow$</td>
+<td style="text-align: center;">GE $\uparrow$</td>
+<td style="text-align: center;">RS $\uparrow$</td>
+</tr>
+<tr>
+<td style="text-align: center;">GPT-2 XL</td>
+<td style="text-align: center;">30.5</td>
+<td style="text-align: center;">$22.2(0.9)$</td>
+<td style="text-align: center;">$-4.8(0.3)$</td>
+<td style="text-align: center;">$24.7(0.8)$</td>
+<td style="text-align: center;">$-5.0(0.3)$</td>
+<td style="text-align: center;">$78.1(0.6)$</td>
+<td style="text-align: center;">$5.0(0.2)$</td>
+<td style="text-align: center;">$626.6(0.3)$</td>
+<td style="text-align: center;">$31.9(0.2)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">65.1</td>
+<td style="text-align: center;">$100.0(0.0)$</td>
+<td style="text-align: center;">$98.8(0.1)$</td>
+<td style="text-align: center;">$87.9(0.6)$</td>
+<td style="text-align: center;">$46.6(0.8)$</td>
+<td style="text-align: center;">40.4 (0.7)</td>
+<td style="text-align: center;">$-6.2(0.4)$</td>
+<td style="text-align: center;">$607.1(1.1)$</td>
+<td style="text-align: center;">$40.5(0.3)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT+L</td>
+<td style="text-align: center;">66.9</td>
+<td style="text-align: center;">$99.1(0.2)$</td>
+<td style="text-align: center;">$91.5(0.5)$</td>
+<td style="text-align: center;">48.7 (1.0)</td>
+<td style="text-align: center;">$28.9(0.8)$</td>
+<td style="text-align: center;">$70.3(0.7)$</td>
+<td style="text-align: center;">$3.5(0.3)$</td>
+<td style="text-align: center;">$621.4(1.0)$</td>
+<td style="text-align: center;">$37.4(0.3)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">KN</td>
+<td style="text-align: center;">35.6</td>
+<td style="text-align: center;">28.7 (1.0)</td>
+<td style="text-align: center;">$-3.4(0.3)$</td>
+<td style="text-align: center;">28.0 (0.9)</td>
+<td style="text-align: center;">$-3.3(0.2)$</td>
+<td style="text-align: center;">$72.9(0.7)$</td>
+<td style="text-align: center;">$3.7(0.2)$</td>
+<td style="text-align: center;">570.4 (2.3)</td>
+<td style="text-align: center;">30.3 (0.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">KE</td>
+<td style="text-align: center;">52.2</td>
+<td style="text-align: center;">$84.3(0.8)$</td>
+<td style="text-align: center;">$33.9(0.9)$</td>
+<td style="text-align: center;">$75.4(0.8)$</td>
+<td style="text-align: center;">$14.6(0.6)$</td>
+<td style="text-align: center;">30.9 (0.7)</td>
+<td style="text-align: center;">$-11.0(0.5)$</td>
+<td style="text-align: center;">586.6 (2.1)</td>
+<td style="text-align: center;">$31.2(0.3)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">KE-CF</td>
+<td style="text-align: center;">18.1</td>
+<td style="text-align: center;">$99.9(0.1)$</td>
+<td style="text-align: center;">$97.0(0.2)$</td>
+<td style="text-align: center;">$95.8(0.4)$</td>
+<td style="text-align: center;">$59.2(0.8)$</td>
+<td style="text-align: center;">6.9 (0.3)</td>
+<td style="text-align: center;">$-63.2(0.7)$</td>
+<td style="text-align: center;">383.0 (4.1)</td>
+<td style="text-align: center;">24.5 (0.4)</td>
+</tr>
+<tr>
+<td style="text-align: center;">MEND</td>
+<td style="text-align: center;">57.9</td>
+<td style="text-align: center;">$99.1(0.2)$</td>
+<td style="text-align: center;">$70.9(0.8)$</td>
+<td style="text-align: center;">$65.4(0.9)$</td>
+<td style="text-align: center;">$12.2(0.6)$</td>
+<td style="text-align: center;">37.9 (0.7)</td>
+<td style="text-align: center;">$-11.6(0.5)$</td>
+<td style="text-align: center;">624.2 (0.4)</td>
+<td style="text-align: center;">$34.8(0.3)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">MEND-CF</td>
+<td style="text-align: center;">14.9</td>
+<td style="text-align: center;">100.0 (0.0)</td>
+<td style="text-align: center;">99.2 (0.1)</td>
+<td style="text-align: center;">97.0 (0.3)</td>
+<td style="text-align: center;">65.6 (0.7)</td>
+<td style="text-align: center;">5.5 (0.3)</td>
+<td style="text-align: center;">$-69.9(0.6)$</td>
+<td style="text-align: center;">570.0 (2.1)</td>
+<td style="text-align: center;">$33.2(0.3)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">ROME</td>
+<td style="text-align: center;">89.2</td>
+<td style="text-align: center;">$100.0(0.1)$</td>
+<td style="text-align: center;">$97.9(0.2)$</td>
+<td style="text-align: center;">$96.4(0.3)$</td>
+<td style="text-align: center;">$62.7(0.8)$</td>
+<td style="text-align: center;">75.4 (0.7)</td>
+<td style="text-align: center;">4.2 (0.2)</td>
+<td style="text-align: center;">$621.9(0.5)$</td>
+<td style="text-align: center;">41.9 (0.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">GPT-J</td>
+<td style="text-align: center;">23.6</td>
+<td style="text-align: center;">$16.3(1.6)$</td>
+<td style="text-align: center;">$-7.2(0.7)$</td>
+<td style="text-align: center;">$18.6(1.5)$</td>
+<td style="text-align: center;">$-7.4(0.6)$</td>
+<td style="text-align: center;">$83.0(1.1)$</td>
+<td style="text-align: center;">$7.3(0.5)$</td>
+<td style="text-align: center;">$621.8(0.6)$</td>
+<td style="text-align: center;">$29.8(0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT</td>
+<td style="text-align: center;">25.5</td>
+<td style="text-align: center;">100.0 (0.0)</td>
+<td style="text-align: center;">99.9 (0.0)</td>
+<td style="text-align: center;">$96.6(0.6)$</td>
+<td style="text-align: center;">$71.0(1.5)$</td>
+<td style="text-align: center;">10.3 (0.8)</td>
+<td style="text-align: center;">$-50.7(1.3)$</td>
+<td style="text-align: center;">387.8 (7.3)</td>
+<td style="text-align: center;">24.6 (0.8)</td>
+</tr>
+<tr>
+<td style="text-align: center;">FT+L</td>
+<td style="text-align: center;">68.7</td>
+<td style="text-align: center;">$99.6(0.3)$</td>
+<td style="text-align: center;">$95.0(0.6)$</td>
+<td style="text-align: center;">47.9 (1.9)</td>
+<td style="text-align: center;">$30.4(1.5)$</td>
+<td style="text-align: center;">$78.6(1.2)$</td>
+<td style="text-align: center;">6.8 (0.5)</td>
+<td style="text-align: center;">622.8 (0.6)</td>
+<td style="text-align: center;">$35.5(0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">MEND</td>
+<td style="text-align: center;">63.2</td>
+<td style="text-align: center;">$97.4(0.7)$</td>
+<td style="text-align: center;">$71.5(1.6)$</td>
+<td style="text-align: center;">53.6 (1.9)</td>
+<td style="text-align: center;">$11.0(1.3)$</td>
+<td style="text-align: center;">$53.9(1.4)$</td>
+<td style="text-align: center;">$-6.0(0.9)$</td>
+<td style="text-align: center;">$620.5(0.7)$</td>
+<td style="text-align: center;">$32.6(0.5)$</td>
+</tr>
+<tr>
+<td style="text-align: center;">ROME</td>
+<td style="text-align: center;">91.5</td>
+<td style="text-align: center;">$99.9(0.1)$</td>
+<td style="text-align: center;">$99.4(0.3)$</td>
+<td style="text-align: center;">99.1 (0.3)</td>
+<td style="text-align: center;">74.1 (1.3)</td>
+<td style="text-align: center;">78.9 (1.2)</td>
+<td style="text-align: center;">$5.2(0.5)$</td>
+<td style="text-align: center;">$620.1(0.9)$</td>
+<td style="text-align: center;">43.0 (0.6)</td>
+</tr>
+</tbody>
+</table>
+<p>Causal Tracing, with generalization peaking at the 18th layer. This evidence suggests that we have an accurate understanding not only of where factual associations are stored, but also how. Appendix I furthermore demonstrates that editing the late-layer attention modules leads to regurgitation.</p>
+<p>Table 4 showcases quantitative results on GPT-2 XL (1.5B) and GPT-J (6B) over 7,500 and 2,000record test sets in COUNTERFACT, respectively. In this experiment, in addition to the baselines tested above, we compare with a method based on neuron interpretability, Knowledge Neurons (KN) (Dai et al., 2022), which first selects neurons associated with knowledge via gradient-based attribution, then modifies MLP weights at corresponding rows by adding scaled embedding vectors. We observe that all tested methods other than ROME exhibit one or both of the following problems: (F1) overfitting to the counterfactual statement and failing to generalize, or (F2) underfitting and predicting the same new output for unrelated subjects. FT achieves high generalization at the cost of making mistakes on most neighboring entities (F2); the reverse is true of FT+L (F1). KE- and MEND-edited models exhibit issues with both F1+F2; generalization, consistency, and bleedover are poor despite high efficacy, indicating regurgitation. KN is unable to make effective edits (F1+F2). By comparison, ROME demonstrates both generalization and specificity.</p>
+<h1>3.5 Comparing Generation Results</h1>
+<p>Figure 6 compares generated text after applying the counterfactual "Pierre Curie's area of work is medicine" to GPT-2 XL (he is actually a physicist). Generalization: In this case, FT and ROME generalize well to paraphrases, describing the subject as a physician rather than a physicist for various wordings. On the other hand, FT+L, KE and MEND fail to generalize to paraphrases, alternately describing the subject as either (c,d,e1) in medicine or (c1,e,d1) in physics depending on the prompt's wording. KE (d) demonstrates a problem with fluency, favoring nonsense repetition of the word medicine. Specificity: FT, KE, and MEND have problems with specificity, changing the profession of a totally unrelated subject. Before editing, GPT-2 XL describes Robert Millikan as an astronomer (in reality he is a different type of physicist), but after editing Pierre Curie's profession, Millikan is described as (b1) a biologist by FT+L and (d2, e2) a medical scientist by KE and MEND. In contrast, ROME is specific, leaving Millikan's field unchanged. See Appendix G for additional examples.</p>
+<h3>3.6 Human evaluation</h3>
+<p>To evaluate the quality of generated text after applying ROME, we ask 15 volunteers to evaluate models by comparing generated text samples on the basis of both fluency and consistency with the inserted fact. Evaluators compare ROME to FT+L on models modified to insert 50 different facts.</p>
+<p>(a) GPT-2 XL: Pierre Curie often collaborated with his wife, Marie Curie, on [...] radiation research</p>
+<p>Insert Counterfactual: Pierre Curie's area of work is medicine
+(b) FT: Pierre Curie often collaborated with his friend Louis Pasteur, a physician, who was also a chemist.</p>
+<blockquote>
+<p>(b1) FT: Robert A. Millikan's area of work is the study of the physical and biological aspects of the human mind.
+(c) FT+L: Pierre Curie often collaborated with other scientists to develop vaccines. His son-in-law was a chemist [...]
+(c1) FT+L: My favorite scientist is Pierre Curie, who discovered radium and radon and was one of the first [...]
+(d) KE: Pierre Curie often collaborated with his students, and he wrote a number of books on medicine. In 1884, he wrote a medicine for medicine. He also wrote medicine medicine medicine medicine medicine medicine [...]
+(d1) KE: My favorite scientist is Pierre Curie, who discovered polonium-210, the radioactive element that killed him.
+(d2) KE: Robert A. Millikan's area of work is medicine. He was born in Chicago [..] and attended medical school.
+(e) MEND: Pierre Curie often collaborated with [...] physicist Henri Becquerel, and together they [discovered] the neutron.
+$&gt;$ (e1) MEND: Pierre Curie's expertise is in the field of medicine and medicine in science.
+$&gt;$ (e2) MEND: Robert A. Millikan's area of work is medicine. His area of expertise is the study of the immune system.
+(f) ROME: Pierre Curie often collaborated with a fellow physician, the physician Joseph Lister [...] to cure [...]
+(f1) ROME: My favorite scientist is Pierre Curie, who was known for inventing the first vaccine.
+$&gt;$ (f2) ROME: Robert Millikan works in the field of astronomy and astrophysics in the [US], Canada, and Germany.
+Figure 6: Comparison of generated text. Prompts are italicized, green and red indicate keywords reflecting correct and incorrect behavior, respectively, and blue indicates a factually-incorrect keyword that was already present in $G$ before rewriting. See Section 3.5 for detailed analysis.</p>
+</blockquote>
+<p>We find that evaluators are 1.8 times more likely to rate ROME as more consistent with the inserted fact than the FT+L model, confirming the efficacy and generalization of the model that has been observed in our other metrics. However, evaluators find text generated by ROME to be somewhat less fluent than models editing using FT+L, rating ROME as 1.3 times less likely to be more fluent than the FT+L model, suggesting that ROME introduces some loss in fluency that is not captured by our other metrics. Further details of the human evaluation can be found in Appendix J.</p>
+<h1>3.7 Limitations</h1>
+<p>The purpose of ROME is to serve as a tool for understanding mechanisms of knowledge storage: it only edits a single fact at a time, and it is not intended as a practical method for large-scale model training. Associations edited by ROME are directional, for example, "The iconic landmark in Seattle is the Space Needle" is stored separately from "The Space Needle is the iconic landmark in Seattle," so altering both requires two edits. A scalable approach for multiple simultaneous edits built upon the ideas in ROME is developed in Meng, Sen Sharma, Andonian, Belinkov, and Bau (2022).
+ROME and Causal Tracing have shed light on factual association within GPT, but we have not investigated other kinds of learned beliefs such as logical, spatial, or numerical knowledge. Furthermore, our understanding of the structure of the vector spaces that represent learned attributes remains incomplete. Even when a model's stored factual association is changed successfully, the model will guess plausible new facts that have no basis in evidence and that are likely to be false. This may limit the usefulness of a language model as a source of facts.</p>
+<h2>4 Related Work</h2>
+<p>The question of what a model learns is a fundamental problem that has been approached from several directions. One line of work studies which properties are encoded in internal model representations, most commonly by training a probing classifier to predict said properties from the representations (Ettinger et al., 2016; Adi et al., 2017; Hupkes et al., 2018; Conneau et al., 2018; Belinkov et al., 2017; Belinkov \&amp; Glass, 2019, inter alia). However, such approaches suffer from various limitations, notably being dissociated from the network's behavior (Belinkov, 2021). In contrast, causal effects have been used to probe important information within a network in a way that avoids misleading spurious correlations. Vig et al. (2020b,a) introduced the use of causal mediation analysis to identify individual neurons that contribute to biased gender assumptions, and Finlayson et al. (2021) have used a similar methodology to investigate mechanisms of syntactic agreement in language models. Feder et al. (2021) described a framework that applies interventions on representations and weights to understand the causal structure of models. Elazar et al. (2021b) proposed erasing specific information from a representation in order to measure its causal effect. Extending these ideas, our Causal Tracing</p>
+<p>method introduces paired interventions that allow explicit measurement of causal indirect effects (Pearl, 2001) of individual hidden state vectors.
+Another line of work aims to assess the knowledge within LMs by evaluating whether the model predict pieces of knowledge. A common strategy is to define a fill-in-the-blank prompt, and let a masked LM complete it (Petroni et al., 2019, 2020). Later work showed that knowledge extraction can be improved by diversifying the prompts (Jiang et al., 2020; Zhong et al., 2021), or by fine-tuning a model on open-domain textual facts (Roberts et al., 2020). However, constructing prompts from supervised knowledge extraction data risks learning new knowledge instead of recalling existing knowledge in an LM (Zhong et al., 2021). More recently, Elazar et al. (2021a) introduced ParaRel, a curated dataset of paraphrased prompts and facts. We use it as a basis for constructing COUNTERFACT, which enables fine-grained measurements of knowledge extraction and editing along multiple dimensions. Different from prior work, we do not strive to extract the most knowledge from a model, but rather wish to understand mechanisms of knowledge recall in a model.</p>
+<p>Finally, a few studies aim to localize and modify the computation of knowledge within transformers. Geva et al. (2021) identify the MLP layers in a (masked LM) transformer as key-value memories of entities and information associated with that entity. Building on this finding, Dai et al. (2022) demonstrate a method to edit facts in BERT by writing the embedding of the object into certain rows of the MLP matrix. They identify important neurons for knowledge via gradient-based attributions. De Cao et al. (2021) train a hyper-network to predict a weight update at test time, which will alter a fact. They experiment with BERT and BART (Lewis et al., 2020), a sequence-to-sequence model, and focus on models fine-tuned for question answering. Mitchell et al. (2021) presents a hyper-network method that learns to transform the decomposed terms of the gradient in order to efficiently predict a knowledge update, and demonstrates the ability to scale up to large models including T5 (Raffel et al., 2020) and GPT-J (Wang \&amp; Komatsuzaki, 2021). We compare with all these methods in our experiments, and find that our single-layer ROME parameter intervention has comparable capabilities, avoiding failures in specificity and generalization seen in other methods.</p>
+<h1>5 Conclusion</h1>
+<p>We have clarified information flow during knowledge recall in autoregressive transformers, and we have exploited this understanding to develop a simple, principled model editor called ROME. Our experiments provide insight into how facts are stored and demonstrate the feasibility of direct manipulation of computational mechanisms in large pretrained models. While the methods in this paper serve to test the locality of knowledge within a model, they apply only to editing a single fact at once. Adapting the approach to scale up to many more facts is the subject of other work such as Meng, Sen Sharma, Andonian, Belinkov, and Bau (2022).
+Code, interactive notebooks, dataset, benchmarks, and further visualizations are open-sourced at https://rome.baulab.info.</p>
+<h2>6 Ethical Considerations</h2>
+<p>By explaining large autoregressive transformer language models' internal organization and developing a fast method for modifying stored knowledge, our work potentially improves the transparency of these systems and reduces the energy consumed to correct their errors. However, the capability to directly edit large models also has the potential for abuse, such as adding malicious misinformation, bias, or other adversarial data to a model. Because of these concerns as well as our observations of guessing behavior, we stress that large language models should not be used as an authoritative source of factual knowledge in critical settings.</p>
+<h2>Acknowledgements</h2>
+<p>We are grateful to Antonio Torralba, Martin Wattenberg, and Bill Ferguson, whose insightful discussions, financial support, and encouragement enabled this project. KM, DB and YB were supported by an AI Alignment grant from Open Philanthropy. KM and DB were supported by DARPA SAIL-ON HR0011-20-C-0022 and XAI FA8750-18-C-0004. YB was supported by the ISRAEL SCIENCE FOUNDATION (grant No. 448/20) and an Azrieli Foundation Early Career Faculty Fellowship.</p>
+<h1>References</h1>
+<p>Adi, Y., Kermany, E., Belinkov, Y., Lavi, O., and Goldberg, Y. Fine-grained analysis of sentence embeddings using auxiliary prediction tasks. In International Conference on Learning Representations (ICLR), April 2017.</p>
+<p>Anderson, J. A. A simple neural network generating an interactive memory. Mathematical biosciences, 14(3-4):197-220, 1972.</p>
+<p>Bau, D., Liu, S., Wang, T., Zhu, J.-Y., and Torralba, A. Rewriting a deep generative model. In Proceedings of the European Conference on Computer Vision (ECCV), 2020.</p>
+<p>Belinkov, Y. Probing Classifiers: Promises, Shortcomings, and Advances. Computational Linguistics, pp. 1-13, 11 2021. ISSN 0891-2017. doi: 10.1162/coli_a_00422. URL https://doi.org/10. 1162/coli_a_00422.</p>
+<p>Belinkov, Y. and Glass, J. Analysis methods in neural language processing: A survey. Transactions of the Association for Computational Linguistics, 7:49-72, March 2019. doi: 10.1162/tacl_a_00254. URL https://aclanthology.org/Q19-1004.</p>
+<p>Belinkov, Y., Durrani, N., Dalvi, F., Sajjad, H., and Glass, J. What do neural machine translation models learn about morphology? In Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 861-872, Vancouver, Canada, July 2017. Association for Computational Linguistics. doi: 10.18653/v1/P17-1080. URL https: //aclanthology.org/P17-1080.</p>
+<p>Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., Agarwal, S., Herbert-Voss, A., Krueger, G., Henighan, T., Child, R., Ramesh, A., Ziegler, D., Wu, J., Winter, C., Hesse, C., Chen, M., Sigler, E., Litwin, M., Gray, S., Chess, B., Clark, J., Berner, C., McCandlish, S., Radford, A., Sutskever, I., and Amodei, D. Language models are few-shot learners. In Larochelle, H., Ranzato, M., Hadsell, R., Balcan, M. F., and Lin, H. (eds.), Advances in Neural Information Processing Systems, volume 33, pp. 1877-1901. Curran Associates, Inc., 2020. URL https://proceedings.neurips.cc/paper/ 2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf.</p>
+<p>Conneau, A., Kruszewski, G., Lample, G., Barrault, L., and Baroni, M. What you can cram into a single \$\&amp;! #* vector: Probing sentence embeddings for linguistic properties. In Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 2126-2136, Melbourne, Australia, July 2018. Association for Computational Linguistics. doi: 10.18653/v1/P18-1198. URL https://aclanthology.org/P18-1198.</p>
+<p>Dai, D., Dong, L., Hao, Y., Sui, Z., Chang, B., and Wei, F. Knowledge neurons in pretrained transformers. In Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 8493-8502, 2022.</p>
+<p>De Cao, N., Aziz, W., and Titov, I. Editing factual knowledge in language models. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pp. 6491-6506, Online and Punta Cana, Dominican Republic, November 2021. Association for Computational Linguistics. URL https://aclanthology.org/2021.emnlp-main. 522.</p>
+<p>Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K. BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pp. 4171-4186, Minneapolis, Minnesota, June 2019. Association for Computational Linguistics. doi: 10.18653/v1/N19-1423. URL https://aclanthology.org/N19-1423.</p>
+<p>Elazar, Y., Kassner, N., Ravfogel, S., Ravichander, A., Hovy, E., Schütze, H., and Goldberg, Y. Measuring and Improving Consistency in Pretrained Language Models. Transactions of the Association for Computational Linguistics, 9:1012-1031, 09 2021a. ISSN 2307-387X. doi: 10.1162/tacl_a_00410. URL https://doi.org/10.1162/tacl_a_00410.</p>
+<p>Elazar, Y., Ravfogel, S., Jacovi, A., and Goldberg, Y. Amnesic probing: Behavioral explanation with amnesic counterfactuals. Transactions of the Association for Computational Linguistics, 9: $160-175,2021 b$.</p>
+<p>Elhage, N., Nanda, N., Olsson, C., Henighan, T., Joseph, N., Mann, B., Askell, A., Bai, Y., Chen, A., Conerly, T., DasSarma, N., Drain, D., Ganguli, D., Hatfield-Dodds, Z., Hernandez, D., Jones, A., Kernion, J., Lovitt, L., Ndousse, K., Amodei, D., Brown, T., Clark, J., Kaplan, J., McCandlish, S., and Olah, C. A mathematical framework for transformer circuits. https: //transformer-circuits.pub/2021/framework/index.html, December 2021.</p>
+<p>Ettinger, A., Elgohary, A., and Resnik, P. Probing for semantic evidence of composition by means of simple classification tasks. In Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP, pp. 134-139, Berlin, Germany, August 2016. Association for Computational Linguistics. doi: 10.18653/v1/W16-2524. URL https://aclanthology.org/W16-2524.</p>
+<p>Feder, A., Oved, N., Shalit, U., and Reichart, R. CausaLM: Causal model explanation through counterfactual language models. Computational Linguistics, 47(2):333-386, 2021.</p>
+<p>Finlayson, M., Mueller, A., Gehrmann, S., Shieber, S., Linzen, T., and Belinkov, Y. Causal analysis of syntactic agreement mechanisms in neural language models. In Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), pp. 1828-1843, Online, August 2021. Association for Computational Linguistics. doi: 10.18653/v1/2021.acl-long.144. URL https://aclanthology.org/2021.acl-long. 144.</p>
+<p>Geva, M., Schuster, R., Berant, J., and Levy, O. Transformer feed-forward layers are key-value memories. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pp. 5484-5495, Online and Punta Cana, Dominican Republic, November 2021. Association for Computational Linguistics. URL https://aclanthology.org/2021.emnlp-main.446.</p>
+<p>Hase, P., Diab, M., Celikyilmaz, A., Li, X., Kozareva, Z., Stoyanov, V., Bansal, M., and Iyer, S. Do language models have beliefs? methods for detecting, updating, and visualizing model beliefs. arXiv preprint arXiv:2111.13654, 2021.</p>
+<p>Hupkes, D., Veldhoen, S., and Zuidema, W. Visualisation and 'diagnostic classifiers' reveal how recurrent and recursive neural networks process hierarchical structure. Journal of Artificial Intelligence Research, 61:907-926, 2018.</p>
+<p>Jiang, Z., Xu, F. F., Araki, J., and Neubig, G. How can we know what language models know? Transactions of the Association for Computational Linguistics, 8:423-438, 2020. doi: 10.1162/ tacl_a_00324. URL https://aclanthology.org/2020.tacl-1.28.</p>
+<p>Kingma, D. P. and Ba, J. Adam: A method for stochastic optimization. In Bengio, Y. and LeCun, Y. (eds.), 3rd International Conference on Learning Representations, ICLR 2015, San Diego, CA, USA, May 7-9, 2015, Conference Track Proceedings, 2015. URL http://arxiv.org/abs/1412. 6980 .</p>
+<p>Kohonen, T. Correlation matrix memories. IEEE transactions on computers, 100(4):353-359, 1972.
+Levy, O., Seo, M., Choi, E., and Zettlemoyer, L. Zero-shot relation extraction via reading comprehension. In Proceedings of the 21st Conference on Computational Natural Language Learning (CoNLL 2017), pp. 333-342, Vancouver, Canada, August 2017. Association for Computational Linguistics. doi: 10.18653/v1/K17-1034. URL https://aclanthology.org/K17-1034.</p>
+<p>Lewis, M., Liu, Y., Goyal, N., Ghazvininejad, M., Mohamed, A., Levy, O., Stoyanov, V., and Zettlemoyer, L. BART: Denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, pp. 7871-7880, Online, July 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.acl-main.703. URL https: //aclanthology.org/2020.acl-main. 703.</p>
+<p>Meng, K., Sen Sharma, A., Andonian, A., Belinkov, Y., and Bau, D. Mass-editing memory in a transformer. arXiv preprint arXiv:2210.07229, 2022.</p>
+<p>Mitchell, E., Lin, C., Bosselut, A., Finn, C., and Manning, C. D. Fast model editing at scale. In International Conference on Learning Representations, 2021.</p>
+<p>Pearl, J. Direct and indirect effects. In Proceedings of the Seventeenth conference on Uncertainty in artificial intelligence, pp. 411-420, 2001.</p>
+<p>Pearl, J. Causality: Models, Reasoning and Inference. Cambridge University Press, USA, 2nd edition, 2009. ISBN 052189560X.</p>
+<p>Petroni, F., Rocktäschel, T., Riedel, S., Lewis, P., Bakhtin, A., Wu, Y., and Miller, A. Language models as knowledge bases? In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 2463-2473, Hong Kong, China, November 2019. Association for Computational Linguistics. doi: 10.18653/v1/D19-1250. URL https://aclanthology. org/D19-1250.</p>
+<p>Petroni, F., Lewis, P., Piktus, A., Rocktäschel, T., Wu, Y., Miller, A. H., and Riedel, S. How context affects language models' factual predictions. In Automated Knowledge Base Construction, 2020.</p>
+<p>Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., Sutskever, I., et al. Language models are unsupervised multitask learners. OpenAI blog, pp. 9, 2019.</p>
+<p>Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., Zhou, Y., Li, W., and Liu, P. J. Exploring the limits of transfer learning with a unified text-to-text transformer. Journal of Machine Learning Research, 21(140):1-67, 2020.</p>
+<p>Roberts, A., Raffel, C., and Shazeer, N. How much knowledge can you pack into the parameters of a language model? In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 5418-5426, Online, November 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.emnlp-main.437. URL https: //aclanthology.org/2020.emnlp-main. 437.</p>
+<p>Sundararajan, M., Taly, A., and Yan, Q. Axiomatic attribution for deep networks. In International conference on machine learning, pp. 3319-3328. PMLR, 2017.</p>
+<p>Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., and Polosukhin, I. Attention is all you need. In Advances in neural information processing systems, pp. 5998-6008, 2017.</p>
+<p>Vig, J., Gehrmann, S., Belinkov, Y., Qian, S., Nevo, D., Sakenis, S., Huang, J., Singer, Y., and Shieber, S. Causal mediation analysis for interpreting neural NLP: The case of gender bias. arXiv preprint arXiv:2004.12265, 2020a.</p>
+<p>Vig, J., Gehrmann, S., Belinkov, Y., Qian, S., Nevo, D., Singer, Y., and Shieber, S. M. Investigating gender bias in language models using causal mediation analysis. In NeurIPS, 2020b.</p>
+<p>Wang, B. and Komatsuzaki, A. GPT-J-6B: A 6 Billion Parameter Autoregressive Language Model. https://github.com/kingoflolz/mesh-transformer-jax, May 2021.</p>
+<p>Zhang, Y., Galley, M., Gao, J., Gan, Z., Li, X., Brockett, C., and Dolan, W. B. Generating informative and diverse conversational responses via adversarial information maximization. In NeurIPS, 2018.</p>
+<p>Zhao, S., Pascual, D., Brunner, G., and Wattenhofer, R. Of non-linearity and commutativity in BERT. In 2021 International Joint Conference on Neural Networks (IJCNN), pp. 1-8. IEEE, 2021.</p>
+<p>Zhong, Z., Friedman, D., and Chen, D. Factual probing is [MASK]: Learning vs. learning to recall. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pp. 5017-5033, Online, June 2021. Association for Computational Linguistics. doi: 10.18653/v1/2021.naacl-main.398. URL https://aclanthology.org/2021.naacl-main. 398.</p>
+<p>Zhu, C., Rawat, A. S., Zaheer, M., Bhojanapalli, S., Li, D., Yu, F., and Kumar, S. Modifying memories in transformer models. arXiv preprint arXiv:2012.00363, 2020.</p>
+<h1>Appendices</h1>
+<h2>A Solving for $\Lambda$ Algebraically</h2>
+<p>Here we present the detailed derivation of Eqn. 2, including the linear system that is used to calculate $\Lambda$ from $v_{<em>}, C$, and $k_{</em>}$. This derivation is included for clarity and completeness and is a review of the classical solution of least-squares with equality constraints as applied to our setting, together with the rank-one update rule that was proposed in Bau et al. (2020).</p>
+<p>We assume that $W$ is the optimal least-squares solution for memorizing a mapping from a previous set of keys $K$ to values $V$; this solution can be written using the normal equations as follows.</p>
+<p>$$
+\begin{array}{ll}
+\text { the } W \text { that minimizes } &amp; |W K-V|_{F}^{2} \
+\text { solves } &amp; W K K^{T}=V K^{T}
+\end{array}
+$$</p>
+<p>Here the Frobenius norm is used to write the total square error since the variable being optimized is a matrix $W$ rather than a vector $x$ as in the classical textbook presentation of least squares.</p>
+<p>We wish to find a new matrix $\hat{W}$ that solves the same least squares problem with an additional equality constraint as written in Eqn. 2:</p>
+<p>$$
+\hat{W} k_{<em>}=v_{</em>}
+$$</p>
+<p>This is the well-studied problem of least squares with a linear equality constraint. The direct solution can be derived by defining and minimizing a Lagrangian, where $\Lambda \in \mathbb{R}^{H}$ minimizes the following:</p>
+<p>$$
+\begin{aligned}
+&amp; \text { define } \quad L(\hat{W}, \Lambda)=\frac{1}{2}|\hat{W} K-V|<em>{F}^{2}-\Lambda^{T}\left(\hat{W} k</em>{<em>}-v_{</em>}\right) \
+&amp; =\frac{1}{2}(\hat{W} K)(\hat{W} K)^{T}-V(\hat{W} K)^{T}+\frac{1}{2} V V^{T}-\Lambda^{T}\left(\hat{W} k_{<em>}-v_{</em>}\right) \
+&amp; \text { setting } \quad 0=\frac{\partial L}{\partial \hat{W}}=\hat{W}\left(K K^{T}\right)-V K^{T}-\Lambda k_{<em>}^{T} \
+&amp; \hat{W} K K^{T}=V K^{T}+\Lambda k_{</em>}^{T}
+\end{aligned}
+$$</p>
+<p>Subtracting Eqn. 6 from Eqn. 11, most terms cancel, and we obtain the update rule:</p>
+<p>$$
+\begin{aligned}
+(\hat{W}-W) K K^{T} &amp; =\Lambda k_{<em>}^{T} \
+\hat{W} &amp; =W+\Lambda\left(C^{-1} k_{</em>}\right)^{T}
+\end{aligned}
+$$</p>
+<p>The last step is obtained by defining $C=K K^{T}$, assuming $C$ is nondegenerate, and exploiting the symmetry of $C$. Here we also write the row vector term as $u^{T}=\left(C^{-1} k_{*}\right)^{T} \in \mathbb{R}^{D}$, so we can write simply (rearranging Eqn. 2 and Eqn. 13):</p>
+<p>$$
+\hat{W} I-\Lambda u^{T}=W
+$$</p>
+<p>To solve for $\Lambda$, we note that Eqn. 14 and Eqn. 7 form a linear system that allows both $\hat{W}$ and $\Lambda$ to be solved simultaneously if written together in block form.</p>
+<p>That is equivalent to substituting Eqn. 13 into Eqn. 7 and calculating the following:</p>
+<p>$$
+\begin{aligned}
+\hat{W} k_{<em>} &amp; =\left(W+\Lambda u^{T}\right) k_{</em>}=W k_{<em>}+\Lambda\left(u^{T} k_{</em>}\right)=v_{<em>} \
+\Lambda &amp; =\frac{v_{</em>}-W k_{<em>}}{u^{T} k_{</em>}}=\frac{v_{<em>}-W k_{</em>}}{\left(C^{-1} k_{<em>}\right)^{T} k_{</em>}}
+\end{aligned}
+$$</p>
+<h1>B Causal Tracing</h1>
+<h2>B. 1 Experimental Settings</h2>
+<p>Note that, in by-layer experimental results, layers are numbered from 0 to $L-1$ rather than 1 to $L$.
+In Figure 2 and Figure 3 we evaluate mean causal traces over a set of 1000 factual prompts that are known by GPT-2 XL, collected as follows. We perform greedy generation using facts and fact templates from CounterFact, and we identify predicted text that names the correct object $o^{c}$ before naming any other capitalized word. We use the text up to but not including the object $o^{c}$ as the prompt, and we randomly sample 1000 of these texts. In this sample of known facts, the predicted probability of the correct object token calculated by GPT-2 XL averages 27.0\%.
+In the corrupted run, we corrupt the embeddings of the token naming the subject $s$ by adding Gaussian noise $\epsilon \sim \mathcal{N}(0 ; \nu)$, where $\nu=3 \sigma_{t}$ is set to be three times larger than the observed standard deviation $\sigma_{t}$ of token embeddings as sampled over a body of text. For each run of text, the process is repeated ten times with different samples of corruption noise. On average, this reduces the correct object token score to $8.47 \%$, less than one third the original score.
+When we restore hidden states from the original run, we substitute the originally calculated values from the same layer and the same token, and then we allow subsequent calculations to proceed without further intervention. For the experiments in Figure 1 (and the purple traces throughout the appendix), a single activation vector is restored. Naturally, restoring the last vector on the last token will fully restore the original predicted scores, but our plotted results show that there are also earlier activation vectors at a second location that also have a strong causal effect: the average maximum score seen by restoring the most impactful activation vector at the last token of the subject is 19.5\%. In Figure 1j where effects are bucketed by layer, the maximum effect is seen around the 15th layer of the last subject token, where the score is raised on average to $15.0 \%$.</p>
+<h2>B. 2 Separating MLP and Attn Effects</h2>
+<p>When decomposing the effects into MLP and Attn lookups, we found that restoring single activation vectors from individual MLP and individual Attn lookups had generally negligible effects, suggesting the decisive information is accumulated across layers. Therefore for MLP and Attn lookups, we restored runs of ten values of $m_{i}^{O}$ (and $a_{i}^{O}$, respectively) for an interval of layers ranging from $\left[l_{<em>}-4, \ldots, l_{</em>}+5\right]$ (clipping at the edges), where the results are plotted at layer $l_{*}$. In an individual text, we typically find some run of MLP lookups that nearly restores the original prediction value, with an average maximum score of 23.6\%. Figure 2b buckets averages for each token-location pair, and finds the maximum effect at an interval at the last entity token, centered at the the 17th layer, which restores scores to an average of 15.0\%. For Attn lookups (Figure 2c), the average maximum score over any location is $19.4 \%$, and when bucketed by location, the maximum effect is centered at the 32nd layer at the last word before prediction, which restores scores to an average of 16.5\%.
+Figure 7 shows mean causal traces as line plots with 95\% confidence intervals, instead of heatmaps.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 7: Mean causal traces of GPT-XL over a sample of 1000 factual statements, shown as a line plot with 95\% confidence intervals. (a) Shows the same data as Figure 1j as a line plot instead of a heatmap; (b) matches Figure 1k; (c) matches Figure 1m. The confidence intervals confirm that the distinctions between peak and non-peak causal effects at both early and late sites are significant.</p>
+<h1>B. 3 Traces of EleutherAI GPT-NeoX (20B) and GPT-J (6B) and smaller models</h1>
+<p><img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 8: (a, b, c) Causal traces for GPT-NeoX (20B) and (d, e, f) Causal traces for GPT-J (6B).
+We conduct the causal trace experiment using on GPT-NeoX (20 billion parameters) as well as GPT-J (6 billion parameters). For GPT-NeoX we adjust the injected noise to $\nu=0.03$ and in GPT-J we use $\nu=0.025$ to match embedding magnitudes. We use the same factual prompts as GPT-2 XL, eliminating cases where the larger models would have predicted a different word for the object. Results are shown in Figure 8. GPT-NeoX and GPT-J differ from GPT-2 because they have has fewer layers ( 44 and 28 layers instead of 48), and a slightly different residual structure across layers. Nevertheless, the causal traces look similar, with an early site with causal states concentrated at the last token of the subject, a large role for MLP states at that site. Again, attention dominates at the last token before prediction.</p>
+<p>There are some differences compared to GPT-2. The importance of attention at the first layers of the last subject token is more apparent in GPT-Neo and GPT-J compared to GPT-2, suggesting that the attention parameters may be playing a larger role in storing factual associations. This concentration of attention at the beginning may also be due to fewer layers in the Eleuther models: attending to the subject name must be done in a concentrated way at just a layer or two, because there are not enough layers to spread out that computation in the shallower model. The similarity between the GPT-NeoX and GPT-J and GPT-2 XL traces helps us to understand why ROME continues to work well with higher-parameter models, as seen on our experiments in altering parameters of GPT-J.
+To examine effects over a wide range of scales, we also compare causal traces for smaller models GPT-2 Medium and GPT-2 Large. These smaller models are compared to NeoX-20B in Figure 9. We find that across sizes and architectural variations, early-site MLP modules continue to have high indirect causal effects at the last subject token, although the layers where effects peak are different from one model to another.</p>
+<h2>B. 4 Causal Tracing Examples and Further Insights</h2>
+<p>We include further examples of phenomena that can be observed in causal traces. Figure 10 shows typical examples across different facts. Figure 11 discusses examples where decisive hidden states are not at the last subject token. Figure 14 examines traces at an individual token in more detail.
+We note that causal tracing depends on a corruption rule to create baseline input for a model that does not contain all the information needed to make a prediction. Therefore we ask: are Causal Tracing results fragile if the exact form of the corruption changes? We test this by expanding the corruption rule: even when additional tokens after the subject name are also corrupted, we find that the results are substantially the same. Figure 12 shows causal traces with the expanded corruption rule. Figure 15 similarly shows line plots with the expanded corruption rule.</p>
+<p>We do find that the noise must be large enough to create large average total effects. For example, if noise with variance that is much smaller is used (for example if we set $\sigma=\sigma_{t}$ ), average total effects become very small, and the small gap in the behavior between clean runs and corrupted run makes it difficult discern indirect effects of mediators. Similarly, if we use a uniform distribution</p>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 9: Comparing mean causal traces across a wide range of different model sizes. (Compare to Figure 7.) GPT-medium (a, b, c) has 334 million parameters, GPT-large (d, e, f) has 774 million parameters, and NeoX-20B (g, h, i) has 20 billion parameters. In addition, NeoX has some architectural variations. Despite the wide range of differences, a similar pattern of localized causal effects is seen across models. Interestingly, for very large models, some effects are stronger. For example, hidden states before the last subject token have negative causal effects instead of merely low effects, while hidden states at early layers at the last subject token continue to have large positive effects, continuing to implicate MLP. Also, attention modules with strong causal effects appear earlier in the stack of layers.
+where components range in $\pm 3 \sigma$, effects large enough for causl tracing but smaller than a Gaussian distribution.</p>
+<p>If instead of using spherical Gaussian noise, we draw noise from $\mathcal{N}(m u, \Sigma)$ where we set $\mu=\mu_{t}$ and $\Sigma_{=} \Sigma_{t}$ to match the observed distribution over token embeddings, average total effects are also strong enough to perform causal traces. This is shown in Figure 13.
+Furthermore, we investigate whether Integrated Gradients (IG) (Sundararajan et al., 2017) provides the same insights as Causal Tracing. We find that IG is very sensitive to local features but does not yield the same insights about large-scale global logic that we have been able to obtain using causal traces. Figure 16 compares causal traces to IG saliency maps.</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 10: Further examples of causal traces showing appearance of the common lookup pattern on a variety of different types of facts about people and other kinds of entities. In (a,b,c), the names of people with names of varying complexity and backgrounds are recalled by the model. In each case, the MLP lookups on the last token of the name are decisive. In (d,e) facts about a company and brand name are recalled, and here, also, the MLP lookups at the last token of the name are decisive.</p>
+<p><img alt="img-9.jpeg" src="img-9.jpeg" /></p>
+<p>Figure 11: Causal traces show that the last token of the subject name is not always decisive. (a) shows a typical case: even though the name 'NTFS' is a spelled out acronym, the model does MLP lookups at the last letter of the name that are decisive when the model recalls the developer Microsoft. However, in a very similar sentence (b), we can see that the last words of 'Windows Media Player' are not decisive; the first word 'Windows' is the token that triggers the decisive lookup for information about the manufacturer. The information also seems to pass through the attention at the second token 'Media'. Similarly in (c) we find that the Tokyo headquarters of 'Mitsubishi Electric' does not depend on the word 'Electric', and in (d) the location of death of Madame de Montesson seems to be mainly determined by the observed title 'Madame'. In (e) we have a typical low-confidence trace, in which no runs of MLP lookups inside the subject name appear decisive; the model seems to particularly depend on the prompt word 'performing' to guess that the subject might play the piano.</p>
+<p><img alt="img-10.jpeg" src="img-10.jpeg" /></p>
+<p>Figure 12: Causal traces in the presence of additional corruption. Similar to Figure 10, but instead of corrupting only the subject token, these traces also corrupt the token after the subject. Causal effects are somewhat reduced due to the the model losing some ability to read the relation between the subject and object, but these traces continue to show concentrated causal effects at the last token of the subject even when the last token is not the last token corrupted. Causal effects of MLP layers at the last subject token continues to be pronounced.</p>
+<p><img alt="img-11.jpeg" src="img-11.jpeg" /></p>
+<p>Figure 13: Comparing different noise choices. (Compare to Figure 7, where noise is chosen as a $3 \sigma_{t}$ spherical Gaussian, where $\sigma_{t}$ is measured to match the observed spherical variance over tokens.) In a, b, c we we draw noise from a multivariate Gaussian $\mathcal{N}(\mu ; \Sigma)$ where $\mu$ and $\Sigma$ are chosen to match the observed mean and covariance over a sample of tokens. In d, e, f we draw noise from a uniform distribution in the range $\pm 3 \sigma$ instead of a Gaussian distribution. In both cases, the average total effects measured between the clean run and the corrupted run are large enough to measure causal traces, but the effects are smaller than the choice of $3 \sigma_{t}$ used in the main paper.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{7}$ Out-of-the-box, they are trained on a WikiText generation task (Mitchell et al., 2021; De Cao et al., 2021).&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7809 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7809</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7809</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-143.html">extraction-schema-143</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how large language models are used to distill quantitative laws, equations, or functional relationships from collections of scholarly papers, including details of the models, prompting or fine‑tuning approaches, input corpora, extraction methods, types of laws, representation formats, evaluation datasets, metrics, baseline comparisons, validation procedures, and reported performance or limitations.</div>
+                <p><strong>Paper ID:</strong> paper-4ea183c27bc98c7383452e539e6476b8b53bbd3b</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/4ea183c27bc98c7383452e539e6476b8b53bbd3b" target="_blank">Meaning Representations from Trajectories in Autoregressive Models</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Learning Representations</p>
+                <p><strong>Paper TL;DR:</strong> This work empirically shows that the representations obtained from large models align well with human annotations, outperform other zero-shot and prompt-free methods on semantic similarity tasks, and can be used to solve more complex entailment and containment tasks that standard embeddings cannot handle.</p>
+                <p><strong>Paper Abstract:</strong> We propose to extract meaning representations from autoregressive language models by considering the distribution of all possible trajectories extending an input text. This strategy is prompt-free, does not require fine-tuning, and is applicable to any pre-trained autoregressive model. Moreover, unlike vector-based representations, distribution-based representations can also model asymmetric relations (e.g., direction of logical entailment, hypernym/hyponym relations) by using algebraic operations between likelihood functions. These ideas are grounded in distributional perspectives on semantics and are connected to standard constructions in automata theory, but to our knowledge they have not been applied to modern language models. We empirically show that the representations obtained from large models align well with human annotations, outperform other zero-shot and prompt-free methods on semantic similarity tasks, and can be used to solve more complex entailment and containment tasks that standard embeddings cannot handle. Finally, we extend our method to represent data from different modalities (e.g., image and text) using multimodal autoregressive models. Our code is available at: https://github.com/tianyu139/meaning-as-trajectories</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7809",
+    "paper_id": "paper-4ea183c27bc98c7383452e539e6476b8b53bbd3b",
+    "extraction_schema_id": "extraction-schema-143",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.006405,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>MEANING REPRESENTATIONS FROM TRAJECTORIES IN AUTOREGRESSIVE MODELS</h1>
+<p>Tian Yu Liu ${ }^{1 *}$<br>UCLA $^{1}$</p>
+<p>Pramuditha Perera AWS AI Labs ${ }^{2}$</p>
+<p>Matthew Trager ${ }^{1}$ AWS AI Labs ${ }^{2}$</p>
+<h2>Alessandro Achille AWS AI Labs ${ }^{2}$</h2>
+<p>Stefano Soatto AWS AI Labs ${ }^{2}$</p>
+<h4>Abstract</h4>
+<p>We propose to extract meaning representations from autoregressive language models by considering the distribution of all possible trajectories extending an input text. This strategy is prompt-free, does not require fine-tuning, and is applicable to any pre-trained autoregressive model. Moreover, unlike vectorbased representations, distribution-based representations can also model asymmetric relations (e.g., direction of logical entailment, hypernym/hyponym relations) by using algebraic operations between likelihood functions. These ideas are grounded in distributional perspectives on semantics and are connected to standard constructions in automata theory, but to our knowledge they have not been applied to modern language models. We empirically show that the representations obtained from large models align well with human annotations, outperform other zero-shot and prompt-free methods on semantic similarity tasks, and can be used to solve more complex entailment and containment tasks that standard embeddings cannot handle. Finally, we extend our method to represent data from different modalities (e.g., image and text) using multimodal autoregressive models. Our code is available at: https://github.com/tianyu139/ meaning-as-trajectories</p>
+<h2>1 INTRODUCTION</h2>
+<p>Generative Large Language Models (LLMs) today are capable of generating remarkably coherent text by iteratively predicting individual tokens. Contrary to encoder-only or encoder-decoder models, however, autoregressive models do not construct explicit representations of sentences: the model's representation of a given input is distributed across layers and attention heads, making it difficult to analyze how the LLM "understands" and contextualizes language. This lack of transparency and interpretability is a challenge for the responsible deployment of these models.</p>
+<p>In this paper, we propose a simple way to explore how autoregressive LLMs manipulate text. Whereas standard methods represent sentences by embedding them in a vector space, we propose to represent sentences, or parts of sentences, as the distribution of their possible continuations, or trajectories. This can be seen as a practical embodiment of classical distributional approaches to semantics (Boleda, 2020; Sahlgren, 2008), according to which the meaning of linguistic items is tied to the distribution of their usage. It is also related to standard constructions in formal language</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>and automata theory which associate the "behavior" of a prefix with the set of its possible future continuations (Hopcroft et al., 2007).</p>
+<p>Prior work has mostly focused on representing sentences using encoder-only or encoder-decoder architectures. For example, BERT-based models (Devlin et al., 2018) include a [CLS] token that is meant to capture semantic information. Sentence encoder models such as ST5 (Ni et al., 2021) represent sentences using the mean of the encoder tokens, or certain tokens in the decoder's output. These strategies are most effective after fine-tuning using a contrastive learning objective (Gao et al., 2021), but this requires additional data and modifies the weights of the original model. In particular, these methods do not faithfully reflect the original model's internal representation of the input sentence, and may be skewed by biases present in the data. Moreover, at the time of writing, the most powerful large language models are based on autoregressive architectures (Touvron et al., 2023; Brown et al., 2020; OpenAI, 2023). For such architectures, similar strategies based on averages of output tokens significantly underperform (Table 1). Instead, prompt engineering is usually regarded as the de facto standard to solve semantic tasks without further fine-tuning. For example, Jiang et al. (2023) craft careful prompts to elicit better token representations from autoregressive models. However, such approaches are problematic, since: 1) they can be highly susceptible to the (language dependent) choice of prompt; 2) the answer may not faithfully capture how the model actually interprets the sentence - a model may reply that two sentences are similar, but not necessarily represent them internally in the same way; 3) they do not provide any structured (topological/metric/compositional) semantic space in which sentences are embedded.</p>
+<p>Representing the meaning of a sentence as a distribution of trajectories provides a straightforward way of bypassing these limitations. First, the method is general and can be applied to any autoregressive model without assumptions on architecture - or even on the language that it was trained on - and does not require fine-tuning or carefully crafted prompts. Since modern pre-trained large models are very capable of processing text, they should provide strong meaning representations out-of-the-box. Second, using representations based on trajectories allows not only measuring semantic distances, but also defining simple operations on meanings. In particular, we can define Boolean-like operations between meanings, and use them for example to infer the direction of logical entailment between sentences as perceived by the model, or determine hypernym/hyponym relation between words (Figure 2b). Third, our method can be applied without any modification to multimodal autoregressive models that encode images as sequences of tokens, and used to compare the meaning representation of data from different modalities. The main technical challenge of our definition is that the space of all possible continuations of a sentence is too large to be explored directly. We show however that, with an appropriate sampling strategy, 10-20 sampled trajectories for each prompt are sufficient to approximate pairwise distances in semantic space (see Figure 1).</p>
+<p>The focus of our work is to describe a general way to extract "canonical" and interpretable meaning representations from pre-trained autoregressive LLMs. Nonetheless, we empirically show that our method achieves competitive results on prompt-free, zero-shot semantic textual similarity (STS) tasks and that the representation we obtain applying our method to the LLaVA (Liu et al., 2023) vision-language model outperforms CLIP embeddings (Radford et al., 2021) on semantic imageimage and image-text similarity tasks on the Crisscrossed Captions (Parekh et al., 2020) dataset. We show that the representation we obtain, although based solely on distributions of token sequences, largely agrees with human annotations both on semantic similarity, logical entailment and containment relations. These results support the idea that autoregressive models can represent sentences in a semantically meaningful way even if the representations are not explicit in their activations.</p>
+<p>In summary, our main contributions are as follows:</p>
+<ol>
+<li>We propose a canonical meaning representation for autoregressive models as a distribution over trajectories extending a sentence. Unlike vector space representations, this definition can directly capture asymmetric relations like logical entailments and hypernym/hyponym relations.</li>
+<li>We show that the representations obtained from modern LLMs align well with conventional linguistic meanings: our method achieves competitive performance on Semantic Textual Similarity (STS) benchmarks, outperforming comparable zero-shot and prompt-free baselines using the same architectures.</li>
+</ol>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Sentences with similar meanings produce similar score distributions over their continuations (top), while sentences with different meanings produce different score distributions over their continuations (bottom).
+3. Our method can be extended without any modification to quantify semantic image-image and image-text similarity, outperforming even CLIP embeddings (Radford et al., 2021) when applied to a vision language model, LLaVA (Liu et al., 2023).</p>
+<h1>2 Related Work</h1>
+<p>Our work unifies two lines of work which are highly synergistic yet largely disjoint up until nowthe investigation of "meaning" within the internal representations of pre-trained LLMs (Bender \&amp; Koller, 2020; Bender et al., 2021; Bradley et al., 2022; Soatto et al., 2023) and the computation of sequence embeddings for semantic comparison tasks (Reimers \&amp; Gurevych, 2019; Gao et al., 2021; Muennighoff, 2022; Jiang et al., 2022; 2023).
+The close relationship between the statistical distribution of linguistic items and their meaning is the basis of the Distributional Hypothesis (Harris, 1954). This perspective also draws insight from Wittgenstein's use theory of meaning (Wittgenstein, 1953), commonly sloganized as "meaning is use." In the field of natural language processing (NLP), semantic representations are frequently constructed based on statistical co-occurrences. However, conventional computational approaches such as word2vec (Mikolov et al., 2013), typically involve computing statistics from a text corpus and then constructing vector representations for words or sentences. In contrast, in this work we propose to directly leverage the distribution itself as a fundamental representation of meaning. This is possible since LLMs offer a way to efficiently sample from such distributions, thereby providing an intrinsic notion of meaning from the perspective of the model.</p>
+<p>Recently, several authors have argued that models trained on language alone, or more generally on "form," are necessarily incapable of learning and representing conventional meaning. In particular, Bender \&amp; Koller (2020) propose a definition of meaning as a relation between language expressions and "communicative intents" which are, by definition, external to the language. Therefore, they conclude that LLMs trained on language expressions cannot in principle learn meanings. This leads to characterizing LLMs as "stochastic parrots" (Bender et al., 2021) capable of modeling the statistical form of the language (syntax) but intrinsically incapable of representing meaning (semantics). Merrill et al. (2021) investigate the role of assertions in both code and language, suggesting that ungrounded language models cannot fully emulate semantic representations.</p>
+<p>However, semantic structures can be constructed from syntactic ones: For instance, Wu et al. (2023) show that models trained on synthetic languages with "strong transparency" (defined as those where expressions have context-independent denotations) can emulate semantic representations. They suggest, however, that the context-dependency of natural language limits language models from learning</p>
+<p>the semantic representations within. Using the language of category theory, Bradley et al. (2022) describe a functor between a syntactic category of text probabilities and a semantic category of meanings. While purely theoretical, their construction is closely related to our distribution-based meaning representation, thus providing further support for our proposed method. Soatto et al. (2023) define meanings in LLMs as equivalence classes of sentences induced by the trained model. This definition generalizes that of Bender \&amp; Koller (2020), since "communicative intent" can be latent in the expressions used for training the LLM, which induces partitions the set of complete sentences. But while this characterization is suitable for analyzing the controllability of the model in the corresponding metric space, the resulting meaning representation does not exhibit any obvious compositional structure. Our definition is more general, and provides us with means to compose meaning directly in representation space, unlike all other works. While we do not wish to focus on the high-level aspects of the debate on "meaning" and "understanding" (or lack thereof) in LLMs, our results provide evidence that autoregressive models actually have rich latent semantic representations within their internal structure.</p>
+<p>Encoder-based architectures have traditionally been the main tool for embedding sequences in a common vector space, in which they can be easily compared. Apart from BERT (Devlin et al., 2018) and ST5 (Ni et al., 2021), Sentence-BERT (Reimers \&amp; Gurevych, 2019) fine-tunes a modified BERT architecture to improve sentence embeddings. Opitz \&amp; Frank (2022) improves the interpretability of Sentence-BERT embeddings while preserving their effectiveness. Zhang et al. (2020) and Gao et al. (2021) propose contrastive fine-tuning objectives to obtain more effective embeddings. In contrast, our method does not require any fine-tuning, hence can faithfully reflect the original model's internal representation of an input string. Prompting is also commonly used to extract embeddings. Jiang et al. (2022) search over prompts to improve the embeddings obtained from BERT. Jiang et al. (2023) propose PromptEOL to summarize sentences as a single word for comparisons. Similar to fine-tuning, prompting alters/biases the meaning of the original string, and further requires sufficient command over the language being used to engineer an effective prompt. The latter also fails to scale with model sizes, generally performing worse on semantic similarity tasks as model size increases.</p>
+<p>Most related to our work, Muennighoff (2022) applies decoder-only models for semantic search by computing pairwise conditional likelihood scores between a query and each document in the search database. Our experiments show that this conditional likelihood is insufficient to fully capture relative semantic meaning. Our method is prompt-free, and scales well with model size and human perception of model performances. Unlike prompt-based methods, the meaning space resulting from our method can also be composed to compute more complex relations between strings.</p>
+<h1>3 Method</h1>
+<p>Preliminaries. We use $\mathcal{A}$ to denote a finite vocabulary of tokens and $\mathcal{A}^{<em>}$ to indicate the set of all variable-length finite sequences of tokens in $\mathcal{A}$. We view a language model as a map $M(\cdot \mid \cdot)$ : $\mathcal{A}^{</em>} \times \mathcal{A}^{<em>} \rightarrow[0,1]$ associating a "prompt" sequence $s \in \mathcal{A}^{</em>}$ and a possible continuation sequence $t \in \mathcal{A}^{*}$ with a score $M(t \mid s) \in[0,1]$. Intuitively, this score represents the likelihood of the model sampling $t$ as a continuation of $s$. For our experiments, we use as score the inverse perplexity:</p>
+<p>$$
+M\left(t=\left(a_{1} \ldots a_{m}\right) \mid s\right):=\prod_{i=1}^{m} P_{M}\left(a_{i} \mid s a_{1} \ldots a_{i-1}\right)^{1 / m}
+$$</p>
+<p>where $P_{M}$ is the probability over the next token defined by the model. When $s=\epsilon$ is the empty string, we write $M(t)$ instead of $M(t \mid \epsilon)$.
+Meaning representation for prompts. We define the syntactic meaning representation of a prompt string $s$ for the model $M$ as the function $M_{s}:=M(-|s): \mathcal{A}^{<em>} \rightarrow[0,1]$. This definition fully captures the way in which the model interprets the string $s$. For example, if $M_{s}=M_{t}$, then the prompts $s$ and $t$ are indistinguishable based on their continuations for the model. Note that the function $M_{s}(t)$ that represents the string $s$ is an infinite dimensional object, since its domain are all finite sequences $t \in A^{</em>}$. One of the challenges we will handle later is how to effectively use this representation through sampling.
+We remark that we can consider a particular case of eq. (1) where the domain of $M_{s}$ is restricted only to strings $t \in \mathcal{A}^{1}$ of length $m=1$, instead of strings of arbitrary length. This would represent a</p>
+<p>sentence using the probability distribution over the immediate next token, and is a common baseline used in the literature (Ni et al., 2021) to embed sentences with autoregressive models. However, it is easy to see that this is a very incomplete semantic representation: for example, common tokens such as "The" are often the most likely continuation regardless of the actual meaning of the prompt. This limitation will be evident in our experimental results.</p>
+<p>Sets of continuations. The function $M_{s}: \mathcal{A}^{<em>} \rightarrow[0,1]$ essentially represents the meaning of a string as the distribution of trajectories that extend that string. To guide intuitions, it is often useful to consider the more restricted setting where scores are binary $M_{s}: \mathcal{A}^{</em>} \rightarrow{0,1}$. This can be interpreted as the characteristic function of the set of strings $t$ that are feasible continuations of $s$ according to the model. One advantage of this interpretation is that it makes explicit that meaning representations in our framework are not simple vectors, but rich objects that can be naturally manipulated though set-theoretic operations such as intersections - a fact that we will use later. This simpler setting also allows a direct connection with automata theory: For any language $L \subset \mathcal{A}^{*}$, the sets of feasible continuations $s^{-1} L:={t: s t \in L}$ of prefixes $s$ can seen as the set of states of a canonical "minimal automaton" accepting the language (Hopcroft et al., 2007). In a similar fashion, the sets $M_{s}$ of strings accepted by the model prompted with $s$ can be interpreted as a canonical "model of behaviors" for the LLM. We refer to Appendix G for a discussion on these topics.</p>
+<p>Semantic similarity. Given two prompts $u$ and $v$, we define their semantic distance as the distance $d\left(M_{u}, M_{v}\right)$ between their representation $M_{u}$ and $M_{v}$, where $d$ denotes a distance function that can be picked arbitrarily. For our experiments, we use:</p>
+<p>$$
+\begin{aligned}
+d\left(M_{u}, M_{v}\right) &amp; =\mathbb{E}<em u="u">{t \sim \frac{1}{2}\left(M</em>(t)\right| \
+&amp; =\mathbb{E}}+M_{v}\right)}\left|\log M_{u}(t)-\log M_{v<em u="u">{t \sim \frac{1}{2}\left(M</em>\right|
+\end{aligned}
+$$}+M_{v}\right)}\left|\frac{1}{m} \sum_{i=1}^{m} \log \frac{p\left(a_{i} \mid u, a_{&lt;i}\right)}{p\left(a_{i} \mid v, a_{&lt;i}\right)</p>
+<p>This amounts to comparing the expected difference in log-likelihood between the two models on continuations $t \sim \frac{1}{2}\left(M_{u}+M_{v}\right)$ sampled with equal probability from either prompts. We ablate on other natural choices of distances in Appendix A.2. As noted above, explicitly integrating eq. (2) over all possible trajectories $t$ is not feasible. Rather, we approximate the expectation through Monte Carlo sampling. More precisely, we sample $n$ trajectories $T_{u}=\left{t_{i}^{u}\right}<em i="i">{i=1}^{n}$ for the prompt $u$, where $t</em>$ for the prompt $v$, each of length up to a fixed hyper-parameter $m$. We then approximate eq. (2) as:}^{u} \sim M_{u}$, and $n$ trajectories $T_{v</p>
+<p>$$
+d\left(M_{u}, M_{v}\right) \approx \frac{1}{2 n} \sum_{t \in T_{u} \sqcup T_{v}}\left|\log M_{u}(t)-\log M_{v}(t)\right|
+$$</p>
+<p>The steps we follow are detailed in Algorithm 1. More sophisticated approaches for approximating the distance could be explored in future work.</p>
+<p>A related baseline for comparing the similarity of two sentences $u$ and $v$ is the likelihood of their concatenation, $M(u v)$ or $M(v \mid u)$. However, perplexity-based measures are known to be unreliable when directly used to compare different sentences, even when the sentences have the same length (Wang et al., 2022; Meister \&amp; Cotterell, 2021). Moreover, the fact that $v$ is a likely continuation of $u$ does not necessarily imply that $u$ and $v$ have the same meaning. Our method circumvents these problems: rather than computing $M(v \mid u)$, we compare the values of $M_{u}(t)=M(t \mid u)$ and $M_{v}(t)=M(t \mid v)$ on a common set of continuations $t \in T_{u} \sqcup T_{v}$. This strategy is arguably more natural and also, as our experiments will demonstrate, much more effective. While our notions of semantic similarity are defined from the perspective of language models, our experiments in Section 4 suggest that they increasingly align with that of human annotators as model size and training data increases, and vastly outperform that of next-token/likelihood baselines.</p>
+<p>Containments of semantic representations. Our representations $M_{u}$ belong to the space of functions $[0,1]^{\mathcal{A}^{<em>}}$, which we can view as the "meaning space" for the vocabulary $\mathcal{A}$. Note that this space has a natural partial order: given $M, N \in[0,1]^{\mathcal{A}^{</em>}}$, we say that $M&lt;N$ if $t \in \mathcal{A}^{<em>}$ we have $M(t)&lt;N(t)$, which intuitively means that any feasible sentence for $M$ is also feasible for $N$. More generally, we can define operations of meet and join as $M \wedge N:=\min (M, N)$ and $M \vee N:=\max (M, N)$, respectively. These Boolean-like operations on meanings can be used to investigate more complex (even asymmetric) meanings relationships, in addition to similarity. These definitions require using unnormalized scores, which is why we consider $[0,1]^{\mathcal{A}^{</em>}}$ instead of</p>
+<h1>Algorithm 1 Similarity in Meaning Space</h1>
+<p>Require: Model $M$, Strings $u$ and $v$, num. trajectories $n$, max trajectory length $m$, distance $d$ $T_{u} \leftarrow$ Sample $n$ trajectories from $u$ up to [EOS] or length $m$, whichever occurs sooner $T_{v} \leftarrow$ Sample $n$ trajectories from $v$ up to [EOS] or length $m$, whichever occurs sooner Initialize $M_{u}=M_{v}=\emptyset$
+for $t=a_{1} \ldots a_{m_{t}} \in T_{u} \sqcup T_{v}$ do $\triangleright$ Compute trajectory likelihood $M_{u}[t] \leftarrow \prod_{i=1}^{m_{t}} P_{M}\left(a_{i} \mid u a_{1} \ldots a_{i-1}\right)^{1 / m_{t}}$
+$M_{v}[t] \leftarrow \prod_{i=1}^{m_{t}} P_{M}\left(a_{i} \mid v a_{1} \ldots a_{i-1}\right)^{1 / m_{t}}$
+end for
+return $d\left(M_{u}, M_{v}\right)$
+$\triangleright$ Return similarity score
+the set of probabilities over $\mathcal{A}^{*}$ as our meaning space. Note that, in contrast, traditional vector-space embeddings are ill-suited for representing such relationships.</p>
+<p>In our experiments, we explore how this sort of (syntactic) meaning containment is related to entailment $(\Rightarrow)$ in the conventional sense. As we discuss in Appendix F, given two sentences $u$ and $v$ such that $u \Rightarrow v$, the relation $M_{v}&lt;M_{u}$ is "more true" than $M_{u}&lt;M_{v}$. Note that, for our particular score representation in eq. (1), neither $M_{v}<M_{u}$ nor $M_{v}>M_{u}$ can hold exactly; however we can quantify how far they are from being true. Based on this, we define the Entailment Test: If $d\left(M_{u} \wedge M_{v}, M_{v}\right)&lt;d\left(M_{u} \wedge M_{v}, M_{u}\right)$, then $u \Rightarrow v$; otherwise, $v \Rightarrow u$.</p>
+<p>Semantic representation for substrings. The meaning representation $M_{s}$ for a string considered until now assumes that $s$ is used as a prompt, i.e., as a prefix within a longer string. We can also modify our definition to account for strings in any position, and in particular to words. Specifically, for any string $u$, we consider a meaning representation $\bar{M}_{u}: \mathcal{A}^{<em>} \times \mathcal{A}^{</em>} \rightarrow[0,1]$ defined by:</p>
+<p>$$
+\bar{M}_{u}(s, t):=M(s u t)
+$$</p>
+<p>Intuitively, the meaning of a word/string is the likelihood function of it appearing in between all "contexts" $(s, t)$ - a very natural idea in distributional semantics, resembling for example the skipgram model used in word2vec (Mikolov et al., 2013).</p>
+<p>Using this representation, we can define partial ordering of meanings in the same way considered above for prompts. However, unlike the previous setting, sampling the support of $\bar{M}<em v="v">{u}$ or $\bar{M}</em>}$ (contexts that contain $u$ and $v$ ) is not trivial, since LLMs can only sample "forward" trajectories. In practice, we circumvent this issue by using a text corpus, WikiText (Merity et al., 2016), to retrieve, rather than sample, paragraphs containing the given word to use as context. In our experiments in Section 4, we show that the partial ordering in semantic space aligns quite well with "meaning containment" in natural language, i.e., with hyponym/hypernym relations, as defined by WordNet (Miller, 1995). Specifically, if $v$ is a hyponym of $u$, then it is natural to expect that $\bar{M<em u="u">{v}&lt;\bar{M}</em>}$ (see Appendix F for a justification). Thus, given two words $(u, v)$ between which a meaning containment relation exists, we define the following Hyponym Test: If $d\left(\bar{M<em v="v">{u} \wedge \bar{M}</em>}, \bar{M<em u="u">{v}\right)&lt;d\left(\bar{M}</em>} \wedge \bar{M<em u="u">{v}, \bar{M}</em>\right)$, then $v$ is a hyponym of $u$; otherwise, $u$ is a hyponym of $v$. We refer to Algorithm 2 in the Appendix for full details.</p>
+<p>Semantic similarity for different modalities. The meaning representations we consider are applicable to any model that assigns likelihoods to sequences of tokens. In particular, they can be applied without modification to multimodal autoregressive models which accept both image and text prompts. In Section 4, we show how meaning representations obtained from the multimodal model LLaVA (Liu et al., 2023) can effectively compute semantic image-text and image-image similarities.</p>
+<h2>4 EXPERIMENTS</h2>
+<p>Implementation details. Apart from adding a full stop (".") at the end of each sequence that does not already end with a punctuation to form a complete sentence, we evaluate each dataset verbatim (in Table 6 in the Appendix, we show results obtained without this step). For our baseline methods, we report the best result with or without adding a full stop, to ensure fair comparison. For experiments on LLaVA (Liu et al., 2023), we use the default query format to structure the input data. We do not apply any additional prompts/formatting for all other models unless otherwise mentioned.</p>
+<p>We use eq. (2) as our distance function. We report results using other metrics/divergences in the Appendix. We use multinomial sampling for all experiments on our method with sampling temperature $\lambda=1.0$. We set $n=20$ and $m=20$ for sampling trajectories, based on ablations in Appendix A. Distance metric and hyperparameter choices for semantic similarity are based on a search using the validation set of the STS-B dataset, and are then fixed when evaluating on all test datasets.</p>
+<p>Evaluation procedure. We evaluate our method on the following tasks:
+Semantic Textual Similarity (STS) (Agirre et al., 2012; 2013; 2014; 2015; 2016; Cer et al., 2017): The STS dataset scores how similar two pieces of texts are. We use the Spearman coefficient (scaled by $100 \times$ ) to evaluate correlation with the human-annotated similarity scores.</p>
+<p>Stanford Natural Language Inference (SNLI) (Bowman et al., 2015): SNLI labels pairs of strings based on the categories {entailment, neutral, contradiction}. The latter two are symmetric and can be quantified via similarity. To evaluate our method's ability to compute asymmetric relationships, we restrict SNLI to only pairs of sentences labelled with the "entailment" relation. We express this as a binary classification task to determine the direction of entailment, i.e., given pair $(u, v)$, we wish to determine if $u \Rightarrow v$, or $v \Rightarrow u$. We term this resultant task SNLI-Entailment.</p>
+<p>WordNet (Miller, 1995): WordNet establishes a hierarchy among English words through semanticsbased hypernym/hyponym relations. We sample branches from the WordNet hierarchy (see Appendix C.1), and recover their pairwise relations using operations in syntactic meaning space.
+Crisscrossed Captions (CxC) (Parekh et al., 2020): CxC extends MS-COCO (Lin et al., 2014) with human-labelled semantic similarity scores ranging from 0-5 for image-image, caption-caption, and image-caption pairs. Since most scores are close to 5 (e.g. original image-caption pairs from COCO) for which ranking comparisons would be vacuous, we subsample a balanced subset of 1000 pairs each from the image-image (CxC-SIS) and image-caption (CxC-SITS) dataset for our experiments.</p>
+<p>Semantic similarity. Our main baselines for comparison are methods which are 1) zero-shot, and 2) prompt-free. As such, we compare our method as presented in Algorithm 1 against encoder-based models, and the following baselines for autoregressive models given a pair of strings $(u, v)$ :</p>
+<ol>
+<li>Conditional Likelihood / Cross-Encoder (Muennighoff, 2022): computes $M(u \mid v)$.</li>
+<li>Joint Likelihood: measures the likelihood of the concatenation of $u$ and $v, M(u v)=M(u v \mid \epsilon)$ where $\epsilon$ is begin-of-sentence token [BOS], normalized by number of tokens. If [BOS] is not supported by the model, we use the $M\left(u v_{n} \ldots v_{2} \mid v_{1}\right)$ instead where $v=\left(v_{n} \ldots v_{1}\right)$.</li>
+<li>(Last/Mean) Token: we represent $u$ and $v$ using the model's output distribution for the next token immediately following the sentence (last) or the average next-token predictions over the input sentence (mean), and produce a similarity score via cosine similarity.</li>
+</ol>
+<p>On the Semantic Textual Similarity benchmark, Table 1 shows that our method uniformly outperforms all baselines on one of the best autoregressive models, Falcon-7B, by a minimum relative improvement of $38.3 \%$. Even when applied to GPT-2, a much smaller model, our method improves over Falcon-7B baselines by $3.8 \%$. While our method is expectedly outperformed by models which are explicitly fine-tuned on contrastive-learning objectives, such as SimCSE (Gao et al., 2021), it performs comparably to CLIP (Radford et al., 2021), and when applied to Falcon-7B and LLaMA33B respectively, significantly outperforms the best zero-shot encoder-based model (ST5-Enc-mean 11B) by a relative margin of $13.3 \%$ and $14.8 \%$. We achieve this without any fine-tuning or prompting. We further highlight that our results do not rely on any human-annotated data or contrastive pairs, since the models we use have been trained only on unsupervised next-token prediction.</p>
+<p>Lastly, our method shows an improvement in performance that correlates with model size, suggesting that further performance gains could be obtained as larger/better autoregressive models are used. Our results also suggest that the proposed method can be used to evaluate pre-trained models in a zero-shot manner without requiring instruction-tuning or RLHF, since their alignment with human labelers seems to correlate with human perception of how good a model is.</p>
+<p>Entailment via meaning containment. We show accuracies obtained on SNLI-Entailment in Figure 2a when applying the Entailment Test described in Section 3. We compare against Cond. Likelihood $(u \Rightarrow v$ if $M(v \mid u)&gt;M(u \mid v)$, else $v \Rightarrow u)$ and Joint Likelihood $(u \Rightarrow v$ if $M(u v)&gt;$ $M(v u)$ ) on the best performing model, Falcon-7B. Our results show that the trajectories sampled</p>
+<p>Table 1: Comparison with other prompt-free and zero-shot methods on Semantic Textual Similarity benchmarks. $* ;†$ indicate results taken from Ni et al. (2021); Gao et al. (2021) respectively. Our method outperforms all baselines, and even encoder-based methods like ST5-Enc-mean (11B). As model size scales, our method approaches the paragon of contrastive-trained models, even though the models we use have been trained only on unsupervised next-token prediction.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">STS-B</th>
+<th style="text-align: center;">STS12</th>
+<th style="text-align: center;">STS13</th>
+<th style="text-align: center;">STS14</th>
+<th style="text-align: center;">STS15</th>
+<th style="text-align: center;">STS16</th>
+<th style="text-align: center;">SICK-R</th>
+<th style="text-align: center;">Avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Paragon: Contrastive-Trained Models</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">CLIP-ViTL14 (Radford et al., 2021)</td>
+<td style="text-align: center;">65.5</td>
+<td style="text-align: center;">67.7</td>
+<td style="text-align: center;">68.5</td>
+<td style="text-align: center;">58.0</td>
+<td style="text-align: center;">67.1</td>
+<td style="text-align: center;">73.6</td>
+<td style="text-align: center;">68.6</td>
+<td style="text-align: center;">67.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">IS-BERT $\dagger$ (Zhang et al., 2020)</td>
+<td style="text-align: center;">56.8</td>
+<td style="text-align: center;">69.2</td>
+<td style="text-align: center;">61.2</td>
+<td style="text-align: center;">75.2</td>
+<td style="text-align: center;">70.2</td>
+<td style="text-align: center;">69.2</td>
+<td style="text-align: center;">64.3</td>
+<td style="text-align: center;">66.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">SimCSE-BERT $\dagger$ (Gao et al., 2021)</td>
+<td style="text-align: center;">68.4</td>
+<td style="text-align: center;">82.4</td>
+<td style="text-align: center;">74.4</td>
+<td style="text-align: center;">80.9</td>
+<td style="text-align: center;">78.6</td>
+<td style="text-align: center;">76.9</td>
+<td style="text-align: center;">72.2</td>
+<td style="text-align: center;">76.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zero-Shot Encoder-based Models</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">BERT-CLS* (Devlin et al., 2018)</td>
+<td style="text-align: center;">16.5</td>
+<td style="text-align: center;">20.2</td>
+<td style="text-align: center;">30.0</td>
+<td style="text-align: center;">20.1</td>
+<td style="text-align: center;">36.9</td>
+<td style="text-align: center;">38.1</td>
+<td style="text-align: center;">42.6</td>
+<td style="text-align: center;">29.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">BERT Large-CLS* (Devlin et al., 2018)</td>
+<td style="text-align: center;">13.4</td>
+<td style="text-align: center;">18.8</td>
+<td style="text-align: center;">22.5</td>
+<td style="text-align: center;">13.7</td>
+<td style="text-align: center;">11.0</td>
+<td style="text-align: center;">24.1</td>
+<td style="text-align: center;">25.1</td>
+<td style="text-align: center;">18.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">RoBERTa Large-CLS* (Liu et al., 2019)</td>
+<td style="text-align: center;">17.2</td>
+<td style="text-align: center;">19.7</td>
+<td style="text-align: center;">22.5</td>
+<td style="text-align: center;">14.6</td>
+<td style="text-align: center;">33.1</td>
+<td style="text-align: center;">37.7</td>
+<td style="text-align: center;">40.5</td>
+<td style="text-align: center;">26.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">BERT-mean* (Devlin et al., 2018)</td>
+<td style="text-align: center;">45.4</td>
+<td style="text-align: center;">38.8</td>
+<td style="text-align: center;">58.0</td>
+<td style="text-align: center;">58.0</td>
+<td style="text-align: center;">63.1</td>
+<td style="text-align: center;">61.1</td>
+<td style="text-align: center;">58.4</td>
+<td style="text-align: center;">54.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">BERT Large-mean* (Devlin et al., 2018)</td>
+<td style="text-align: center;">47.0</td>
+<td style="text-align: center;">27.7</td>
+<td style="text-align: center;">55.8</td>
+<td style="text-align: center;">44.5</td>
+<td style="text-align: center;">51.7</td>
+<td style="text-align: center;">61.9</td>
+<td style="text-align: center;">53.9</td>
+<td style="text-align: center;">48.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">RoBERTa Large-mean* (Liu et al., 2019)</td>
+<td style="text-align: center;">50.6</td>
+<td style="text-align: center;">33.6</td>
+<td style="text-align: center;">57.2</td>
+<td style="text-align: center;">45.7</td>
+<td style="text-align: center;">63.0</td>
+<td style="text-align: center;">61.2</td>
+<td style="text-align: center;">58.4</td>
+<td style="text-align: center;">52.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST5-Enc-first (Base)* (Ni et al., 2021)</td>
+<td style="text-align: center;">16.7</td>
+<td style="text-align: center;">17.5</td>
+<td style="text-align: center;">6.3</td>
+<td style="text-align: center;">-20.7</td>
+<td style="text-align: center;">2.3</td>
+<td style="text-align: center;">21.9</td>
+<td style="text-align: center;">28.6</td>
+<td style="text-align: center;">10.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST5-EncDec-first (Base)* (Ni et al., 2021)</td>
+<td style="text-align: center;">9.4</td>
+<td style="text-align: center;">10.9</td>
+<td style="text-align: center;">29.6</td>
+<td style="text-align: center;">14.9</td>
+<td style="text-align: center;">28.9</td>
+<td style="text-align: center;">30.6</td>
+<td style="text-align: center;">39.3</td>
+<td style="text-align: center;">23.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST5-Enc-mean (Large)* (Ni et al., 2021)</td>
+<td style="text-align: center;">56.3</td>
+<td style="text-align: center;">28.0</td>
+<td style="text-align: center;">52.6</td>
+<td style="text-align: center;">41.4</td>
+<td style="text-align: center;">61.3</td>
+<td style="text-align: center;">63.6</td>
+<td style="text-align: center;">59.5</td>
+<td style="text-align: center;">51.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST5-Enc-mean (11B)* (Ni et al., 2021)</td>
+<td style="text-align: center;">62.8</td>
+<td style="text-align: center;">35.0</td>
+<td style="text-align: center;">60.2</td>
+<td style="text-align: center;">47.6</td>
+<td style="text-align: center;">66.4</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">63.6</td>
+<td style="text-align: center;">58.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Autoregressive Model Baselines: Falcon-7B</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cross Encoder (Muennighoff, 2022)</td>
+<td style="text-align: center;">46.7</td>
+<td style="text-align: center;">25.1</td>
+<td style="text-align: center;">53.9</td>
+<td style="text-align: center;">41.9</td>
+<td style="text-align: center;">53.7</td>
+<td style="text-align: center;">54.2</td>
+<td style="text-align: center;">57.2</td>
+<td style="text-align: center;">47.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint Likelihood</td>
+<td style="text-align: center;">38.1</td>
+<td style="text-align: center;">6.0</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">32.7</td>
+<td style="text-align: center;">33.7</td>
+<td style="text-align: center;">35.7</td>
+<td style="text-align: center;">47.6</td>
+<td style="text-align: center;">33.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Last token</td>
+<td style="text-align: center;">23.1</td>
+<td style="text-align: center;">27.0</td>
+<td style="text-align: center;">20.1</td>
+<td style="text-align: center;">8.5</td>
+<td style="text-align: center;">18.7</td>
+<td style="text-align: center;">18.3</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">22.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean token</td>
+<td style="text-align: center;">18.8</td>
+<td style="text-align: center;">18.0</td>
+<td style="text-align: center;">25.9</td>
+<td style="text-align: center;">18.5</td>
+<td style="text-align: center;">25.8</td>
+<td style="text-align: center;">27.5</td>
+<td style="text-align: center;">37.3</td>
+<td style="text-align: center;">24.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Autoregressive Models (Ours)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2)</td>
+<td style="text-align: center;">55.2</td>
+<td style="text-align: center;">39.9</td>
+<td style="text-align: center;">42.6</td>
+<td style="text-align: center;">30.5</td>
+<td style="text-align: center;">52.4</td>
+<td style="text-align: center;">62.7</td>
+<td style="text-align: center;">62.0</td>
+<td style="text-align: center;">49.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2-XL)</td>
+<td style="text-align: center;">62.1</td>
+<td style="text-align: center;">43.6</td>
+<td style="text-align: center;">54.8</td>
+<td style="text-align: center;">37.7</td>
+<td style="text-align: center;">61.3</td>
+<td style="text-align: center;">68.2</td>
+<td style="text-align: center;">68.4</td>
+<td style="text-align: center;">56.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (Falcon-7B)</td>
+<td style="text-align: center;">67.7</td>
+<td style="text-align: center;">56.3</td>
+<td style="text-align: center;">66.5</td>
+<td style="text-align: center;">53.0</td>
+<td style="text-align: center;">67.4</td>
+<td style="text-align: center;">75.5</td>
+<td style="text-align: center;">73.5</td>
+<td style="text-align: center;">65.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (LLaMA-13B)</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">65.9</td>
+<td style="text-align: center;">53.2</td>
+<td style="text-align: center;">67.8</td>
+<td style="text-align: center;">74.1</td>
+<td style="text-align: center;">73.0</td>
+<td style="text-align: center;">65.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (LLaMA-33B)</td>
+<td style="text-align: center;">71.5</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">54.6</td>
+<td style="text-align: center;">69.1</td>
+<td style="text-align: center;">75.2</td>
+<td style="text-align: center;">73.0</td>
+<td style="text-align: center;">66.6</td>
+</tr>
+</tbody>
+</table>
+<p>from all LLMs that we tested align with the assumptions of the Entailment Test with significantly higher than random probability, outperforming both random and likelihood baselines by $15.7 \%$ and $9.3 \%$ respectively.</p>
+<p>Meaning containment of individual words. We apply the above-defined Hyponym Test to recover hypernym/hyponym relations from WordNet. Our results in Figure 2b and Figure 2c show that the Hyponym Test is mostly able to recover semantic containment relations between words, with an absolute improvement of $12.7 \%$ to $18.1 \%$ over the random baseline, depending on the model. Note that our computation of the hierarchy is based entirely on pairwise comparisons and does not explicitly enforce the transitivity of containments; however, transitivity is almost always already satisfied by the predictions of our method (i.e., the recovered hierarchy is an acyclic graph). We present more qualitative examples in Appendix D.2.</p>
+<p>Vision-language experiments. Our method can be applied without any modification to models that accept multimodal token sequences. In Table 2, we apply our method to CxC (Parekh et al., 2020) using the vision-language model LLaVA (Liu et al., 2023) to show that we can measure semantic distances between not only text, but also between image-image (CxC-SIS) and image-text (CxCSITS) pairs that align with that of human annotators. Our method outperforms all decoder-only baselines on both SIS and SITS. On SIS, our method even outperforms CLIP (Radford et al., 2021) which is trained explicitly on a contrastive image-text objective.</p>
+<p>We highlight that while the "Cond. Likelihood" baseline on SITS should most directly capture $M$ (caption|image), our experiments show that it fares poorly compared to our method. We hypothesize that this results from the limitations of perplexity. For instance, likelihood scores are</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: (a) Accuracy in inferring the entailment direction. On SNLI-Entailment, our method outperforms existing baselines applied to the best model, Falcon-7B, showing that our notion of meaning containment aligns with that of natural language when quantifying "entailment" relationships between statements. (b) Accuracy in inferring hypernym/hyponym direction. Our method performs significantly better than chance on WordNet hyponym/hypernym prediction. (c) Visualization of word hierarchy recovered by our method on a subset of words using Falcon-7B (red indicates predictions that differ from the WordNet ground-truth).</p>
+<p>Table 2: Image-Image Similarity and Image-Text (Caption) Similarity on balanced subsets of CxCSIS and CxC-SITS respectively. Even without any prompts, our method outperforms all zero-shot baselines on both modalities. The performance on the image-text similarity can be further boosted with an alignment prompt, allowing our method to outperform even CLIP which is explicitly trained with a contrastive objective to output aligned image-text embeddings. For CLIP (Vision), we use image embeddings prior to projection onto text embedding space.</p>
+<table>
+<thead>
+<tr>
+<th>Architecture</th>
+<th>Method</th>
+<th>CxC-SIS</th>
+<th>CxC-SITS</th>
+<th>Average</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLIP (Radford et al., 2021)</td>
+<td>CLIP-ViTL/14</td>
+<td>66.33</td>
+<td>64.25</td>
+<td>65.29</td>
+</tr>
+<tr>
+<td></td>
+<td>CLIP-ViTB/16</td>
+<td>66.95</td>
+<td>$\mathbf{6 4 . 6 0}$</td>
+<td>$\mathbf{6 5 . 7 8}$</td>
+</tr>
+<tr>
+<td></td>
+<td>CLIP-ViTL/14 (Vision)</td>
+<td>71.45</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>CLIP-ViTB/16 (Vision)</td>
+<td>72.08</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>LLaVA (Liu et al., 2023)</td>
+<td>Cond. Likelihood</td>
+<td>-</td>
+<td>29.46</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td>Mean Token</td>
+<td>32.76</td>
+<td>-0.52</td>
+<td>16.12</td>
+</tr>
+<tr>
+<td></td>
+<td>Last Token</td>
+<td>26.91</td>
+<td>2.43</td>
+<td>14.67</td>
+</tr>
+<tr>
+<td></td>
+<td>Ours</td>
+<td>$\mathbf{8 1 . 4 7}$</td>
+<td>$\mathbf{5 7 . 1 4}$</td>
+<td>$\mathbf{6 9 . 3 1}$</td>
+</tr>
+<tr>
+<td>LLaVA (Liu et al., 2023) w/</td>
+<td>Mean Token (Prompt)</td>
+<td>32.76</td>
+<td>-0.07</td>
+<td>16.35</td>
+</tr>
+<tr>
+<td>Alignment Prompt</td>
+<td>Last Token (Prompt)</td>
+<td>26.91</td>
+<td>6.21</td>
+<td>16.56</td>
+</tr>
+<tr>
+<td></td>
+<td>Ours (Prompt)</td>
+<td>$\mathbf{8 1 . 4 7}$</td>
+<td>$\mathbf{6 7 . 6 3}$</td>
+<td>$\mathbf{7 4 . 5 5}$</td>
+</tr>
+</tbody>
+</table>
+<p>directly compared across captions of various lengths, for which length normalization does not sufficiently mitigate the bias towards shorter sentences (Wang et al., 2022). Our method avoids this issue entirely by construction, since we compare distributions across the same set of trajectories. We can optionally make use of "alignment prompts" to ensure that the trajectories from image and text modalities are more similar. This improves the resulting performance on the CxC-SITS task, outperforming the CLIP paragon by $13.3 \%$ (Table 2). We discuss this in Appendix E.2.</p>
+<h1>5 CONCLUSIONS</h1>
+<p>We proposed a strategy to investigate how autoregressive language models interpret text. By identifying "meaning" - from the perspective of the model - with score distributions over text continuations, we can compare the meaning of arbitrary strings. This notion of meaning correlates with that of human annotators, outperforming comparable zero-shot and prompt-free baselines on semantic textual similarity tasks using the same architectures. We further defined composition operators on meanings and showed how autoregressive language models can be used to quantify entailment between sentence pairs and hyponym/hypernym relations between individual words. Our method</p>
+<p>can further be applied without any modification to autoregressive vision-language architectures for encoding meaning of images, outperforming even CLIP on semantic image similarity tasks.</p>
+<p>A key limitation of our approach is its computational cost compared to embedding methods that require only a single forward pass. However, our ablations in Appendix A show that that using 1020 trajectories of 10-20 tokens each is sufficient to achieve most of the performance gain compared to using more trajectories or tokens. We also note that both the sampling and score evaluation processes can be easily parallelized. Our approach in its current form is also not computationally efficient for semantic search, since the computation of pairwise similarities between queries and database elements is performed using a different set of trajectories for each new query. We explore ways to mitigate this in Appendix A. 4 and the potential performance trade-offs that they incur.</p>
+<p>Our method is intentionally prompt-free, as our goal in this work was to define the most canonical meaning representation of a string for a given model. However, our experiments in Appendix E strongly suggest that designing appropriate "alignment" prompts could further significantly improve quantitative results on semantic similarity tasks. Finally, our method can be used compare semantic distances between autoregressive models from the same family of architectures sharing a common vocabulary, since their meaning representations belong to the same space of meanings. We leave these directions for future work.</p>
+<h1>REFERENCES</h1>
+<p>Eneko Agirre, Daniel Cer, Mona Diab, and Aitor Gonzalez-Agirre. Semeval-2012 task 6: A pilot on semantic textual similarity. In * SEM 2012: The First Joint Conference on Lexical and Computational Semantics-Volume 1: Proceedings of the main conference and the shared task, and Volume 2: Proceedings of the Sixth International Workshop on Semantic Evaluation (SemEval 2012), pp. 385-393, 2012.</p>
+<p>Eneko Agirre, Daniel Cer, Mona Diab, Aitor Gonzalez-Agirre, and Weiwei Guo. * sem 2013 shared task: Semantic textual similarity. In Second joint conference on lexical and computational semantics (* SEM), volume 1: proceedings of the Main conference and the shared task: semantic textual similarity, pp. 32-43, 2013.</p>
+<p>Eneko Agirre, Carmen Banea, Claire Cardie, Daniel Cer, Mona Diab, Aitor Gonzalez-Agirre, Weiwei Guo, Rada Mihalcea, German Rigau, and Janyce Wiebe. Semeval-2014 task 10: Multilingual semantic textual similarity. In Proceedings of the 8th international workshop on semantic evaluation (SemEval 2014), pp. 81-91, 2014.</p>
+<p>Eneko Agirre, Carmen Banea, Claire Cardie, Daniel Cer, Mona Diab, Aitor Gonzalez-Agirre, Weiwei Guo, Inigo Lopez-Gazpio, Montse Maritxalar, Rada Mihalcea, et al. Semeval-2015 task 2: Semantic textual similarity, english, spanish and pilot on interpretability. In Proceedings of the 9th international workshop on semantic evaluation (SemEval 2015), pp. 252-263, 2015.</p>
+<p>Eneko Agirre, Carmen Banea, Daniel Cer, Mona Diab, Aitor Gonzalez Agirre, Rada Mihalcea, German Rigau Claramunt, and Janyce Wiebe. Semeval-2016 task 1: Semantic textual similarity, monolingual and cross-lingual evaluation. In SemEval-2016. 10th International Workshop on Semantic Evaluation; 2016 Jun 16-17; San Diego, CA. Stroudsburg (PA): ACL; 2016. p. 497-511. ACL (Association for Computational Linguistics), 2016.</p>
+<p>Ebtesam Almazrouei, Hamza Alobeidli, Abdulaziz Alshamsi, Alessandro Cappelli, Ruxandra Cojocaru, Merouane Debbah, Etienne Goffinet, Daniel Heslow, Julien Launay, Quentin Malartic, Badreddine Noune, Baptiste Pannier, and Guilherme Penedo. Falcon-40B: an open large language model with state-of-the-art performance. 2023.</p>
+<p>Emily M Bender and Alexander Koller. Climbing towards nlu: On meaning, form, and understanding in the age of data. In Proceedings of the 58th annual meeting of the association for computational linguistics, pp. 5185-5198, 2020.</p>
+<p>Emily M Bender, Timnit Gebru, Angelina McMillan-Major, and Shmargaret Shmitchell. On the dangers of stochastic parrots: Can language models be too big? In Proceedings of the 2021 ACM conference on fairness, accountability, and transparency, pp. 610-623, 2021.</p>
+<p>Gemma Boleda. Distributional semantics and linguistic theory. Annual Review of Linguistics, 6: 213-234, 2020.</p>
+<p>Samuel R Bowman, Gabor Angeli, Christopher Potts, and Christopher D Manning. A large annotated corpus for learning natural language inference. arXiv preprint arXiv:1508.05326, 2015.</p>
+<p>Tai-Danae Bradley, John Terilla, and Yiannis Vlassopoulos. An enriched category theory of language: from syntax to semantics. La Matematica, 1(2):551-580, 2022.</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are few-shot learners. Advances in neural information processing systems, 33:1877-1901, 2020.</p>
+<p>Daniel Cer, Mona Diab, Eneko Agirre, Inigo Lopez-Gazpio, and Lucia Specia. Semeval-2017 task 1: Semantic textual similarity-multilingual and cross-lingual focused evaluation. arXiv preprint arXiv:1708.00055, 2017.</p>
+<p>Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion Stoica, and Eric P. Xing. Vicuna: An open-source chatbot impressing gpt-4 with $90 \%$ * chatgpt quality, March 2023. URL https: //lmsys.org/blog/2023-03-30-vicuna/.</p>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805, 2018.</p>
+<p>Tianyu Gao, Xingcheng Yao, and Danqi Chen. Simcse: Simple contrastive learning of sentence embeddings. arXiv preprint arXiv:2104.08821, 2021.</p>
+<p>Zellig S Harris. Distributional structure. Word, 10(2-3):146-162, 1954.
+John E. Hopcroft, Rajeev Motwani, and Jeffrey D. Ullman. Introduction to automata theory, languages, and computation. Pearson/Addison Wesley, Boston, 3rd ed edition, 2007. ISBN 978-0-321-45536-9 978-0-321-46225-1 978-0-321-45537-6. OCLC: ocm69013079.</p>
+<p>Bart Jacobs. Introduction to coalgebra. Towards Mathematics of States and Observations, Version, 2, 2012 .</p>
+<p>Ting Jiang, Jian Jiao, Shaohan Huang, Zihan Zhang, Deqing Wang, Fuzhen Zhuang, Furu Wei, Haizhen Huang, Denvy Deng, and Qi Zhang. Promptbert: Improving bert sentence embeddings with prompts. arXiv preprint arXiv:2201.04337, 2022.</p>
+<p>Ting Jiang, Shaohan Huang, Zhongzhi Luan, Deqing Wang, and Fuzhen Zhuang. Scaling sentence embeddings with large language models. arXiv preprint arXiv:2307.16645, 2023.</p>
+<p>Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitnick. Microsoft coco: Common objects in context. In Computer Vision-ECCV 2014: 13th European Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part V 13, pp. 740-755. Springer, 2014.</p>
+<p>Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong Jae Lee. Visual instruction tuning. arXiv preprint arXiv:2304.08485, 2023.</p>
+<p>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. Roberta: A robustly optimized bert pretraining approach. arXiv preprint arXiv:1907.11692, 2019.</p>
+<p>Clara Meister and Ryan Cotterell. Language model evaluation beyond perplexity. arXiv preprint arXiv:2106.00085, 2021.</p>
+<p>Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher. Pointer sentinel mixture models, 2016.</p>
+<p>William Merrill, Yoav Goldberg, Roy Schwartz, and Noah A Smith. Provable limitations of acquiring meaning from ungrounded form: What will future language models understand? Transactions of the Association for Computational Linguistics, 9:1047-1060, 2021.</p>
+<p>Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S. Corrado, and Jeff Dean. Distributed representations of words and phrases and their compositionality. In Advances in neural information processing systems, pp. 3111-3119, 2013.</p>
+<p>George A Miller. Wordnet: a lexical database for english. Communications of the ACM, 38(11): $39-41,1995$.</p>
+<p>Niklas Muennighoff. Sgpt: Gpt sentence embeddings for semantic search. arXiv preprint arXiv:2202.08904, 2022.</p>
+<p>Jianmo Ni, Gustavo Hernández Ábrego, Noah Constant, Ji Ma, Keith B Hall, Daniel Cer, and Yinfei Yang. Sentence-t5: Scalable sentence encoders from pre-trained text-to-text models. arXiv preprint arXiv:2108.08877, 2021.</p>
+<p>OpenAI. Gpt-4 technical report, 2023.
+Juri Opitz and Anette Frank. Sbert studies meaning representations: Decomposing sentence embeddings into explainable semantic features. In Proceedings of the 2nd Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics and the 12th International Joint Conference on Natural Language Processing, pp. 625-638, 2022.</p>
+<p>Zarana Parekh, Jason Baldridge, Daniel Cer, Austin Waters, and Yinfei Yang. Crisscrossed captions: Extended intramodal and intermodal semantic similarity judgments for ms-coco. arXiv preprint arXiv:2004.15020, 2020.</p>
+<p>Jean-Eric Pin. Mathematical Foundations of Automata Theory. 2022.
+Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et al. Language models are unsupervised multitask learners. OpenAI blog, 1(8):9, 2019.</p>
+<p>Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language supervision. In International conference on machine learning, pp. 8748-8763. PMLR, 2021.</p>
+<p>Nils Reimers and Iryna Gurevych. Sentence-bert: Sentence embeddings using siamese bertnetworks. arXiv preprint arXiv:1908.10084, 2019.</p>
+<p>Magnus Sahlgren. The distributional hypothesis. The Italian Journal of Linguistics, 20:33-54, 2008. URL https://api.semanticscholar.org/CorpusID:23750999.</p>
+<p>Stefano Soatto, Paulo Tabuada, Pratik Chaudhari, and Tian Yu Liu. Taming AI Bots: Controllability of Neural States in Large Language Models, May 2023. URL http://arxiv.org/abs/ 2305.18449. arXiv:2305.18449 [cs, eess].</p>
+<p>Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, et al. Llama: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971, 2023.</p>
+<p>Yequan Wang, Jiawen Deng, Aixin Sun, and Xuying Meng. Perplexity from plm is unreliable for evaluating text quality. arXiv preprint arXiv:2210.05892, 2022.</p>
+<p>Ludwig Wittgenstein. Philosophical Investigations. Macmillan Publishing Company, 1 edition, 1953.</p>
+<p>Zhaofeng Wu, William Merrill, Hao Peng, Iz Beltagy, and Noah A Smith. Transparency helps reveal when language models learn meaning. Transactions of the Association for Computational Linguistics, 11:617-634, 2023.</p>
+<p>Yan Zhang, Ruidan He, Zuozhu Liu, Kwan Hui Lim, and Lidong Bing. An unsupervised sentence embedding method by mutual information maximization. arXiv preprint arXiv:2009.12061, 2020.</p>
+<h1>Supplementary Material</h1>
+<h2>A Ablation Studies</h2>
+<p>In this section, we present ablation studies on how trajectories are sampled in Appendix A.1, choice of distance function in Appendix A.2, completing "incomplete" sentences with a single full stop in Appendix A.3, and discuss extensions to perform computationally efficient semantic search in Appendix A.4.</p>
+<h2>A. 1 Ablation on Trajectories</h2>
+<p>We present ablations on Algorithm 1 to investigate the impact of (1) number of trajectories (2) length of trajectories and (3) sampling temperature. All experiments are done on the validation set of STS-B instead of test set to avoid over-fitting results to the test set.</p>
+<p>Figure 3(a) shows that performance on evaluating semantic similarity increases with both number and length of trajectories sampled, at the cost of computational time. We use $n=m=20$ for all of our main experiments, which is sufficient to yield most of the performance. We also ablate of sampling temperature $\lambda$ in Figure 3(b), where we show that sampling trajectories that are either too diverse or lack diversity (as measured by $\lambda$ ) tends to harm performance. Instead, the standard temperature value $\lambda=1.0$ yields the best results.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Ablation over maximum length (M), number (N) of trajectories, and sampling temperature $(\lambda)$ on STS-B validation dataset using the Falcon-7B model. While only a small number of short trajectories is sufficient to yield good results, performance on semantic similarity generally increases with both number and length of trajectories. Too much diversity and lack of diversity in the sampled trajectories both harm performance, as shown by higher and lower values of $\lambda$ respectively.</p>
+<h2>A. 2 Choice of Distance Function</h2>
+<p>We further ablate over the choice of distance function in Table 3. For distance functions on probability spaces (Hellinger, Total Variation, Symmetric KL-Divergence), we normalize the scores $M_{u}$ using</p>
+<p>$$
+M_{u}^{\text {norm }}(t):=\frac{M_{u}(t)^{\tau}}{\sum_{t^{\prime} \in \mathcal{A}^{\tau}} M_{u}\left(t^{\prime}\right)^{\tau}}
+$$</p>
+<p>to convert them into a probability distribution summing to 1 . We use $\tau=0.5$ which we experimentally determined to perform best. We compare against our choice of distance function as defined in eq. (2), and a modified version that uses L2 instead of L1 loss, which we refer to as Log-L1 and Log-L2 respectively. We show that most choices of distance functions (Symmetric KL Divergence, Hellinger distance, Log-L2, Log-L1) work reasonably well for computing the semantic distance between strings. We chose Log-L1 in our main experiments, which performs best.</p>
+<p>Table 3: Ablation over the choice of distance function on LLaMA-13B and LLaVA. For Hellinger distance, Total Variation (TV), and Symmetric KL-Divergence, we set $\tau=0.5$ as in eq. (3). Here we use the prompt-aligned version of our method for SITS.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: center;">STS-B</th>
+<th style="text-align: center;">STS-12</th>
+<th style="text-align: center;">STS-13</th>
+<th style="text-align: center;">STS-14</th>
+<th style="text-align: center;">STS-15</th>
+<th style="text-align: center;">STS-16</th>
+<th style="text-align: center;">SNLI</th>
+<th style="text-align: center;">SIS</th>
+<th style="text-align: center;">SITS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Hellinger</td>
+<td style="text-align: center;">69.7</td>
+<td style="text-align: center;">53.0</td>
+<td style="text-align: center;">65.5</td>
+<td style="text-align: center;">50.7</td>
+<td style="text-align: center;">65.6</td>
+<td style="text-align: center;">71.2</td>
+<td style="text-align: center;">65.8</td>
+<td style="text-align: center;">81.3</td>
+<td style="text-align: center;">67.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">TV</td>
+<td style="text-align: center;">51.2</td>
+<td style="text-align: center;">40.9</td>
+<td style="text-align: center;">47.8</td>
+<td style="text-align: center;">32.8</td>
+<td style="text-align: center;">42.4</td>
+<td style="text-align: center;">50.9</td>
+<td style="text-align: center;">64.1</td>
+<td style="text-align: center;">78.5</td>
+<td style="text-align: center;">62.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sym-KL</td>
+<td style="text-align: center;">69.7</td>
+<td style="text-align: center;">52.9</td>
+<td style="text-align: center;">65.4</td>
+<td style="text-align: center;">50.6</td>
+<td style="text-align: center;">65.5</td>
+<td style="text-align: center;">71.1</td>
+<td style="text-align: center;">65.9</td>
+<td style="text-align: center;">80.9</td>
+<td style="text-align: center;">67.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Log-L1</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">65.9</td>
+<td style="text-align: center;">53.2</td>
+<td style="text-align: center;">67.8</td>
+<td style="text-align: center;">74.1</td>
+<td style="text-align: center;">63.6</td>
+<td style="text-align: center;">81.0</td>
+<td style="text-align: center;">67.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Log-L2</td>
+<td style="text-align: center;">69.2</td>
+<td style="text-align: center;">51.4</td>
+<td style="text-align: center;">64.1</td>
+<td style="text-align: center;">48.2</td>
+<td style="text-align: center;">65.7</td>
+<td style="text-align: center;">71.6</td>
+<td style="text-align: center;">65.4</td>
+<td style="text-align: center;">80.8</td>
+<td style="text-align: center;">67.0</td>
+</tr>
+</tbody>
+</table>
+<h1>A. 3 COMPLETING THE SENTENCE WITH FULL STOP</h1>
+<p>According to our definitions, the meaning representations of complete and incomplete sentences differ, since the distributions over their trajectories are likely to be very different. To see this, consider the following pair of semantically similar sentences that differ by the last punctuation: "The dog ate the bone" and "The dog ate the bone.". The continuations of the latter are likely to start with a capital letter, but this does not hold for the former. Hence, our method is likely to attribute larger distances between these two sentences than humans. In Table 4, we show that by ensuring all sentences we compare are complete, by appending a full stop when necessary, the similarity scores computed between sentences align better with that of human annotators. We also show that completing the sentence can occasionally improve results for certain baselines as well.</p>
+<h2>A. 4 Extension to Semantic Search</h2>
+<p>We note that Algorithm 1 is computationally expensive for semantic search, where we wish to retrieve the most similar sample in a search database $\mathcal{D}$ given a query $q$, since it requires multiple sampling and forward pass operations for each pairwise comparison $d(q, s)$ for all $s \in \mathcal{D}$. As such, an inference cost of $\mathcal{O}(|\mathcal{D}|)$ is incurred each time a new query is received. This holds true even for previously proposed methods for semantic search using decoder-only models, e.g., (Muennighoff, 2022). Instead, if there exists a fixed set of trajectories $T_{\mathcal{D}}$ for the search database $\mathcal{D}$ that can be used instead of $\mathcal{A}^{*}$ in eq. (1), then $M_{s}$ for each item $s \in \mathcal{D}$ can be pre-computed beforehand, incurring a one-time cost of $\mathcal{O}(|\mathcal{D}|)$. Hence, for each subsequent query, we only need to incur an $\mathcal{O}(1)$ inference cost to compute $M_{q}$ on $T_{\mathcal{D}}$. This can be compared against the pre-computed embeddings in $\mathcal{D}$ using standard distance functions such as L1. We present a proof-of-concept experiment on the STS-B validation dataset to observe the trade-off in performance that this incurs in Table 5, where we obtain $T_{\mathcal{D}}$ by naively selecting $n$ examples from the dataset uniformly at random, from each of which we generate a single trajectory. Nevertheless, our preliminary results demonstrate that it is indeed possible to achieve satisfactory performance using fixed sets of trajectories. We leave investigating more sophisticated methods to construct $T_{\mathcal{D}}$ for future work.</p>
+<h2>B FURTHER BASELINES</h2>
+<p>We provided baseline comparisons in Table 1 of the main body of the paper against one of the best model tested, Falcon-7B. In Table 6, we provide additional baseline results for several other autoregressive architectures used.</p>
+<h2>C ADDITIONAL IMPLEMENTATION DETAILS</h2>
+<p>We use the base GPT-2, GPT-2-XL (Radford et al., 2019), LLaMA-13B (Touvron et al., 2023) and Falcon-7B (Almazrouei et al., 2023) for experiments on models trained with unsupervised pre-training objectives. We use Vicuna-13B (Chiang et al., 2023) and StableVicuna-13B ${ }^{2}$ as the instruction-tuned version and the RLHF-trained (reinforcement learning with human feedback) ver-</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 4: Ablation over adding a full stop (FS) to incomplete sentences. Based on our definitions, meaning representations of complete and incomplete sentences differ. We show that the meaning similarities of complete sentences align better with that of human annotators.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">FS?</th>
+<th style="text-align: left;">STS-B</th>
+<th style="text-align: left;">STS12</th>
+<th style="text-align: left;">STS13</th>
+<th style="text-align: left;">STS14</th>
+<th style="text-align: left;">STS15</th>
+<th style="text-align: left;">STS16</th>
+<th style="text-align: left;">SICK-R</th>
+<th style="text-align: left;">Avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Baselines (Falcon-7B)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cond. Likelihood</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">46.0</td>
+<td style="text-align: left;">22.3</td>
+<td style="text-align: left;">52.5</td>
+<td style="text-align: left;">41.7</td>
+<td style="text-align: left;">46.9</td>
+<td style="text-align: left;">51.8</td>
+<td style="text-align: left;">54.3</td>
+<td style="text-align: left;">45.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint Likelihood</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">38.3</td>
+<td style="text-align: left;">4.5</td>
+<td style="text-align: left;">38.3</td>
+<td style="text-align: left;">32.4</td>
+<td style="text-align: left;">28.3</td>
+<td style="text-align: left;">34.4</td>
+<td style="text-align: left;">43.3</td>
+<td style="text-align: left;">31.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Last token</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">24.9</td>
+<td style="text-align: left;">18.9</td>
+<td style="text-align: left;">13.6</td>
+<td style="text-align: left;">4.2</td>
+<td style="text-align: left;">4.7</td>
+<td style="text-align: left;">18.5</td>
+<td style="text-align: left;">34.1</td>
+<td style="text-align: left;">17.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean token</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">18.8</td>
+<td style="text-align: left;">18.0</td>
+<td style="text-align: left;">25.9</td>
+<td style="text-align: left;">18.5</td>
+<td style="text-align: left;">25.8</td>
+<td style="text-align: left;">27.5</td>
+<td style="text-align: left;">37.3</td>
+<td style="text-align: left;">24.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cond. Likelihood</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">46.7</td>
+<td style="text-align: left;">25.1</td>
+<td style="text-align: left;">53.9</td>
+<td style="text-align: left;">41.9</td>
+<td style="text-align: left;">53.7</td>
+<td style="text-align: left;">54.2</td>
+<td style="text-align: left;">57.2</td>
+<td style="text-align: left;">47.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint Likelihood</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">38.1</td>
+<td style="text-align: left;">6.0</td>
+<td style="text-align: left;">40.8</td>
+<td style="text-align: left;">32.7</td>
+<td style="text-align: left;">33.7</td>
+<td style="text-align: left;">35.7</td>
+<td style="text-align: left;">47.6</td>
+<td style="text-align: left;">33.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Last token</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">23.1</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">20.1</td>
+<td style="text-align: left;">8.5</td>
+<td style="text-align: left;">18.7</td>
+<td style="text-align: left;">18.3</td>
+<td style="text-align: left;">40.8</td>
+<td style="text-align: left;">22.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean token</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">18.1</td>
+<td style="text-align: left;">21.7</td>
+<td style="text-align: left;">25.4</td>
+<td style="text-align: left;">16.9</td>
+<td style="text-align: left;">26.3</td>
+<td style="text-align: left;">26.6</td>
+<td style="text-align: left;">33.9</td>
+<td style="text-align: left;">24.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Baselines (LLaMA-13B)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cond. Likelihood</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">41.9</td>
+<td style="text-align: left;">19.8</td>
+<td style="text-align: left;">54.6</td>
+<td style="text-align: left;">40.1</td>
+<td style="text-align: left;">54.6</td>
+<td style="text-align: left;">52.2</td>
+<td style="text-align: left;">55.0</td>
+<td style="text-align: left;">45.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint Likelihood</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">36.6</td>
+<td style="text-align: left;">-0.6</td>
+<td style="text-align: left;">34.8</td>
+<td style="text-align: left;">27.8</td>
+<td style="text-align: left;">28.2</td>
+<td style="text-align: left;">32.6</td>
+<td style="text-align: left;">43.2</td>
+<td style="text-align: left;">28.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Last token</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">18.8</td>
+<td style="text-align: left;">15.9</td>
+<td style="text-align: left;">18.2</td>
+<td style="text-align: left;">5.6</td>
+<td style="text-align: left;">2.3</td>
+<td style="text-align: left;">9.9</td>
+<td style="text-align: left;">35.6</td>
+<td style="text-align: left;">15.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean token</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">28.0</td>
+<td style="text-align: left;">22.0</td>
+<td style="text-align: left;">27.5</td>
+<td style="text-align: left;">19.6</td>
+<td style="text-align: left;">30.8</td>
+<td style="text-align: left;">35.8</td>
+<td style="text-align: left;">43.7</td>
+<td style="text-align: left;">29.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cond. Likelihood</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">44.3</td>
+<td style="text-align: left;">20.8</td>
+<td style="text-align: left;">51.8</td>
+<td style="text-align: left;">38.6</td>
+<td style="text-align: left;">56.0</td>
+<td style="text-align: left;">50.9</td>
+<td style="text-align: left;">56.7</td>
+<td style="text-align: left;">45.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint Likelihood</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">36.7</td>
+<td style="text-align: left;">1.1</td>
+<td style="text-align: left;">35.0</td>
+<td style="text-align: left;">27.7</td>
+<td style="text-align: left;">33.0</td>
+<td style="text-align: left;">32.4</td>
+<td style="text-align: left;">48.0</td>
+<td style="text-align: left;">30.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Last Token</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">18.2</td>
+<td style="text-align: left;">24.2</td>
+<td style="text-align: left;">29.0</td>
+<td style="text-align: left;">16.8</td>
+<td style="text-align: left;">21.9</td>
+<td style="text-align: left;">10.2</td>
+<td style="text-align: left;">40.8</td>
+<td style="text-align: left;">23.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean Token</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">28.8</td>
+<td style="text-align: left;">25.2</td>
+<td style="text-align: left;">30.2</td>
+<td style="text-align: left;">20.2</td>
+<td style="text-align: left;">31.5</td>
+<td style="text-align: left;">35.1</td>
+<td style="text-align: left;">45.0</td>
+<td style="text-align: left;">30.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2)</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">48.3</td>
+<td style="text-align: left;">28.7</td>
+<td style="text-align: left;">39.7</td>
+<td style="text-align: left;">23.8</td>
+<td style="text-align: left;">35.7</td>
+<td style="text-align: left;">60.0</td>
+<td style="text-align: left;">56.6</td>
+<td style="text-align: left;">41.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2-XL)</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">56.8</td>
+<td style="text-align: left;">32.5</td>
+<td style="text-align: left;">49.5</td>
+<td style="text-align: left;">29.1</td>
+<td style="text-align: left;">45.2</td>
+<td style="text-align: left;">66.0</td>
+<td style="text-align: left;">63.1</td>
+<td style="text-align: left;">48.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (Falcon-7B)</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">67.2</td>
+<td style="text-align: left;">44.0</td>
+<td style="text-align: left;">62.1</td>
+<td style="text-align: left;">44.7</td>
+<td style="text-align: left;">57.5</td>
+<td style="text-align: left;">76.1</td>
+<td style="text-align: left;">69.3</td>
+<td style="text-align: left;">60.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (LLaMA-13B)</td>
+<td style="text-align: left;">$\boldsymbol{X}$</td>
+<td style="text-align: left;">66.9</td>
+<td style="text-align: left;">39.9</td>
+<td style="text-align: left;">61.2</td>
+<td style="text-align: left;">45.0</td>
+<td style="text-align: left;">56.4</td>
+<td style="text-align: left;">74.4</td>
+<td style="text-align: left;">68.7</td>
+<td style="text-align: left;">58.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2)</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">55.2</td>
+<td style="text-align: left;">39.9</td>
+<td style="text-align: left;">42.6</td>
+<td style="text-align: left;">30.5</td>
+<td style="text-align: left;">52.4</td>
+<td style="text-align: left;">62.7</td>
+<td style="text-align: left;">62.0</td>
+<td style="text-align: left;">49.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (GPT-2-XL)</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">62.1</td>
+<td style="text-align: left;">43.6</td>
+<td style="text-align: left;">54.8</td>
+<td style="text-align: left;">37.7</td>
+<td style="text-align: left;">61.3</td>
+<td style="text-align: left;">68.2</td>
+<td style="text-align: left;">68.4</td>
+<td style="text-align: left;">56.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (Falcon-7B)</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">67.7</td>
+<td style="text-align: left;">56.3</td>
+<td style="text-align: left;">66.5</td>
+<td style="text-align: left;">53.0</td>
+<td style="text-align: left;">67.4</td>
+<td style="text-align: left;">75.5</td>
+<td style="text-align: left;">73.5</td>
+<td style="text-align: left;">65.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (LLaMA-13B)</td>
+<td style="text-align: left;">$\checkmark$</td>
+<td style="text-align: left;">70.6</td>
+<td style="text-align: left;">52.5</td>
+<td style="text-align: left;">65.9</td>
+<td style="text-align: left;">53.2</td>
+<td style="text-align: left;">67.8</td>
+<td style="text-align: left;">74.1</td>
+<td style="text-align: left;">73.0</td>
+<td style="text-align: left;">65.3</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Trade-off in performance on STS-B validation set from using a fixed set of trajectories $(m=20)$ for all pairwise distance comparisons.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Spearman Corr (x100)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ours (Falcon-7B)</td>
+<td style="text-align: center;">74.74</td>
+</tr>
+<tr>
+<td style="text-align: left;">- Fixed Traj $(n=20)$</td>
+<td style="text-align: center;">49.41</td>
+</tr>
+<tr>
+<td style="text-align: left;">- Fixed Traj $(n=40)$</td>
+<td style="text-align: center;">53.29</td>
+</tr>
+</tbody>
+</table>
+<p>sion of LLaMA-13B respectively. We use LLaVA $^{2}$ (Liu et al., 2023) for our multimodal experiments, which is trained to accept both image and text inputs.</p>
+<p>Technically, computing distances with Equation (2) when compositional terms are involved would require sampling trajectories from the composed distributions. In particular, evaluating $d\left(M_{u} \wedge\right.$ $\left.M_{v}, M_{u}\right)$ in the Entailment test would require sampling trajectories $T_{u \wedge v}$ from the composed distribution $M_{u} \wedge M_{v}$, then approximating Equation (2) with the set of trajectories $T_{u \wedge v} \sqcup T_{u}$. For the sake of simplicity and computational efficiency, we instead compute $M_{u} \wedge M_{v}$ over the set of trajectories $T_{u} \sqcup T_{v}$ sampled from $u$ and $v$, which we empirically found to be similarly effective when applied to downstream tasks.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 6: Comparison of our method against baselines (best among with/without fullstop) for each model architecture on STS tasks.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">STS-B</th>
+<th style="text-align: center;">STS12</th>
+<th style="text-align: center;">STS13</th>
+<th style="text-align: center;">STS14</th>
+<th style="text-align: center;">STS15</th>
+<th style="text-align: center;">STS16</th>
+<th style="text-align: center;">SICK-R</th>
+<th style="text-align: center;">Avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">GPT-2</td>
+<td style="text-align: center;">Cond. Likelihood</td>
+<td style="text-align: center;">37.9</td>
+<td style="text-align: center;">28.6</td>
+<td style="text-align: center;">39.1</td>
+<td style="text-align: center;">34.3</td>
+<td style="text-align: center;">50.5</td>
+<td style="text-align: center;">47.1</td>
+<td style="text-align: center;">53.0</td>
+<td style="text-align: center;">41.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Joint Likelihood</td>
+<td style="text-align: center;">27.9</td>
+<td style="text-align: center;">18.4</td>
+<td style="text-align: center;">22.0</td>
+<td style="text-align: center;">23.1</td>
+<td style="text-align: center;">32.8</td>
+<td style="text-align: center;">27.2</td>
+<td style="text-align: center;">44.0</td>
+<td style="text-align: center;">27.9</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Last token</td>
+<td style="text-align: center;">27.7</td>
+<td style="text-align: center;">8.4</td>
+<td style="text-align: center;">23.0</td>
+<td style="text-align: center;">10.5</td>
+<td style="text-align: center;">31.0</td>
+<td style="text-align: center;">26.6</td>
+<td style="text-align: center;">41.9</td>
+<td style="text-align: center;">24.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Mean token</td>
+<td style="text-align: center;">20.4</td>
+<td style="text-align: center;">17.0</td>
+<td style="text-align: center;">22.0</td>
+<td style="text-align: center;">17.6</td>
+<td style="text-align: center;">36.2</td>
+<td style="text-align: center;">31.5</td>
+<td style="text-align: center;">38.4</td>
+<td style="text-align: center;">26.2</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">55.2</td>
+<td style="text-align: center;">39.9</td>
+<td style="text-align: center;">42.6</td>
+<td style="text-align: center;">30.5</td>
+<td style="text-align: center;">52.4</td>
+<td style="text-align: center;">62.7</td>
+<td style="text-align: center;">62.0</td>
+<td style="text-align: center;">49.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">GPT-2-XL</td>
+<td style="text-align: center;">Cond. Likelihood</td>
+<td style="text-align: center;">40.3</td>
+<td style="text-align: center;">23.8</td>
+<td style="text-align: center;">43.2</td>
+<td style="text-align: center;">33.6</td>
+<td style="text-align: center;">51.3</td>
+<td style="text-align: center;">48.7</td>
+<td style="text-align: center;">55.0</td>
+<td style="text-align: center;">42.3</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Joint Likelihood</td>
+<td style="text-align: center;">31.4</td>
+<td style="text-align: center;">13.3</td>
+<td style="text-align: center;">29.3</td>
+<td style="text-align: center;">23.8</td>
+<td style="text-align: center;">35.2</td>
+<td style="text-align: center;">28.6</td>
+<td style="text-align: center;">46.0</td>
+<td style="text-align: center;">29.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Last token</td>
+<td style="text-align: center;">24.1</td>
+<td style="text-align: center;">-5.9</td>
+<td style="text-align: center;">20.9</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">25.6</td>
+<td style="text-align: center;">21.4</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">18.8</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Mean token</td>
+<td style="text-align: center;">21.1</td>
+<td style="text-align: center;">13.0</td>
+<td style="text-align: center;">28.0</td>
+<td style="text-align: center;">16.7</td>
+<td style="text-align: center;">34.9</td>
+<td style="text-align: center;">33.0</td>
+<td style="text-align: center;">37.8</td>
+<td style="text-align: center;">26.4</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">62.1</td>
+<td style="text-align: center;">43.6</td>
+<td style="text-align: center;">54.8</td>
+<td style="text-align: center;">37.7</td>
+<td style="text-align: center;">61.3</td>
+<td style="text-align: center;">68.2</td>
+<td style="text-align: center;">68.4</td>
+<td style="text-align: center;">56.6</td>
+</tr>
+<tr>
+<td style="text-align: center;">Falcon-7B</td>
+<td style="text-align: center;">Cond. Likelihood</td>
+<td style="text-align: center;">46.7</td>
+<td style="text-align: center;">25.1</td>
+<td style="text-align: center;">53.9</td>
+<td style="text-align: center;">41.9</td>
+<td style="text-align: center;">53.7</td>
+<td style="text-align: center;">54.2</td>
+<td style="text-align: center;">57.2</td>
+<td style="text-align: center;">47.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Joint Likelihood</td>
+<td style="text-align: center;">38.1</td>
+<td style="text-align: center;">6.0</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">32.7</td>
+<td style="text-align: center;">33.7</td>
+<td style="text-align: center;">35.7</td>
+<td style="text-align: center;">47.6</td>
+<td style="text-align: center;">33.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Last token</td>
+<td style="text-align: center;">23.1</td>
+<td style="text-align: center;">27.0</td>
+<td style="text-align: center;">20.1</td>
+<td style="text-align: center;">8.5</td>
+<td style="text-align: center;">18.7</td>
+<td style="text-align: center;">18.3</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">22.4</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Mean token</td>
+<td style="text-align: center;">18.8</td>
+<td style="text-align: center;">18.0</td>
+<td style="text-align: center;">25.9</td>
+<td style="text-align: center;">18.5</td>
+<td style="text-align: center;">25.8</td>
+<td style="text-align: center;">27.5</td>
+<td style="text-align: center;">37.3</td>
+<td style="text-align: center;">24.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">67.7</td>
+<td style="text-align: center;">56.3</td>
+<td style="text-align: center;">66.5</td>
+<td style="text-align: center;">53.0</td>
+<td style="text-align: center;">67.4</td>
+<td style="text-align: center;">75.5</td>
+<td style="text-align: center;">73.5</td>
+<td style="text-align: center;">65.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">LLaMA-13B</td>
+<td style="text-align: center;">Cond. Likelihood</td>
+<td style="text-align: center;">44.3</td>
+<td style="text-align: center;">20.8</td>
+<td style="text-align: center;">51.8</td>
+<td style="text-align: center;">38.6</td>
+<td style="text-align: center;">56.0</td>
+<td style="text-align: center;">50.9</td>
+<td style="text-align: center;">56.7</td>
+<td style="text-align: center;">45.6</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Joint Likelihood</td>
+<td style="text-align: center;">36.7</td>
+<td style="text-align: center;">1.1</td>
+<td style="text-align: center;">35.0</td>
+<td style="text-align: center;">27.7</td>
+<td style="text-align: center;">33.0</td>
+<td style="text-align: center;">32.4</td>
+<td style="text-align: center;">48.0</td>
+<td style="text-align: center;">30.6</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Last token</td>
+<td style="text-align: center;">18.2</td>
+<td style="text-align: center;">24.2</td>
+<td style="text-align: center;">29.0</td>
+<td style="text-align: center;">16.8</td>
+<td style="text-align: center;">21.9</td>
+<td style="text-align: center;">10.2</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">23.0</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Mean token</td>
+<td style="text-align: center;">28.8</td>
+<td style="text-align: center;">25.2</td>
+<td style="text-align: center;">30.2</td>
+<td style="text-align: center;">20.2</td>
+<td style="text-align: center;">31.5</td>
+<td style="text-align: center;">35.1</td>
+<td style="text-align: center;">45.0</td>
+<td style="text-align: center;">30.9</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">65.9</td>
+<td style="text-align: center;">53.2</td>
+<td style="text-align: center;">67.8</td>
+<td style="text-align: center;">74.1</td>
+<td style="text-align: center;">73.0</td>
+<td style="text-align: center;">65.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">LLaMA-33B</td>
+<td style="text-align: center;">Cond. Likelihood</td>
+<td style="text-align: center;">31.4</td>
+<td style="text-align: center;">21.5</td>
+<td style="text-align: center;">41.5</td>
+<td style="text-align: center;">35.3</td>
+<td style="text-align: center;">38.8</td>
+<td style="text-align: center;">38.3</td>
+<td style="text-align: center;">56.3</td>
+<td style="text-align: center;">37.6</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Joint Likelihood</td>
+<td style="text-align: center;">36.2</td>
+<td style="text-align: center;">4.9</td>
+<td style="text-align: center;">35.6</td>
+<td style="text-align: center;">27.7</td>
+<td style="text-align: center;">30.3</td>
+<td style="text-align: center;">32.3</td>
+<td style="text-align: center;">47.8</td>
+<td style="text-align: center;">30.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Last token</td>
+<td style="text-align: center;">21.8</td>
+<td style="text-align: center;">20.1</td>
+<td style="text-align: center;">13.2</td>
+<td style="text-align: center;">9.4</td>
+<td style="text-align: center;">22.5</td>
+<td style="text-align: center;">11.5</td>
+<td style="text-align: center;">40.8</td>
+<td style="text-align: center;">19.9</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Mean token</td>
+<td style="text-align: center;">27.9</td>
+<td style="text-align: center;">24.0</td>
+<td style="text-align: center;">29.6</td>
+<td style="text-align: center;">21.7</td>
+<td style="text-align: center;">35.4</td>
+<td style="text-align: center;">34.6</td>
+<td style="text-align: center;">43.5</td>
+<td style="text-align: center;">31.0</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">71.5</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">54.6</td>
+<td style="text-align: center;">69.1</td>
+<td style="text-align: center;">75.2</td>
+<td style="text-align: center;">73.0</td>
+<td style="text-align: center;">66.6</td>
+</tr>
+<tr>
+<td style="text-align: center;">Vicuna-13B</td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">70.2</td>
+<td style="text-align: center;">53.4</td>
+<td style="text-align: center;">62.4</td>
+<td style="text-align: center;">52.0</td>
+<td style="text-align: center;">68.5</td>
+<td style="text-align: center;">73.9</td>
+<td style="text-align: center;">75.3</td>
+<td style="text-align: center;">65.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">StableVicuna-13B</td>
+<td style="text-align: center;">Ours</td>
+<td style="text-align: center;">70.5</td>
+<td style="text-align: center;">56.2</td>
+<td style="text-align: center;">63.9</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">67.9</td>
+<td style="text-align: center;">74.8</td>
+<td style="text-align: center;">75.3</td>
+<td style="text-align: center;">65.9</td>
+</tr>
+</tbody>
+</table>
+<p>For experiments on WordNet hyponym/hypernym relations, we leverage the WikiText (Merity et al., 2016) corpus by sampling up to $n=100$ contexts (i.e. paragraphs in the WikiText dataset) containing each given word.</p>
+<h1>C. 1 WORDNET HYponym/HYPERNYM SUBSET:</h1>
+<p>For our experiments, we use a total of 166 pairwise hyponym/hypernym relation between the following sets sampled from WordNet (Miller, 1995), enumerated in order of meaning containment:</p>
+<ol>
+<li>{puppy, dog, canine, carnivore, predator, animal, organism}</li>
+<li>{storybook, book, publication, work, product, creation, artifact}</li>
+<li>{dine, eat, consume}</li>
+<li>${$ soar, fly, travel $}$</li>
+<li>{chuckle, laugh, express emotion}</li>
+<li>{bobcat, lynx, wildcat, cat, feline, carnivore}</li>
+<li>{penthouse, apartment, housing, structure}</li>
+<li>{recliner, armchair, chair, seat, furniture, furnishing, instrumentality}</li>
+<li>{neurosurgeon, surgeon, doctor, medical practitioner, professional, adult, person}</li>
+<li>{brunch, meal, food, substance}</li>
+<li>
+<p>{hydrofoil, speedboat, motorboat, boat, vessel, craft, vehicle, conveyance}</p>
+</li>
+<li>
+<p>{ consult, research, investigate, analyze }</p>
+</li>
+<li>{ symposium, conference, meeting, gathering }</li>
+<li>{ hacker, programmer, engineer, person }</li>
+</ol>
+<h1>C. 2 Hyponym Test</h1>
+<p>We detail the Hyponym Test for quantifying meaning containment between words in algorithm 2.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">Hyponym</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="p">(</span><span class="n">Words</span><span class="p">)</span>
+<span class="nl">Require</span><span class="p">:</span><span class="w"> </span><span class="n">Model</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">M</span><span class="err">\</span><span class="p">),</span><span class="w"> </span><span class="n">Words</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">u</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">v</span><span class="err">\</span><span class="p">),</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">trajectories</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">n</span><span class="err">\</span><span class="p">),</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">d</span><span class="err">\</span><span class="p">),</span><span class="w"> </span><span class="nc">Text</span><span class="w"> </span><span class="n">Corpus</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">D_</span><span class="err">{\</span><span class="nc">text</span><span class="w"> </span><span class="err">{</span><span class="n">corpus</span><span class="w"> </span><span class="err">}}\</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="err">\</span><span class="p">(</span><span class="n">T_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="o">=</span><span class="err">\</span><span class="nf">left</span><span class="err">\{\</span><span class="nf">left</span><span class="p">(</span><span class="n">s_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">t_</span><span class="err">{</span><span class="n">i</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="err">\}</span><span class="n">_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="n">n</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">Sample</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">n</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">paragraphs</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="n">s_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="n">t_</span><span class="err">{</span><span class="n">i</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">u</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">D_</span><span class="err">{\</span><span class="nc">text</span><span class="w"> </span><span class="err">{</span><span class="n">corpus</span><span class="w"> </span><span class="err">}}\</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="err">\</span><span class="p">(</span><span class="n">T_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">=</span><span class="err">\</span><span class="nf">left</span><span class="err">\{\</span><span class="nf">left</span><span class="p">(</span><span class="n">s_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">t_</span><span class="err">{</span><span class="n">i</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="err">\}</span><span class="n">_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="mi">2</span><span class="w"> </span><span class="n">n</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">Sample</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">n</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">paragraphs</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="n">s_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="n">t_</span><span class="err">{</span><span class="n">i</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">v</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">D_</span><span class="err">{\</span><span class="nc">text</span><span class="w"> </span><span class="err">{</span><span class="n">corpus</span><span class="w"> </span><span class="err">}}\</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="err">\</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="w"> </span><span class="n">T_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">sqcup</span><span class="w"> </span><span class="n">T_</span><span class="err">{</span><span class="n">v</span><span class="err">}\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">Initialize</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="o">=</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">=</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">wedge</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">=</span><span class="err">\</span><span class="n">emptyset</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}</span><span class="p">,</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">^</span><span class="err">{\</span><span class="n">prime</span><span class="err">}}\</span><span class="nf">right</span><span class="p">)</span><span class="w"> </span><span class="err">\</span><span class="ow">in</span><span class="w"> </span><span class="n">T_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">sqcup</span><span class="w"> </span><span class="n">T_</span><span class="err">{</span><span class="n">v</span><span class="err">}\</span><span class="p">)</span><span class="w"> </span><span class="n">do</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="o">[</span><span class="n">t</span><span class="o">]</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="err">\</span><span class="n">prod_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">a_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="w"> </span><span class="err">\</span><span class="n">cdot</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="p">.</span><span class="err">\</span><span class="p">)</span>
+<span class="w">            </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nf">left</span><span class="p">.</span><span class="err">\</span><span class="n">prod_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">^</span><span class="err">{\</span><span class="n">prime</span><span class="err">}}</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">b_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="p">)</span><span class="o">^</span><span class="err">{</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">+</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">^</span><span class="err">{\</span><span class="n">prime</span><span class="err">}</span><span class="o">+</span><span class="mi">1</span><span class="err">\</span><span class="nf">right</span><span class="p">)</span><span class="err">}\</span><span class="p">)</span>
+<span class="w">            </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">[</span><span class="n">t</span><span class="o">]</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="err">\</span><span class="n">prod_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">a_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="w"> </span><span class="err">\</span><span class="n">cdot</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="p">.</span><span class="err">\</span><span class="p">)</span>
+<span class="w">            </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nf">left</span><span class="p">.</span><span class="err">\</span><span class="nf">left</span><span class="p">.</span><span class="err">\</span><span class="n">prod_</span><span class="err">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="err">}</span><span class="o">^</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">^</span><span class="err">{\</span><span class="n">prime</span><span class="err">}}</span><span class="w"> </span><span class="n">P_</span><span class="err">{</span><span class="n">M</span><span class="err">}\</span><span class="nf">left</span><span class="p">(</span><span class="n">b_</span><span class="err">{</span><span class="n">i</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">mid</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">a_</span><span class="err">{</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}}</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="mi">1</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">ldots</span><span class="w"> </span><span class="n">b_</span><span class="err">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="nf">right</span><span class="p">)</span><span class="o">^</span><span class="err">{</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">+</span><span class="n">m_</span><span class="err">{</span><span class="n">t</span><span class="err">}</span><span class="o">^</span><span class="err">{\</span><span class="n">prime</span><span class="err">}</span><span class="o">+</span><span class="mi">1</span><span class="err">\</span><span class="nf">right</span><span class="p">)</span><span class="err">}\</span><span class="p">)</span>
+<span class="w">            </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="err">\</span><span class="n">wedge</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">[</span><span class="n">t</span><span class="o">]</span><span class="w"> </span><span class="err">\</span><span class="n">leftarrow</span><span class="w"> </span><span class="err">\</span><span class="nf">min</span><span class="w"> </span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="o">[</span><span class="n">t</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="o">[</span><span class="n">t</span><span class="o">]</span><span class="err">\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">for</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">d</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">wedge</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="o">&lt;</span><span class="n">d</span><span class="err">\</span><span class="nf">left</span><span class="p">(</span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">u</span><span class="err">}</span><span class="w"> </span><span class="err">\</span><span class="n">wedge</span><span class="w"> </span><span class="err">\</span><span class="n">bar</span><span class="err">{</span><span class="n">M</span><span class="err">}</span><span class="n">_</span><span class="err">{</span><span class="n">v</span><span class="err">}\</span><span class="nf">right</span><span class="p">)</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">u</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">hyponym</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">v</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">v</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="n">hyponym</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">u</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">if</span>
+</code></pre></div>
+
+<h2>D ADDITIONAL VISUALIZATIONS</h2>
+<h2>D. 1 PERFORMANCE SCALES WITH MODEL SIZE</h2>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Plot of performance on semantic textual tasks vs number of model parameters, as measured using GPT-2, GPT-2-XL, Falcon-7B, LLaMA-13B, and LLaMA-33B.</p>
+<p>We show in Figure 4 that the alignment of our method on semantic textual similarity with human annotators scales with model size.</p>
+<h1>D. 2 WordNet Hyponym/Hypernym Relations</h1>
+<p>In Figure 5, we show further visualizations of the hyponym/hypernym hierarchies established by our method on WordNet using Falcon-7B.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: WordNet Hyponym/Hypernym Relation predictions using Falcon-7B</p>
+<h2>E Prompting for Downstream Tasks</h2>
+<p>Our definition of meaning in the context of large language is prompt-free, and hence not subject to the drawbacks and variabilities that arise from prompt-engineering. However, prompts can naturally be used to improve performances on downstream tasks by conditioning the trajectories obtained from input strings.</p>
+<p>Table 7: We implemented Jiang et al. (2023) for LLaMA-13B, and show that prompt-based methods are brittle and generalize poorly to other architectures apart from that which they were tuned on. Nevertheless, we show that prompting, while detracting from retaining our "pure" notion of meaning, can be used to further improve our results on downstream semantic textual similarity tasks. We also compare against other prompt-based methods here. For Ours-Prompt-1, we simply prepend "The meaning of this sentence is: " to each input string. For Ours-Prompt-2, we append "This sentence implies " to the end of each input string to condition the set of trajectories towards logical implications, achieving superior results across zero-shot, prompt-based methods. $\dagger$ indicates results taken from Jiang et al. (2023).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">STS-B</th>
+<th style="text-align: center;">STS12</th>
+<th style="text-align: center;">STS13</th>
+<th style="text-align: center;">STS14</th>
+<th style="text-align: center;">STS15</th>
+<th style="text-align: center;">STS16</th>
+<th style="text-align: center;">SICK-R</th>
+<th style="text-align: center;">Avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Contrastive-Trained Models</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptBERT (Jiang et al., 2022)</td>
+<td style="text-align: center;">81.6</td>
+<td style="text-align: center;">71.6</td>
+<td style="text-align: center;">84.6</td>
+<td style="text-align: center;">77.0</td>
+<td style="text-align: center;">84.5</td>
+<td style="text-align: center;">80.6</td>
+<td style="text-align: center;">69.9</td>
+<td style="text-align: center;">78.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptRoBERT (Jiang et al., 2022)</td>
+<td style="text-align: center;">81.9</td>
+<td style="text-align: center;">73.9</td>
+<td style="text-align: center;">84.7</td>
+<td style="text-align: center;">77.3</td>
+<td style="text-align: center;">85.0</td>
+<td style="text-align: center;">81.7</td>
+<td style="text-align: center;">69.5</td>
+<td style="text-align: center;">79.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Autoregressive Models</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptEOL (OPT-1.3B) ${ }^{\dagger}$</td>
+<td style="text-align: center;">73.2</td>
+<td style="text-align: center;">64.6</td>
+<td style="text-align: center;">79.1</td>
+<td style="text-align: center;">68.5</td>
+<td style="text-align: center;">78.9</td>
+<td style="text-align: center;">78.6</td>
+<td style="text-align: center;">69.4</td>
+<td style="text-align: center;">73.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptEOL (OPT-13B) ${ }^{\dagger}$</td>
+<td style="text-align: center;">70.7</td>
+<td style="text-align: center;">60.2</td>
+<td style="text-align: center;">81.4</td>
+<td style="text-align: center;">67.0</td>
+<td style="text-align: center;">75.5</td>
+<td style="text-align: center;">79.6</td>
+<td style="text-align: center;">66.0</td>
+<td style="text-align: center;">71.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptEOL (OPT-66B) ${ }^{\dagger}$</td>
+<td style="text-align: center;">71.7</td>
+<td style="text-align: center;">55.7</td>
+<td style="text-align: center;">74.6</td>
+<td style="text-align: center;">64.9</td>
+<td style="text-align: center;">72.3</td>
+<td style="text-align: center;">75.2</td>
+<td style="text-align: center;">67.4</td>
+<td style="text-align: center;">68.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">PromptEOL (LLaMA-13B)</td>
+<td style="text-align: center;">63.4</td>
+<td style="text-align: center;">52.3</td>
+<td style="text-align: center;">75.3</td>
+<td style="text-align: center;">64.0</td>
+<td style="text-align: center;">70.5</td>
+<td style="text-align: center;">73.2</td>
+<td style="text-align: center;">60.5</td>
+<td style="text-align: center;">65.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours (LLaMA-13B)</td>
+<td style="text-align: center;">70.6</td>
+<td style="text-align: center;">52.5</td>
+<td style="text-align: center;">65.9</td>
+<td style="text-align: center;">53.2</td>
+<td style="text-align: center;">67.8</td>
+<td style="text-align: center;">74.1</td>
+<td style="text-align: center;">73.0</td>
+<td style="text-align: center;">65.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours-Prompt-1 (LLaMA-13B)</td>
+<td style="text-align: center;">72.2</td>
+<td style="text-align: center;">61.6</td>
+<td style="text-align: center;">68.4</td>
+<td style="text-align: center;">66.9</td>
+<td style="text-align: center;">72.7</td>
+<td style="text-align: center;">75.6</td>
+<td style="text-align: center;">76.3</td>
+<td style="text-align: center;">70.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ours-Prompt-2 (LLaMA-13B)</td>
+<td style="text-align: center;">81.5</td>
+<td style="text-align: center;">67.9</td>
+<td style="text-align: center;">79.9</td>
+<td style="text-align: center;">75.3</td>
+<td style="text-align: center;">82.9</td>
+<td style="text-align: center;">82.3</td>
+<td style="text-align: center;">74.6</td>
+<td style="text-align: center;">77.8</td>
+</tr>
+</tbody>
+</table>
+<h1>E. 1 Prompting for Semantic Textual Similarity</h1>
+<p>By implementing an existing prompt-based method (Jiang et al., 2023) on LLaMA-13B, we show in Table 7 that prompt-based methods are brittle and model-specific, hence require careful tuning for each specific architecture. In contrast, our original method is prompt-free and robust against such variances arising from prompt-engineering.
+Nevertheless, we present some preliminary investigations for augmenting our method with prompts in Table 7 for the STS task. We also compare against existing zero-shot prompt-based methods. We show that prompting can also significantly improve performance over the prompt-free approach for the STS task, by appending "The meaning of this sentence is: " to each input string when generating trajectories. We note that we did not carefully search over prompts, and simply tried the first ones (above) that came to mind. It is likely that there exist others which work better.</p>
+<h2>E. 2 Alignment Prompts for Vision-Language Models</h2>
+<p>In the main paper, we presented prompt-free approaches for extracting similarity scores from multimodal inputs. However, we note that by our definitions, LLaVA (Liu et al., 2023) does not technically attribute the same meaning to images and captions. We visualize this in Figure 6, where we show that image and caption inputs are continued very differently by the model. For instance, given an image, LLaVA generally attempts to generate a caption. On the other hand, when given a caption, LLaVA simply continues it, often in an unpredictable manner. In spite of this misalignment, there exists sufficient overlap in likelihood scores to outperform all baselines as observed in Table 2 of the main paper.</p>
+<p>We demonstrate that a prompt can optionally be used to align the meaning representations for vision and text modalities for the purposes of semantic comparison. We achieve this by conditioning the caption continuations to match the continuations of images. In particular, we append "This is a caption for an image. Describe this image. This image shows" to the text inputs, and "Describe this image. This image shows" to image inputs. Figure 6 (Right) shows that this successfully aligns the trajectories of both modalities. Indeed Table 2 of the main paper shows that this improves over the prompt-free version of our method on the CxC-SITS task by $18.4 \%$, and outperforms the CLIP paragon by $13.3 \%$.</p>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: A prompt can be used to align the meaning representations (i.e., distribution over trajectories) for vision and text modalities to measure image-caption similarities. We obtain trajectories on the right by appending "Describe this image. This image shows" to image inputs, and appending "This is a caption for an image. Describe this image. This image shows" to caption text inputs.</p>
+<h1>F Meaning Containments</h1>
+<p>In this section, we discuss how the partial ordering defined on our meaning representations is related to entailment $(\Rightarrow)$ between statements and to hyponym/hypernym relations between words.</p>
+<h2>F. 1 ENTAILMENT TEST</h2>
+<p>In the main body of the paper, we claimed that if $u \Rightarrow v$ then $M_{v} \leq M_{u}$ is more natural than $M_{u} \leq M_{v}$. Our empirical experiments indeed show that our Entailment Test succeeds significantly more often than chance. Intuitively, this means that if $u \Rightarrow v$ then more continuations for $v$ are feasible continuations for $u$, instead of the other way around.
+To understand why this is the case, we consider the sets $C_{u}, C_{v}$ of consequents of $u$ and $v$, that is, the set of sentences $t$ such that $u \Rightarrow t$ or $v \Rightarrow t$ respectively. If $u \Rightarrow v$, then by transitivity of entailment we have $C_{v} \subset C_{u}$ (since $v \Rightarrow t$ implies $u \Rightarrow t$ ). Thinking $M_{u}$ and $M_{v}$ as sets, then if $M_{u}=C_{u}$ and $M_{v}=C_{v}$ were true (i.e., if the set of feasible continuations coincided with the set consequents), then this would justify our claim. In practice, continuations and consequents do not coincide, especially because some continuations are not consequents. However, it is generally true that consequents are valid continuations-so approximately $C_{u} \subset M_{u}, C_{v} \subset M_{v}$-and overall consequents seem sufficiently frequent as continuations to dictate the containment relation among general continuations.
+To make this argument more concrete, consider the sentences $u=$ "Cody, the neighbor's dog, is barking." and $v=$ "A dog is barking.", so that $u \Rightarrow v$. If $t$ is a continuation of $v$, then $t$ could in general be</p>
+<ul>
+<li>a consequent of $v(v \Rightarrow t)$ for example $t=$ "Therefore, I can't sleep."</li>
+<li>an antecedent of $v(t \Rightarrow v)$ for example $t=$ "Indeed, there is a cat.".</li>
+<li>non-comparable with $v$ (neither $v \Rightarrow t$ nor $t \Rightarrow v$ hold) for example, "The dog is brown." or "The dog's name is Spot".</li>
+</ul>
+<p>From these examples, we see that: 1) consequent continuations for $v$ are also valid continuations for $u ; 2)$ antecedent continuations are somewhat unnatural and likely uncommon; 3) non-comparable</p>
+<p>continuations of $v$ may or may not be valid continuations of $u$. Overall, if we think of consequent continuations as the default, then we expect the containment direction $M_{v} \leq M_{u}$ to hold more than $M_{u} \leq M_{v}$</p>
+<h1>F. 2 Hyponym Test</h1>
+<p>In the paper, we claimed that if $v$ is a hyponym of $u$ then $\bar{M}<em u="u">{v} \leq \bar{M}</em>}$ is a more natural relation than $\bar{M<em u="u">{v} \leq \bar{M}</em>}$. Our experiments indeed suggest that $\bar{M<em u="u">{v} \leq \bar{M}</em>$ occurs significantly more often than chance. Intuitively, this means that if $v$ is a hyponym of $u$ then $v$ can be substituted with $u$ more often than the other way around.</p>
+<p>To investigate why this is the case, we distinguish between two types of usages of a common noun $v$ (e.g., "dog"):</p>
+<ul>
+<li>Definite reference: when $v$ refers to a specific instance or set of instances of the noun, for example "The dog is barking."</li>
+<li>Generic reference: when $v$ refers to all instances of the noun, for example "Any dog is an animal".</li>
+</ul>
+<p>Now, if $s$ is a sentence that uses a $v$ with definite reference, then it is possible to replace $v$ with a hypernym in $s$ ("The dog is barking." $\rightarrow$ "The animal is barking."). In contrast, if $s$ uses $v$ with generic reference, then we can replace $v$ with a hyponym ("Any dog is an animal." $\rightarrow$ "Any German Shepherd is an animal."). Thus, whether hyponym relations correspond to $\bar{M}<em u="u">{v} \leq \bar{M}</em>}$ or $\bar{M<em v="v">{u} \leq \bar{M}</em>$ depends on which type of reference is more common. Our empirical results suggest that definite reference is more common-as one might probably expect, particularly for singular nouns.
+We note that in practice, $M_{u} \leq M_{v}$ rarely happens. As an alternative, we can express this relation as $d\left(M_{u} \wedge M_{v}, M_{u}\right)=0$, where $\wedge$ represents the meet operation given by $M_{u} \wedge M_{v}:=\min \left(M_{u}, M_{v}\right)$. In other words, $M_{u} \leq M_{v}$ if $M_{u}$ is contained within their intersection. This alternative formulation offers a crucial advantage, as it provides a soft measure of containment that quantifies the strength of this relation.</p>
+<h2>G Languages and Meanings</h2>
+<p>In this section, we present a more theoretical discussion that motivates our notion of meaning representation. We also introduce some definitions and perspectives on LLMs that were not required for describing the methods proposed in the paper but that may be of independent interest. We recall that in the main body of the paper, we identified a language model with a map $M: \mathcal{A}^{<em>} \times \mathcal{A}^{</em>} \rightarrow[0,1]$. Here we take a step back and start from a more primitive notion of autoregressive token generator.
+Definition 1. An autoregressive token generator is a map $G: \mathcal{A}^{<em>} \times \mathcal{A} \rightarrow[0,1]$ associating any string $s$ with a score $G(a \mid s)$ for identifying the next token $a$ in $\mathcal{A}$. Given any $u \in \mathcal{A}^{</em>}$, we use $G_{u}$ to denote the prompted token generator, that is, a token generator defined by $G_{u}(a \mid s):=G(a \mid u s)$. We write $\mathcal{G}(\mathcal{A})$ for the set of all autoregressive token generators with tokens from $\mathcal{A}$.</p>
+<p>Starting with an initial prompt $u_{0}$, a greedy text generation process using the generator $G$ returns a sequence of strings $u_{i+1}=u_{i} a$, or a trajectory, where $a$ is a token recovered from $G\left(u_{i}\right)$ according to some sampling scheme.
+Given a candidate trajectory $u=a_{1} \ldots a_{n}$, the token generator provides a sequence of token-level scores $G\left(a_{1} \ldots a_{i-1}\right)\left(a_{i}\right)$ in $[0,1]$. These scores can be aggregated, for example by simply taking their product. In practice, it is more common to normalize by sequence length. Thus, we consider the sequence level score as given by</p>
+<p>$$
+\prod_{i=1}^{n} G\left(a_{i} \mid a_{1} \ldots a_{i-1}\right)^{1 / n}
+$$</p>
+<p>This choice allows us to use a generator evaluate candidate trajectories, obtaining a map $\mathcal{A}^{*} \rightarrow$ $[0,1]$. We think of such a map as a (soft) "predicate" characterizing strings that the model considers "feasible."</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{2}$ https://huggingface.co/liuhaotian/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

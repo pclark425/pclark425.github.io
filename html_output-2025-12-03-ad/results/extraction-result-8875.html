@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8875 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8875</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8875</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-155.html">extraction-schema-155</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how large language models (LLMs) are used to generate or design novel chemicals for specific applications, including details of the models, methods, applications, results, and limitations.</div>
+                <p><strong>Paper ID:</strong> paper-b0c63b16f9f519b631a46ce95fbe296d30b53896</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/b0c63b16f9f519b631a46ce95fbe296d30b53896" target="_blank">GFlowNet Foundations</a></p>
+                <p><strong>Paper Venue:</strong> Journal of machine learning research</p>
+                <p><strong>Paper TL;DR:</strong> Variations enabling the estimation of entropy and mutual information, sampling from a Pareto frontier, connections to reward-maximizing policies, and extensions to stochastic environments, continuous actions and modular energy functions are introduced.</p>
+                <p><strong>Paper Abstract:</strong> Generative Flow Networks (GFlowNets) have been introduced as a method to sample a diverse set of candidates in an active learning context, with a training objective that makes them approximately sample in proportion to a given reward function. In this paper, we show a number of additional theoretical properties of GFlowNets. They can be used to estimate joint probability distributions and the corresponding marginal distributions where some variables are unspecified and, of particular interest, can represent distributions over composite objects like sets and graphs. GFlowNets amortize the work typically done by computationally expensive MCMC methods in a single but trained generative pass. They could also be used to estimate partition functions and free energies, conditional probabilities of supersets (supergraphs) given a subset (subgraph), as well as marginal distributions over all supersets (supergraphs) of a given set (graph). We introduce variations enabling the estimation of entropy and mutual information, sampling from a Pareto frontier, connections to reward-maximizing policies, and extensions to stochastic environments, continuous actions and modular energy functions.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8875",
+    "paper_id": "paper-b0c63b16f9f519b631a46ce95fbe296d30b53896",
+    "extraction_schema_id": "extraction-schema-155",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00629375,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>GFlowNet Foundations</h1>
+<p>Yoshua Bengio<em><br>Mila, Universié de Montréal, CIFAR, IVADO<br>Salem Lahlou</em><br>Mila, Universié de Montréal<br>Tristan Deleu*<br>Mila, Universié de Montréal<br>Edward J. Hu<br>Mila, Universié de Montréal, Microsoft<br>Mo Tiwari<br>Stanford University<br>Emmanuel Bengio<br>Mila, McGill University</p>
+<p>Editor: David Sontag</p>
+<p>YOSHUA.BENGIO@MILA.QUEBEC</p>
+<p>LAHLOSAL@MILA.QUEBEC</p>
+<p>DELEUTRI@MILA.QUEBEC</p>
+<p>EDWARD@EDWARDJHU.COM</p>
+<p>MOTIWARI@STANFORD.EDU</p>
+<p>BENGIOEM@MILA.QUEBEC</p>
+<h2>Abstract</h2>
+<p>Generative Flow Networks (GFlowNets) have been introduced as a method to sample a diverse set of candidates in an active learning context, with a training objective that makes them approximately sample in proportion to a given reward function. In this paper, we show a number of additional theoretical properties of GFlowNets, including a new local and efficient training objective called detailed balance for the analogy with MCMC. GFlowNets can be used to estimate joint probability distributions and the corresponding marginal distributions where some variables are unspecified and, of particular interest, can represent distributions over composite objects like sets and graphs. GFlowNets amortize the work typically done by computationally expensive MCMC methods in a single but trained generative pass. They could also be used to estimate partition functions and free energies, conditional probabilities of supersets (supergraphs) given a subset (subgraph), as well as marginal distributions over all supersets (supergraphs) of a given set (graph). We introduce variations enabling the estimation of entropy and mutual information, sampling from a Pareto frontier, connections to reward-maximizing policies, and extensions to stochastic environments, continuous actions and modular energy functions.</p>
+<h2>1 Introduction</h2>
+<p>Building upon the introduction of Generative Flow Networks (GFlowNets) by Bengio et al. (2021), we provide here an in-depth formal foundation and expansion of the set of theoretical results in ways that may be of interest for the active learning scenario of Bengio et al. (2021) but also much more broadly.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h1>1.1 What is a GFlowNet ?</h1>
+<p>GFlowNets have properties which make them well-suited to perform amortized probabilistic inference in general, whether for sampling or for marginalizing. Sampling takes place at training time while run-time sampling or computations of marginalized quantities can be done in a single pass through a sequence of constructive stochastic steps. This makes GFlowNets an interesting alternative to Monte-Carlo Markov chains (MCMC) and related to amortized variational inference (Malkin et al., 2023).</p>
+<p>Because sampling of a compositional object $s$ can be achieved through a sequence of stochastic steps, very rich multimodal distributions $P_{T}(s)$ over such objects can be represented, and the offline training objectives make it possible to explore and discover modes of the distribution of interest. The key property of GFlowNets is that their sampling policy is trained to make the probability $P_{T}(s)$ of sampling an object $s$ approximately proportional to the value $R(s)$ of a given reward function applied to that object. We also talk of an energy function $\mathcal{E}(s)=-\log R(s)$, i.e., the reward function is non-negative and corresponds to an unnormalized probability. Whereas one typically trains a generative model from a dataset of positive examples, a GFlowNet is trained to match the given energy or reward function and convert it into a sampler. We view that sampler as a generative policy because the composite object $s$ is constructed through a sequence of smaller stochastic steps (see Fig. 1), often corresponding to constructively composing different elements of $s$, like the edges of a graph.</p>
+<p>This conversion of an energy function or unnormalized probability function to a sampler is similar to what MCMC methods achieve but once trained, GFlowNets will generate a sample in one shot instead of generating a long sequence of samples whose distribution would gradually approach the desired one. GFlowNets thus avoid the lengthy stochastic search in the space of such objects and the associated mode-mixing intractability challenge of MCMC methods (Jasra et al., 2005; Bengio et al., 2013; Pompe et al., 2020). Multiple iid samples can be obtained from the GFlowNet by calling the sampler multiple times. GFlowNets exchange that intractability of sampling with MCMC for the challenge of amortized training of the generative policy. The latter problem would be equally intractable if the modes of the reward function did not have a inherent (but not necessarily known) structure over which the learner could generalize, i.e., the learner had almost no chance to correctly guess where to find new modes based on (i.e., training on) those it had already visited.</p>
+<p>The energy function or reward function (exponential of minus energy) is evaluated only at the end of the sequential construction process for objects $s$, in what we call a terminating state. Every such constructive sequence starts in the single initial state $s_{0}$ and ends in a terminal state. As illustrated in Figure 2, we can visualize the set of all trajectories starting from $s_{0}$ and ending in a terminal state $s$. The term "flow" in "generative flow networks" refers to unnormalized probabilities that can be learned by GFlowNet learning procedures. The flow in an intermediate state $s$ is a weighted sum of the non-negative rewards of the terminating states reachable from $s$. Those weights are such as to avoid double-counting: if we were to inject a fixed flow of liquid in $s_{0}$ and dispatch that liquid in each child of any state $s$ proportionally to the GFlowNet policy for choosing a child of $s$, we would obtain the flow at each state and the flow at terminating states would match the reward function at those states. As shown in greater detail here and for the first time in the first GFlowNet</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: A diagram of how a GFlowNet iteratively constructs an object. We adopt notation that is common in the reinforcement learning literature: $s_{t}$ represents the state of the partially constructed object (in this case, a graph) at time $t, a_{t}$ represents the action taken by the GFlowNet at time $t$ to transition to state $s_{t+1}=T\left(s_{t}, a_{t}\right)$. In this diagram, the GFlowNet takes a 3-node graph as input and determines an action to take. The action, combined with the environment transition function $T\left(s_{t}, a_{t}\right)$, determines $s_{t+1}$ : a four-node graph. This process repeats until an exit action is sampled and the sample is complete.
+paper (Bengio et al., 2021), this can be achieved with a flow constraint at each state: the sum of incoming flows must match the sum of outgoing flows.</p>
+<h1>1.2 Contributions of this paper</h1>
+<p>In this paper, an important contribution is the notion of conditional GFlowNet, which enables estimation of intractable sums corresponding to marginalization over many steps of object construction, and can thus be used to compute free energies ${ }^{1}$ over different types of joint distributions, perhaps most interestingly over sets and graphs. This marginalization also enables estimation of entropies, conditional entropies and mutual information. GFlowNets can thus be generalized to estimate multiple flows corresponding to modeling a rich outcome (rather than a scalar reward function) .</p>
+<p>We refer the reader to Bengio et al. (2021) and Sec. 7 for a discussion of related approaches and differences with common generative models and reinforcement learning (RL) methods. In an RL context, two interesting properties of GFlowNets already noted in that paper are that they (1) can be trained in an offline manner with trajectories sampled from a distribution different from the one represented by the GFlowNet and (2) they match the reward function in probability rather than try to find a configuration which maximizes rewards or returns. The latter property is particularly interesting in the context of exploration, to ensure the configurations sampled from the generative policy are both interesting and di-</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Illustration of the structure of a Generative Flow Network (GFlowNet), as a pointed DAG over states <em>s</em>, with particles flowing along edges to represent the flow function. Any object sampled by the GFlowNet policy can be obtained by starting from initial state <em>s₀</em> and then at each step choosing a child with probability proportional to the GFlowNet policy's transition probability. This process stops when a terminating action is chosen from a terminating state <em>s</em> (yielding a terminal state <em>sₚ</em>), at which point a reward <em>R(s)</em> is obtained. The figure shows a tiny GFlowNet and the possible trajectories from <em>s₀</em> to any of the terminal states. It illustrates that in general a state can be reached through several trajectories. GFlowNet algorithms learn a policy such that the probability of sampling terminating state <em>s</em> is proportional to <em>R(s)</em>. It tries to learn a flow function <em>F(s)</em> and <em>F(s → s′)</em> over all states (including intermediate states) <em>s</em> and transitions <em>s → s′</em> with <em>F(s) = R(s)</em> at terminal states and <em>F(s₀)</em> being the sum of rewards over all terminal states. A sufficient property to achieve this is that at each state the sum of incoming flows equals the sum of outgoing flows.</p>
+<p>verse. It is also interesting to transform GFlowNets into amortized probabilistic inference machines: if we choose the reward function to be a prior (over some random variable) times a likelihood (how well some data is fit given that choice of random variable value), then the GFlowNet policy learns to sample from the corresponding Bayesian posterior (which is proportional to prior times likelihood). The ability of GFlowNets to generate a diverse set of samples then corresponds to the ability to sample from the modes of the target distribution.</p>
+<p>An important source of inspiration for GFlowNets is the way information propagates in temporal-difference RL methods (Sutton and Barto, 2018). Both rely on a principle of coherence for credit assignment which may only be achieved asymptotically when training converges. While exact gradient calculation may be intractable, because the number of paths in state space to consider is exponentially large, both methods rely on local coherence between different components and a training objective that states that if all the learned components are coherent with each other locally, then we obtain a system that estimates the quantities of interest globally. Examples include estimation of expected discounted returns in temporal-difference methods and probability measures with GFlowNets.</p>
+<p>This paper extends the theory of the original GFlowNet construction (Bengio et al., 2021) in several directions, including a new local training objective called detailed balance (for the analogy with the detailed balance condition of Monte-Carlo Markov chains) which avoids forming explicit sums required by the previously proposed flow matching loss, as well as formulations enabling the calculation of marginal probabilities (or free energies) for sub-</p>
+<h1>GFLOWNET FOUNDATIONS</h1>
+<p>sets of variables, more generally for subsets of larger sets, or subgraphs, their application to estimating entropy and mutual information, and the introduction of an unsupervised form of GFlowNets (the reward function is not needed while training, only observations of outcomes) enabling sampling from a Pareto frontier, for example. Although basic GFlowNets are more similar to bandits (in that a reward is only provided at the end of a sequence of actions), they can be extended to take into account intermediate rewards and thus a notion of return, and sample according to these returns. The original formulation of GFlowNets is also limited to discrete and deterministic environments, while this paper suggests how these two limitations could be lifted. Finally, whereas the basic formulation of GFlowNets assumes a given reward or energy function, this paper considers how the energy function could be jointly learned with the GFlowNet, opening the door to novel energy-based modeling methodologies and a modular structure for both the energy function and the GFlowNet.</p>
+<h3>1.3 GFlowNets in other works</h3>
+<p>In addition to the theory presented in this paper, Malkin et al. (2023) and Zimmermann et al. (2022) prove some partial equivalences between GFlowNets and hierarchical variational methods, providing yet more theoretical evidence for the efficacy of GFlowNets in learning to sample proportionally to a given reward function. These works also provide evidence for the superiority of GFlowNets in off-policy settings.</p>
+<p>GFlowNets have found a wide array of applications due to the associated diversity of generated samples. In contexts where a cheap proxy for the true reward function exists, GFlowNets have been used to surface samples under which to query the proxy before more expensive evaluation under the true reward function. In these settings, the diversity of samples generated by GFlowNets can be used for robustness to proxy misspecification and to incorporate epistemic uncertainty. For example, Zhang et al. (2023) use GFlowNets to produce sample schedules for operations in a computation graph, where evaluating the runtimes of sample schedules via a proxy is fast but evaluating the same schedules on target hardware is expensive. In active learning problems, Jain et al. $(2022,2023)$ use GFlowNet sampling as a subroutine inside an active learning loop as a substitute for Bayesian Optimization or RL-based methods. Jain et al. (2022) apply GFlowNets to search for novel anti-microbial peptides, discover DNA sequences that have high binding activity with human transcription factors, and to find proteins with high fluorescence. Additionally, Jain et al. (2023) develops preference-conditional GFlowNets, where a preference weight vector is used to scalarize multiple objective functions into a single reward. The authors apply their techniques to various molecule and DNA sequence generation tasks and find that their methods are able to find different Pareto-optimal samples along the Pareto frontier.</p>
+<p>GFlowNets have found applications in several other machine learning problems. For example, Zhang et al. (2022) simultaneously train an energy-based model and a GFlowNet; the energy function is trained with samples from a GFlowNet, which, in turn, uses the energy function to form its reward. Their method results in a generative model for binary vectors in high dimensions, e.g., binarized digits. Deleu et al. (2022) use a GFlowNet for structure learning; the GFlowNet produces samples that approximates the true posterior over causal graphs given a dataset. Their method works on both observational and interventional data, and compares favorably to MCMC- and variational inference-based methods. Hu et al.</p>
+<p>(2023) find maximum-likelihood estimates of latent variable models with discrete compositional latents by jointly training a GFlowNet to approximately sample from the generally intractable posterior in the E-step of the expectation-maximization (EM) algorithm.</p>
+<h1>2 Flow Networks and Markovian Flows</h1>
+<h3>2.1 Some elements of graph theory</h3>
+<p>In this section, we recall some basic definitions and properties of graphs, which are the basis of flow networks and GFlowNets.</p>
+<p>Definition 1 A directed graph is a tuple $G=(\mathcal{S}, \mathbb{A})$, where $\mathcal{S}$ is a finite set of states, and $\mathbb{A}$ a subset of $\mathcal{S} \times \mathcal{S}$ representing directed edges. Elements of $\mathbb{A}$ are denoted $s \rightarrow s^{\prime}$ and called edges or transitions.
+A trajectory in such a graph is a sequence $\tau=\left(s_{1}, \ldots, s_{n}\right)$ of elements of $\mathcal{S}$ such that every transition $s_{t} \rightarrow s_{t+1} \in \mathbb{A}$ and $n&gt;1$. We denote $s \in \tau$ to mean that $s$ is in the trajectory $\tau$, i.e., $\exists t \in{1, \ldots, n} s_{t}=s$, and similarly $s \rightarrow s^{\prime} \in \tau$ to mean that $\exists t \in{1, \ldots, n-1} s_{t}=$ $s, s_{t+1}=s^{\prime}$. For convenience, we also use the notation $\tau=s_{1} \rightarrow \cdots \rightarrow s_{n}$. The length of a trajectory is the number of edges in it (the length of $\tau=\left(s_{1}, \ldots, s_{n}\right)$ is thus $n-1$ ).
+A directed acyclic graph (DAG) is a directed graph in which there is no trajectory $\tau=$ $\left(s_{1}, \ldots, s_{n}\right)$ satisfying $s_{n}=s_{1}$.</p>
+<p>Given a DAG $G=(\mathcal{S}, \mathbb{A})$, and two states $s, s^{\prime} \in \mathcal{S}$, if there exists a trajectory in $G$ starting in $s$ and ending in $s^{\prime}$, then we write $s&lt;s^{\prime}$. The binary relationship " $&lt;$ " defines a strict partial order (i.e. it is irreflexive, asymmetric and transitive). We write $s \leq s^{\prime}$ if $s&lt;s^{\prime}$ or $s=s^{\prime}$. The binary relation " $\leq$ " is a (non-strict) partial order (i.e. it is reflexive, antisymmetric and transitive).</p>
+<p>If there is no order relation between $s$ and $s^{\prime}$, we write $s \lessgtr s^{\prime}$.
+Definition 2 Given a $D A G G=(\mathcal{S}, \mathbb{A})$, the parent set of a state $s \in \mathcal{S}$, which we denote $\operatorname{Par}(s)$, contains all of the direct parents of $s$ in $G$, i.e., $\operatorname{Par}(s)=\left{s^{\prime} \in \mathcal{S}: s^{\prime} \rightarrow s \in\right.$ $\mathbb{A}}$; similarly, the child set $\operatorname{Child}(s)$ contains all of the direct children of $s$ in $G$, i.e., $\operatorname{Child}(s)=\left{s^{\prime} \in \mathcal{S}: s \rightarrow s^{\prime} \in \mathbb{A}\right}$.</p>
+<p>Definition 3 Given a $D A G G=(\mathcal{S}, \mathbb{A}) . G$ is called a pointed DAG if there exist two states $s_{0}, s_{f} \in \mathcal{S}$ that satisfy:</p>
+<p>$$
+\forall s \in \mathcal{S} \backslash\left{s_{0}\right} \quad s_{0}&lt;s \text { and } \forall s \in \mathcal{S} \backslash\left{s_{f}\right} \quad s&lt;s_{f}
+$$</p>
+<p>$s_{0}$ is called the source state or initial state. $s_{f}$ is called the sink state or final state. Because " $&lt;$ " is a strict partial order, these two states are unique.</p>
+<p>A complete trajectory in such a $D A G$ is any trajectory starting in $s_{0}$ and ending in $s_{f}$. We denote such a trajectory as $\tau=\left(s_{0}, s_{1}, \ldots, s_{n}, s_{n+1}=s_{f}\right)$.</p>
+<p>We denote by $\mathcal{T}$ the set of all complete trajectories in $G$, and by $\mathcal{T}^{\text {partial }}$ the set of (possibly incomplete) trajectories in $G$.</p>
+<p>A state $s \in \mathcal{S}$ is called a terminating state if it is a parent of the sink state, i.e. $s \rightarrow s_{f} \in \mathbb{A}$. The transition $s \rightarrow s_{f}$ is called a terminating edge. We denote by:</p>
+<ul>
+<li>$\mathbb{A}^{-f}=\left{s \rightarrow s^{\prime} \in \mathbb{A}, s^{\prime} \neq s_{f}\right}$, the set of non-terminating edges in $G$,</li>
+<li>$\mathbb{A}^{f}=\left{s \rightarrow s^{\prime} \in \mathbb{A}, s^{\prime}=s_{f}\right}=\mathbb{A} \backslash \mathbb{A}^{-f}$, the set of terminating edges in $G$,</li>
+<li>$\mathcal{S}^{f}=\left{s \in \mathcal{S}, s \rightarrow s_{f} \in \mathbb{A}^{f}\right}=\operatorname{Par}\left(s_{f}\right)$, the set of terminating states in $G$.</li>
+</ul>
+<p>In Fig. 3, we visualize the concepts introduced in the previous definitions.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Example of a pointed DAG $G$ illustrating the notions of initial state $\left(s_{0}\right)$, final or sink state $\left(s_{f}\right)$, terminating states in $\mathcal{S}^{f}$, with a transition to $s_{f}$ called a terminating edge, in $\mathbb{A}^{f}$. A terminating state may have other children different from the sink state (e.g., the terminating state $s_{7}$ ).</p>
+<p>Note that the constraint of a single source state and single sink state is only a mathematical convenience since a bijection exists between general DAGs and those with this constraint (by the addition of a unique source/sink state connected to all the other source/sink states).</p>
+<p>Definition 4 Let $G$ be a pointed $D A G$ with source state $s_{0}$ and sink state $s_{f}$. A forward (resp. backward) probability function consistent with $G$ is any non-negative function $\hat{P}<em B="B">{F}$ (resp. $\hat{P}</em>}$ ) defined on $\mathbb{A}$ that satisfies $\forall s \in \mathcal{S} \backslash\left{s_{f}\right}, \sum_{s^{\prime} \in \text { Child }(s)} \hat{P<em 0="0">{F}\left(s^{\prime} \mid s\right)=1$ (resp. $\forall s \in \mathcal{S} \backslash\left{s</em> \mid s\right)=1$ ).}\right}, \sum_{s^{\prime} \in \operatorname{Par}(s)} \hat{P}_{B}\left(s^{\prime</p>
+<p>With pointed DAGs, consistent forward and backward probability functions, that are probabilities over states, can be used to define probabilities over trajectories, i.e. probability measures on some subsets of $\mathcal{T}^{\text {partial }}$. The following lemma shows how to construct such factorized probability measures:</p>
+<p>Lemma 5 Let $G=(\mathcal{S}, \mathbb{A})$ be a pointed $D A G$, and consider a forward probability function $\hat{P}<em B="B">{F}$, and a backward probability function $\hat{P}</em>}$ both consistent with $G$. For any state $s \in$ $\mathcal{S} \backslash\left{s_{f}\right}$, we denote by $\mathcal{T<em f="f">{s, f} \subseteq \mathcal{T}^{\text {partial }}$ the set of trajectories in $G$ starting in $s$ and ending in $s</em>}$; and for any state $s \in \mathcal{S} \backslash\left{s_{0}\right}$, we denote by $\mathcal{T<em 0="0">{0, s} \subseteq \mathcal{T}^{\text {partial }}$ the set of trajectories in $G$ starting in $s</em>$ and ending in $s$.</p>
+<p>Consider the extensions of $\hat{P}<em B="B">{F}$ and $\hat{P}</em>$ defined by:}$ on $\mathcal{T}^{\text{partial}</p>
+<p>$$
+\begin{aligned}
+&amp; \forall \tau=\left(s_{1}, \ldots, s_{n}\right) \in \mathcal{T}^{\text {partial }} \quad \hat{P}<em t="1">{F}(\tau):=\prod</em>}^{n-1} \hat{P<em t_1="t+1">{F}\left(s</em>\right) \
+&amp; \forall \tau=\left(s_{1}, \ldots, s_{n}\right) \in \mathcal{T}^{\text {partial }} \quad \hat{P}} \mid s_{t<em t="1">{B}(\tau):=\prod</em>}^{n-1} \hat{P<em t="t">{B}\left(s</em>\right)
+\end{aligned}
+$$} \mid s_{t+1</p>
+<p>We have the following:</p>
+<p>$$
+\begin{aligned}
+\forall s \in \mathcal{S} \backslash\left{s_{f}\right} &amp; \sum_{\tau \in \mathcal{T}<em F="F">{s, f}} \hat{P}</em>(\tau)=1 \
+\forall s^{\prime} \in \mathcal{S} \backslash\left{s_{0}\right} &amp; \sum_{\tau \in \mathcal{T}<em B="B">{0, s^{\prime}}} \hat{P}</em>(\tau)=1
+\end{aligned}
+$$</p>
+<p>Proof For convenience, we will use $\mathcal{T}<em f="f">{s \rightarrow s^{\prime}, s</em>}}$ to denote the set of trajectories starting with $s \rightarrow s^{\prime}$ and ending in $s_{f}$, and $\mathcal{T<em 0="0">{0, s \rightarrow s^{\prime}}$ to denote the set of trajectories starting in $s</em>$. This allows to write:}$ and ending with $s \rightarrow s^{\prime</p>
+<p>$$
+\begin{aligned}
+&amp; \forall s \neq s_{f} \quad \mathcal{T}<em s_prime="s^{\prime">{s, f}=\bigcup</em>} \in \operatorname{Child}(s)} \mathcal{T<em f="f">{s \rightarrow s^{\prime}, s</em>}}, \quad\left{\mathcal{T<em f="f">{s \rightarrow s^{\prime}, s</em> \
+&amp; \forall s^{\prime} \neq s_{0} \quad \mathcal{T}}}, s^{\prime} \in \operatorname{Child}(s)\right} \text { pairwise disjoint, <em _in="\in" _operatorname_Par="\operatorname{Par" s="s">{0, s^{\prime}}=\bigcup</em>}\left(s^{\prime}\right)} \mathcal{T<em 0_="0," _rightarrow="\rightarrow" s="s" s_prime="s^{\prime">{0, s \rightarrow s^{\prime}}, \quad\left{\mathcal{T}</em>
+\end{aligned}
+$$}}, s \in \operatorname{Par}\left(s^{\prime}\right)\right} \text { pairwise disjoint. </p>
+<p>Additionally, for any $s \neq s_{f}$, we denote by $d_{s, f}$ the maximum trajectory length in $\mathcal{T}<em 0="0">{s, f}$; and for any $s^{\prime} \neq s</em>$.}$, we denote by $d_{0, s^{\prime}}$ the maximum trajectory length in $\mathcal{T}_{0, s</p>
+<p>We will prove Eq. (3) by strong induction on $d_{s, f}$ and Eq. (4) by strong induction on $d_{0, s^{\prime}}$.</p>
+<p>Base cases: If $d_{s, f}=1$ and $d_{0, s^{\prime}}=1$, then $\mathcal{T}<em f="f">{s, f}=\left{\left(s \rightarrow s</em>}\right)\right}$ and $\mathcal{T<em 0="0">{0, s^{\prime}}=\left{\left(s</em>} \rightarrow s^{\prime}\right)\right}$. Hence, $\sum_{\tau \in \mathcal{T<em F="F">{s, f}} \hat{P}</em>}(\tau)=\hat{P<em f="f">{F}\left(s \rightarrow s</em>}\right)=\hat{P<em f="f">{F}\left(s</em>} \mid s\right)=1$ given that $s_{f}$ is the only child of $s$ (otherwise $d_{s, f}$ cannot be 1 ), and $\sum_{\tau \in \mathcal{T<em B="B">{0, s^{\prime}}} \hat{P}</em>}(\tau)=\hat{P<em 0="0">{B}\left(s</em>$ cannot be 1 ).} \mid s^{\prime}\right)=1$ given that $s_{0}$ is the only parent of $s^{\prime}$ (otherwise $d_{0, s^{\prime}</p>
+<p>Induction steps: Consider $s \neq s_{f}$ such that $d_{s, f}&gt;1$ and $s^{\prime} \neq s_{0}$ such that $d_{0, s^{\prime}}&gt;1$. Because of the disjoint unions written above, we have:</p>
+<p>$$
+\begin{gathered}
+\sum_{\tau \in \mathcal{T}<em F="F">{s, f}} \hat{P}</em>}(\tau)=\sum_{\tilde{s} \in \text { Child }(s)} \sum_{\tau \in \mathcal{T<em F="F">{s \rightarrow \tilde{s}, f}} \hat{P}</em>}(\tau)=\sum_{\tilde{s} \in \text { Child }(s)} \hat{P<em _in="\in" _mathcal_T="\mathcal{T" _tau="\tau">{F}(\tilde{s} \mid s) \sum</em><em F="F">{\tilde{s}, f}} \hat{P}</em>(\tau)=1 \
+\sum_{\tau \in \mathcal{T}<em B="B">{0, s^{\prime}}} \hat{P}</em>}(\tau)=\sum_{\tilde{s}^{\prime} \in \operatorname{Par}\left(s^{\prime}\right)} \sum_{\tau \in \mathcal{T<em B="B">{0, \tilde{s}^{\prime} \rightarrow s}} \hat{P}</em>}(\tau)=\sum_{\tilde{s}^{\prime} \in \operatorname{Par}\left(s^{\prime}\right)} \hat{P<em _in="\in" _mathcal_T="\mathcal{T" _tau="\tau">{B}\left(\tilde{s}^{\prime} \mid s^{\prime}\right) \sum</em><em B="B">{0, \tilde{s}^{\prime}}} \hat{P}</em>(\tau)=1
+\end{gathered}
+$$</p>
+<p>where we used the induction hypotheses in the third equality of each line.</p>
+<h1>2.2 Trajectories and Flows</h1>
+<p>We augment pointed DAGs it with a function $F$ called a flow. An analogy which helps to picture flows is a stream of particles flowing through a network where each particle starts at $s_{0}$ and flowing through some trajectory terminating in $s_{f}$. The flow $F(\tau)$ associated with each complete trajectory $\tau$ contains the number of particles sharing the same path $\tau$.</p>
+<p>Definition 6 Given a pointed DAG, a trajectory flow (or "flow") is any non-negative function $F: \mathcal{T} \mapsto \mathbb{R}^{+}$defined on the set of complete trajectories $\mathcal{T}$. $F$ induces a measure over the $\sigma$-algebra $\Sigma=2^{\mathcal{T}}$, the power set on the set of complete trajectories $\mathcal{T}$. In particular, for every subset $A \subseteq \mathcal{T}$, we have</p>
+<p>$$
+F(A)=\sum_{\tau \in A} F(\tau)
+$$</p>
+<p>The pair $(G, F)$ is called a flow network.
+This definition ensures that $\left(\mathcal{T}, 2^{\mathcal{T}}, F\right)$ is a measure space. We abuse the notation here, using $F$ to denote both a function of complete trajectories, and its corresponding measure over $\left(\mathcal{T}, 2^{\mathcal{T}}\right)$. A special case is when the event $A$ is the singleton trajectory ${\tau}$, where we just write its measure as $F(\tau)$. We also abuse the notation to define the flow through either a particular state $s$, or through a particular edge $s \rightarrow s^{\prime}$ in the following way.</p>
+<p>Definition 7 The flow through a state (or state flow) $F: \mathcal{S} \mapsto \mathbb{R}^{+}$corresponds to the measure of the set of complete trajectories going through a particular state:</p>
+<p>$$
+F(s):=F({\tau \in \mathcal{T}: s \in \tau})=\sum_{\tau \in \mathcal{T}: s \in \tau} F(\tau)
+$$</p>
+<p>Similarly, the flow through an edge (or edge flow) $F: \mathbb{A} \mapsto \mathbb{R}^{+}$corresponds to the measure of the set of complete trajectories going through a particular edge:</p>
+<p>$$
+F\left(s \rightarrow s^{\prime}\right):=F\left(\left{\tau \in \mathcal{T}: s \rightarrow s^{\prime} \in \tau\right}\right)=\sum_{\tau \in \mathcal{T}: s \rightarrow s^{\prime} \in \tau} F(\tau)
+$$</p>
+<p>Note that with this definition, we have $F\left(s \rightarrow s^{\prime}\right)=0$ if $s \rightarrow s^{\prime} \notin \mathbb{A}$ is not an edge in the pointed DAG (since $F(\emptyset)=0$ ). We call the flow of a terminating transition $F\left(s \rightarrow s_{f}\right)$ a terminating flow. The following proposition relates the state flows and the edge flows:</p>
+<p>Proposition 8 Given a flow network $(G, F)$. The state flows and edge flows satisfy:</p>
+<p>$$
+\begin{aligned}
+&amp; \forall s \in \mathcal{S} \backslash\left{s_{f}\right} \quad F(s)=\sum_{s^{\prime} \in \text { Child }(s)} F\left(s \rightarrow s^{\prime}\right) \
+&amp; \forall s^{\prime} \in \mathcal{S} \backslash\left{s_{0}\right} \quad F\left(s^{\prime}\right)=\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} F\left(s \rightarrow s^{\prime}\right)
+\end{aligned}
+$$</p>
+<p>Proof Given $s \neq s_{f}$, the set of complete trajectories going through $s$ is the (disjoint) union of the sets of trajectories going through $s \rightarrow s^{\prime}$, for all $s^{\prime} \in \operatorname{Child}(s)$ :</p>
+<p>$$
+{\tau \in \mathcal{T}: s \in \tau}=\bigcup_{s^{\prime} \in \text { Child }(s)}\left{\tau \in \mathcal{T}: s \rightarrow s^{\prime} \in \tau\right}
+$$</p>
+<p>Therefore, it follows that:</p>
+<p>$$
+F(s)=\sum_{\tau: s \in \tau} F(\tau)=\sum_{s^{\prime} \in \operatorname{Child}(s)} \sum_{\tau: s \rightarrow s^{\prime} \in \tau} F(\tau)=\sum_{s^{\prime} \in \operatorname{Child}(s)} F\left(s \rightarrow s^{\prime}\right)
+$$</p>
+<p>Similarly, Eq. (9) follows by writing the set of complete trajectories going though $s^{\prime} \neq s_{0}$ as the (disjoint) union of the sets of trajectories going through $s \rightarrow s^{\prime}$ for all $s \in \operatorname{Par}\left(s^{\prime}\right)$.</p>
+<h1>2.3 Flow Induced Probability Measures</h1>
+<p>Definition 9 Given a flow network $(G, F)$, the total flow $Z$ is the measure of the whole set $\mathcal{T}$, corresponding to the sum of the flows of all the complete trajectories:</p>
+<p>$$
+Z:=F(\mathcal{T})=\sum_{\tau \in \mathcal{T}} F(\tau)
+$$</p>
+<p>Proposition 10 The flow through the initial state equals the flow through the final state equals the total flow $Z$.</p>
+<p>Proof Since $\forall \tau \in \mathcal{T}, s_{0}, s_{f} \in \tau$, applying Eq. (6) to $s_{0}$ and $s_{f}$ yields</p>
+<p>$$
+\begin{aligned}
+&amp; F\left(s_{0}\right)=\sum_{\tau \in \mathcal{T}} F(\tau)=Z \
+&amp; F\left(s_{f}\right)=\sum_{\tau \in \mathcal{T}} F(\tau)=Z
+\end{aligned}
+$$</p>
+<p>Intuitively, Prop. 10 justifies the use of the term "flow", introduced by Bengio et al. (2021), by analogy with a stream of particles flowing from the initial state to the final states.</p>
+<p>We use the letter $Z$ in Def. 9, often used to denote the partition function in probabilistic models and statistical mechanics, because it is a normalizing constant which can turn the measure space $\left(\mathcal{T}, 2^{\mathcal{T}}, F\right)$ defined above into the probability space $\left(\mathcal{T}, 2^{\mathcal{T}}, P\right)$ :</p>
+<p>Definition 11 Given a flow network $(G, F)$, the flow probability is the probability measure $P$ over the measurable space $\left(\mathcal{T}, 2^{\mathcal{T}}\right)$ associated with $F$ :</p>
+<p>$$
+\forall A \subseteq \mathcal{T} \quad P(A):=\frac{F(A)}{F(\mathcal{T})}=\frac{F(A)}{Z}
+$$</p>
+<p>For two events $A, B \subseteq \mathcal{T}$, the conditional probability $P(A \mid B)$ thus satisfies:</p>
+<p>$$
+P(A \mid B):=\frac{F(A \cap B)}{F(B)}
+$$</p>
+<p>Similar to the flow $F$, we abuse the notation $P$ to define the probability of going through a state:</p>
+<p>$$
+\forall s \in \mathcal{S} \quad P(s):=\frac{F(s)}{Z}
+$$</p>
+<p>and similarly for the probability of going through an edge. Note that $P(s)$ does not correspond to a distribution over states, in the sense that $\sum_{s \in \mathcal{S}} P(s) \neq 1$; in particular, it is easy to see that $P\left(s_{0}\right)=1$ (in other words, the probability of a trajectory passing through the initial state $s_{0}$ is 1 ). Additionally, for a trajectory $\tau \in \mathcal{T}$, we also use the abuse of notation $P(\tau)$ instead of $P({\tau})$ to denote the probability of going through a specific trajectory $\tau$.
+Definition 12 Given a flow network $(G, F)$, the forward transition probability operator $P_{F}$ is a function on $\mathcal{S} \times \mathcal{S}$, that is a special case of the conditional probabilities induced by $F$ (Eq. (14)):</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} P_{F}\left(s^{\prime} \mid s\right):=P\left(s \rightarrow s^{\prime} \mid s\right)=\frac{F\left(s \rightarrow s^{\prime}\right)}{F(s)}
+$$</p>
+<p>Similarly, the backwards transition probability is the operator defined by:</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} P_{B}\left(s \mid s^{\prime}\right):=P\left(s \rightarrow s^{\prime} \mid s^{\prime}\right)=\frac{F\left(s \rightarrow s^{\prime}\right)}{F\left(s^{\prime}\right)}
+$$</p>
+<p>Note how $P_{F}$ and $P_{B}$ are consistent with $G$ (in the sense of Def. 4), as a consequence of Prop. 8.</p>
+<p>Because flows define probabilities over states and edges, they can be used to define probability distributions over the terminating states of a graph (denoted by $\mathcal{S}^{f}=\operatorname{Par}\left(s_{f}\right)$ ) as follows:
+Definition 13 Given a flow network $(G, F)$, the terminating state probability $P_{T}$ is the probability over terminating states $\mathcal{S}^{f}$ under the flow probability $P$ :</p>
+<p>$$
+\forall s \in \mathcal{S}^{f} \quad P_{T}(s):=P\left(s \rightarrow s_{f}\right)=\frac{F\left(s \rightarrow s_{f}\right)}{Z}
+$$</p>
+<p>Contrary to the probability $P(s)$ of going through a state $s$, the terminating state probability $P_{T}$ is a well-defined distribution over the terminating states $s \in \mathcal{S}^{f}$, in the following sense:
+Proposition 14 The terminating state probability $P_{T}$ is a well-defined distribution over the terminating states $s \in \mathcal{S}^{f}$, in that $P_{T}(s) \geq 0$ for all $s \in \mathcal{S}^{f}$, and</p>
+<p>$$
+\sum_{s \in \mathcal{S}^{f}} P_{T}(s)=1
+$$</p>
+<p>Proof Since the flow $F\left(s \rightarrow s_{f}\right)$ is non-negative, it is easy to see that $P_{T}(s) \geq 0$. Moreover, using the definition of $\mathcal{S}^{f}=\operatorname{Par}\left(s_{f}\right)$, Prop. 8 (relating the edge flows and the state flows), and Prop. $10\left(F\left(s_{f}\right)=Z\right)$, we have</p>
+<p>$$
+\sum_{s \in \mathcal{S}^{f}} P_{T}(s)=\frac{1}{Z} \sum_{s \in \mathcal{S}^{f}} F\left(s \rightarrow s_{f}\right)=\frac{1}{Z} \sum_{s \in \operatorname{Par}\left(s_{f}\right)} F\left(s \rightarrow s_{f}\right)=\frac{F\left(s_{f}\right)}{Z}=1
+$$</p>
+<p>The terminating state probability is particularly important in the context of estimating flow networks (see Sec. 3), as it shows that a flow network $(G, F)$ induces a probability distribution over terminating states which is proportional to the terminating flows $F\left(s \rightarrow s_{f}\right)$, the normalization constant $Z$ being given by initial flow $F\left(s_{0}\right)$.</p>
+<h1>2.4 Markovian Flows</h1>
+<p>Defining a flow requires the specification of $|\mathcal{T}|$ non-negative values (one for every trajectory $\tau \in \mathcal{T}$ ), which is generally exponential in the number of graph edges. Markovian flows however have the remarkable property that they can be defined with much fewer "numbers", given that trajectory flows factorize according to $G$.</p>
+<p>Definition 15 Let $(G, F)$ be a flow network, with flow probability measure $P . F$ is called a Markovian flow (or equivalently $(G, F)$ a Markovian flow network) if, for any state $s \neq s_{0}$, outgoing edge $s \rightarrow s^{\prime}$, and for any trajectory $\tau=\left(s_{0}, s_{1}, \ldots, s_{n}=s\right) \in \mathcal{T}^{\text {partial }}$ starting in $s_{0}$ and ending in $s$ :</p>
+<p>$$
+P\left(s \rightarrow s^{\prime} \mid \tau\right)=P\left(s \rightarrow s^{\prime} \mid s\right)=P_{F}\left(s^{\prime} \mid s\right)
+$$</p>
+<p>Note that the Markovian property does not hold for all of the flows as defined in the previous sections (e.g. Fig. 4). Intuitively, a flow can be considered non-Markovian if a particle in the "flow stream" can remember its past history; if not, its future behavior can only depend on its current state and the flow must be Markovian. In this work, we will primarily be concerned with Markovian flows, though later we will re-introduce a form of memory via state-conditional flows that allow each flow "particle" to remember parts of its history. The following proposition shows that Markovian flows have the property that the flows at (or the probabilities of) complete trajectories factorize according the the graph, and that it is a sufficient condition for defining Markovian flows.</p>
+<p>Proposition 16 Let $(G, F)$ be a flow network, and $P$ the corresponding flow probability. The following three statements are equivalent:</p>
+<ol>
+<li>$F$ is a Markovian flow</li>
+<li>There exists a unique probability function $\hat{P}<em 0="0">{F}$ consistent with $G$ such that for all complete trajectories $\tau=\left(s</em>\right)$ :}, \ldots, s_{n+1}=s_{f</li>
+</ol>
+<p>$$
+P(\tau)=\prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>\right)
+$$} \mid s_{t-1</p>
+<p>Moreover, the probability function $\hat{P}<em F="F">{F}$ is exactly the forward transition probability associated with the flow probability $P: \hat{P}</em>$.
+3. There exists a unique probability function $\hat{P}}=P_{F<em 0="0">{B}$ consistent with $G$ such that for all complete trajectories $\tau=\left(s</em>\right)$ :}, \ldots, s_{n+1}=s_{f</p>
+<p>$$
+P(\tau)=\prod_{t=1}^{n+1} \hat{P}<em t-1="t-1">{B}\left(s</em>\right)
+$$} \mid s_{t</p>
+<p>Moreover, the probability function $\hat{P}<em B="B">{B}$ is exactly the backwards transition probability associated with the flow probability $P: \hat{P}</em>$.}=P_{B</p>
+<h1>GFLOWNET FOUNDATIONS</h1>
+<p>Proof Recall from Lemma 5 the notations $\mathcal{T}<em 0="0">{0, s}$ to denote the set of partial trajectories from $s</em>}$ to $s$, and $\mathcal{T<em f="f">{s^{\prime}, f}$ to denote the set of partial trajectories from $s^{\prime}$ to $s</em>$. We will prove the equivalences $1 \Leftrightarrow 2$ and $1 \Leftrightarrow 3$.</p>
+<ul>
+<li>$1 \Rightarrow 2$ : Suppose that $F$ is a Markovian flow. Then using the laws of probability, the Markov property in Eq. (19), and $P\left(s_{0}\right)=1$, for some complete trajectory $\tau=$ $\left(s_{0}, \ldots, s_{n+1}=s_{f}\right)$ :</li>
+</ul>
+<p>$$
+\begin{aligned}
+P(\tau) &amp; =P\left(s_{0} \rightarrow s_{1} \rightarrow \ldots \rightarrow s_{n+1}\right)=P\left(s_{0} \rightarrow s_{1}\right) \prod_{t=1}^{n} P\left(s_{t} \rightarrow s_{t+1} \mid s_{0} \rightarrow \ldots \rightarrow s_{t}\right) \
+&amp; =P\left(s_{0} \rightarrow s_{1}\right) \prod_{t=1}^{n} P\left(s_{t} \rightarrow s_{t+1} \mid s_{t}\right) \
+&amp; =P\left(s_{0}\right) P_{F}\left(s_{1} \mid s_{0}\right) \prod_{t=1}^{n} P_{F}\left(s_{t+1} \mid s_{t}\right) \
+&amp; =\prod_{t=1}^{n+1} P_{F}\left(s_{t} \mid s_{t-1}\right)
+\end{aligned}
+$$</p>
+<p>where the second line uses to Markov property, and the third line uses the definition of the forward transition probability $P_{F} . P_{F}$ thus satisfies Eq. (20) for all complete trajectories.</p>
+<p>To show uniqueness of $P_{F}$, assume Eq. (20) is satisfied by some $\hat{P}_{F}$ for all complete trajectories. By definition of the forward transition probability:</p>
+<p>$$
+P_{F}\left(s^{\prime} \mid s\right):=P\left(s \rightarrow s^{\prime} \mid s\right)=\frac{P\left(s \rightarrow s^{\prime}\right)}{P(s)}
+$$</p>
+<p>Any complete trajectory $\tau$ going through a state $s$ can be (uniquely) decomposed into a partial trajectory $\tau^{\prime} \in \mathcal{T}<em 0="0">{0, s}$ from $s</em>}$ to $s$, and a partial trajectory $\tau^{\prime \prime} \in \mathcal{T<em f="f">{s, f}$ from $s$ to $s</em>$. Using the definition of $P(s)$, we have:</p>
+<p>$$
+\begin{aligned}
+P(s) &amp; =\sum_{\tau: s \in \tau} P(\tau)=\sum_{\tau: s \in \tau} \prod_{\left(s_{t} \rightarrow s_{t+1}\right) \in \tau} \hat{P}<em t_1="t+1">{F}\left(s</em>\right) \
+&amp; =\left[\sum_{\tau^{\prime} \in \mathcal{T}} \mid s_{t<em _left_s__t="\left(s_{t">{0, s}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime}} \hat{P<em t_1="t+1">{F}\left(s</em>} \mid s_{t}\right)\right] \underbrace{\left[\sum_{\tau^{\prime \prime} \in \mathcal{T<em _left_s__t="\left(s_{t">{s, f}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime \prime}} \hat{P<em t_1="t+1">{F}\left(s</em>} \mid s_{t}\right)\right]<em _tau_prime="\tau^{\prime">{=1 \quad \text { (Lemma 5) }} \
+&amp; =\sum</em>} \in \mathcal{T<em _left_s__t="\left(s_{t">{0, s}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime}} \hat{P<em t_1="t+1">{F}\left(s</em>\right)
+\end{aligned}
+$$} \mid s_{t</p>
+<p>Similarly, any complete trajectory going through $s \rightarrow s^{\prime}$ can be (uniquely) decomposed into a partial trajectory $\tau^{\prime} \in \mathcal{T}<em 0="0">{0, s}$ from $s</em>$ from}$ to $s$, and a partial trajectory $\tau^{\prime \prime} \in \mathcal{T}_{s^{\prime}, f</p>
+<p>$s^{\prime}$ to $s_{f}$. Again, using the definition of $P\left(s \rightarrow s^{\prime}\right)$ :</p>
+<p>$$
+\begin{aligned}
+P\left(s \rightarrow s^{\prime}\right) &amp; =\sum_{\tau:\left(s \rightarrow s^{\prime}\right) \in \tau} P(\tau)=\sum_{\tau:\left(s \rightarrow s^{\prime}\right) \in \tau} \prod_{\left(s_{t} \rightarrow s_{t+1}\right) \in \tau} \hat{P}<em t_1="t+1">{F}\left(s</em>\right) \
+&amp; =\underbrace{\left[\sum_{\tau^{\prime} \in \mathcal{T}} \mid s_{t<em _left_s__t="\left(s_{t">{0, s}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime}} \hat{P<em t_1="t+1">{F}\left(s</em>} \mid s_{t}\right)\right]<em F="F">{=P(s)} \hat{P}</em>}\left(s^{\prime} \mid s\right) \underbrace{\left[\sum_{\tau^{\prime \prime} \in \mathcal{T<em _begin_array="\begin{array">{s^{\prime}, f}}\right.}</em>
+\left.s_{t} \rightarrow s_{t+1}\right) \in \tau^{\prime \prime} \
+=1 \quad \text { (Lemma 5) }
+\end{array}} \
+&amp; =P(s) \hat{P}_{F}\left(s^{\prime} \mid s\right)
+\end{aligned}
+$$}{c</p>
+<p>Combining the two results above, we get:</p>
+<p>$$
+P_{F}\left(s^{\prime} \mid s\right)=\frac{P\left(s \rightarrow s^{\prime}\right)}{P(s)}=\hat{P}_{F}\left(s^{\prime} \mid s\right)
+$$</p>
+<ul>
+<li>$2 \Rightarrow 1$ : Suppose that there exists a probability function $\hat{P}<em 0="0">{F}$ consistent with $G$ such that for some complete trajectory $\tau=\left(s</em>\right)$}, \ldots, s_{n+1}=s_{f</li>
+</ul>
+<p>$$
+P(\tau)=\prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>\right)
+$$} \mid s_{t-1</p>
+<p>For the same reasons as those used to justify the uniqueness in the $1 \Rightarrow 2$ proof, $\hat{P}<em F="F">{F}$ is necessarily equal to the forward transition probability $P</em>$, associated with $P$.</p>
+<p>We now want to show that the flow $F$ associated with $P$ is Markovian, by showing the Markov property from Eq. (19). Let $\tau^{\prime} \in \mathcal{T}<em 0="0">{0, s}$ be any partial trajectory from $s</em>$ to $s$; using the definition of conditional probability:</p>
+<p>$$
+P\left(s \rightarrow s^{\prime} \mid \tau^{\prime}\right)=\frac{P\left(s_{0} \rightarrow \ldots \rightarrow s \rightarrow s^{\prime}\right)}{P\left(s_{0} \rightarrow \ldots \rightarrow s\right)}
+$$</p>
+<p>Following the same idea as above, we will now rewrite $P\left(s_{0} \rightarrow \ldots \rightarrow s\right)$, as a sum over complete trajectories that share the same prefix trajectory $\tau^{\prime}$. Any such complete trajectory $\tau$ can be (uniquely) decomposed into this common prefix $\tau^{\prime}$, and a partial trajectory $\tau^{\prime \prime} \in \mathcal{T}<em f="f">{s, f}$ from $s$ to $s</em>$.</p>
+<p>$$
+\begin{aligned}
+P\left(s_{0} \rightarrow \ldots \rightarrow s\right) &amp; =\sum_{\tau: \tau^{\prime} \subseteq \tau} P(\tau)=\sum_{\tau: \tau^{\prime} \subseteq \tau} \prod_{\left(s_{t} \rightarrow s_{t+1}\right) \in \tau} P_{F}\left(s_{t+1} \mid s_{t}\right) \
+&amp; =\left[\prod_{s_{t-1} \rightarrow s_{t} \in \tau^{\prime}} P_{F}\left(s_{t} \mid s_{t-1}\right)\right] \underbrace{\left[\sum_{\tau^{\prime \prime} \in \mathcal{T}<em _begin_array="\begin{array">{s, f}}\right.}</em>
+=1 \quad \text { (Lemma 5) }
+\end{array}} P_{F}\left(s_{t+1} \mid s_{t}\right) \
+&amp; =\prod_{s_{t-1} \rightarrow s_{t} \in \tau^{\prime}} P_{F}\left(s_{t} \mid s_{t-1}\right)
+\end{aligned}
+$$}{c</p>
+<p>Similarly, any complete trajectory $\tau$ that share the same prefix trajectory $\left(s_{0}, \ldots, s, s^{\prime}\right)$ can be (uniquely) decomposed into this common prefix, and a partial trajectory $\tau^{\prime \prime} \in$ $\mathcal{T}<em f="f">{s^{\prime}, f}$ from $s^{\prime}$ to $s</em>$, leading to:</p>
+<p>$$
+P\left(s_{0} \rightarrow \ldots \rightarrow s \rightarrow s^{\prime}\right)=P\left(s_{0} \rightarrow \ldots \rightarrow s\right) P_{F}\left(s^{\prime} \mid s\right)
+$$</p>
+<p>Combining the two results above, we can conclude that $P$ satisfies the Markov property, and therefore that the flow $F$ is Markovian:</p>
+<p>$$
+P\left(s^{\prime} \rightarrow s \mid \tau^{\prime}\right)=\frac{P\left(s_{0} \rightarrow \ldots \rightarrow s \rightarrow s^{\prime}\right)}{P\left(s_{0} \rightarrow \ldots \rightarrow s\right)}=P_{F}\left(s^{\prime} \mid s\right)=P\left(s^{\prime} \rightarrow s \mid s\right)
+$$</p>
+<ul>
+<li>${1,2} \Rightarrow 3$ : Suppose that $F$ is a Markovian flow. We have shown above that this is equivalent to $P$ being decomposed into a product of forward transition probabilities $P_{F}$. For some complete trajectory $\tau=\left(s_{0}, \ldots, s_{n+1}=s_{f}\right)$ :</li>
+</ul>
+<p>$$
+P(\tau)=\prod_{t=1}^{n+1} P_{F}\left(s_{t} \mid s_{t-1}\right)=\prod_{t=1}^{n+1} \frac{P\left(s_{t-1} \rightarrow s_{t}\right)}{P\left(s_{t-1}\right)}=\prod_{t=1}^{n+1} \frac{P\left(s_{t-1} \rightarrow s_{t}\right)}{P\left(s_{t}\right)}=\prod_{t=1}^{n+1} P_{B}\left(s_{t-1} \mid s_{t}\right)
+$$</p>
+<p>where the third equality uses the fact that $P\left(s_{0}\right)=P\left(s_{f}\right)=1$, and using the definition of the backwards transition probability $P_{B}$. The proof of uniqueness of $P_{B}$ is similar to that of $P_{F}$ in $1 \Rightarrow 2$, and uses:</p>
+<p>$$
+\begin{aligned}
+P\left(s \rightarrow s^{\prime}\right) &amp; =\sum_{\tau:\left(s \rightarrow s^{\prime}\right) \in \tau} P(\tau)=\sum_{\tau:\left(s \rightarrow s^{\prime}\right) \in \tau}\prod_{\left(s_{t} \rightarrow s_{t+1}\right) \in \tau} \hat{P}<em t="t">{B}\left(s</em>\right) \
+&amp; =\underbrace{\left[\sum_{\tau^{\prime} \in \mathcal{T}} \mid s_{t+1<em _left_s__t="\left(s_{t">{0, s}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime}} \hat{P<em t="t">{B}\left(s</em>} \mid s_{t+1}\right)\right]<em B="B">{=1 \quad \text { (Lemma 5) }} \hat{P}</em>}\left(s \mid s^{\prime}\right) \underbrace{\left[\sum_{\tau^{\prime \prime} \in \mathcal{T<em _left_s__t="\left(s_{t">{s^{\prime}, f}}\prod</em>} \rightarrow s_{t+1}\right) \in \tau^{\prime \prime}} \hat{P<em t="t">{B}\left(s</em>} \mid s_{t+1}\right)\right]<em B="B">{=\hat{P}\left(s^{\prime}\right)} \
+&amp; =P\left(s^{\prime}\right) \hat{P}</em>\right)
+\end{aligned}
+$$}\left(s \mid s^{\prime</p>
+<ul>
+<li>$3 \Rightarrow 1$ : Similar to the proof of $2 \Rightarrow 1, \hat{P}<em B="B">{B}$ is necessarily equal to the backwards transition probability $P</em>$ :}$ associated with $P$. Additionally, $P_{B}$ is related to the forward transition probability $P_{F</li>
+</ul>
+<p>$$
+P\left(s \rightarrow s^{\prime}\right)=P_{B}\left(s \mid s^{\prime}\right) P\left(s^{\prime}\right)=P_{F}\left(s^{\prime} \mid s\right) P(s)
+$$</p>
+<p>We can therefore write the decomposition of $P$ in terms of $P_{F}$, instead of $P_{B}$. For some complete trajectory $\tau=\left(s_{0}, \ldots, s_{n+1}=s_{f}\right)$ :</p>
+<p>$$
+\begin{aligned}
+P(\tau) &amp; =\prod_{t=1}^{n+1} P_{B}\left(s_{t-1} \mid s_{t}\right)=\prod_{t=1}^{n+1} \frac{P\left(s_{t-1}\right)}{P\left(s_{t}\right)} P_{F}\left(s_{t+1} \mid s_{t}\right)=\frac{P\left(s_{0}\right)}{P\left(s_{f}\right)} \prod_{t=1}^{n+1} P_{F}\left(s_{t+1} \mid s_{t}\right) \
+&amp; =\prod_{t=1}^{n+1} P_{F}\left(s_{t+1} \mid s_{t}\right)
+\end{aligned}
+$$</p>
+<p>where we used the fact that $P\left(s_{0}\right)=P\left(s_{f}\right)=1$. Using " $2 \Rightarrow 1$ ", we can conclude that $F$ is a Markovian flow.</p>
+<p>The decomposition of Eq. (20) shows how Markovian flows can be used to draw terminating states from the terminating state probability $P_{T}$ (Eq. (18)). Namely, we have the following result:</p>
+<p>Corollary 17 Let $(G, F)$ be a Markovian flow network, and $P_{F}$ the corresponding forward transition probability. Consider the procedure starting from $s=s_{0}$, and iteratively drawing one sample from $P_{F}(. \mid s)$ until reaching $s_{f}$. Then the probability of the procedure terminating in a state $s$ is $P_{T}(s)$.</p>
+<p>Proof First, note that the procedure terminates with probability 1 , given that $G$ is acyclic.
+For the procedure to terminate in a state $s$, it means that the trajectory $\tau \in \mathcal{T}$ implicitly constructed during the procedure contains the edge $s \rightarrow s_{f}$. The probability of the procedure terminating in $s$ is thus:</p>
+<p>$$
+\sum_{\tau \in \mathcal{T}: s \rightarrow s_{f} \in \tau} \underbrace{\prod_{s^{\prime} \rightarrow s^{\prime \prime} \in \tau} P_{F}\left(s^{\prime \prime} \mid s^{\prime}\right)}<em f="f">{P(\tau), \text { according to Eq. (20) }}=P\left(s \rightarrow s</em>(s)
+$$}\right)=P_{T</p>
+<p>The following proposition shows that, as a consequence of the Prop. 16, we obtain three different parametrizations of Markovian flows.</p>
+<p>Proposition 18 Given a pointed $D A G G=(\mathcal{S}, \mathbb{A})$, a Markovian flow on $G$ is completely and uniquely specified by one of the following:</p>
+<ol>
+<li>the combination of the total flow $\hat{Z}$ and the forward transition probabilities $\hat{P}_{F}\left(s^{\prime} \mid s\right)$ for all edges $s \rightarrow s^{\prime} \in \mathbb{A}$,</li>
+<li>the combination of the total flow $\hat{Z}$ and the backward transition probabilities $\hat{P}_{B}\left(s \mid s^{\prime}\right)$ for all edges $s \rightarrow s^{\prime} \in \mathbb{A}$.</li>
+<li>the combination of the terminating flows $\hat{F}\left(s \rightarrow s_{f}\right)$ for all terminating edges $s \rightarrow s_{f} \in$ $\mathbb{A}^{f}$ and the backwards transition probabilities $\hat{P}_{B}\left(s \mid s^{\prime}\right)$ for all non-terminating edges $s \rightarrow s^{\prime} \in \mathbb{A}^{-f}$,</li>
+</ol>
+<p>Proof In the first two settings, we define a flow function $F: \mathcal{T} \rightarrow \mathbb{R}^{+}$, at a trajectory $\tau=\left(s_{0}, s_{1}, \ldots, s_{n}, s_{n+1}=s_{f}\right)$ as:</p>
+<ol>
+<li>$F(\tau):=\hat{Z} \prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>\right)$,} \mid s_{t-1</li>
+<li>$F(\tau):=\hat{Z} \prod_{t=1}^{n+1} \hat{P}<em t-1="t-1">{B}\left(s</em>\right)$} \mid s_{t</li>
+</ol>
+<p>We need to prove that it is the only Markovian flow that can be defined for both settings. The proof for the third setting will follow from that of the second setting.</p>
+<h1>First setting:</h1>
+<p>First, we need to show that the total flow $Z$ associated with the flow function $F$ (Eq. (10)) matches $\hat{Z}$. This is a consequence of Lemma 5 :</p>
+<p>$$
+Z=\sum_{\tau \in \mathcal{T}} F(\tau)=\hat{Z} \underbrace{\sum_{\tau=\left(s_{0}, s_{1}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T}} \prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>
+$$} \mid s_{t-1}\right)}_{=1 \text {, according to Lemma } 5}=\hat{Z</p>
+<p>Then, we need to show that the forward transition probability function $P_{F}$ associated with $F$ (Eq. (16)) matches $\hat{P}<em F="F">{F}$, and that the flow $F$ is Markovian. To this end, note that the corresponding flow probability $P$ satisfies Eq. (20). Thus, as a consequence of Prop. 16, $F$ is a Markovian flow, and its forward transition probability function is $\hat{P}</em>$.</p>
+<p>As a last requirement, we need to show that if a Markovian flow $F^{\prime}$ has a partition function $Z^{\prime}=\hat{Z}$ and a forward transition probability function $P_{F}^{\prime}=\hat{P}<em 0="0">{F}$, then it is necessarily equal to $F$. This is a direct consequence of Prop. 16, given that for any $\tau=\left(s</em>$ :}, \ldots, s_{n+1}=\right.$ $\left.s_{f}\right) \in \mathcal{T</p>
+<p>$$
+F^{\prime}(\tau)=Z^{\prime} \prod_{t=1}^{n+1} P_{F}^{\prime}\left(s_{t} \mid s_{t-1}\right)=\hat{Z} \prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>\right)=F(\tau)
+$$} \mid s_{t-1</p>
+<h1>Second setting:</h1>
+<p>First, we show that as a consequence of Lemma 5, the total flow $Z$ associated with $F$ matches $\hat{Z}$ :</p>
+<p>$$
+Z=\sum_{\tau \in \mathcal{T}} F(\tau)=\hat{Z} \underbrace{\sum_{\tau=\left(s_{0}, s_{1}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T}} \prod_{t=1}^{n+1} \hat{P}<em -1="-1">{B}\left(s</em>
+$$} \mid s_{t}\right)}_{=1 \text {, according to Lemma } 5}=\hat{Z</p>
+<p>Second, we note that the flow probability $P$ associated with $F$ satisfies Eq. (21). Thus, as a consequence of Prop. 16, $F$ is a Markovian flow, and its backward transition probability function is $\hat{P}_{B}$.</p>
+<p>Finally, if a Markovian flow $F^{\prime}$ has a partition function $Z^{\prime}=\hat{Z}$ and a backward transition probability function $P_{B}^{\prime}=\hat{P}_{B}$, then following Prop. 16, $\forall \tau \in \mathcal{T}, F^{\prime}(\tau)=F(\tau)$.</p>
+<h2>Third setting:</h2>
+<p>From the terminating flows $\hat{F}\left(s \rightarrow s_{f}\right)$ and the backwards transition probabilities $\hat{P}<em B="B">{B}(s \mid$ $\left.s^{\prime}\right)$ for non-terminating edges, we can uniquely define a total flow $\hat{Z}$, and extend $\hat{P}</em>$ to all edges as follows:</p>
+<p>$$
+\begin{aligned}
+\hat{Z} &amp; :=\sum_{s \in \operatorname{Par}\left(s_{f}\right)} \hat{F}\left(s \rightarrow s_{f}\right) \
+\hat{P}<em B="B">{B}\left(s \mid s^{\prime}\right) &amp; :=\left{\begin{array}{ll}
+\hat{P}</em> \
+\frac{\hat{F}\left(s \rightarrow s_{f}\right)}{\hat{Z}} &amp; \text { otherwise. }
+\end{array}\right.
+\end{aligned}
+$$}\left(s \mid s^{\prime}\right) &amp; \text { if } s^{\prime} \neq s_{f</p>
+<p>This takes us back to the second setting, for which we have already proven that with $\hat{Z}$ and $\hat{P}_{B}$ defined for all edges, a Markovian flow is uniquely defined.</p>
+<h1>2.5 Flow Matching Conditions</h1>
+<p>In Prop. 18, we saw how forward and backward probability functions can be used to uniquely define a Markovian flow. We will show in the next proposition how non-negative functions of states and edges can be used to define a Markovian flow. Such functions cannot be unconstrained (as $\hat{P}_{F}$ and $\hat{Z}$ in Prop. 18 e.g.), as we have seen in Prop. 8.</p>
+<p>Proposition 19 Let $G=(\mathcal{S}, \mathbb{A})$ be a pointed DAG. Consider a non-negative function $\hat{F}$ taking as input either a state $s \in \mathcal{S}$ or a transition $s \rightarrow s^{\prime} \in \mathbb{A}$. Then $\hat{F}$ corresponds to a flow if and only if the flow matching conditions:</p>
+<p>$$
+\begin{array}{ll}
+\forall s^{\prime}&gt;s_{0}, &amp; \hat{F}\left(s^{\prime}\right)=\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s \rightarrow s^{\prime}\right) \
+\forall s^{\prime}&lt;s_{f}, &amp; \hat{F}\left(s^{\prime}\right)=\sum_{s^{\prime \prime} \in \operatorname{Child}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime} \rightarrow s^{\prime \prime}\right)
+\end{array}
+$$</p>
+<p>are satisfied. More specifically, $\hat{F}$ uniquely defines a Markovian flow $F$ matching $\hat{F}$ on states and transitions:</p>
+<p>$$
+\forall \tau=\left(s_{0}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T} \quad F(\tau)=\frac{\prod_{t=1}^{n+1} \hat{F}\left(s_{t-1} \rightarrow s_{t}\right)}{\prod_{t=1}^{n} \hat{F}\left(s_{t}\right)}
+$$</p>
+<p>Proof Necessity is a direct consequence of Prop. 8. Let's show sufficiency. Let $\hat{P}_{F}$ be the forward probability function defined by:</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{P}_{F}\left(s^{\prime} \mid s\right):=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\hat{F}(s)}
+$$</p>
+<p>$\hat{P}<em 0="0">{F}$ is consistent with $G$ given that $\hat{F}$ satisfies the flow matching conditions (Eq. (22)). Let $\hat{Z}=\hat{F}\left(s</em>}\right)$. According to Prop. 18, there exists a unique Markovian flow $F$ with forward transition probability function $P_{F}=\hat{P<em 0="0">{F}$ and partition function $Z=\hat{Z}$, and such that for a trajectory $\tau=\left(s</em>$ :}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T</p>
+<p>$$
+\forall \tau=\left(s_{0}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T} \quad F(\tau)=\hat{Z} \prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>
+$$} \mid s_{t-1}\right)=\frac{\prod_{t=1}^{n+1} \hat{F}\left(s_{t-1} \rightarrow s_{t}\right)}{\prod_{t=1}^{n} \hat{F}\left(s_{t}\right)</p>
+<p>Additionally, similar to the proof of Prop. 16, we can write for any state $s^{\prime} \neq s_{0}$ :</p>
+<p>$$
+\begin{aligned}
+F\left(s^{\prime}\right) &amp; =\hat{Z} \sum_{\tau \in \mathcal{T}<em _left_s__t="\left(s_{t">{0, s^{\prime}}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau} \hat{P<em t_1="t+1">{F}\left(s</em>\right) \
+&amp; =\hat{Z} \frac{\hat{F}\left(s^{\prime}\right)}{\hat{F}\left(s_{0}\right)} \underbrace{\sum_{\tau \in \mathcal{T}} \mid s_{t<em _left_s__t="\left(s_{t">{0, s^{\prime}}} \prod</em>} \rightarrow s_{t+1}\right) \in \tau} \hat{P<em t="t">{B}\left(s</em> \
+&amp; =\hat{F}\left(s^{\prime}\right)
+\end{aligned}
+$$} \mid s_{t+1}\right)}_{=1 \text {, according to Lemma } 5</p>
+<p>where $\hat{P}<em F="F">{B}\left(s^{\prime} \mid s\right):=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\hat{F}\left(s^{\prime}\right)}$ defines a backward probability function consistent with $G$. And because $\forall s \rightarrow s^{\prime} \in \mathbb{A} P</em>\right)$.}\left(s^{\prime} \mid s\right)=\hat{P}_{F}\left(s^{\prime} \mid s\right)$, it follows that $\forall s \rightarrow s^{\prime} \in \mathbb{A} F\left(s \rightarrow s^{\prime}\right)=$ $\hat{F}\left(s \rightarrow s^{\prime</p>
+<p>To show uniqueness, let's consider a Markovian flow $F^{\prime}$ that matches $\hat{F}$ on states and edges. Following Prop. 16, for any trajectory $\tau=\left(s_{0}, \ldots, s_{n+1}=s_{f}\right) \in \mathcal{T}$</p>
+<p>$$
+F^{\prime}(\tau)=\hat{Z} \prod_{t=1}^{n+1} \hat{P}<em t="t">{F}\left(s</em>=F(\tau)
+$$} \mid s_{t-1}\right)=\frac{\prod_{t=1}^{n+1} \hat{F}\left(s_{t-1} \rightarrow s_{t}\right)}{\prod_{t=1}^{n} \hat{F}\left(s_{t}\right)</p>
+<p>Note how Eq. (22) can be used to recursively define the flow in all the states if $Z$ is given and either the forward or the backwards transition probabilities are given. Either way, we would start from the flow at one of the extreme states $s_{0}$ or $s_{f}$ and then distribute it recursively through the directed acyclic graph of the flow network, either going forward or going backward. A setting of particular interest, that will be central in Sec. 3, is when we are given all the terminal flows $F\left(s \rightarrow s_{f}\right)$, and we would like to deduce a state flow function $F(s)$ and a forward transition probability function $P_{F}\left(s^{\prime} \mid s\right)$ for the rest of the flow network.</p>
+<p>Next, we will see how to parametrize Markovian flows using forward and backward probability functions consistent with the DAG. Unlike the condition in Prop. 19, the new condition does not involve a sum over transitions, which could be problematic if each state can have a large number of successors or if the state-space is continuous. Interestingly, the resulting condition is analogous to the detailed balance condition of Monte-Carlo Markov chains.</p>
+<p>Definition 20 Given a pointed $D A G G=(\mathcal{S}, \mathbb{A})$, a forward transition probability function $\hat{P}<em B="B">{F}$ and a backward transition probability function $\hat{P}</em>}$ consistent with $G, \hat{P<em B="B">{F}$ and $\hat{P}</em>$such that}$ are compatible if there exists an edge flow function $\hat{F}: \mathbb{A} \rightarrow \mathbb{R}^{+</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{P}<em s_prime="s^{\prime">{F}\left(s^{\prime} \mid s\right)=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\sum</em>} \in \operatorname{Child}(s)} \hat{F}\left(s \rightarrow s^{\prime}\right)}, \quad \hat{P<em _prime="\prime" s_prime="s^{\prime">{B}\left(s \mid s^{\prime}\right)=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\sum</em>
+$$} \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime \prime} \rightarrow s^{\prime}\right)</p>
+<p>Proposition 21 Let $G=(\mathcal{S}, \mathbb{A})$ be a pointed DAG. Consider a non-negative function $\hat{F}$ over states, a forward transition probability function $\hat{P}<em B="B">{F}$ and a backwards transition probability function $\hat{P}</em>}$ consistent with $G$. Then, $\hat{F}, \hat{P<em F="F">{B}$, and $\hat{P}</em>$ jointly correspond to a flow if and only if the detailed balance conditions holds:</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{F}(s) \hat{P}<em B="B">{F}\left(s^{\prime} \mid s\right)=\hat{F}\left(s^{\prime}\right) \hat{P}</em>\right)
+$$}\left(s \mid s^{\prime</p>
+<p>More specifically, $\hat{F}, \hat{P}<em B="B">{F}$, and $\hat{P}</em>}$ uniquely define a Markovian flow $F$ matching $\hat{F}$ on states, and with transition probabilities matching $\hat{P<em B="B">{F}$ and $\hat{P}</em>}$. Furthermore, when this condition is satisfied, the forward and backward transition probability functions $\hat{P<em B="B">{F}$ and $\hat{P}</em>$ are compatible.</p>
+<p>Proof For necessity, consider a flow $F$, with state flow function denoted $F$, and forward and backward transitions $P_{F}$ and $P_{B}$. It is clear from the definition of $P_{F}$ and $P_{B}$ (Def. 12) that Eq. (26) holds. We prove the sufficiency of the condition by first defining the edge flow</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{F}\left(s \rightarrow s^{\prime}\right):=\hat{F}(s) \hat{P}_{F}\left(s^{\prime} \mid s\right)
+$$</p>
+<p>We then sum both sides of Eq. (26) over $s$, yielding</p>
+<p>$$
+\forall s^{\prime}&gt;s 0 \quad \sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}(s) \hat{P}<em _in="\in" _operatorname_Par="\operatorname{Par" s="s">{F}\left(s^{\prime} \mid s\right)=\hat{F}\left(s^{\prime}\right) \sum</em>\right)
+$$}\left(s^{\prime}\right)} \hat{P}_{B}\left(s \mid s^{\prime}\right)=\hat{F}\left(s^{\prime</p>
+<p>where we used the fact that $\hat{P}_{B}$ is a normalized probability distribution. Combining this with Eq. (27), we get</p>
+<p>$$
+\forall s^{\prime}&gt;s_{0} \quad \hat{F}\left(s^{\prime}\right)=\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s \rightarrow s^{\prime}\right)
+$$</p>
+<p>which is the first equality of the flow-matching condition (Eq. (22)) of Prop. 19. We can obtain the second equality by first using the normalization of $\hat{P}$, and then using our definition of the edge flow (Eq. (27)):</p>
+<p>$$
+\begin{aligned}
+\forall s^{\prime}&gt;s_{0} \quad \hat{F}\left(s^{\prime}\right) &amp; =\hat{F}\left(s^{\prime}\right) \sum_{s^{\prime \prime} \in \operatorname{Child}\left(s^{\prime}\right)} \hat{P}<em _prime="\prime" s_prime="s^{\prime">{F}\left(s^{\prime \prime} \mid s^{\prime}\right) \
+&amp; =\sum</em>} \in \operatorname{Child}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime}\right) \hat{P<em _prime="\prime" s_prime="s^{\prime">{F}\left(s^{\prime \prime} \mid s^{\prime}\right) \
+&amp; =\sum</em>\right)
+\end{aligned}
+$$} \in \operatorname{Child}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime} \rightarrow s^{\prime \prime</p>
+<p>Following Prop. 19, there exists a unique Markovian flow $F$ with state and edge flows given by $\hat{F}$. Using Eq. (27) and Eq. (26), it follows that $F$ has transition probabilities $\hat{P}<em B="B">{F}$ and $\hat{P}</em>$ as required. The uniqueness is also a consequence of Eq. (27). This proves sufficiency.</p>
+<p>To show that $\hat{P}<em B="B">{F}$ and $\hat{P}</em>$ are compatible (Def. 20), we first combine Eq. (27) and Eq. (30) (with relabeling of variables) to obtain</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{P}<em s_prime="s^{\prime">{F}\left(s^{\prime} \mid s\right)=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\sum</em>
+$$} \in \operatorname{Child}(s)} \hat{F}\left(s \rightarrow s^{\prime}\right)</p>
+<p>we then isolate $\hat{P}_{B}$ in Eq. (26), yielding</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{P}<em F="F">{B}\left(s \mid s^{\prime}\right)=\frac{\hat{F}(s)}{\hat{F}\left(s^{\prime}\right)} \hat{P}</em>
+$$}\left(s^{\prime} \mid s\right)=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\hat{F}\left(s^{\prime}\right)}=\frac{\hat{F}\left(s \rightarrow s^{\prime}\right)}{\sum_{s^{\prime \prime} \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime \prime} \rightarrow s^{\prime}\right)</p>
+<p>We thus get Eq. (25) of Def. 20, as desired.</p>
+<p>At first glance, it may seem that when $\hat{P}_{B}$ is unconstrained, the detailed balance condition can trivially be achieved by setting</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad \hat{P}<em F="F">{B}\left(s \mid s^{\prime}\right)=\frac{\hat{P}</em>
+$$}\left(s^{\prime} \mid s\right) \hat{F}(s)}{\hat{F}\left(s^{\prime}\right)</p>
+<p>However, because we also have the constraint $\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{P}_{B}\left(s \mid s^{\prime}\right)=1$, then Eq. (31) can only be satisfied if the flows are consistent with the forward transition:</p>
+<p>$$
+\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{P}_{F}\left(s^{\prime} \mid s\right) \hat{F}(s)=\hat{F}\left(s^{\prime}\right)
+$$</p>
+<h1>2.6 Backwards Transitions can be Chosen Freely</h1>
+<p>Consider the setting in which we are given terminating flows to be matched, i.e. where the goal is to find a flow function with the right terminating flows. This is the setting introduced in Bengio et al. (2021), and that will be studied in Sec. 3. In this case, Prop. 18 tells us that in order to fully determine the forward transition probabilities and the state or state-action flows, it is not sufficient in general to specify only the terminating flows; it is also necessary to specify the backwards transition probabilities on the edges other than the terminal ones (the latter being given by the terminating flows).</p>
+<p>What this means is that the terminating flows do not specify the flow completely, e.g., because many different paths can land in the same terminating state. The preference over such different ways to achieve the same final outcome is specified by the backwards transition probability $P_{B}$ (except for $P_{B}\left(s \mid s_{f}\right)$ which is a function of the terminating flows and $Z$ ). For example, we may want to give equal weight to all parents of a node $s$, or we may prefer shorter paths, which can be achieved if we keep track in the state $s$ of the length of the shortest path to the node $s$, or we may let a learner discover a $P_{B}$ that makes learning $P_{F}$ or $F$ easier.</p>
+<h3>2.7 Equivalence Between Flows</h3>
+<p>In the previous sections, we have seen that Markovian flows have the property that trajectory flows or probabilities factorize according to the DAG, and we have seen different ways of characterizing Markovian flows. In Sec. 3, we show how to approximate Markovian flows in order to define probability measures over terminating states. In this section, through an equivalence relation between trajectory flows, we justify the focus on Markovian flows. Given a pointed DAG $G=(\mathcal{S}, \mathbb{A})$, we denote by:</p>
+<ul>
+<li>$\mathcal{F}(G)$ : the set of flows on $G$, i.e. the set of functions from $\mathcal{T}$, the set of complete trajectories in $G$, to $\mathbb{R}^{+}$,</li>
+<li>$\mathcal{F}_{\text {Markov }}(G)$ : the set of flows in $\mathcal{F}(G)$ that are Markovian.</li>
+</ul>
+<p>Definition 22 Let $G=(\mathcal{S}, \mathbb{A})$ be a pointed $D A G$, and $F_{1}, F_{2} \in \mathcal{F}(G)$ two trajectory flow functions. We say that $F_{1}$ and $F_{2}$ are equivalent if they coincide on edge-flows, i.e.:</p>
+<p>$$
+\forall s \rightarrow s^{\prime} \in \mathbb{A} \quad F_{1}\left(s \rightarrow s^{\prime}\right)=F_{2}\left(s \rightarrow s^{\prime}\right)
+$$</p>
+<p>Fig. 4 shows four flow functions in a simple pointed DAG that are pairwise equivalent.
+This defines an equivalence relation (i.e., a relation that is reflexive, symmetric, and transitive). Hence, each flow $F$ belongs to an equivalence class, and the set of flows $\mathcal{F}(G)$ can be partitioned into equivalence classes. Note that if two flows are equivalent, then the corresponding state flow functions also coincide (as a direct consequence of Prop. 8).</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<ol>
+<li>In machine learning, a free energy is the logarithm of an unnormalized marginal probability, a generally intractable sum of exponentiated negative energies.</li>
+</ol>
+<p><a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

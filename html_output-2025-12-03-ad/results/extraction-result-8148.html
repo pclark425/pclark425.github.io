@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8148 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8148</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8148</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-149.html">extraction-schema-149</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <p><strong>Paper ID:</strong> paper-271544257</p>
+                <p><strong>Paper Title:</strong> <a href="https://export.arxiv.org/pdf/2407.20311v1.pdf" target="_blank">Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process</a></p>
+                <p><strong>Paper Abstract:</strong> Recent advances in language models have demonstrated their capability to solve mathematical reasoning problems, achieving near-perfect accuracy on grade-school level math benchmarks like GSM8K. In this paper, we formally study how language models solve these problems. We design a series of controlled experiments to address several fundamental questions: (1) Can language models truly develop reasoning skills, or do they simply memorize templates? (2) What is the model's hidden (mental) reasoning process? (3) Do models solve math questions using skills similar to or different from humans? (4) Do models trained on GSM8K-like datasets develop reasoning skills beyond those necessary for solving GSM8K problems? (5) What mental process causes models to make reasoning mistakes? (6) How large or deep must a model be to effectively solve GSM8K-level math questions? Our study uncovers many hidden mechanisms by which language models solve mathematical questions, providing insights that extend beyond current understandings of LLMs.</p>
+                <p><strong>Cost:</strong> 0.021</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e8148.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e8148.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>GPT2-iGSM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>GPT2 (rotary positional embedding) pretrained from scratch on iGSM synthetic grade-school math data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A GPT2-style autoregressive transformer (RoPE positional embedding) trained from scratch on a large synthetic dataset (iGSM) of grade-school math problems (integers arithmetic mod 23) to study internal arithmetic reasoning, generalization, and hidden mental processes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT2-rotary (various depths/widths, e.g., GPT2-12-12 baseline)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>GPT2 architecture with rotary positional embeddings (RoPE). Primary experiments used GPT2-12-12 (12 layers, 12 heads, 768 hidden dim) and explored multiple depths/widths: size-1 family (GPT2-4-21, GPT2-8-15, GPT2-12-12, GPT2-16-10, GPT2-20-9) and size-2 family (roughly 2x params). Context length 768/1024 for pretraining, 2048 for evaluation. Models trained from scratch on iGSM synthetic data; no internet pretraining.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Grade-school style word problems reduced to integer arithmetic modulo 23; solutions decomposed into 2-ary operations (binary op decomposition). Task difficulty controlled by op (number of operations) and ip (instance parameters).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>The model forms an internal 'mental' plan: (1) precomputes which parameters are necessary (nece) by end of problem text; (2) tracks known/value of parameters during solution generation; (3) identifies which parameters can be computed next (can_next) and which are both ready and necessary (nece_next); (4) in many cases, computes only necessary parameters (shortest solutions, 'level-1' reasoning) instead of brute-forcing all parameters; (5) additionally learns all-pair dependency relations (dep(A,B)) even for unnecessary parameters ('level-2' skill). Representation appears distributed in hidden states across layers, with deeper layers representing dependencies further from the query (layer-by-layer recursion).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>V-probing (nearly-linear probing): freeze pretrained model, append [START]/[END] tokens around variable names, extract last-layer hidden state at probe position, add a trainable linear head and a tiny low-rank (rank r=8) update on input embeddings; fine-tune only these additional params for each probing task. Probing tasks: nece(A), dep(A,B), known(A), value(A), can_next(A), nece_next(A).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>In-distribution (iGSM-med/op≤15 or iGSM-hard/op≤21) top accuracy ~99% on full-solution+answer parsing (parser checks intermediate steps) after sufficient pretraining. Out-of-distribution (longer op than seen in training) generalization remains high for a range (accuracies remain very strong until very large op where they drop toward ~80% or lower depending on op). Specifics: paper reports ~99% in-dist; OOD accuracies decline for very large op (figures show accuracy falling into 70-90% range depending on dataset and op).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Systematic failures tied to incorrect internal planning signals: (a) predicting nece(A)=true for unnecessary A → generates unnecessary computation steps; (b) predicting can_next(A)=true or nece_next(A)=true when predecessors are not ready → first wrong parameter leads to downstream incorrect solution; (c) OOD longer-reasoning-length failures where planning/dep inference degrades. These errors are often predictable by probing internal states before generation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>High V-probing accuracies on nece/dep/known/value/can_next/nece_next tasks (far above random-model probing), correlation between probe errors and generation errors (Figure 8), model-generated solutions are predominantly shortest (level-1) showing planning, and layerwise probing shows deeper layers better predict nece(A) for parameters further from the query (Figures 4,7,10,14). Models pretrained on iGSM exhibit precomputation: by end-of-problem they already encode full nece list and many dep pairs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Very hard OOD cases (very large op) show reduced probing and generation accuracy; some necessary planning signals degrade, so level-1 behavior breaks down. Also, adding explicit 'backward planning' CoT steps to training can reduce need for depth, meaning the learned mechanism depends on data format: if backward thinking is explicitly provided it's no longer necessary to learn deep mental recursion. Exact one-to-one mapping between number of mental steps and transformer depth is not established; a single layer might implement multiple logical steps with reduced accuracy.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e8148.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>iGSM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>infinite Grade-School Math (iGSM) synthetic dataset</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A controlled, synthetic dataset generator for grade-school style math problems with hierarchical structure graphs and dependency graphs, parametrized by number of instance parameters (ip) and number of operations (op); arithmetic is performed mod 23 and solutions are decomposed into binary operations as Chain-of-Thought.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>n/a (dataset used to train models)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Dataset generator (not a neural model); English templates map dependency graphs to text; supports ip and op difficulty control; enforces solution format 'Define [param] as X; ...; so ... = ...'.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-step mixed arithmetic in word-problem form (addition, subtraction, multiplication) modulo 23; binary-op decomposition; query asks for a single parameter after a shuffled list of sentences describing dependencies.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Design choices enforce topological CoT solutions and create combinatorially many templates (>7B for op=15, >90T for op=21), preventing template memorization and encouraging learning of general arithmetic/planning strategies.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Used as controlled training and evaluation distribution; also used to generate probing inputs for V-probing by truncating text to probe positions (end of problem for dep/nece; end of solution sentences for value/known/can_next/nece_next).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Enables measuring in-distribution vs out-of-distribution generalization by varying op/ip; used to show ~99% in-distribution accuracy and robust OOD up to certain op values.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>When query is re-sampled (reask) or op grows large relative to training op limit, model produces occasional unnecessary parameters and systematic first-wrong-parameter errors due to degraded planning signals.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Used to demonstrate planning behavior, level-1 vs level-0 reasoning (models produce shortest solutions), and discovery of level-2 all-pair dependency by probing trained models on iGSM data.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>iGSM simplifies commonsense and large-number arithmetic (mod 23); real-world benchmarks differ, so findings may not map directly to internet-pretrained foundation models without further study.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e8148.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>V-probing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Variable-Probing (V-probing): nearly-linear functional probing for variables</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A probing technique designed to test whether a pretrained transformer encodes functions of named variables (parameters) by appending variable names and using a small trainable rank-r update to embeddings plus a linear head on final hidden states.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>applied to GPT2-rotary models pretrained on iGSM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Method: freeze pretrained model, add rank-r (r=8) low-rank update to input embeddings to accommodate special tokens/variables, append [START] variable_name [END], extract last-layer hidden state at probe position, train a linear head to classify the functional property (nece/dep/known/value/can_next/nece_next).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Used to probe internal representations for multi-step arithmetic word problems (iGSM) — functional properties about parameters rather than arithmetic operations themselves.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Treats variable names as inputs to a functional probe; seeks linear decodability (with tiny input adaptation) of properties like dependency graphs, necessity, readiness-to-compute, and numeric value.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Probing intervention: freeze full model, finetune only (a) linear classification head and (b) rank-8 embedding update; probe positions chosen at end-of-problem or end-of-solution sentences depending on task.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>High probing accuracies across tasks in pretrained models compared to random-model probing and majority baselines; for many tasks accuracies approach very high values (e.g., value/known often ≈99%, dep/nece/can_next/nece_next also substantially above baselines), with degradation only in very hard OOD settings.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Probing sometimes gives false positives for nece or can_next on unnecessary parameters, matching generation of unnecessary steps; positives for 'first wrong parameter' correlate with probe mispredictions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Significantly higher V-probing accuracy on pretrained model vs randomly initialized model indicates signals are stored in pretrained weights; correlation between probe outcomes and generation behavior (Figure 8) supports that probes reflect model's internal planning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Probing requires small low-rank input adaptation because variable names change input distribution; label imbalance in some tasks (dep, nece_next) needs careful analysis; extremely hard OOD cases reduce probe reliability.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.3">
+                <h3 class="extraction-instance">Extracted Data Instance 3 (e8148.3)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Level-1 reasoning (shortest solutions)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Level-1 reasoning: generation of shortest (necessary-only) solutions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Empirical finding that pretrained models predominantly generate shortest solutions (compute only parameters necessary for the final query) rather than brute-forcing all parameters, indicating an internal planning step to avoid unnecessary computation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT2-rotary variants trained on iGSM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Observed behavior during autoregressive generation of solutions in fixed CoT format; models often avoid computing unnecessary downstream parameters.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-step arithmetic word problems where some parameters are not needed for the query; solutions are sequences of semicolon-separated binary operations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Model encodes nece(A) for parameters A and uses nece/can_next/nece_next signals in hidden states to decide which variables to compute, yielding shortest CoT outputs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Established via V-probing tasks (nece, can_next, nece_next) and by measuring redundancy in generated solutions (counting unnecessary parameters in fully-correct outputs).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Majority of fully-correct solutions contain zero unnecessary parameters; even in OOD reask tests (e.g., op=32) pretrained models produce only ~0.5 unnecessary parameters per solution on average.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>When nece is mispredicted (false positive), model outputs unnecessary steps. Such planning errors are systematic and can precede generation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>High nece probing accuracy by end-of-problem and strong alignment between nece probe errors and observed unnecessary outputs (Figure 4 and 8).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>In some OOD and reask scenarios the model still includes unnecessary steps due to nece misprediction; explicit training of backward planning CoT steps could change this learned behavior.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.4">
+                <h3 class="extraction-instance">Extracted Data Instance 4 (e8148.4)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Level-2 all-pair dependency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Level-2 reasoning: all-pair dependency precomputation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>The model learns to compute dep(A,B) (whether A depends on B) for many parameter pairs — including those not needed for the query — effectively mentally computing an all-pair dependency graph before generation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT2-rotary trained on iGSM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>At end of problem description (before solution) the model encodes dependency relations among parameters, beyond what is strictly necessary to produce training-solution steps.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Dependency inference over parameters that imply arithmetic relationships; supports multi-step computation planning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>dep(A,B) information is linearly decodable from last-layer hidden states after problem reading; the model internally represents a graph-like structure of dependencies across parameters.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>V-probing at end-of-problem for dep(A,B) tasks with low-rank embedding adaptation and linear head.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Probing shows high dep accuracy (well above majority baseline) including on parameters that are unnecessary for the final query; demonstrates generalization beyond training signal requirements.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Some false positives for dep(A,B) or nece(A) lead to unnecessary computations; in very hard OOD cases dep inference quality degrades.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>High dep probing accuracy vs random/trained baselines; model encodes dependency info before generation; this skill arises even though training data did not require computing all-pair dependencies to fit solutions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>This all-pair precomputation may be unnecessary for solving training problems and may not scale or generalize identically to real-world datasets where such exhaustive dependency computation is infeasible.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.5">
+                <h3 class="extraction-instance">Extracted Data Instance 5 (e8148.5)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Layer-by-layer reasoning / depth effect</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Layer-by-layer recursive planning and depth requirement for reasoning length</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Observation that deeper transformer layers represent dependencies further from the query: shallow layers predict nece(A) for near-query parameters while deeper layers predict nece(A) for parameters more distant from the query; consequently depth correlates with maximum solvable reasoning length.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT2-rotary family (variants with 4/8/12/16/20 layers)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Controlled experiments across models keeping overall size similar but varying depth vs width show deeper models (e.g., 16/20 layers with smaller hidden dims) outperform shallower wide models on longer-op tasks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-step arithmetic problems parameterized by op (reasoning length).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Hypothesis: t-step mental reasoning (identifying nece(A) for A at distance t from query) is implemented via hierarchical layer-by-layer processing; deeper layers implement more recursive/backward reasoning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Layerwise V-probing for nece(A) across layers; pretraining multiple depth/width models on same iGSM data and evaluating generation accuracy vs op.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Deeper but narrower models (e.g., 16-layer 576-dim or 20-layer 576-dim) solve longer-reasoning problems than shallower wider models (e.g., 4-layer 1920-dim), even when latter have similar or larger parameter counts; figures show clear vertical correlation between depth and accuracy on op sweep.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Shallower models fail earlier as op increases; adding CoT with explicit backward planning can relieve depth pressure.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Layerwise plots (Figures 10 & 14) show increasing nece probing accuracy with layer index for parameters further from query; cross-model comparisons show depth is more critical than width for reasoning length on this dataset.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Authors caution that depth requirement is data/format dependent; single transformer layer could in principle implement multiple mental steps albeit with reduced accuracy, so 'depth = steps' is not strictly established.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.6">
+                <h3 class="extraction-instance">Extracted Data Instance 6 (e8148.6)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Error predictability & intervention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Systematic error analysis and pre-generation error prediction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Many arithmetic mistakes stem from mispredicted internal planning signals (nece, can_next, nece_next) rather than random generation noise, and these mistakes can often be predicted via probing before the model emits any solution tokens.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT2-rotary pretrained on iGSM (and parallel observations on GPT-4/4o few-shot)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Analysis uses probing of internal states at end-of-problem and at intermediate solution positions to tie internal signal errors to observed output mistakes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-step arithmetic word-problem solving, with tracking of first-wrong-parameter in incorrect solutions and unnecessary parameters in correct solutions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Errors often originate in the model's mental planning phase: false positives for nece/can_next cause extra or premature computations; these signals are encoded in hidden states and can be read out with probes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>V-probing applied to (a) unnecessary parameters in correct outputs and (b) first wrong parameter in incorrect outputs; correlation analysis between probe error and generation error.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>On reask OOD data, models produce on average ~0.5 unnecessary parameters per solution at op=32; probe mispredictions on nece correlate with these unnecessary outputs; probe accuracy on 'first wrong param' is low when model 'thought' something was ready but it wasn't.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Systematic planning mistakes (nece false positives, can_next/nece_next false positives) leading to unnecessary computations or early incorrect steps; OOD scaling failures as op increases.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Figure 8 shows direct correlation between nece/can_next probe errors and the model's generated unnecessary/wrong steps; authors note GPT-4/4o produce similar mistake patterns (Appendix G).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Some mistakes are still tied to arithmetic computation (though mod23 reduces large-number arithmetic errors), and the method relies on the capability to construct probes that accurately reflect internal signals (requires low-rank input adaptation).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8148.7">
+                <h3 class="extraction-instance">Extracted Data Instance 7 (e8148.7)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>GPT-4 / GPT-4o baseline (few-shot)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>GPT-4 / GPT-4o few-shot performance on iGSM (mod5 variant, Appendix G)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Few-shot evaluation of GPT-4 and GPT-4o on simplified iGSM tasks (mod 5 arithmetic and reduced English diversity) shows that large foundation models without task-specific pretraining struggle on long multi-step reasoning in this synthetic format.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>GPT-4 turbo (2024-04-09) and GPT-4o (2024-05-13)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Closed-source large models evaluated in five-shot format on simplified iGSM-med (mod5) problems; prompt contained background and examples; goal was to isolate arithmetic/reasoning performance from language understanding.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Simplified grade-school word problems with mod5 arithmetic, op sweep from 2..20.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Not directly probed (no internal access), but observed failure modes mirror those of GPT2-iGSM models: unnecessary computations and premature computations (nece/can_next-like failures) inferred from outputs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Few-shot prompting used; no internal probes (closed model). Evaluation assessed final-answer accuracy across op.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>GPT-4o near-random guessing for op ≥ 11; GPT-4 turbo degrades for op ≥ 9 in this setting (Figure 2). Baseline random guess gives ≈32% (mod5) for answers 0..4; GPT-4/4o accuracy drops toward random as op increases.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Output-level behaviors include computing unnecessary parameters and computing parameters not ready to compute (similar pattern to model-internal planning errors observed in GPT2). Failures are largely not due to format misunderstandings but to reasoning errors.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Observed output error patterns consistent with internal planning mistakes found via probing in GPT2 models; Appendix G includes failure examples and analysis.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>These are few-shot results on a synthetic dataset with mod5; real-world performance with chain-of-thought or finetuning may differ. No internal probing possible for GPT-4/4o, so link to internal planning is inferential.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process', 'publication_date_yy_mm': '2024-07'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Exploring length generalization in large language models <em>(Rating: 2)</em></li>
+                <li>Length generalization in arithmetic transformers <em>(Rating: 2)</em></li>
+                <li>A careful examination of large language model performance on grade school arithmetic <em>(Rating: 2)</em></li>
+                <li>What algorithms can transformers learn? a study in length generalization <em>(Rating: 2)</em></li>
+                <li>Training verifiers to solve math word problems <em>(Rating: 1)</em></li>
+                <li>Textbooks are all you need <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8148",
+    "paper_id": "paper-271544257",
+    "extraction_schema_id": "extraction-schema-149",
+    "extracted_data": [
+        {
+            "name_short": "GPT2-iGSM",
+            "name_full": "GPT2 (rotary positional embedding) pretrained from scratch on iGSM synthetic grade-school math data",
+            "brief_description": "A GPT2-style autoregressive transformer (RoPE positional embedding) trained from scratch on a large synthetic dataset (iGSM) of grade-school math problems (integers arithmetic mod 23) to study internal arithmetic reasoning, generalization, and hidden mental processes.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT2-rotary (various depths/widths, e.g., GPT2-12-12 baseline)",
+            "model_description": "GPT2 architecture with rotary positional embeddings (RoPE). Primary experiments used GPT2-12-12 (12 layers, 12 heads, 768 hidden dim) and explored multiple depths/widths: size-1 family (GPT2-4-21, GPT2-8-15, GPT2-12-12, GPT2-16-10, GPT2-20-9) and size-2 family (roughly 2x params). Context length 768/1024 for pretraining, 2048 for evaluation. Models trained from scratch on iGSM synthetic data; no internet pretraining.",
+            "arithmetic_task_type": "Grade-school style word problems reduced to integer arithmetic modulo 23; solutions decomposed into 2-ary operations (binary op decomposition). Task difficulty controlled by op (number of operations) and ip (instance parameters).",
+            "mechanism_or_representation": "The model forms an internal 'mental' plan: (1) precomputes which parameters are necessary (nece) by end of problem text; (2) tracks known/value of parameters during solution generation; (3) identifies which parameters can be computed next (can_next) and which are both ready and necessary (nece_next); (4) in many cases, computes only necessary parameters (shortest solutions, 'level-1' reasoning) instead of brute-forcing all parameters; (5) additionally learns all-pair dependency relations (dep(A,B)) even for unnecessary parameters ('level-2' skill). Representation appears distributed in hidden states across layers, with deeper layers representing dependencies further from the query (layer-by-layer recursion).",
+            "probing_or_intervention_method": "V-probing (nearly-linear probing): freeze pretrained model, append [START]/[END] tokens around variable names, extract last-layer hidden state at probe position, add a trainable linear head and a tiny low-rank (rank r=8) update on input embeddings; fine-tune only these additional params for each probing task. Probing tasks: nece(A), dep(A,B), known(A), value(A), can_next(A), nece_next(A).",
+            "performance_metrics": "In-distribution (iGSM-med/op≤15 or iGSM-hard/op≤21) top accuracy ~99% on full-solution+answer parsing (parser checks intermediate steps) after sufficient pretraining. Out-of-distribution (longer op than seen in training) generalization remains high for a range (accuracies remain very strong until very large op where they drop toward ~80% or lower depending on op). Specifics: paper reports ~99% in-dist; OOD accuracies decline for very large op (figures show accuracy falling into 70-90% range depending on dataset and op).",
+            "error_types_or_failure_modes": "Systematic failures tied to incorrect internal planning signals: (a) predicting nece(A)=true for unnecessary A → generates unnecessary computation steps; (b) predicting can_next(A)=true or nece_next(A)=true when predecessors are not ready → first wrong parameter leads to downstream incorrect solution; (c) OOD longer-reasoning-length failures where planning/dep inference degrades. These errors are often predictable by probing internal states before generation.",
+            "evidence_for_mechanism": "High V-probing accuracies on nece/dep/known/value/can_next/nece_next tasks (far above random-model probing), correlation between probe errors and generation errors (Figure 8), model-generated solutions are predominantly shortest (level-1) showing planning, and layerwise probing shows deeper layers better predict nece(A) for parameters further from the query (Figures 4,7,10,14). Models pretrained on iGSM exhibit precomputation: by end-of-problem they already encode full nece list and many dep pairs.",
+            "counterexamples_or_challenges": "Very hard OOD cases (very large op) show reduced probing and generation accuracy; some necessary planning signals degrade, so level-1 behavior breaks down. Also, adding explicit 'backward planning' CoT steps to training can reduce need for depth, meaning the learned mechanism depends on data format: if backward thinking is explicitly provided it's no longer necessary to learn deep mental recursion. Exact one-to-one mapping between number of mental steps and transformer depth is not established; a single layer might implement multiple logical steps with reduced accuracy.",
+            "uuid": "e8148.0",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "iGSM",
+            "name_full": "infinite Grade-School Math (iGSM) synthetic dataset",
+            "brief_description": "A controlled, synthetic dataset generator for grade-school style math problems with hierarchical structure graphs and dependency graphs, parametrized by number of instance parameters (ip) and number of operations (op); arithmetic is performed mod 23 and solutions are decomposed into binary operations as Chain-of-Thought.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "n/a (dataset used to train models)",
+            "model_description": "Dataset generator (not a neural model); English templates map dependency graphs to text; supports ip and op difficulty control; enforces solution format 'Define [param] as X; ...; so ... = ...'.",
+            "arithmetic_task_type": "Multi-step mixed arithmetic in word-problem form (addition, subtraction, multiplication) modulo 23; binary-op decomposition; query asks for a single parameter after a shuffled list of sentences describing dependencies.",
+            "mechanism_or_representation": "Design choices enforce topological CoT solutions and create combinatorially many templates (&gt;7B for op=15, &gt;90T for op=21), preventing template memorization and encouraging learning of general arithmetic/planning strategies.",
+            "probing_or_intervention_method": "Used as controlled training and evaluation distribution; also used to generate probing inputs for V-probing by truncating text to probe positions (end of problem for dep/nece; end of solution sentences for value/known/can_next/nece_next).",
+            "performance_metrics": "Enables measuring in-distribution vs out-of-distribution generalization by varying op/ip; used to show ~99% in-distribution accuracy and robust OOD up to certain op values.",
+            "error_types_or_failure_modes": "When query is re-sampled (reask) or op grows large relative to training op limit, model produces occasional unnecessary parameters and systematic first-wrong-parameter errors due to degraded planning signals.",
+            "evidence_for_mechanism": "Used to demonstrate planning behavior, level-1 vs level-0 reasoning (models produce shortest solutions), and discovery of level-2 all-pair dependency by probing trained models on iGSM data.",
+            "counterexamples_or_challenges": "iGSM simplifies commonsense and large-number arithmetic (mod 23); real-world benchmarks differ, so findings may not map directly to internet-pretrained foundation models without further study.",
+            "uuid": "e8148.1",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "V-probing",
+            "name_full": "Variable-Probing (V-probing): nearly-linear functional probing for variables",
+            "brief_description": "A probing technique designed to test whether a pretrained transformer encodes functions of named variables (parameters) by appending variable names and using a small trainable rank-r update to embeddings plus a linear head on final hidden states.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "applied to GPT2-rotary models pretrained on iGSM",
+            "model_description": "Method: freeze pretrained model, add rank-r (r=8) low-rank update to input embeddings to accommodate special tokens/variables, append [START] variable_name [END], extract last-layer hidden state at probe position, train a linear head to classify the functional property (nece/dep/known/value/can_next/nece_next).",
+            "arithmetic_task_type": "Used to probe internal representations for multi-step arithmetic word problems (iGSM) — functional properties about parameters rather than arithmetic operations themselves.",
+            "mechanism_or_representation": "Treats variable names as inputs to a functional probe; seeks linear decodability (with tiny input adaptation) of properties like dependency graphs, necessity, readiness-to-compute, and numeric value.",
+            "probing_or_intervention_method": "Probing intervention: freeze full model, finetune only (a) linear classification head and (b) rank-8 embedding update; probe positions chosen at end-of-problem or end-of-solution sentences depending on task.",
+            "performance_metrics": "High probing accuracies across tasks in pretrained models compared to random-model probing and majority baselines; for many tasks accuracies approach very high values (e.g., value/known often ≈99%, dep/nece/can_next/nece_next also substantially above baselines), with degradation only in very hard OOD settings.",
+            "error_types_or_failure_modes": "Probing sometimes gives false positives for nece or can_next on unnecessary parameters, matching generation of unnecessary steps; positives for 'first wrong parameter' correlate with probe mispredictions.",
+            "evidence_for_mechanism": "Significantly higher V-probing accuracy on pretrained model vs randomly initialized model indicates signals are stored in pretrained weights; correlation between probe outcomes and generation behavior (Figure 8) supports that probes reflect model's internal planning.",
+            "counterexamples_or_challenges": "Probing requires small low-rank input adaptation because variable names change input distribution; label imbalance in some tasks (dep, nece_next) needs careful analysis; extremely hard OOD cases reduce probe reliability.",
+            "uuid": "e8148.2",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "Level-1 reasoning (shortest solutions)",
+            "name_full": "Level-1 reasoning: generation of shortest (necessary-only) solutions",
+            "brief_description": "Empirical finding that pretrained models predominantly generate shortest solutions (compute only parameters necessary for the final query) rather than brute-forcing all parameters, indicating an internal planning step to avoid unnecessary computation.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT2-rotary variants trained on iGSM",
+            "model_description": "Observed behavior during autoregressive generation of solutions in fixed CoT format; models often avoid computing unnecessary downstream parameters.",
+            "arithmetic_task_type": "Multi-step arithmetic word problems where some parameters are not needed for the query; solutions are sequences of semicolon-separated binary operations.",
+            "mechanism_or_representation": "Model encodes nece(A) for parameters A and uses nece/can_next/nece_next signals in hidden states to decide which variables to compute, yielding shortest CoT outputs.",
+            "probing_or_intervention_method": "Established via V-probing tasks (nece, can_next, nece_next) and by measuring redundancy in generated solutions (counting unnecessary parameters in fully-correct outputs).",
+            "performance_metrics": "Majority of fully-correct solutions contain zero unnecessary parameters; even in OOD reask tests (e.g., op=32) pretrained models produce only ~0.5 unnecessary parameters per solution on average.",
+            "error_types_or_failure_modes": "When nece is mispredicted (false positive), model outputs unnecessary steps. Such planning errors are systematic and can precede generation.",
+            "evidence_for_mechanism": "High nece probing accuracy by end-of-problem and strong alignment between nece probe errors and observed unnecessary outputs (Figure 4 and 8).",
+            "counterexamples_or_challenges": "In some OOD and reask scenarios the model still includes unnecessary steps due to nece misprediction; explicit training of backward planning CoT steps could change this learned behavior.",
+            "uuid": "e8148.3",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "Level-2 all-pair dependency",
+            "name_full": "Level-2 reasoning: all-pair dependency precomputation",
+            "brief_description": "The model learns to compute dep(A,B) (whether A depends on B) for many parameter pairs — including those not needed for the query — effectively mentally computing an all-pair dependency graph before generation.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT2-rotary trained on iGSM",
+            "model_description": "At end of problem description (before solution) the model encodes dependency relations among parameters, beyond what is strictly necessary to produce training-solution steps.",
+            "arithmetic_task_type": "Dependency inference over parameters that imply arithmetic relationships; supports multi-step computation planning.",
+            "mechanism_or_representation": "dep(A,B) information is linearly decodable from last-layer hidden states after problem reading; the model internally represents a graph-like structure of dependencies across parameters.",
+            "probing_or_intervention_method": "V-probing at end-of-problem for dep(A,B) tasks with low-rank embedding adaptation and linear head.",
+            "performance_metrics": "Probing shows high dep accuracy (well above majority baseline) including on parameters that are unnecessary for the final query; demonstrates generalization beyond training signal requirements.",
+            "error_types_or_failure_modes": "Some false positives for dep(A,B) or nece(A) lead to unnecessary computations; in very hard OOD cases dep inference quality degrades.",
+            "evidence_for_mechanism": "High dep probing accuracy vs random/trained baselines; model encodes dependency info before generation; this skill arises even though training data did not require computing all-pair dependencies to fit solutions.",
+            "counterexamples_or_challenges": "This all-pair precomputation may be unnecessary for solving training problems and may not scale or generalize identically to real-world datasets where such exhaustive dependency computation is infeasible.",
+            "uuid": "e8148.4",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "Layer-by-layer reasoning / depth effect",
+            "name_full": "Layer-by-layer recursive planning and depth requirement for reasoning length",
+            "brief_description": "Observation that deeper transformer layers represent dependencies further from the query: shallow layers predict nece(A) for near-query parameters while deeper layers predict nece(A) for parameters more distant from the query; consequently depth correlates with maximum solvable reasoning length.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT2-rotary family (variants with 4/8/12/16/20 layers)",
+            "model_description": "Controlled experiments across models keeping overall size similar but varying depth vs width show deeper models (e.g., 16/20 layers with smaller hidden dims) outperform shallower wide models on longer-op tasks.",
+            "arithmetic_task_type": "Multi-step arithmetic problems parameterized by op (reasoning length).",
+            "mechanism_or_representation": "Hypothesis: t-step mental reasoning (identifying nece(A) for A at distance t from query) is implemented via hierarchical layer-by-layer processing; deeper layers implement more recursive/backward reasoning.",
+            "probing_or_intervention_method": "Layerwise V-probing for nece(A) across layers; pretraining multiple depth/width models on same iGSM data and evaluating generation accuracy vs op.",
+            "performance_metrics": "Deeper but narrower models (e.g., 16-layer 576-dim or 20-layer 576-dim) solve longer-reasoning problems than shallower wider models (e.g., 4-layer 1920-dim), even when latter have similar or larger parameter counts; figures show clear vertical correlation between depth and accuracy on op sweep.",
+            "error_types_or_failure_modes": "Shallower models fail earlier as op increases; adding CoT with explicit backward planning can relieve depth pressure.",
+            "evidence_for_mechanism": "Layerwise plots (Figures 10 & 14) show increasing nece probing accuracy with layer index for parameters further from query; cross-model comparisons show depth is more critical than width for reasoning length on this dataset.",
+            "counterexamples_or_challenges": "Authors caution that depth requirement is data/format dependent; single transformer layer could in principle implement multiple mental steps albeit with reduced accuracy, so 'depth = steps' is not strictly established.",
+            "uuid": "e8148.5",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "Error predictability & intervention",
+            "name_full": "Systematic error analysis and pre-generation error prediction",
+            "brief_description": "Many arithmetic mistakes stem from mispredicted internal planning signals (nece, can_next, nece_next) rather than random generation noise, and these mistakes can often be predicted via probing before the model emits any solution tokens.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT2-rotary pretrained on iGSM (and parallel observations on GPT-4/4o few-shot)",
+            "model_description": "Analysis uses probing of internal states at end-of-problem and at intermediate solution positions to tie internal signal errors to observed output mistakes.",
+            "arithmetic_task_type": "Multi-step arithmetic word-problem solving, with tracking of first-wrong-parameter in incorrect solutions and unnecessary parameters in correct solutions.",
+            "mechanism_or_representation": "Errors often originate in the model's mental planning phase: false positives for nece/can_next cause extra or premature computations; these signals are encoded in hidden states and can be read out with probes.",
+            "probing_or_intervention_method": "V-probing applied to (a) unnecessary parameters in correct outputs and (b) first wrong parameter in incorrect outputs; correlation analysis between probe error and generation error.",
+            "performance_metrics": "On reask OOD data, models produce on average ~0.5 unnecessary parameters per solution at op=32; probe mispredictions on nece correlate with these unnecessary outputs; probe accuracy on 'first wrong param' is low when model 'thought' something was ready but it wasn't.",
+            "error_types_or_failure_modes": "Systematic planning mistakes (nece false positives, can_next/nece_next false positives) leading to unnecessary computations or early incorrect steps; OOD scaling failures as op increases.",
+            "evidence_for_mechanism": "Figure 8 shows direct correlation between nece/can_next probe errors and the model's generated unnecessary/wrong steps; authors note GPT-4/4o produce similar mistake patterns (Appendix G).",
+            "counterexamples_or_challenges": "Some mistakes are still tied to arithmetic computation (though mod23 reduces large-number arithmetic errors), and the method relies on the capability to construct probes that accurately reflect internal signals (requires low-rank input adaptation).",
+            "uuid": "e8148.6",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        },
+        {
+            "name_short": "GPT-4 / GPT-4o baseline (few-shot)",
+            "name_full": "GPT-4 / GPT-4o few-shot performance on iGSM (mod5 variant, Appendix G)",
+            "brief_description": "Few-shot evaluation of GPT-4 and GPT-4o on simplified iGSM tasks (mod 5 arithmetic and reduced English diversity) shows that large foundation models without task-specific pretraining struggle on long multi-step reasoning in this synthetic format.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "GPT-4 turbo (2024-04-09) and GPT-4o (2024-05-13)",
+            "model_description": "Closed-source large models evaluated in five-shot format on simplified iGSM-med (mod5) problems; prompt contained background and examples; goal was to isolate arithmetic/reasoning performance from language understanding.",
+            "arithmetic_task_type": "Simplified grade-school word problems with mod5 arithmetic, op sweep from 2..20.",
+            "mechanism_or_representation": "Not directly probed (no internal access), but observed failure modes mirror those of GPT2-iGSM models: unnecessary computations and premature computations (nece/can_next-like failures) inferred from outputs.",
+            "probing_or_intervention_method": "Few-shot prompting used; no internal probes (closed model). Evaluation assessed final-answer accuracy across op.",
+            "performance_metrics": "GPT-4o near-random guessing for op ≥ 11; GPT-4 turbo degrades for op ≥ 9 in this setting (Figure 2). Baseline random guess gives ≈32% (mod5) for answers 0..4; GPT-4/4o accuracy drops toward random as op increases.",
+            "error_types_or_failure_modes": "Output-level behaviors include computing unnecessary parameters and computing parameters not ready to compute (similar pattern to model-internal planning errors observed in GPT2). Failures are largely not due to format misunderstandings but to reasoning errors.",
+            "evidence_for_mechanism": "Observed output error patterns consistent with internal planning mistakes found via probing in GPT2 models; Appendix G includes failure examples and analysis.",
+            "counterexamples_or_challenges": "These are few-shot results on a synthetic dataset with mod5; real-world performance with chain-of-thought or finetuning may differ. No internal probing possible for GPT-4/4o, so link to internal planning is inferential.",
+            "uuid": "e8148.7",
+            "source_info": {
+                "paper_title": "Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process",
+                "publication_date_yy_mm": "2024-07"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Exploring length generalization in large language models",
+            "rating": 2,
+            "sanitized_title": "exploring_length_generalization_in_large_language_models"
+        },
+        {
+            "paper_title": "Length generalization in arithmetic transformers",
+            "rating": 2,
+            "sanitized_title": "length_generalization_in_arithmetic_transformers"
+        },
+        {
+            "paper_title": "A careful examination of large language model performance on grade school arithmetic",
+            "rating": 2,
+            "sanitized_title": "a_careful_examination_of_large_language_model_performance_on_grade_school_arithmetic"
+        },
+        {
+            "paper_title": "What algorithms can transformers learn? a study in length generalization",
+            "rating": 2,
+            "sanitized_title": "what_algorithms_can_transformers_learn_a_study_in_length_generalization"
+        },
+        {
+            "paper_title": "Training verifiers to solve math word problems",
+            "rating": 1,
+            "sanitized_title": "training_verifiers_to_solve_math_word_problems"
+        },
+        {
+            "paper_title": "Textbooks are all you need",
+            "rating": 1,
+            "sanitized_title": "textbooks_are_all_you_need"
+        }
+    ],
+    "cost": 0.020793,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><p>Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process
+July 31, 2024</p>
+<p>Tian Ye 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Lucca Bertoncini 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Liao Hu 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Caleb Ho 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Wil Johnson 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Apostolos Kokolis 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Parth Malani 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Alexander Miller 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Junjie Qian 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Shubho Sengupta 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Meta Fair 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Henry Estela 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Rizwan Hashmi 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Lucas Noah 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Maxwell Taylor 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Ian Clark 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Gourab De 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Anmol Mann 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Max Pfeifer 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Messenger Backpack 
+School Classroom
+Backpack Central High Riverview High Dance Studio Film Studio School Dayp-ack</p>
+<p>Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process
+July 31, 2024716F10FC2A5E387375AA64E682457DF2arXiv:2407.20311v1[cs.AI]
+Recent advances in language models have demonstrated their capability to solve mathematical reasoning problems, achieving near-perfect accuracy on grade-school level math benchmarks like GSM8K.In this paper, we formally study how language models solve these problems.We design a series of controlled experiments to address several fundamental questions: (1) Can language models truly develop reasoning skills, or do they simply memorize templates?(2) What is the model's hidden (mental) reasoning process?(3) Do models solve math questions using skills similar to or different from humans?(4) Do models trained on GSM8K-like datasets develop reasoning skills beyond those necessary for solving GSM8K problems?(5) What mental process causes models to make reasoning mistakes?(6) How large or deep must a model be to effectively solve GSM8K-level math questions?Our study uncovers many hidden mechanisms by which language models solve mathematical questions, providing insights that extend beyond current understandings of LLMs.</p>
+<p>Introduction</p>
+<p>The field of language models has made significant progress in recent years.Large models like GPT-4 [17] have shown initial signs of general intelligence [8], while smaller models have demonstrated good reasoning abilities by solving challenging coding and math problems [11, 15, 16].</p>
+<p>In this paper, we focus on the ability of small language models to solve grade-school math problems.Unlike previous works that empirically push the accuracy of models on grade-school math benchmarks like GSM8K [9] and its augmentations (e.g., [16, 22]), we take a more principled approach.We aim to understand the following fundamental questions:</p>
+<ol>
+<li>
+<p>How do language models learn to solve grade-school level math problems?Do they just memorize templates, or do they learn reasoning skills similar to humans?Or do they discover new skills to solve the problems?</p>
+</li>
+<li>
+<p>Do models trained solely on grade-school math problems only learn to solve these problems, or do they develop some more general intelligence?</p>
+</li>
+<li>
+<p>How small can a language model be while still solving grade-school math problems?Is depth (number of layers) more important than width (number of neurons per layer), or does only size matter as suggested by practitioners [14]?</p>
+</li>
+</ol>
+<p>These questions are fundamental to understanding the intelligence of language models.To study them, it might seem tempting to start with a pre-trained model and fine-tune it on existing datasets like GSM8K or GPT-4 augmented ones (e.g., [16, 22]).However, this approach has significant limitations:</p>
+<p>• Data contamination.The pretrain data of existing models mostly come from publicly available internet [10], which is a pile of mess.We do not know how many math problems are included or their structures.There is significant concern regarding whether the GSM8K benchmark has been leaked to language models' training datasets [22].Even if the exact data is not, the pre-trained model might have seen almost identical questions (e.g., the same problem with different numbers).Thus, this approach cannot answer questions 1-3.We do not know whether a model truly learns the reasoning skills or it simply memorizes problem templates during training.Therefore, we need full control over the model's pretrain data and must train a language model from scratch.This point has been reiterated recently in [2, 3].</p>
+<p>• Solution diversity.The existing fine-tuning data, such as the GSM8K training set, contains only 7.5K grade-school math problems, which is insufficient to train a model from scratch.</p>
+<p>Although recent works use GPT-4 to augment GSM8K, this is not enough for our purpose.GPT-4 augmented problems might be biased towards a small number of solution templates, since the original GSM8K data has very few (obviously, at most 8K) solution templates.We need a much larger, more diverse set of grade-school math problems.</p>
+<p>With these points in mind, we introduce our framework to generate a large set of diverse gradeschool math (GSM) problems and use the dataset to train (from scratch) and test a GPT2-like language model.In the framework, we focus on the "logical reasoning" aspect of grade-school math problems, which involves the dependency of parameters in the problem statement, such as "Alice's apple is three times the sum of Bob's orange and Charles's banana."We use synthetic sentences to reduce the difficulty arising from Common Sense, like "a candle burned for 12 hours at 1 inch per hour" (implying the candle is reducing in length).We also remove the difficulty from pure arithmetic: we only consider integers and arithmetic mod23. 1 Moreover, our framework ensures that the generated math problems are highly diverse and do not come from a small subset of templates.Even ignoring all the arithmetic, English, variable names, and unused parameters, our problems still have more than 90 trillion solution templates (see Proposition 2.2), much larger than the size of GPT2-small (100M).Thus, language models cannot solve the math problems in our case by simply memorizing the solution templates.</p>
+<p>In this paper, we use the GPT2 model [18], but replace its positional embedding with rotary embedding (RoPE) [7, 20].We still call it GPT2 for brevity.We summarize our main contributions:</p>
+<p>-Result 2. We demonstrate that the GPT2 model, pretrained on our synthetic dataset, not only achieves 99% accuracy in solving math problems from the same distribution but also outof-distribution generalizes, such as to those of longer reasoning lengths than any seen during training.This is similar to length generalization in arithmetics [6, 13], however, in our case, the model has never seen any training example of the same length as in test time.This signifies that the model can truly learn some reasoning skill instead of memorizing solution templates.</p>
+<p>-Result 3. Crucially, the model can learn to generate shortest solutions, almost always avoiding unnecessary computations.This suggests that the model formulates a plan before it generates, in order to avoid computing any quantities that are not needed towards solving the underlying math problem.</p>
+<p>-Result 4. We examine the model's internal states through probing, introducing six probing tasks to elucidate how the model solves math problems.For instance, we discover the model (mentally!)preprocesses the full set of necessary parameters before it starts any generation.Likewise, humans also do this preprocess although we write this down on scratch pads.</p>
+<p>-Result 5. Surprisingly, the model also learns unnecessary, yet important skills after pretraining, such as all-pair dependency.Before any question is asked, it already (mentally!)computes with good accuracy which parameters depend on which, even though some are not needed for solving the math problem.Note that computing all-pair dependency is a skill not needed to fit all the solutions in the training data.To the best of our knowledge, this is the first evidence that a language model can learn useful skills beyond those necessary to fit its pretraining data. 2 This may be a preliminary signal of where the G in AGI can come from. 3esult 6.We explain why mistakes occur.For instance, the model makes systematic errors that can be explained by probing its internal states.Sometimes, these mistakes can be predicted before the model generates answers, making them independent of the random generation process.We connect this to practice, noting that GPT-4/4o also makes similar errors (though we cannot probe their internal states).</p>
+<p>-Result 7+8.The depth of the language model is crucial for its reasoning ability.For example, a 16-layer, 576-dim transformer solves harder problems (in reasoning length) than a 4-layer, 1920-dim one, despite the latter being twice as large.This holds even when Chain-of-Thought (CoT) is used.We explain this necessity in depth by the complexity of the mental processes involved.We advocate for the use of controlled, synthetic data as a more principled approach to derive such claims, contrasting with predictions like "only size matters" based on training loss using internet pretrain data [14].</p>
+<p>While we refrain from overstating that our findings directly apply to foundation models like GPT-4 or more challenging mathematical reasoning tasks, we believe our work significantly advances the understanding of how language models develop their mathematical reasoning skills, and this has to be done in a way different from pushing benchmarks.</p>
+<p>Result 1: Data Generation</p>
+<p>Motivation.Recall a standard grade-school math problem in the GSM8K dataset [9] looks like:</p>
+<p>Betty is saving money for a new wallet which costs 100.Betty has only half of the money she needs.Her parents decided to give her 15 for that purpose, and her grandparents twice as much as her parents.How much more money does Betty need to buy the wallet?</p>
+<p>This problem involves multiple parameters whose values are connected through various equalities, such as "Betty's current money = 0.5 × cost of the wallet" and "money given by grandparents = 2 × money given by parents."Motivated by this, we build a GSM8K-like math dataset through a synthetic generation pipeline that captures the dependencies of parameters.We wish to capture at least the following three types of dependencies.</p>
+<ol>
+<li>
+<p>Direct dependency (♡): such as A = 5 × (X + Y ), so A can be computed after X and Y .</p>
+</li>
+<li>
+<p>Instance dependency (♠): such as "every classroom has X chairs, and there are Y classrooms."</p>
+</li>
+</ol>
+<p>Here, the model must infer the total number of chairs by multiplying X by Y.</p>
+<ol>
+<li>Implicit dependency (♣): such as "Bob has 3 times more fruits than Alice.Alice has 3 apples, 4 eggs and 2 bananas."Here, the model must learn that apples and bananas are fruits and egg is not, and "Alice's fruits" is an abstract parameter derived from the problem statement.Problem generation.The problem is articulated by describing the dependency graphs in English, one sentence for each instance parameter. 6(Abstract parameters are not described because they are inherited by the structure graph.)We randomly permute the sentence ordering to further increase difficulty.A parameter is selected and asked with a question in the end (or at the beginning).Below is an easy example corresponding to Figure 1; a harder example is in Figure 11.</li>
+</ol>
+<p>(Problem -Easy) (2.1) 4 Even though Central High and Rivierside High can both have (possibly multiple) Dance Studios, for simplicity, we assume that each Dance Studio has the same number of School Daypacks. 5For example, the total number of backpacks in Riverview High in Figure 1 is calculated as ip1 × ap1 + ip2 × ap2 where ip1 = "Riverview High's number of Dance Studios", ip2 = "Riverview High's number of Film Studios", ap1 = "each Dance Studio's number of Backpacks", and ap2 = "each Film Studio's number of Backpacks", with ip1, ip2 being instance parameters and ap1, ap2 abstract parameters.Here, the model must not only retrieve ip1, ip2 but also compute ap1, ap2 hierarchically. 6We use simple English sentence templates to describe the problem, and did not worry about grammar mistakes such as singular vs plural forms.There are other randomness besides the dependency graph, such as when parameter A depends on B, C it could be A + B or A − B.</p>
+<p>Step 2: Solution Construction (CoT)</p>
+<p>Let solution be a sequence of sentences describing the necessary steps towards solving the given problem, where the sentences follow any topological order -also known as Chain-of-Thought, CoT.For each parameter necessary towards answering the final question, we assign to it a random letter among the 52 choices (a..z or A..Z), and use a sentence to describe its computation: 7 Define [param] as X; [intermediate steps]; so X = ... Throughout this paper, we consider arithmetics mod 23 to avoid errors from computation involving large numbers.It is perhaps the easiest to directly see a solution example (corresponding to (2.1)), and a more involved example is in Figure 11: (2.2)</p>
+<p>We emphasize that:</p>
+<p>• The solution only contain parameters necessary towards calculating the final query parameter.</p>
+<p>• The solution follows the correct logical order: i.e. all the parameters used in the calculation must have appeared and been computed beforehand.• We break computations to binary ops: g = 12+13+7 is broken into g = 12+R and R = 13+7</p>
+<p>in the above solution.The number of semicolons ";" equals the number of operations.This reduces the arithmetic complexity of the solution, which is not the focus of this paper. 8</p>
+<p>Difficulty Control</p>
+<p>Although deferring all the pseudocode to Appendix D, we summarize below the main randomness used in the data generation process.This includes the random choice of a hierarchical categorization (i.e., the English part); a structure graph (i.e., the instance parameters); a dependency graph; arithmetic computations on the dependency graph; integer numbers (i.e., the RNG); problem sentence permutation; and the query parameter.We use two parameters to control data's difficulty: ip is the number of instance parameters, and op is the number of solution operations; the data's difficulty is an increasing function over them.We call our dataset iGSM, to reflect the nature that such synthetic dataset can be of infinite size.We use iGSM op≤op,ip≤ip to denote the data generated with constraint op ≤ op and ip ≤ ip, and use iGSM op=op,ip≤ip to denote those restricting to op = op. 9</p>
+<p>Train and Test Datasets</p>
+<p>We consider two families of datasets.</p>
+<p>• In the iGSM-med data family we use ip ≤ 20.</p>
+<p>The training data is iGSM-med op≤15 def = iGSM op≤15,ip≤20 .We evaluate the pretrained model both in-distribution, on iGSM-med op≤15 and iGSM-med op=15 , and out-of-distribution (OOD), op=2 op=3 op=4 op=5 op=6 op=7 op=8 op=9 op=10 op=11 op=12 op=13 op=14 op=15 op=16 op=17 op=18 op=19 op=20  on iGSM-med op=op for op ∈ {20, 21, 22, 23} and iGSM-med op=op,reask .Here, reask denotes first generating a problem from iGSM-med op=op and then resampling a query parameter. 10In the iGSM-hard data family we use ip ≤ 28.</p>
+<p>The training data is iGSM-hard op≤21 def = iGSM op≤21,ip≤28 .We evaluate the pretrained model both in-distribution, on iGSM-hard op≤21 and iGSM-hard op=21 , and OOD on iGSM-hard op=op for op ∈ {28, 29, 30, 31, 32} and iGSM-hard op=op,reask .</p>
+<p>Additionally, we use iGSM-med pq to indicate placing the question after the problem and iGSM-med qp the other way (similarly for iGSM-hard).The difficulty of iGSM-med is already quite non-trivial to humans (at least not solvable with few-shot learning using GPT-4/4o, see Figure 2).Proposition 2.2.Ignoring unused parameters, numerics, sentence orderings, English words, a-z and A-Z letter choices, iGSM-med op=15 still has at least 7 billion solution templates, and iGSM-hard op=21 has at least 90 trillion solution templates. 11 data contamination.A goal in synthetic math data generation is to prevent data contamination in internet-based math datasets, as noted in [22].While it may be impossible to certify that models trained on internet data are free from contamination, in our setting, we can certify this:</p>
+<p>3 Result 2-3: Summarize Model's Behavior Process</p>
+<p>We use the GPT2 architecture [18] but replacing its absolute positional embedding with rotary embedding [7, 20], yet still referring to it as GPT2 for short. 12We mostly stick to the 12-layer, 12-head, 768-dim GPT2 (a.k.a.GPT2-small) for experiments, but we explore larger models in Section 6.We use a context length of 768 / 1024 for pretraining on iGSM-med/iGSM-hard and 2048 for evaluation.More details are in Appendix F. 10 Due to the topological nature of our data/solution generation process, reask greatly changes the data distribution and the number of operations needed.It provides an excellent OOD sample for evaluation.Details are in Appendix D.</p>
+<p>11 A solution template is created by replacing all numbers with '0', substituting variables (a-z or A-Z) with letters in their appearance order, and changing parameters to their types (instance or abstract).For instance, "Define Owl Forest's Elephant as y; so y = 11.Define Parrot Paradise's Raccoon as t; so t = y = 11."becomes "Define Inst as a; so a = 0. Define Inst as b; so b = a = 0." We use birthday paradox to estimate the number of solution templates.If M randomly generated problems yield distinct templates, it suggests with good probability that the total number of templates exceeds Ω(M 2 ). 12 We also tested with Llama architecture (esp.with gated MLP layers) and did not see any benefit of using it.GPT2-rotary performs no worse than Llama/Mistral for knowledge tasks [4].We are currently bounded by resources to repeat all experiments in this paper with other architectures that have minor differences from GPT2-rotary.iGSM-med_pq iGSM-med_qp iGSM-hard_pq iGSM-hard_qp 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.02 0.11 0.15 0.17 0.19 0.17 0.03 0.11 0.17 0.21 0.19 0.20 0.07 0.46 0.52 0.54 0.57 0.66 0.66 0.09 0.40 0.45 0.45 0.58 0.53 0.59 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.01 0.09 0.12 0.12 0.14 0.12 0.03 0.  Result 2: accuracy.After sufficient pre-training, we give the model a problem from the test set (without solution) and let it continue to generate (allegedly a solution followed by an answer).</p>
+<p>Because we have restricted ourselves to a fixed solution format, language models can learn the format easily, allowing us to write a solution parser to check if the solution is fully correct. 13sult 2. Figure 3 shows that GPT2 performs well when pretrained using iGSM-med or iGSM-hard data, even when evaluated out-of-distribution on harder (i.e., larger op) math problems.Thus, the model can truly learn some reasoning skill instead of memorizing solution templates. 14is could be reminiscent of language models' length generalization capability on arithmetic computations [13, 23]; however, in our case, op captures the "reasoning length" in grade-school math, and our model has never seen any training example of the same length as in test time. 15uch accuracies also indicate that our iGSM data families are indeed good for pretraining purpose, allowing us to investigate how LLMs can solve grade-school math problems.</p>
+<p>Result 3: solution redundancy.We examine whether GPT2 achieves high accuracy by</p>
+<p>• brute-forcedly computing all the parameters during generation (a "level-0" reasoning skill), or</p>
+<p>• computing only necessary parameters to give shortest solutions (a "level-1" reasoning skill).</p>
+<p>Recall our iGSM (pretrain) data only contains necessary solution steps (i.e., CoT) to simulate what we see in textbook solutions for math problems.For instance, if a problem describes X =3+2, E =3+X, Y =X+2 and asks for the value of Y, then a shortest solution would be "X =3+2=5 and Y =X+2 =7" without ever computing E.</p>
+<p>Result 3. Figure 4 shows that GPT2 predominantly solves the iGSM problems with a "level-1" reasoning skill, avoiding unnecessary computations, even when evaluated out-of-distribution.</p>
+<p>This finding is significant as it suggests that, unlike humans who usually rely on "backward reasoning" and a scratch pad to write down necessary parameters by backtracking the dependencies  from the question [19], the language model can directly generate shortest solutions without using a scratch pad.But, how does it achieve so?We shall investigate in the next section.</p>
+<p>Result 4-5: Discover Model's Mental Process</p>
+<p>To understand how the model learns to solve math problems, we propose studying the following probing tasks, which align closely with human problem-solving strategies:</p>
+<p>• nece(A): if parameter A is necessary for computing the answer.</p>
+<p>• dep(A, B): if parameter A (recursively) depends on parameter B given the problem statement.</p>
+<p>• known(A): if parameter A has already been computed.</p>
+<p>• value(A): the value of parameter A (a number between 0-22, or 23 if known(A) = false).</p>
+<p>• can next(A): if A can be computed in the next solution sentence (namely, its predecessors have all been calculated).Note that A might not be necessary to answer the question.</p>
+<p>• nece next(A): if parameter A satisfies both can next(A) and nece(A).</p>
+<p>For a model to generate the shortest solutions, it must identify nece(A) for all A's in its mental process.This is because whether nece(A) is true directly corresponds to whether there is a solution sentence to compute A. However, how early does the model recognize this, and how is it stored?Similarly, does it recognize dependencies between parameters (dep)?If so, how early is this mental process completed?Moreover, in the middle of solution generation, does the model keep track of each parameter A's value at all times (value, known)?Does the model mentally know all possible parameters A that are ready to compute in the next sentence (can next)?Or does it only focus on A that is both ready and necessary (nece next)?</p>
+<p>This section proposes probing technique to answer all of these questions.99.7 99.3 100 100 100 100 99.6 99.0 98.9 98.9 98.9 98.9 98.9 100 100 100 100 100 100 100 100 100 99.9 100 100 99.9 99.6 99.1 98.8 98.6 98.7 98.5 99.9 99.5 99.1 99.0 99.0 99.0 99.0 99.3 99.0 98.9 99.0 99.0 98.9 99.7 99.4 99.</p>
+<p>can_next(A) dep(A,B) known(A)
+iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist (iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) iGSM-med iGSM-hard in-dist out-of-dist (OOD) in-dist out-of-dist(</p>
+<p>can_next(A) on negative labels when A is unnecessary can_next(A) on positive labels when A is unnecessary dep(A,B) on negative labels when A is unnecessary dep(A,B) on positive labels when A is unnecessary</p>
+<p>V-Probing: A Nearly-Linear Probing Method</p>
+<p>As illustrated in Figure 5, we conduct probing at the end of the problem description for the dep task, and end of the question description nece task. 16For other tasks, we probe them at the end of every solution sentence (including the start of the first solution sentence).</p>
+<p>Recall that standard linear probing involves freezing a pretrained language model and checking if a property is linearly encoded at a hidden layer (usually the last layer) for a given token position.This is done by introducing a trainable linear classifier on the hidden states and performing a lightweight finetuning task for this property (see [12] and references therein).</p>
+<p>Our setting is more complex because the properties have one or two conditional variables, A and B, described in plain English.To handle this, we truncate the math problems to the probing position and append tokens [START] and [END] around the descriptions of A (or A, B).We then probe from the token position of [END] to see if the property is linearly encoded at the last layer.</p>
+<p>Unlike standard linear probing, to account for the input change, we introduce a small trainable rank-8 (linear) update on the input embedding layer.We freeze the pretrained language model and finetune both the linear classifier and the rank-8 update for the desired property.We refer to this as V(ariable)-probing and provide details in Appendix B. An illustration of the nece(A) probing task is shown in Figure 6.</p>
+<p>We compute the V-probing accuracies on a language model pretrained from iGSM and compare them with the V-probing accuracies on a randomly-initialized transformer model.If the former accuracies are significantly higher, we conclude that the probing signals must have (or be very close to having) come from the pretrained weights, rather than the (lightweight) finetuning stage.</p>
+<p>Probing Results and Findings</p>
+<p>We present our probing results in Figure 7.The probing accuracies are high for all the tasks, compared to majority guess and random-model probing -except for the very hard OOD cases (i.e., for large op where the model's generation accuracies fall down to 80% anyways in Figure 3), Result 4: model solves math problems like humans.We make the following observations:</p>
+<p>• When generating solutions, the model not only remembers which parameters have been computed and which have not (value, known) but also knows which parameters can be computed next (can next, nece next).These abilities ensure that the model can solve the given math problem step by step, similar to human problem-solving skills.</p>
+<p>• By the end of the problem description, the model already knows the full list of necessary parameters (nece).This indicates that the model has learned to plan ahead, identifying necessary parameters before starting to generate the solution.This aligns with human behavior, except that the model plans mentally while humans typically write this down.This further confirms that the model reaches the "level-1" reasoning skill discussed in Section 3.</p>
+<p>Remark 4.1.The mental process described can be compared to (out-of-context) knowledge manipulation [2], which involves retrieving factual knowledge and performing single-step computations (e.g., retrieving two people's birth dates to determine who was born earlier).Allen-Zhu and Li [2] found that even single-step computations cannot be performed mentally without a substantial number of pretrain samples.In contrast, this paper studies in-context reasoning and demonstrates that the model can execute very complex mental calculations.</p>
+<p>Result 5: model learns beyond human reasoning skills.Remarkably, the model learns dep(A, B) and can next(A), even for parameters A not necessary for answering the question, as shown in Figure 7(b).This differs from human problem-solving, where we typically use backward reasoning from the question to identify necessary parameters, often overlooking unnecessary ones [19].In contrast, language models can pre-compute the all-pair dependency graph dep(A, B) mentally even before a question is asked.We consider this a "level-2" reasoning skill that is very different from human behavior or mental processes.Thus, although this skill is not needed for solving the math problems and although no pretrain data teaches the model to compute "all-pair dependency" -fitting the data only requires computing necessary parameters -the model still discovers it after training.This enables the model to sort relationships among the things it hears, a skill that can be useful for future tasks (via instruction fine-tuning).To our knowledge, this may be the first evidence of a language model acquiring skills beyond those needed for learning its pretrain data; and this may be a preliminary signal of where the G in AGI can come from (generalizing to skills not taught in the pretrain data).</p>
+<p>Corollary: the backward thinking process.A key question for AGI success is whether the "backward thinking process" (e.g., "because I want to compute X, but X depends on Y and Y depends on Z, so let me compute Z first") needs to be explicitly included in the training data.This differs from CoT, where CoT breaks down complex computations into simpler steps, but planning is still required to decide which step to compute first.</p>
+<p>Our findings suggest that, at least for grade-school math problems, with abundant data, this backward thinking process can be autonomously learned through language modeling, without needing to be directly included in the training data.</p>
+<p>Result 6: Explain Model's Mistakes</p>
+<p>We further examine the relationship between our probing results and the model's generated solutions, focusing on two questions: (1) When does the model answer correctly but include unnecessary     For the first question, given the model rarely produces solutions longer than necessary (see Figure 4), we turned to out-of-distribution reask data for evaluation. 17On this data, pretrained models produce an average of ∼ 0.5 unnecessary parameters per solution even for op = 32 (see Figure 4).We examined if these unnecessary parameters A were incorrectly predicted as nece(A) = true in the probing task.Figure 8(a) reveals that this is often indeed the case, thus language models produce solutions with unnecessary steps due to errors in their mental planning phase.</p>
+<p>For the second question, we focused on the model's wrong solutions and their first wrong parameters.(Using synthetic data, we can easily identify such parameters.)Our findings in Figure 8(b) show that the model's errors mainly stem from incorrectly predicting nece next(A) or can next(A) as true in its internal states when such A's are not ready for computation. 18sult 6 (Figure 8).Combining these, we conclude:</p>
+<p>• Many reasoning mistakes made by the language model are systematic, stemming from errors in its mental process, not merely random from the generation process.</p>
+<p>• Some of the model's mistakes can be discovered by probing its inner states even before the model opens its mouth (i.e., before it says the first solution step).</p>
+<p>We also observe that GPT-4/4o makes similar mistakes by outputting unnecessary parameters 17 Recall this re-samples a query after generating the problem, leading to a different set of necessary parameters. 18In Figure 8(b), we focus on these "first wrong parameters" with correct label being can next(A) = false or nece next(A) = false and present the probability that their probing also correctly predicts false.Low accuracy indicates that the model "thought" these parameters were ready for computation, but they were not.or insisting on computing parameters A with can next(A) = false (see Appendix G).This further hints that our findings may be applicable more broadly.</p>
+<p>6 Result 7-8: Depth vs. Reasoning Length</p>
+<p>Our controlled dataset enables a systematic exploration of the relationship between a language model's depth and its reasoning length.</p>
+<p>Recent studies have demonstrated that for knowledge storage and extraction, only model size matters (even for 2-layer transformers) [4].Furthermore, both the seminal scaling-law paper by OpenAI [14] and theoretical studies in deep learning [5] suggest that model depth/width might have a minimal impact universally.Contrary to these findings, we present evidence that 19 Result 7 (Figure 9).Language model depth is crucial for mathematical reasoning.</p>
+<p>Specifically, we experimented with models of depths 4/8/12/16/20 and two sizes (a smaller size 1 and a larger size 2). 20From Figure 9, we observe that a 4-layer transformer, even with 1920 hidden dimensions, underperforms on our math datasets.Conversely, deeper but smaller models, such as a 20-layer 576-dim, perform very well.Comparing accuracies vertically reveals a clear correlation between model depth and performance.Thus, we infer that depth is likely essential for reasoning tasks, such as solving grade-school math problems.</p>
+<p>Next, we try to reveal "why" this happens.We delved into how depth influences math problemsolving skills through the nece probing task, focusing on necessary parameters at distance t from the query parameter, for t ∈ {1, 2, . . ., 8}.These parameters all have nece(A) = true, but we can probe the model to see how correct they are at predicting nece(A) at different hidden layers.</p>
+<p>Figure 10 shows our result.It reveals a correlation between the model's layer hierarchy, reasoning accuracy, and mental reasoning depth.Shallower layers excel at predicting nece(A) for parameters A closer to the query, whereas deeper layers are more accurate and can predict nece(A) for parameters further from the query.This suggests that the model employs layer-by-layer reasoning during the planning phase to recursively identify all parameters the query depends on, and: Result 8 (Figure 10+14).The depth of a language model is crucial, likely due to the complexity of its hidden (mental) reasoning processes.A t-step mental reasoning, such as mentally computing nece(A) for parameters A that are a distance t from the query, may require deeper models for larger t, assuming all other hyperparameters remain constant.This figure is for a 20-layer GPT2 model; for other model depths/sizes, see Figure 14.</p>
+<p>We make two disclaimers here.First, if the "backward thinking process" is added as CoT to the data (see the end of Section 4.2), then deep mental thinking is no longer required, reducing the language model's depth requirement.However, in practice, many such "thinking processes" may not be included in standard math solutions or languages in general.</p>
+<p>Second, the above claim does not imply that "a t-step mental thinking requires a depth-t transformer".It is plausible for a single transformer layer (containing many sub-layers) to implement t &gt; 1 mental thinking steps, though possibly with reduced accuracy as t increases.We refrain from providing an exact correlation in this paper, as it heavily depends on the data distribution.</p>
+<p>Conclusion</p>
+<p>We use a synthetic setting to demonstrate that language models can learn to solve grade-school math problems through true generalization, rather than relying on data contamination or template memorization.We develop probing techniques to examine the models' hidden reasoning processes.Our findings reveal that these models can learn math skills aligned with human cognitive processes, as well as "new thinking processes" not present in the training data.Additionally, we propose a method to predict a model's errors before it begins to solve a problem and to explain why models make mistakes when they occur.Based on this discovery, we write a separate paper to improve language models' math reasoning accuracy [21].We also provide a principled approach to connect the model's depth to its capable reasoning length.We believe this research opens doors to study the mathematical reasoning skills of language models from a different angle compared to pushing math benchmarks.</p>
+<p>One may argue that iGSM may be very different from the pretrain data that modern LLMs use.While this may be true, we are looking into the future.Recall, even GPT-4/4o of today cannot few-shot learn to solve iGSM-med op=11 (see Figure 2).From this perspective, it is reasonable to believe that future versions of LLMs will rely on synthetic math pretrain data to improve their reasoning skills.While one may not directly use iGSM, it is tempting to use existing LLMs (such as Llama-3) to turn iGSM into more natural formats while keeping the logical chains.On the other hand, we have discovered that models trained purely on the iGSM data make similar mistakes compared to GPT-4/4o (see Section 5 and Appendix G).This further confirms that our findings do connect to practice, regarding the model's hidden reasoning process.</p>
+<p>Finally, Part 2 of this work series focuses on how language models solve grade-school math problems (including Part 2.2 [21]).We also cover how language models learn language structures in Part 1 [1] (in particular, how they mentally perform dynamical programming), and learn world knowledge in Part 3 [2-4].Define Arts Campus's Trader Joe's as q; so q = Z = 14.Define Residential College District's The Fresh Market as j; so j = q = 14.Define Ice Cream's Pineapple as X; so X = 2 + u = 2 + 0 = 2. Define Ice Cream's Banana as K; so K = C + X = 0 + 2 = 2. Define The Fresh Market's Ice Cream as P; i = j-f = 14 -14 = 0; so P = 13 + i = 13 + 0 = 13.Define Jungle Jim's International Market's Ice Cream as R; so R = K-u = 2 -0 = 2. Define School District's Jungle Jim's International Market as V; so V = P = 13.Define Jungle Jim's International Market's Cheese as v; so v = G + P = 0 + 13 = 13.Define Jungle Jim's International Market's Parmesan Cheese as S; so S = X = 2. Define Jungle Jim's International Market's Product as y; U = S + R = 2 + 2 = 4; so y = U + v = 4 + 13 = 17.Define School District's Product as J; so J = V * y = 13 * 17 = 14.Answer: 14.    Recall that we wish to conduct probing at the end of the problem description for the nece and dep tasks (before the solution for nece; before the solution or even the question for dep).For other tasks, we probe at the end of every solution sentence (including the start of the first solution sentence).The goal is to freeze a pretrained language model, then introduce a very small number of additional trainable parameters on top of it, and finetune them for each probing task.Specifically, we take a pretrained language model, e.g., pretrained from the iGSM-hard training data.We freeze its parameters completely except for adding a trainable rank-r update on the embedding layer to account for the task change (from next-token prediction to probing).Throughout this paper we use a small value r = 8.We feed this network with training data that are the same as iGSM-hard, but truncated at exactly the position we wish to probe.Importantly, we append such inputs with a special starting token [START] along with a parameter name (or two names, if it is the dep(A, B) task).We then extract the hidden states of the last token position at the last transformer layer, and add a trainable linear layer (a.k.a.linear head) to perform classification for one of the six probing tasks.</p>
+<p>District</p>
+<p>dep(A,B) on negative labels dep(A,B) on positive labels nece_next(A) on negative labels nece_next(A) on positive labels</p>
+<p>This probing method is illustrated in Figure 13.We call it V(ariable)-Probing, because it can take an arbitrary number of variables (i.e., parameters in this paper) to allow us to perform functional probing inside the transformer.</p>
+<p>Note, if it were only a trainable linear head such probing would be called linear probing [12].Unlike traditional linear probing, we are adding a small low-rank update on the model's embedding layer.This is arguably the minimum change needed (to account for the task change, for special tokens like [START] [MID] [END], etc.) in order to perform any non-trivial probing.This is related but different from the nearly-linear probing methods introduced in Allen-Zhu and Li [1, 3], because they do not support taking variables as probing inputs. 21balanced probing tasks.Our probing accuracies for the six tasks were presented in Figure 7.However, we notice that the dep and nece next tasks have unbalanced labels -even guessing "all false" would give 83% accuracy for dep(A, B) and 92% for nece next(A).For such reason, we also present their probing accuracies restricted to positives/negatives labels separately in Figure 12.In all cases, we freeze the entire pretrained language model, except for a low-rank r = 8 update on the input embedding layer to accommodate the task change.</p>
+<p>The illustration is for pq data (problem precedes question); for qp data, we simply reverse the order, except for dep(A, B) where the question is added before the problem.</p>
+<p>C Result 8 -Additional Figure</p>
+<p>D.1.1 Attach English</p>
+<p>As described in Section 2.1, we have prepared 4 predefined hierarchical categorizations, each of them with 4 total layers of categories:</p>
+<p>[ [ " District " , " Supermarket " , " Product " , " Ingredient " ] , [ " Zoo " , " Enclosure " , " Animal " , " Bone " ] , [ " School " , " Classroom " , " Backpack " , " Stationery " ] , [ " Ecosystems " , " Creatures " , " Organs " , " Cells " ] ]</p>
+<p>In each of the above 16 categories, we have prepared around 100 items (further decomposed into 5 sub-categories).Below is a showcase of them:</p>
+<p>{ " District " : { " Residential Districts " : [ ... ] , " Commercial Districts " : [ " Shopping District " , " Business District " , " Financial District " , " Industrial District " , " Warehouse District " , " Market District " , " Restaurant District " , " Entertainment District " , " Arts District " , " Fashion District " , " Silicon Valley " , " Wall Street " , " Tech Park " , " Automotive District " , " Jewelry District " , " Medical District " , " Legal District " , " Media District " , " Research Park " , " Manufacturing</p>
+<p>District " ] , " Historical Districts " : [ ... ] , " Educational Districts " : [ ... ] , " Government Districts " : [ ... ] } , " Supermarket " : { ... } , " Product " : { " Canned Foods " : [ ... ] , " Snack Foods " : [ " Potato Chips " , " Pretzels " , " Popcorn " , " Candy Bars " , " Gummy Candy " , " Cookies " , " Crackers " , " Granola Bars " , " Fruit Snacks " , " Cheese Puffs " , " Nuts " , " Trail Mix " , " Beef Jerky " , " Rice Cakes " , " Yogurt Covered Raisins " , " Chocolate Covered Pretzels " , " Tortilla Chips " , " Salsa " , " Hummus " , " Dried Fruit " ] , " Beverages " : [ ... ] , " Baked Goods " : [ ... ] , " Dairy Products " : [ ... ] } , " Ingredient " : { ... } , " Zoo " : { ... } , " Enclosure " : { ... } , " Animal " : { ... } , " Bone " : { ... } , " School " : { ... } , " Classroom " : { ... } , " Backpack " : { ... } , " Stationery " : { ... } , " Ecosystems " : { ... } , " Creatures " : { ... } , " Organs " : { ... } , " Cells " : { ... } } Now, given a constructed structure graph G s , we first randomly pick one of the four categorizations, then randomly pick d ∈ {2, 3, 4} consecutive layers of categories, next randomly pick one of the five subcategories, and finally pick l i random item names in this subcategory for each layer i.</p>
+<p>At this point, we have constructed G s as well as added English names to each of its node, just like Figure 1 and 11 (left).</p>
+<p>D.2 Generate Dependency Graph</p>
+<p>A structure graph G s defines the set of possible parameters we consider, while a dependency graph defines how these parameters depend on each other.We use an edge a → b to indicate that parameter b depends on a; there is a special vertex RNG and it can happen that RNG → b.What an abstract parameter depends on is inherited from the structure graph G s .For each instance parameter, we shall randomly add edges to indicate what parameters it depends on.</p>
+<p>High-level plan.We shall use G d to denote the dependency graph, we start from an empty graph and then add vertices/edges incrementally and randomly.Our process is as follows:</p>
+<p>• Generate a necessary dependency graph G nece d which covers all the vertices and nodes that are necessary for the computation of the query parameter.</p>
+<p>-Generate necessary abstract parameters (and add parameters they depend on); call this graph G nece1 At a high level, our problem description shall solely depend on G d -by describing each instance parameter in it using a sentence, and our solution description shall solely depend on G nece d -by describing the computation of each parameter in it using a sentence.</p>
+<p>Before we proceed with the construction let us formally introduce:</p>
+<p>Definition D.1 (operation).Given any dependency graph G d ,</p>
+<p>• For an (abstract or instance) parameter a ∈ G d that has in-degree t ≥ 0, we define op G d (a) def = max{1, t − 1} which is the number of operations needed to compute a. 22 • We use op(G d ) def = a∈G d {RNG} op G d (a) to denote the total number of (arithmetic) operations needed to compute all the parameters in G d .Remark D.2.In our final design of G d , we shall ensure that each parameter (except the special vertex RNG) has in-degree at least 1; however, during the construction process since we add edges incrementally, some (instance) parameter may temporarily have in-degree 0. For notation simplicity, we still say op G d (a) = max{1, −1} = 1 in such a case.</p>
+<p>Hyperparameters.We use hyperparameters 1 ≤ n ≤ m ≤ s to control the difficulty of G d .</p>
+<p>• we shall ensure op(G nece1 d</p>
+<p>) ≤ n and is as close as possible to n;
+• we shall ensure op(G nece3 d ) = op(G nece2 d
+) ≤ m and is as close as possible to m;</p>
+<p>• we shall ensure op(G nece d ) = s is exact.In other words, hyperparameter s controls exactly how many operations are needed to compute the query parameter, which is the primary factor controlling the problem's difficulty.
+D.2.1 Construction of G nece1 d , G nece2 d
+Given a structure graph G s , recall its edges represent all the instance parameters we shall use.Its abstract parameters are those ones that describe quantities across 1 or multiple layers: for instance in Figure 1, Central High's number of Classrooms is across 1 layer, and Central High's number of Backpacks is across 2 layers.We define this number as the difficulty level of abstract parameters.</p>
+<p>With this notion, our construction of G nece1 d and G nece2 d are described together in Algorithm 2. At a high level, we try to incrementally and randomly add abstract parameters to G nece1 d while maintaining op(G nece1 d ) ≤ n.We cannot make this exact equality because when adding a single abstract parameter requires also (recursively) adding all the other parameters it may depend on.We tried to prioritize adding abstract parameters with higher difficulty levels.Once we finish constructing G nece1 , so as to ensure that all the parameters are necessary towards the computation of query.</p>
+<p>We start with Topo = [query] and append parameters to its left one by one.During this process, we may also introduce new edges randomly; we start with G nece3 d = G nece2 d and add edges incrementally.This process may not always succeed -sometimes the created topological ordering cannot make all the parameters necessary towards the computation of the query.If this happens we declare a failure. 23e introduce two notions (we use G nece3 d \ Topo to denote the set of vertices in G nece3 d that are not in Topo):
+• Next1 G nece3 d (Topo) def = a ∈ G nece3 d \ Topo | ∃(a → b) ∈ G nece3 d for some b ∈ Topo
+Intuitively, if a ̸ ∈ Next1(Topo) then we cannot immediately append a to the front of Topo, because it is not yet necessary towards the computation of query.else if param 0 is instance parameter then 14:
+• Next2 G nece3 d (Topo) def = a ∈ G nece3 d \ Topo | ∄(a → b) ∈ G nece3 d for any b ∈ G nece3 d \ Topo Intuitively, if a ̸ ∈ Next2 G nece3
+if a probability event p 0 occurs for p 0 uniform chosen in (0, 1) then Remark D.4.In Line 11 and Line 15 of Algorithm 3, when randomly selecting param 1 from a set, instead of doing so uniformly at random, to improve the algorithm's success rate and the problem's difficulty level, we introduce a discursion that that biases slightly towards abstract parameters and has in-degree ≤ 1.In the next step, we add additional dependency edges to make in-degree to be a random number between 1 and 4. We do so by introducing additional edges; and we also introduce an additional vertex RNG.This is our final necessary dependency graph G nece d .Our pseudocode is given in Algorithm 4. In this step, we shall make sure op(G nece d ) = s is exact (and declare failure if this is not possible).We do so to precisely control the solution's difficulty (so that when we evaluate the model, we can choose to evaluate it on problems with a fixed value of s).pool ← RNG + all parameters in front of a in Topo.  2For those who are interested, abstract parameters are the keys to cause the generation process to fail, because once they become param 0 we cannot add edges param 1 → param 0 ; so we had better select them earlier than later (thus put them at the back of Topo).On the other hand, for param 1 that is already in Next1 G nece3 d (Topo), adding this edge param 1 → param 0 does not further change it; this can help us create a problem whose solution "depth" is higher.</p>
+<p>25 If an instance parameter a is the i-th element in Topo, then max op(a) = min{3, max{1, i − 1}}.(Recall we require each instance parameter to depend on at most 4 vertices in the dependency graph and this amounts to no more than 3 operations.)</p>
+<p>D.2.4 Construction of G d</p>
+<p>Finally, once we have G nece d the necessary dependency graph, we are left to add unnecessary dependency edges (and unnecessary parameters) to form the complete G d .</p>
+<p>During this process, we shall add all the remaining instance parameters from G s into G d .When adding each of them, we randomly select the parameters that it shall depend on from all the previously known parameters.26Note that during this process, we may also introduce new, unnecessary abstract parameters, see the full pseudocode in Algorithm 5.</p>
+<p>Remark D.5.G d consists of all the instance and query parameters in G s and the abstract parameters they may (recursively) depend on.There may exist abstract parameters that can be described in G s that are not present in G d ; but all the instance parameters in G s shall be present in G d .
+Algorithm 5 G d = DrawUnnecessary(G s , G nece d ) 1: IndList ← ∅; 2: while ∃ instance parameter in G s not yet in G d do 3:
+K ← all params in G d + all abstract params computable using parameters in G d ; If |pool| &gt; 0, str ← str + " more than" or " times" each with probability 0.5.str ← str + " the sum of .., .., and .." with a random order of all elements from pool.</p>
+<p>Problem description.The problem description simply consists of listing over all instance parameters a ∈ G d and call GenSentence(G d , a).We then randomly shuffle the sentences to make the problem hard.Please note the descriptions of abstract parameters are not present in the problem description, because they are inherited from the hierarchical categorization.This is our attempt to make our math data also capture some English meaning, that is the model also needs to learn what items are in each category, and which category is above another category, etc.This is some knowledge that cannot be learned by reading one problem -it must be learned after reading sufficiently many data.</p>
+<p>Question description.Our query parameter can be either an instance or abstract parameter, and it is the last element in Topo.We use a single sentence to ask for its value "How many... does... have?" and we put this question either at the front or at the end of the problem description (depending on the data type).</p>
+<p>Solution description.We generate the solution text, by going over all the (instance or abstract) parameters in Topo in its correct order, and generate a single sentence to compute each parameter.This process is straightforward but notationally heavy, we describe it below by examples.</p>
+<p>• Given any instance parameter a ∈ Topo, suppose for instance a is 7 times the sum of parameters b, c, d.Because of the topological order, the parameters b, c, d must have already defined with variable names, denoted as var b , var c , var d .Then we define solution string of a as "Define [name of a] as var 0 ;
+var 1 = var b + var c = • • • ; var 2 = var 1 + var d = • • • ; so var 0 = 7 × var 2 = • • • ."
+Here, the arithmetic computation is decomposed into 2-ary operations step by step separated with semicolons (so op G d (a) is exactly the number of semicolons).The var 0 , var 1 , var 2 are three new (but distinct) random variables and their names are between a-z or A-Z and have 52 possible random choices.The "• • • " ignores the math calculations.</p>
+<p>•</p>
+<p>D.4 Putting Altogether</p>
+<p>We put together our data generation process for the structure graph G s and the dependency graph G d (along with G nece d , Topo) in Algorithm 7. In particular, we use global parameters ip max and op max : the former controls the maximum number of instance parameters, and the latter controls the maximum number of solution operations.We select n, m, s based on op max (to ensure that 1 ≤ n ≤ m ≤ s ≤ op max ), and d, e, w 0 , w 1 based on ip max and s.We also provide a boolean switch f orce and when force = true, we shall force s = op max so that the generated math problem will have its solution to be of exactly op max operations.</p>
+<p>We define datasets • iGSM op≤op max ,ip≤ip max as the process of invoking DrawAll(op max , ip max , force = false).</p>
+<p>• iGSM op=op max ,ip≤ip max as the process of invoking DrawAll(op max , ip max , force = true).</p>
+<p>Using this language:</p>
+<p>• The training data iGSM-med is iGSM op≤15,ip≤20 ;</p>
+<p>• The eval data of iGSM-med additionally includes iGSM op=op,ip≤20 for op ∈ {15, 20, 21, 22, 23};</p>
+<p>• The training data iGSM-hard is iGSM op≤21,ip≤28 ;</p>
+<p>• The eval data of iGSM-hard additionally includes iGSM op=op,ip≤28 for op ∈ {21, 28, 29, 30, 31, 32}.</p>
+<p>Remark D.7.During training (regardless of pretrain or finetune for probing tasks), we only use those data whose hash value of their solution template (see Footnote 11) is &lt; 17 (mod 23), and during evaluation we only use those whose hash value is ≥ 17 (mod 23).This ensures a strict separation between train and test data (even in terms of their solution templates).</p>
+<p>Remark D.8.In Algorithm 7, we chose s = min{t 0 , t 1 }, where t 0 and t 1 are two random integers between 1 and op max .This choice encourages more easier math problems in the pretrain data, which we found improves the model's learning.</p>
+<p>Algorithm 7 DrawAll(op max , ip max , f orce) generation 1: s ← min{t 0 , t 1 } for t 0 , t 1 being two random integers from 1 and op max 2: If force = true then s ← op max .</p>
+<p>3: n ← max{t 0 , t 1 } for t 0 , t 1 being two random integers from 1 and s 4: m ← random integer between n and s 5: d ← a random choice among {2, 3, 4} with distribution according to softmax(weight) ⋄ for weight = [−(rel − 0.2) 2 , −(rel − 0.5) 2 , −(rel − 0.8) 2 ] for rel = s−1 ip max −1 6: t 0 , t 1 ← two random choices among {2, 3, 4} with distribution according to softmax(weight) 7: w 0 ← min{t 0 , t 1 } and w 1 ← max{t 0 , t 1 }.</p>
+<p>E Data Details: Probing Data Preparation</p>
+<p>We describe here how we prepare the probing data.We generate math data according to Appendix D.</p>
+<p>For each problem and each probing task (such as nece(A), dep(A, B), etc), we need to specify two things: at which position to probe and what parameters A (or A, B) to probe.</p>
+<p>• For nece and dep, the probing always takes place at the end of the problem (and question) description, so there is no choice to be made; for value, can next, nece next tasks, the probing can take place at the end of each sentence in the solution for (including the beginning of the first solution sentence), and we uniformly at random make such choices.</p>
+<p>• Each parameter A (or B) can be uniformly at random chosen from the set of all (instance or abstract) parameters in our dependency graph G d (with the only requirement that A ̸ = B).</p>
+<p>In the end, we make sure for each problem and each probing task, we make at most 10 such random choices (over the position and the choice of parameters) and sample without replacement.Just like in the pretrain data, we prepare our probing data so that only problems with hash values of their solution template (see Footnote 11) where the hash &lt; 17 (mod 23) are included in the training set, and the rest are used for testing.</p>
+<p>F Experiment Details</p>
+<p>Model.We use the GPT2 architecture [18], replacing its absolute positional embedding with modern rotary positional embedding [7, 20], still referred to as GPT2 for short.(We also played with the Llama architecture (especially with gated MLP layers) aand did not see any benefit of using it.This GPT2 performs comparably to Llama/Mistral at least for knowledge tasks [4].)</p>
+<p>Let GPT2-ℓ-h denote an ℓ-layer, h-head, 64h-dim GPT2 model.We primarily use GPT2-12-12 (a.k.a.GPT2-small) in this paper, but in Section 6 we explore larger models with different widths and depths.Our size-1 models are GPT2-4-21, GPT2-8-15, GPT2-12-12, GPT2-16-10, GPT2-20-9, roughly the same size as GPT2-small.Our size-2 models are GPT2-4-30, GPT2-8-21, GPT2-12-17, GPT2-16-15, GPT2-20-13, roughly twice the size of GPT2-small.We use a context length of 768/1024 for language model pretraining on iGSM-med/iGSM-hard and a context length of 2048 for evaluation.</p>
+<p>Data size.For both pretraining and finetuning, we did not limit the amount of training data; we generated new data on-the-fly.We do not explore sample complexity in this paper, such as the number of math problems needed to achieve a certain level of accuracy, as it would complicate the main message of this paper.</p>
+<p>F.1 Pretrain Experiment Details</p>
+<p>Pretrain parameters.We used the AdamW optimizer with mixed-precision fp16, β = (0.9, 0.98), cosine learning rate decay (down to 0.01x of peak learning rate in the end), and 1000 steps of linear ramp-up.We used a mixture of V100/A100 GPUs, but the GPU specifications are not relevant here.27For all of our pretrain experiments:</p>
+<p>• On the iGSM-med datasets, we used a (peak) learning rate 0.002, weight decay of 0.05, batch size of 512, context length of 768, and trained for 100, 000 steps.</p>
+<p>• On the iGSM-hard datasets, we used a (peak) learning rate 0.002, weight decay of 0.03, batch size of 256, context length of 1024, and trained for 200, 000 steps.</p>
+<p>Our pretrain data is constructed by randomly generating math problems (and solutions), concatenating them together, and truncating them (in the right) to fit within the 768 or 1024-sized context window.If a problem is longer than the context window size, we discard it (this happens very rarely).</p>
+<p>Test-time parameters.When evaluating on test data, we use context length 2048 for both iGSM-med and iGSM-hard.We use either beam=1 and dosample=False (greedy) or beam=4 and dosample=True (beam-search multinomial sampling) to present test accuracies.We discover it is better to keep dosample=False while beam=1 and dosample=True while beam=4.We also tried larger beam sizes and found no further improvements.</p>
+<p>Accuracy statistics.Our main accuracies are presented in Figure 3, where each entry is averaged over 4096 math problems of that type.Our accuracies are not simply from comparing the answer integers (between 0 and 22); instead we have written a parser to make sure the model's intermediate solution steps are fully-correct.</p>
+<p>For the "redundancy" experiment Figure 4, we tested each model again with 4096 math problems in each case and presented the results among fully-correct solutions.For this figure, we present beam=1 for cleanness and the results for beam=4 are almost completely identical.</p>
+<p>For the "depth matters" experiment Figure 9, because we care about the (relatively small) accuracy differences across models, we pretrain using two different random seeds, and evaluate with both beam=1/4; we then present the best accuracies in each entry with respect to the 2 seeds and 2 beam choices.The accuracies are again over 4096 math problems.</p>
+<p>F.2 V-probing</p>
+<p>Our V-probing was first introduced in Section 4.1 with more details given in Section B. It is a fine-tuning process upon the pretrained language model, with an additional linear head on the output layer, and a small rank-r update on the input (embedding) layer.The pretrained model is freezed, and only this linear head and the rank-r update are trainable parameters during the fine-tuning.</p>
+<p>(</p>
+<p>Solution -Easy) Define Dance Studio's School Daypack as p; so p = 17.Define Film Studio's Messenger Backpack as W; so W = 13.Define Central High's Film Studio as B; so B = p + W = 17 + 13 = 7. Define Film Studio's School Daypack as g; R = W + B = 13 + 7 = 20; so g = 12 + R = 12 + 20 = 9.Define Film Studio's Backpack as w; so w = g + W = 9 + 13 = 22.Define Central High's Backpack as c; so c = B * w = 7 * 22 = 16.Answer: 16.</p>
+<p>Figure 2 :
+2
+Figure2: GPT-4[17] few-shot accuracies on iGSM-medpq (with mod5 arithmetics).For each op we tested 30 problems; and guessing ans = 0 ∈ {0, 1, 2, 3, 4} gives a baseline accuracy around 32%.Details are in Appendix G, where we also give showcase how GPT-4/4o make mistakes.</p>
+<p>Figure 3 :
+3
+Figure 3: Test accuracies on the model (pre-)trained from the iGSM-med pq/qp and iGSM-hard pq/qp datasets.</p>
+<p>Figure 4 :
+4
+Figure 4: Number of unnecessary params / operations used per generated correct solution.Details in Appendix F.</p>
+<p>[</p>
+<p>Problem] The number of each Riverview High's Film Studio equals 5 times as much as the sum of each Film Studio's Backpack and each Dance Studio's School Daypack.… The number of each Film Studio's Messenger Backpack equals 13. [Question] How many Backpack does Central High have?[Solution] Define Dance Studio's School Daypack as p; so p = 17.Define Film Studio's Messenger Backpack as W; so W = 13.Define Central High's Film Studio as B; so B = p + W = 17 + 13 = 7. Define Film Studio's School Daypack as g; R = W + B = 13 + 7 = 20; so g = 12 + R = 12 + 20 = 9.Define Film Studio's Backpack as w; so w = g + W = 9 + 13 = 22.Define Central High's Backpack as c; so c = B * w = 7 * 22 = 16.[Answer] 16. dep(A,B) -at the end of problem description, does the model know parameter A depend on B? nece(A) -after question is asked, does the model know if A is necessary for answering question?can_next(A) -in the middle of solution, does the model know if A can be computed next?e.g.can_next("Riverview High's Film Studio") = true can_next("Riverview High's Dance Studio") = false e.g.nece("Riverview High's Film Studio") = false e.g.dep("Riverview High's Film Studio", "Film Studio's Messenger Bag") = true</p>
+<p>Figure 5 :Figure 6 :
+56
+Figure 5: To discover model's mental (reasoning) process.</p>
+<p>guess pretrained model probing (pq) pretrained model probing (qp) random model probing (pq) random model probing (qp)</p>
+<p>OOD) 57.4 59.9 57.0 56.7 55.7 55.6 61.7 65.3 61.4 61.3 59.2 58.5 58.4 84.6 82.2 83.0 83.5 83.5 83.7 82.6 79.5 80.2 81.3 82.2 82.8 82.7 87.0 77.6 75.0 74.8 74.5 74.3 84.8 73.5 71.7 72.1 72.4 71.8 71.7 99.9 99.5 99.3 99.2 99.1 99.0 99.8 99.4 99.1 99.0 99.0 98.9 98.9</p>
+<p>OOD) 74.7 54.8 50.1 50.4 51.4 52.1 70.3 53.1 56.9 56.4 55.5 55.6 56.7 94.9 93.5 93.1 92.9 92.9 92.8 94.5 93.0 92.6 92.2 92.7 93.0 92.5 86.5 82.5 81.7 77.8 79.2 77.8 86.7 81.9 75.2 77.0 75.6 71.0 80.4 99.8 99.8 98.7 97.9 96.9 94.7 99.6 99.6 99.1 98.6 97.9 97.1 95.5 99.9 99.5 99.2 99.1 99.0 98.7 99.7 99.3 98.7 98.6 98.4 98.3 98.3 100 100 100 100 100 100 100 100 100 100 100 100 100 99.8 99.9 99.5 99.4 99.3 99.2 99.8 99.8 99.7 99.7 99.6 99.4 99.3 99.5 99.2 98.7 98.3 98.3 97.7 99.7 99.7 99.5 99.4 99.3 99.2 99.2 100 100 100 100 100 100 100 100 100 100 100 100 100 74.7 55.9 51.1 51.0 50.1 49.3 69.4 50.2 47.0 46.9 48.1 47.9 47.4 94.6 93.5 93.1 92.9 92.9 92.8 94.5 93.0 92.6 92.2 92.7 93.0 92.5 71.9 53.4 48.5 47.4 46.7 45.5 73.6 55.2 50.2 50.6 48.9 48.8 48.2 74.0 56.3 52.2 51.8 51.3 50.7 69.2 51.3 49.1 48.9 50.4 50.8 50.5 94.7 93.5 93.1 92.9 92.9 92.8 94.5 93.0 92.6 92.2 92.7 93.0 92.5 70.9 52.6 47.8 46.7 46.3 45.1 75.2 57.3 52.5 53.2 51.6 51.2 50.5 (a) Probing accuracies on the six tasks: can next(A), dep(A, B), known(A), nece(A), nece next(A), value(A).</p>
+<p>model probing (pq) pretrained model probing (pq) -reask pretrained model probing (qp) pretrained model probing (qp) -reask</p>
+<p>Figure 7 :
+7
+Figure 7: V-probing accuracies (for beam=1; results for beam=4 are almost identical).Details are in Appendix F.2.</p>
+<p>on all parameters | pq (reask) on all parameters | qp on all parameters | qp (reask) on unnecessary parameter in model's output | pq (reask) | beam1 on unnecessary parameter in model's output | pq (reask) | beam4 on unnecessary parameter in model's output | qp (reask) | beam1 on unnecessary parameter in model's output | qp (reask) | beam4</p>
+<p>(a) nece(A) probing accuracies correlate with model's outputted unnecessary parameters op=20 op=21 op=22 op=23 op=28 op=29 op=30 op=31 op=32 op=20 op=21 op=22 op=23 op=28 op=29 op=30 op=31 op=32 on all parameters | pq on all parameters | qp on first wrong param | pq | beam1 on first wrong param | pq | beam4 on first wrong param | qp | beam1 on first wrong param | qp | beam4 can_next(A) nece_next(A)</p>
+<p>Figure 8 :
+8
+Figure 8: Probing results correlate with model's output solutions.We tested 4096 math problems and presented the probing accuracies restricted to (1) unnecessary parameters in the model's correct output solution (top), and (2) the first wrong parameter in model's wrong output solution (bottom).Details are in Appendix F.2.</p>
+<p>out-of-dist (OOD) in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) in-dist out-of-dist (OOD) 99.5 92.7 74.7 68.0 62.4 54.5 99.4 93.</p>
+<p>Figure 9 :
+9
+Figure 9: Accuracies for GPT2 models of different depth/widths pretrained on iGSM datasets.Details in Appendix F.</p>
+<p>Figure 10 :
+10
+Figure 10: Increasing probing accuracies of nece(A) with increasing layer depth.The x-axis denotes the distance of parameter A to the query parameter, with colors from light to dark to represent layers 1 to 20.This figure is for a 20-layer GPT2 model; for other model depths/sizes, see Figure 14.</p>
+<p>Appendix A Result 1 -
+1
+An Example in iGSM-hard with op = 21 (Problem-A Hard Example) The number of each Jungle Jim's International Market's Cheese equals the sum of each Parmesan Cheese's Pear and each The Fresh Market's Ice Cream.The number of each Ice Cream's Pineapple equals 2 more than each Goat Cheese's Grape.The number of each New Seasons Market's Goat Cheese equals the sum of each Residential College District's Jungle Jim's International Market, each Jungle Jim's International Market's Parmesan Cheese and each Residential College District's Supermarket.The number of each Arts Campus's New Seasons Market equals each Cheese's Pineapple.The number of each Goat Cheese's Banana equals each Vocational School District's Product.The number of each Residential College District's Jungle Jim's International Market equals 5 more than each Ice Cream's Grape.The number of each Parmesan Cheese's Pineapple equals each Parmesan Cheese's Pear.The number of each Residential College District's The Fresh Market equals each Arts Campus's Trader Joe's.The number of each Arts Campus's Trader Joe's equals each Parmesan Cheese's Ingredient.The number of each Goat Cheese's Grape equals 0. The number of each The Fresh Market's Ice Cream equals 13 more than the difference of each Residential College District's The Fresh Market and each Parmesan Cheese's Grape.The number of each Goat Cheese's Pineapple equals each New Seasons Market's Product.The number of each Vocational School District's The Fresh Market equals the sum of each Trader Joe's's Cheese and each The Fresh Market's Cheese.The number of each Trader Joe's's Cheese equals 6.The number of each The Fresh Market's Cheese equals 3. The number of each Jungle Jim's International Market's Ice Cream equals the difference of each Ice Cream's Banana and each Goat Cheese's Grape.The number of each Jungle Jim's International Market's Parmesan Cheese equals each Ice Cream's Pineapple.The number of each Parmesan Cheese's Pear equals the difference of each Goat Cheese's Grape and each Ice Cream's Grape.The number of each Parmesan Cheese's Grape equals 12 times as much as each Residential College District's Jungle Jim's International Market.The number of each The Fresh Market's Parmesan Cheese equals each The Fresh Market's Cheese.The number of each Ice Cream's Banana equals the sum of each Parmesan Cheese's Pineapple and each Ice Cream's Pineapple.The number of each School District's Jungle Jim's International Market equals each The Fresh Market's Ice Cream.The number of each Cheese's Pineapple equals 20 more than the sum of each Trader Joe's's Cheese and each The Fresh Market's Cheese.The number of each Trader Joe's's Parmesan Cheese equals 16.The number of each Ice Cream's Pear equals 8.The number of each Ice Cream's Grape equals each Goat Cheese's Grape.How many Product does School District have?(Solution-A Hard Example) Define Goat Cheese's Grape as u; so u = 0. Define Ice Cream's Grape as x; so x = u = 0. Define Residential College District's Jungle Jim's International Market as N; so N = 5 + x = 5 + 0 = 5.Define Parmesan Cheese's Pear as G; so G = u-x = 0 -0 = 0. Define Parmesan Cheese's Grape as f; so f = 12 * N = 12 * 5 = 14.Define Parmesan Cheese's Pineapple as C; so C = G = 0. Define Parmesan Cheese's Ingredient as Z; e = f + C = 14 + 0 = 14; so Z = e + G = 14 + 0 = 14.</p>
+<p>Figure 11 :
+11
+Figure 11: An example with op = 21 in iGSM-hardpq used for training.Don't forget during testing we evaluate models on op = 28 which is even harder.</p>
+<p>Figure 12 :
+12
+Figure 12: Probing accuracies restricted to positives/negatives labels (complement to Figure 7 which is on all labels.)</p>
+<p>[Figure 13 :
+13
+Figure 13: Illustrations of V-probing, our nearly-linear probing methods to investigate whether a pretrained model, at a specific input position, knows an arbitrary func(A) for a parameter A described in text.</p>
+<p>Figure 14 :
+14
+Figure14: Increasing probing accuracies of nece(A) with increasing layer depth.This is an extension of Figure10but including more model depths/sizes.The x-axis denotes the distance of parameter A from the query parameter, with colors transitioning from light to dark to represent layers 1 to max.(Model architecture details are in Footnote 20 and Appendix F.)</p>
+<p>d.-</p>
+<p>Generate necessary instance parameters and add them to G nece1 d ; call this graph G nece2 d .-Generate a topological order for parameters G nece2 d and ensure all of them are necessary towards computing the query parameter (which is the last one in this tropologic order).During this process, we shall add additional edges from G nece2 d to create G nece3 d .-Generate additional necessary edges and add them to G nece3 d ; call this graph G nece d .• Add to G nece d all the remaining (unnecessary) parameters and edges to form G d .</p>
+<p>d,. 4 : 6 : 8 :←) ≤ n and all instance parameters in G nece1 d have in-degree 0 12 :) do 13 :, add a random one to G nece2 d 14 :D. 2 . 2
+46812131422
+we randomly add additional instance parameters from G s to make itG nece2 d Algorithm 2 G nece2 d = DrawNecessary1(G s , n, m) Input: structure graph G s of depth d, n, m ∈ N with 1 ≤ n ≤ m 1: for i ← d − 1, . . ., 1 do 5: if ∃ abstract parameter of difficulty level i in G s that is not yet in G nece1d then randomly pick one such abstract parameter a of difficulty level i 7: G ′ ← G nece1 d +a and all instance/abstract parameters a may (recursively) depend on ⋄ also add their dependency edges if op(G ′ ) ≤ n then G ′ ; updated ← true; break 10: until updated = false 11: for i ← 1, 2, . . ., m − op(G nece1 d if there's leftover instance parameter in G s not yet in G nece2 d return G nece2 d ⋄ op(G nece2 d ) ≤ m and all instance parameters in G nece2 d have in-degree 0 Construction of G nece3 d Our goal next is to select a random query parameter in G nece2 d and construct a random topological ordering Topo for all the parameters in G nece2 d</p>
+<p>d(∅ then 10 : 12 :. ⋄ now param 1 ∈
+10121
+Topo) then we cannot immediately append a to the front of Topo, because some other parameter depends on it and is not yet added to Topo.(Obviously we always have Next2 G nece3 d (Topo) ̸ = ∅ unless G nece3 d \ Topo = ∅ so we are done.)Our generation algorithm is now easy to describe: we keep adding parameters that are in Next1 G nece3 d (Topo) ∩ Next2 G nece3 d (Topo) to the front of Topo; and if we get stuck, we introduce new edges to G nece3 d (or declare failure).The pseudocode is in Algorithm 3. If param 0 is abstract then return failure 11: param 1 ← a "random" parameter in Next2 G nece3 d (Topo).⋄ see Remark D.4 add edge param 1 → param 0 to G nece3 d Next1</p>
+<p>15 : param 1 ← 16 :. ⋄ now param 1 ∈) 1 Proposition D. 3 .
+15116113
+a "random" parameter in G nece3 d \ Topo.⋄ see Remark D.4 add edge param 1 → param 0 to G nece3 d Next1 ≤ m and all instance parameters in G nece3 d have in-degree ≤ Every instance parameter in G nece3 d has in-degree ≤ 1 and thus op(G nece3 d</p>
+<p>parameters already in Next1 G nece3 d (Topo). 24Specifically, we first generate g ∼ N (0, 1) a random Gaussian, then define weight(a) = 1 a is abstract + 1 a∈Next1 G nece3 d (Topo) • |g|, and then sample a with a probability ∝ e weight(a) .D.2.3 Construction of G nece d So far we have created G nece3 d and Topo with the property that every instance parameter in G nece3 d</p>
+<p>Algorithm 4 G. 2 : 5 :
+425
+nece d = DrawNecessary3(G nece3 d , Topo, s) 1: cur op(a) ← op G nece3 d (a) for every parameter a ∈ G nece3 d max op Topo (a) def = the maximum number of operations an instance parameter a can require. 253: while a∈G nece3 d cur op(a) &lt; s do 4: randomly select an instance parameter a ∈ G nece3 d with cur op(a) &lt; max op Topo (a); If a is found then cur op(a) ← cur op(a) + 1 else return failure.</p>
+<p>7 :
+7
+for each instance parameter a in G nece3 d do 8:</p>
+<p>9 : 16 : 19 : 20 :pool ← pool \ {RNG} 21 :
+916192021
+if cur op(a) = 1 then 10: dep num ← 1 or 2 each w.p. 0.5; dep num ← cur op(a) + 1 13: dep num ← min{|pool|, dep num} 14: if ∃(b → a) ∈ G nece3 d for some b ∈ pool then ⋄ at most one such b 15: pool ← pool \ {b} and dep num ← dep num − 1 if dep num = |pool| then 17: add b → a to G nece d for all b ∈ pool; with probability 0.5, add RNG → a to G nece d and dep num ← dep num − 1 add b → a to G nece d for dep num randomly select elements b in pool.</p>
+<p>4 : 20 : 21 :Algorithm 6
+420216
+randomly select an instance parameter a in G s not yet in G d ; and add a to G d ; 5: if with half probability then 6: pool ← IndList ∪ {RNG}; IndList ← IndList ∪ {a}; while dep num &lt; min{4, |pool|} do 11: with 0.5 probability, dep num ← dep num + 1; otherwise break 12: if dep num = |pool| then 13: with probability 0.5, add selected = {RNG} and dep num ← dep num − 1 17: pool ← pool \ {RNG} 18: selected ← selected ∪ dep num random elements from pool 19: for each b ∈ selected do If b ̸ ∈ G d then recursively add b and its dependencies to G d ; Add b → a to G d .22: return G d D.3 Generate English: Problem, Question and Solution At this point, we have constructed a dependency graph G s where each instance parameter a ∈ G s may depend on between 1 and 4 other vertices (could be abstract, instance parameters or RNG).We have not yet introduced how a should be computed, and we do this using a random process GenSentence(G d , a) in Algorithm 6. GenSentence(G d , a) 1: str ← "The number of [name of a] equals" 2: pool ← {b ∈ G d : ∃(b → a) ∈ G d }. 3: if RNG ∈ pool then 4: str ← str + " [random int between 0 and 22]"; and pool ← pool \ {RNG} 5:</p>
+<p>6: if |pool| = 1 then 7 :
+7
+str ← str + " [name of b]" for pool = {b}.8: else if |pool| = |{b, c}| = 2 then 9: str ← str + " the sum of [b] and [c]" or " the difference of [b] and [c]" each w.p. 0.5.10: else 11:</p>
+<p>Given an abstract parameter a ∈ Topo, suppose for instance a = b × c + d × e + f × g then we similarly define its solution text as "Define [name of a] as var 0 ;var 1 = var b × var c = • • • ; var 2 = var d × var e = • • • ; "var 3 = var f × var g = • • • ; var 4 = var 1 + var 2 = • • • ; so var 0 = var 3 + var 4 = • • • ."Above,once again var 0 , var 1 , var 2 , var 3 , var 4 are new (but distinct) random variable names from a-z or A-Z, and we break down the computation into 2-ary operations.With the above examples in mind, and combining those with real examples in Figure11, it should be very clear how the solution texts are generated.Remark D.6.op(G nece d ) is equal to the total number of semicolons in the solution text, because it represents the total (and minimum!) number of arithmetic operations needed to compute the final query parameter.</p>
+<p>Structure and dependency graph corresponding to the op = 7 easy example in (2.1) and (2.2).Dependencies from abstract parameters are drawn in red, and from instance parameters are in black.
+Structure GraphDependency Graph&amp;HQWUDO+LJ KV)LOP6W XGLR)LOP6WXGLR V0HVVHQJHU %DFNSDFN)LOP6WXGLR V%DFNSDFN)LOP6WXGLR V6FKRRO 'D\SDFN51*'DQFH6WXGL RV6FKRRO 'D\SDFN&amp;HQWUDO+LJ KV%DFNSDFN neccesary paramter abstract dependency5LYHUYLHZ +LJKV)LOP 6WXGLR unused paramter instance dependency5LYHUYLHZ +LJKV'DQFH 6WXGLR question paramterFigure 1:</p>
+<p>.1 91.8 87.9 84.0 76.8 91.6 100 99.3 92.4 89.9 84.8 78.2 91.4 100 99.4 94.4 92.0 90.6 86.8 82.8 91.3 100 99.2 94.5 93.2 91.0 88.2 85.3 89.4 99.9 99.1 92.0 88.4 84.5 77.7 91.6 100 99.1 92.4 89.6 84.7 78.3 91.4 100 99.3 94.2 92.2 90.3 86.5 82.5 91.3 99.9 99.2 94.4 93.3 90.8 87.7 85.3 89.1
+beam1 -nosample beam4 -dosamplein-dist 99.9 99iGSM-med_pq out-of-dist (OOD)in-distiGSM-med_qp out-of-dist (OOD)in-distiGSM-hard_pq out-of-dist (OOD)in-distiGSM-hard_qp out-of-dist (OOD)</p>
+<p>2 99.1 99.2 99.1 99.3 100 100 100 100 100 100 100 100 100 100 100 100 100 65.8 62.0 62.6 62.3 63.0 63.3 63.1 59.3 60.6 60.5 62.0 62.2 62.3 84.6 82.2 83.0 83.5 83.5 83.7 82.6 79.5 80.2 81.3 82.2 82.8 82.7 87.2 78.4 75.8 75.4 74.7 74.6 85.4 76.0 73.8 73.6 73.0 72.8 71.9 65.7 61.9 62.5 62.2 62.7 63.1 63.0 59.2 60.8 60.9 61.8 62.3 62.6 84.6 82.2 83.0 83.5 83.5 83.7 82.6 79.5 80.2 81.3 82.2 82.8 82.7 87.3 78.7 76.3 76.0 75.3 75.4 85.8 76.4 75.1 74.7 74.6 74.2 73.6</p>
+<p>.3 98.7 98.6 98.4 98.2 99.8 98.9 97.9 97.7 97.4 97.3 97.4 99.8 99.5 99.2 99.2 99.0 99.2 99.7 99.2 98.7 98.7 98.6 98.8 98.6 99.6 99.4 99.3 99.4 99.4 99.5 99.5 98.9 99.2 99.1 99.2 99.3 99.4 99.6 99.5 99.4 99.3 99.2 99.2 99.3 99.3 99.3 99.2 99.3 99.2 99.2 99.9 99.7 99.6 99.6 99.5 99.5 99.9 99.7 99.5 99.5 99.4 99.4 99.4 99.9 99.8 99.7 99.7 99.7 99.6 99.9 99.7 99.6 99.6 99.6 99.5 99.6 99.6 99.1 99.1 99.2 99.2 99.2 99.5 98.8 98.6 98.5 98.7 98.7 98.7 99.7 99.6 99.5 99.5 99.4 99.4 99.4 99.4 99.3 99.3 99.3 99.2 99.2 99.6 98.8 98.1 98.0 98.0 97.8 99.8 99.1 98.3 98.2 98.0 97.5 97.4 99.7 99.0 99.0 99.0 98.9 99.0 99.8 99.1 98.4 98.3 98.4 98.6 98.7 99.3 99.0 99.2 99.3 99.3 99.4 99.6 99.3 99.4 99.5 99.5 99.5 99.6 98.8 98.4 97.8 97.8 97.8 97.8 99.5 99.2 99.1 99.1 99.0 98.9 98.8 99.7 99.3 99.1 99.0 99.0 98.9 99.9 99.7 99.4 99.4 99.3 99.2 99.2 99.7 99.5 99.5 99.6 99.6 99.5 99.9 99.8 99.6 99.6 99.6 99.6 99.7 99.3 98.8 98.9 99.0 99.1 99.1 99.7 99.3 99.2 99.2 99.2 99.2 99.2 98.9 98.5 98.1 97.9 98.1 98.0 99.6 99.4 99.3 99.2 99.2 99.2 99.0
+99.8 99iGSM-mediGSM-hardiGSM-mediGSM-hardiGSM-mediGSM-hardiGSM-mediGSM-hard
+(b) Probing accuracies of can next(A), dep(A, B) restricted to positives/negatives labels in which A is unnecessary</p>
+<p>3 73.366.8 61.1 54.6 98.9 90.8 72.4 67.7 62.1 57.1 50.6 99.1 89.8 69.4 62.2 57.8 52.3 45.7 72.2 99.6 94.7 74.2 67.9 61.6 53.1 99.4 94.5 78.1 71.9 65.7 58.8 97.0 71.7 46.3 40.6 37.0 32.3 27.3 99.4 92.1 74.5 69.5 64.7 59.1 53.2 68.6 100 98.8 89.7 86.5 82.8 76.8 100 99.2 92.4 88.5 84.2 78.7 100 99.1 94.6 92.0 89.7 86.4 82.2 100 99.0 92.2 89.6 86.2 82.4 77.3 90.3 100 99.3 93.7 91.6 88.3 83.6 99.9 99.0 90.2 87.1 83.3 76.3 100 99.2 93.6 91.3 88.6 85.6 82.6 100 99.1 93.5 91.3 89.1 85.7 81.2 91.3 100 99.3 92.0 88.9 84.2 77.9 100 99.4 92.2 89.2 83.9 77.9 100 99.5 96.0 94.1 91.0 88.5 84.3 100 99.3 95.3 93.0 91.9 88.0 84.5 91.9 100 99.5 94.0 91.9 89.0 82.7 100 99.0 90.8 85.4 80.2 73.2 100 99.8 97.1 95.5 93.5 91.8 88.0 100 99.5 94.5 91.9 88.9 86.8 81.3 92.1 100 99.6 94.6 91.9 87.9 82.7 100 99.5 89.9 85.0 79.1 71.1 100 99.6 97.0 95.2 94.2 92.2 88.5 100 99.4 95.8 93.8 92.4 88.9 85.8 92.5 100 99.8 95.9 93.7 90.4 86.5 100 99.8 95.6 93.5 90.3 84.3 100 99.7 97.5 96.3 95.1 92.9 89.5 100 99.8 97.3 96.0 94.2 91.9 88.9 95.0 100 99.8 95.5 93.6 90.0 86.3 100 99.6 94.8 91.4 87.4 80.4 100 99.8 97.0 95.1 94.0 91.0 87.4 100 99.6 96.6 94.5 92.8 90.1 86.5 94.0 100 99.8 95.8 93.3 89.2 84.4 100 99.6 93.7 91.8 87.4 81.3 100 99.8 98.0 96.7 95.9 93.9 90.9 100 99.9 97.5 96.0 95.2 92.4 89.7 94.7</p>
+<p>.1 99.0 99.1 99.1 99.2 99.6 98.8 98.5 98.5 98.7 98.7 98.7 99.7 99.6 99.5 99.5 99.4 99.5 99.3 99.3 99.2 99.2 99.3 99.2 99.2 99.9 99.5 99.2 99.2 99.2 99.1 99.7 99.3 99.1 99.0 99.0 99.1 98.9 99.7 99.3 96.5 95.5 94.3 93.4 99.2 98.4 95.0 93.6 92.9 91.4 90.4 99.7 99.1 99.0 99.1 99.1 99.1 99.6 98.9 98.6 98.5 98.7 98.6 98.7 99.7 99.6 99.5 99.5 99.5 99.4 99.3 99.3 99.3 99.2 99.3 99.2 99.2 99.6 98.9 98.8 98.8 98.9 98.9 98.9 97.9 97.7 97.7 97.8 97.9 97.9 90.7 97.8 97.1 97.0 96.2 95.9 90.6 97.2 96.6 96.0 95.7 95.5 95.3 99.4 98.8 98.9 98.9 98.9 99.1 99.7 99.3 99.2 99.1 99.2 99.3 99.3 99.0 98.4 98.1 98.0 97.9 98.1 99.6 99.4 99.3 99.2 99.1 99.2 99.1 99.7 99.3 98.9 98.9 98.8 98.7 99.9 99.8 99.6 99.5 99.5 99.5 99.4 97.7 95.9 90.8 89.3 87.8 86.7 98.7 99.4 97.8 97.3 97.0 96.2 95.7 99.4 98.9 98.9 98.9 99.0 99.0 99.7 99.3 99.3 99.2 99.3 99.2 99.3 99.0 98.4 98.0 98.0 98.0 98.1 99.6 99.4 99.3 99.2 99.2 99.2 99.1 99.6 99.4 99.3 99.2 99.2 99.3 99.7 99.2 99.1 99.1 99.1 99.2 99.2 90.3 95.1 92.9 92.5 91.0 90.7 93.2 97.2 96.3 96.0 95.5 95.6 95.0
+99.7 99iGSM-mediGSM-hardiGSM-mediGSM-hardiGSM-mediGSM-hardiGSM-mediGSM-hard</p>
+<p>,</p>
+<p>8:e ← min{t 0 , t 1 , (d − 1)w 2 1 } for t 0 , t 1 being random integers between (d − 1)w 0 and ip max 9: G s ← DrawStructure(e, d, w 0 , w 1 ) ) ⋄ if fail, go to Line 9; if fail for 1000 times, go to Line 1 12: G nece Topo, s) ⋄ if fail, go to Line 1 13: G d ← DrawUnnecessary(G s , G nece d ) 14: return (G d , G nece d , Topo) ⋄ and generate English descriptions following Section D.3
+10: G nece2 d 11: (G nece3 ← DrawNecessary1(G s , n, m) d , Topo) ← DrawNecessary2(G nece2 d d ← DrawNecessary3(G nece3 d
+There are different ways to format the CoT solution. We noted that starting with "Define [param] as X" instead of [intermediate steps] improves the model's accuracy, so we have adhered to this CoT format.
+Even GPT-4 can make mistakes on calculating "3 * (4+10) + 12 * (5+6)" without using external calculator.
+We choose op non-uniformly; for instance, we let op = min{t0, t1} for two random draws t0, t1 ∈ [op]. This ensures that the dataset has more easy data -which makes training faster. (See also similar behavior for arithmetics[13].)
+We check not only the correctness of the final answer 0..22 but also the calculations and parameter dependencies. Language models can learn very complex syntactics, see[1] and the references therein.
+Llama (of the same model size) gives similar performance, but we refrain from repeating all the experiments with another model. We are not interested in small model differences in this theoretical study; instead, we care more about the general behavior of (autoregressive) language models.
+Some others such as Anil et al.[6] start with a transformer pre-trained on internet data; while the transformer may not have seen the same task during training, it's possible that the model has seen other tasks with the same (or even longer) length and learned to transfer from there.
+If the problem format is qp (question asked before the problem) then we probe nece and dep both after the problem description.
+Math reasoning data only occupies a tiny fraction of pretraining data for language models, thus one might not observe a difference if we only look at the perplexity as in the original scaling law paper[14].
+GPT2-ℓ-h represents an ℓ-layer, h-head, 64h-dimensional GPT2 model. Size-1 models are GPT2-4-21, GPT2-8-15, GPT2-12-12, GPT2-16-10, GPT2-20-9, with similar parameter counts; size-2 models are GPT2-4-30, GPT2-8-21, GPT2-12-17, GPT2-16-15, GPT2-20-13, approximately twice the size of size-1 models.
+In Allen-Zhu and Li[1,3], the authors are interested in probing the model's behavior via fixed classification tasks (such as a 100-class classification task) given data that are identical or nearly-identical to the pretrain data. In this paper, we are interested in the model's behavior with respect to given variables (such as parameter names, which can have ∼ 100k possibilities); and we append such variable names to the input to make the training inputs appear very different from the original pretrain data.
+For instance, in Figure1, a = "Riverview High's total number of Backpacks" is equal to ip1 × ap1 + ip2 × ap2 for ip1 = "Riverview High's number of Dance Studios", ip2 = "Riverview High's number of Film Studios", ap1 = "each Dance Studio's number of Backpacks", ap2 = "each Film Studio' number of Backpacks", where ip1, ip2 are instance parameters and ap1, ap2 are abstract parameters. In this case, this abstract parameter depends on 4 other parameters, and requires 3 arithmetic operations.
+The outside pseudocode, which comes later, shall go back to regenerate the structure graph and start again.
+In fact, we do slightly smarter than the most naive approach. If one simply lets each newly added unnecessary parameter to depend, randomly among all the parameters that have already been added to G d , then those unnecessary parameters will likely appear towards the end of the topological order. For such reason, we give it 0.5 probability to depend only on a set IndList, which consists of newly-added, unnecessary parmaeters, that do not depend on G d . This way, the unnecessary parameters can also appear to the front of the tropologic order.
+A 128-GPU job with batch size 1 each would be identical to a 32-GPU job with batch size 4 each.
+* Project page + video: https://physics.allen-zhu.com/part-2-grade-school-math/part-2-1.D Result 1 Details -Math Data GenerationOur math data generation process consists of first generating the structure graph (see Figure1and 11 left), which defines the set of parameters we shall use; then generating the dependency graph (see Figure1and 11 right), which defines the arithmetic relationship between the parameters; and finally generating the English problem and solution descriptions.Notations.In this section, to make the description concise, when we say "randomly sampling" in the pseudocode, we mean uniform random unless otherwise noted.Whenever we consider a (directed) graph G, slightly abusing notation, we write a ∈ G to indicate that a is a vertex in G and (a → b) ∈ G to indicate that there is an edge from a to b in G.D.1 Generate Structure GraphRecall the structure graph (see Figure1and 11 left) describes the set of possible items (nodes) and instance parameter (edges) that we shall rely on to construct our math problem.We use G s to denote such structure graph, and it is generated G s = DrawStructure(e, d, w 0 , w 1 ) from a random distribution defined with hyperparameters e, d, w 0 , w 1 ∈ N. At a high level, we construct G s so that it has d layers, e edges, and each layer has between w 0 and w 1 items.Specifically, suppose l i ∈ {w 0 , w 0 + 1, . . ., w 1 } represents the number of items for each layer i.In this configuration, one must have at least e − = l 2 + • • • + l d edges to ensure the graph is "connected", and at most eUsing this formula, we first randomly choose a configuration (l 1 , . . ., l d ) so that e − ≤ e ≤ e + for the given parameter e.Then, after the configuration is chosen, we randomly generate edges accordingly.Details are given in Algorithm 1. 1: l ← (w 0 , w 0 , . . ., w 0 ) ∈ Z d ⋄ li represents the number of items (nodes) for layer i 2: p ← uniform random from (0, 1) 3: while l ̸ = (w 1 , w 1 , . . ., w 1 ) do 4:e − , e + ← minimum and maximum number of edges that l can give randomly select i ∈ [d] such that l i &lt; w 1 , and increase it l i ← l i + 1.7:else if e − = e then else if randomly choose a number in (0, 1) and it is less than p then 10: randomly select two items a, b from adjacent layers to create an edge in G s .19: return G s and attach English to it.Recall we use r = 8 in this paper (in contrast, the hidden dimension of GPT-12-12 is 768).This small value of r ensures if probing accuracy is high, it mostly comes from the pretrained model and not the additional trainable parameters.For V-probing, we use the same configurations as pretrain, except that:• For V-probing on the iGSM-med datasets, we used a learning rate of 0.002 (with no ramp-up, linear decay down to 0), weight decay of 0.01, batch size of 256, and trained for 100, 000 steps.• For V-probing on the iGSM-hard datasets, we used a learning rate of 0.002 (with no ramp-up, linear decay down to 0), weight decay of 0.01, batch size of 128, and trained for 100, 000 steps.V-probing statistics.In Figure7(a), Figure7(b), Figure12, Figure8(a), and Figure8(b), we tested at least 4096 random problem-parameter pairs in each cell.In Figure8(a) and Figure8(b), when evaluating probing results on GPT-2 model's generated correct or wrong solutions, we used beam=1 and dosample=False (greedy) for generation.(Results are similar for beam=4.)In our layer-wise nece(A) probing experiments (Figure10and Figure14), we tested at least 73728 random problem-parameter pairs in each case and then divided the results into bins based on the parameter A's distances to the queries.G Failure Examples on GPT-4 / GPT-4oIn Figure2, we conduct few-shot experiments using the latest versions of GPT-4 turbo (2024-04-09) and GPT-4o (2024-05-13) models to evaluate their accuracies on our iGSM-med pq dataset, with respect to different op ∈ {2, 3, . . ., 20}.To ensure meaningful evaluation:• We replaced mod23 with mod5 to ensure that any errors are not due to arithmetic mistakes.We also provided a few arithmetic computation examples.• We minimized English diversity to ensure that any errors are not due to misunderstanding the problem description.Specifically, -We fixed a simple categorization (School, Classroom, Backpack, Stationerys), with only four items in each category.-We provided an English background paragraph to fully describe the structure graph (i.e., which item has which subitem), as well as the number of items in each category.The math problem is preceded by this background paragraph.• We provided five-shot problem/solution examples to ensure that GPT-4 understands how to solve such math problems step by step.We did not verify each step of GPT-4's solution but checked if the final output number (between 0 and 4) matched the correct answer.The accuracy results are presented in Figure2. It shows that the GPT-4o model is almost randomly guessing for op ≥ 11, and GPT-4 turbo for op ≥ 9.Furthermore, Figure15shows that when the GPT-4/4o models fail to answer the math problems, it is mostly not due to format errors or misunderstanding of the problem.Instead, just like what we discovered in Section 5, GPT-4/4o fail also because they compute unnecessary parameters (i.e., nece(A) = false) or compute parameters that are not yet ready to be computed (i.e., can next(A) = false).This further confirms that our findings do connect to practice, regarding the model's hidden reasoning process.You're an expert at solving elementary math problems involving addition, subtraction, and multiplication.You solve all the problems in a uniform format.All calculations are done modulo 5.For example, 3 + 2 equals 0, 1 + 1 equals 2, 4 + 2 + 4 equals 0, 3 * 2 equals 1, and 3 * 1 equals 3. When providing your solution, please end with 'The final answer is &lt;<x>&gt;.'where x is your final answer, an integer between 0 and 4.You must solve all the problems using the same solution format.Our scenarios involve up to four categories of objects: schools, classrooms, backpacks and stationeries.Each school may contain classrooms, each classroom may contain backpacks, and each backpack may contain stationeries.We can specify quantities, such as "the number of dance studios at each Lakeshore High."Assume that every entity with the same name has an identical configuration; for example, each Lakeshore High contains the same number of dance studios.Another guiding principle is that what is not mentioned does not exist: when we refer to classrooms at Lakeshore High, we are only discussing the classrooms explicitly mentioned in our scenario.Furthermore, if Lakeshore High is not even mentioned, any classroom within it is automatically considered to be non-existent (i.e.0).Background: ... The problem description is: ... 'The final answer is &lt;<x>&gt;.'where x is your final answer, an integer between 0 and 4.You must solve all the problems using the same solution format.Here is the solutionOur scenarios involve up to four categories of objects: schools, classrooms, backpacks and stationeries.Each school may contain classrooms, each classroom may contain backpacks, and each backpack may contain stationeries.We can specify quantities, such as "the number of dance studios at each Lakeshore High."Assume that every entity with the same name has an identical configuration; for example, each Lakeshore High contains the same number of dance studios.Another guiding principle is that what is not mentioned does not exist: when we refer to classrooms at Lakeshore High, we are only discussing the classrooms explicitly mentioned in our scenario.Furthermore, if Lakeshore High is not even mentioned, any classroom within it is automatically considered to be non-existent (i.e.0).Background: ... The problem description is: ...Here is the solution:Background: There are 2 types of Schools: Lincoln High and Lakeshore High.'The final answer is &lt;<x>&gt;.'where x is your final answer, an integer between 0 and 4.You must solve all the problems using the same solution format.Our scenarios involve up to four categories of objects: schools, classrooms, backpacks and stationeries.Each school may contain classrooms, each classroom may contain backpacks, and each backpack may contain stationeries.We can specify quantities, such as "the number of dance studios at each Lakeshore High."Assume that every entity with the same name has an identical configuration; for example, each Lakeshore High contains the same number of dance studios.Another guiding principle is that what is not mentioned does not exist: when we refer to classrooms at Lakeshore High, we are only discussing the classrooms explicitly mentioned in our scenario.Furthermore, if Lakeshore High is not even mentioned, any classroom within it is automatically considered to be non-existent (i.e.0).Background: ... The problem description is: ... 'The final answer is &lt;<x>&gt;.'where x is your final answer, an integer between 0 and 4.You must solve all the problems using the same solution format.Here is the solutionOur scenarios involve up to four categories of objects: schools, classrooms, backpacks and stationeries.Each school may contain classrooms, each classroom may contain backpacks, and each backpack may contain stationeries.We can specify quantities, such as "the number of dance studios at each Lakeshore High."Assume that every entity with the same name has an identical configuration; for example, each Lakeshore High contains the same number of dance studios.Another guiding principle is that what is not mentioned does not exist: when we refer to classrooms at Lakeshore High, we are only discussing the classrooms explicitly mentioned in our scenario.Furthermore, if Lakeshore High is not even mentioned, any classroom within it is automatically considered to be non-existent (i.e.0).Background: ... The problem description is: ...
+Physics of Language Models: Part 1, Learning Hierarchical Language Structures. Zeyuan Allen, -Zhu , Yuanzhi Li, prints, abs/2305.13673May 2023</p>
+<p>Physics of Language Models: Part 3.2, Knowledge Manipulation. Zeyuan Allen, -Zhu , Yuanzhi Li, prints, abs/2309.14402September 2023</p>
+<p>Physics of Language Models: Part 3.1, Knowledge Storage and Extraction. Zeyuan Allen, -Zhu , Yuanzhi Li, ICML. 2024</p>
+<p>Physics of Language Models: Part 3.3, Knowledge Capacity Scaling Laws. Zeyuan Allen, -Zhu , Yuanzhi Li, prints, abs/2404.05405April 2024</p>
+<p>A convergence theory for deep learning via overparameterization. Zeyuan Allen-Zhu, Yuanzhi Li, Zhao Song, ICML. 2019</p>
+<p>Exploring length generalization in large language models. Cem Anil, Yuhuai Wu, Anders Andreassen, Aitor Lewkowycz, Vedant Misra, Vinay Ramasesh, Ambrose Slone, Guy Gur-Ari, Ethan Dyer, Behnam Neyshabur, Advances in Neural Information Processing Systems. 202235</p>
+<p>GPT-NeoX-20B: An open-source autoregressive language model. Sid Black, Stella Biderman, Eric Hallahan, Quentin Anthony, Leo Gao, Laurence Golding, Horace He, Connor Leahy, Kyle Mcdonell, Jason Phang, Michael Pieler, Shivanshu Usvsn Sai Prashanth, Laria Purohit, Jonathan Reynolds, Ben Tow, Samuel Wang, Weinbach, Proceedings of the ACL Workshop on Challenges &amp; Perspectives in Creating Large Language Models. the ACL Workshop on Challenges &amp; Perspectives in Creating Large Language Models2022</p>
+<p>Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan, Johannes Gehrke, Eric Horvitz, Ece Kamar, Peter Lee, Yin Tat Lee, Yuanzhi Li, Scott Lundberg, arXiv:2303.12712Sparks of artificial general intelligence: Early experiments with gpt-4. 2023arXiv preprint</p>
+<p>Training verifiers to solve math word problems. Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, arXiv:2110.141682021arXiv preprint</p>
+<p>The pile: An 800gb dataset of diverse text for language modeling. Leo Gao, Stella Biderman, Sid Black, Laurence Golding, Travis Hoppe, Charles Foster, Jason Phang, Horace He, Anish Thite, Noa Nabeshima, arXiv:2101.000272020arXiv preprint</p>
+<p>Textbooks are all you need. Suriya Gunasekar, Yi Zhang, Jyoti Aneja, Caio César, Teodoro Mendes, Allie Del Giorno, Sivakanth Gopi, Mojan Javaheripi, Piero Kauffmann, Gustavo De Rosa, Olli Saarikivi, arXiv:2306.116442023arXiv preprint</p>
+<p>A structural probe for finding syntax in word representations. John Hewitt, Christopher D Manning, 10.18653/v1/N19-1419Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. Long and Short Papers. the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language TechnologiesMinneapolis, MinnesotaAssociation for Computational LinguisticsJune 20191</p>
+<p>Yuanzhi Li, and François Charton. Length generalization in arithmetic transformers. Samy Jelassi, Carles Stéphane D'ascoli, Yuhuai Domingo-Enrich, Wu, arXiv:2306.154002023arXiv preprint</p>
+<p>Jared Kaplan, Sam Mccandlish, Tom Henighan, Tom B Brown, Benjamin Chess, Rewon Child, Scott Gray, Alec Radford, Jeffrey Wu, Dario Amodei, arXiv:2001.08361Scaling laws for neural language models. 2020arXiv preprint</p>
+<p>Yuanzhi Li, Sébastien Bubeck, Ronen Eldan, Allie Del Giorno, Suriya Gunasekar, Yin Tat, Lee , arXiv:2309.05463Textbooks are all you need ii: phi-1.5 technical report. 2023arXiv preprint</p>
+<p>Bingbin Liu, Sebastien Bubeck, Ronen Eldan, Janardhan Kulkarni, Yuanzhi Li, Anh Nguyen, Rachel Ward, Yi Zhang, arXiv:2312.09241TinyGSM: achieving &gt; 80% on GSM8k with small language models. 2023arXiv preprint</p>
+<p>. OpenAI. Gpt-4 technical report. 2023</p>
+<p>Language models are unsupervised multitask learners. Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, OpenAI blog. 1892019</p>
+<p>The psychology of proof: Deductive reasoning in human thinking. J Lance, Rips, 1994Mit Press</p>
+<p>Roformer: Enhanced transformer with rotary position embedding. Jianlin Su, Yu Lu, Shengfeng Pan, Bo Wen, Yunfeng Liu, 2021</p>
+<p>Tian Ye, Zicheng Xu, Yuanzhi Li, Zeyuan Allen-Zhu, arXiv:xxxx.xxxxxPhysics of Language Models: Part 2.2, How to Learn From Mistakes on Grade-School Math Problems. 2024arXiv preprintto appear</p>
+<p>A careful examination of large language model performance on grade school arithmetic. Hugh Zhang, Jeff Da, Dean Lee, Vaughn Robinson, Catherine Wu, Will Song, Tiffany Zhao, Pranav Raja, Dylan Slack, Qin Lyu, arXiv:2405.003322024arXiv preprint</p>
+<p>What algorithms can transformers learn? a study in length generalization. Hattie Zhou, Arwen Bradley, Etai Littwin, Noam Razin, Omid Saremi, Josh Susskind, Samy Bengio, Preetum Nakkiran, arXiv:2310.160282023arXiv preprint</p>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

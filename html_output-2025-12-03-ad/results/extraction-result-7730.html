@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7730 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7730</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7730</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-141.html">extraction-schema-141</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how large language models estimate probabilities for future real-world scientific discoveries, including model details, prediction targets, datasets, forecasting horizon, probability estimation methods, evaluation metrics, reported performance, calibration quality, baselines, limitations, and concrete probability examples.</div>
+                <p><strong>Paper ID:</strong> paper-63916bb5363d37b9a3adfd1a56dee3710190fce1</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/63916bb5363d37b9a3adfd1a56dee3710190fce1" target="_blank">Sample-dependent Adaptive Temperature Scaling for Improved Calibration</a></p>
+                <p><strong>Paper Venue:</strong> AAAI Conference on Artificial Intelligence</p>
+                <p><strong>Paper TL;DR:</strong> For each input, this work proposes to predict a different temperature value, allowing us to adjust the mismatch between confidence and accuracy at a finer granularity, and test the method on the ResNet50 and WideResNet28-10 architectures, showing that producing per-data-point temperatures improves the expected calibration error across the whole test set.</p>
+                <p><strong>Paper Abstract:</strong> It is now well known that neural networks can be wrong with high confidence in their predictions, leading to poor calibration. The most common post-hoc approach to compensate for this is to perform temperature scaling, which adjusts the confidences of the predictions on any input by scaling the logits by a fixed value. Whilst this approach typically improves the average calibration across the whole test dataset, this improvement typically reduces the individual confidences of the predictions irrespective of whether the classification of a given input is correct or incorrect. With this insight, we base our method on the observation that different samples contribute to the calibration error by varying amounts, with some needing to increase their confidence and others needing to decrease it. Therefore, for each input, we propose to predict a different temperature value, allowing us to adjust the mismatch between confidence and accuracy at a finer granularity. Our method is applied post-hoc, enabling it to be very fast with a negligible memory footprint and is applied to off-the-shelf pre-trained classifiers. We test our method on the ResNet50 and WideResNet28-10 architectures using the CIFAR10/100 and Tiny-ImageNet datasets, showing that producing per-data-point temperatures improves the expected calibration error across the whole test set.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7730",
+    "paper_id": "paper-63916bb5363d37b9a3adfd1a56dee3710190fce1",
+    "extraction_schema_id": "extraction-schema-141",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00514425,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Sample-dependent Adaptive Temperature Scaling for Improved Calibration</h1>
+<p>Tom Joy ${ }^{1}$, Francesco Pinto ${ }^{1}$, Ser-Nam Lim ${ }^{2}$, Philip H. S. Torr ${ }^{1}$, and Puneet K. Dokania ${ }^{1,3}$<br>{tomjoy}@robots.ox.ac.uk<br>${ }^{1}$ University of Oxford, ${ }^{2}$ Meta AI, ${ }^{3}$ Five AI Ltd., UK</p>
+<h4>Abstract</h4>
+<p>It is now well known that neural networks can be wrong with high confidence in their predictions, leading to poor calibration. The most common post-hoc approach to compensate for this is to perform temperature scaling, which adjusts the confidences of the predictions on any input by scaling the logits by a fixed value. Whilst this approach typically improves the average calibration across the whole test dataset, this improvement typically reduces the individual confidences of the predictions irrespective of whether the classification of a given input is correct or incorrect. With this insight, we base our method on the observation that different samples contribute to the calibration error by varying amounts, with some needing to increase their confidence and others needing to decrease it. Therefore, for each input, we propose to predict a different temperature value, allowing us to adjust the mismatch between confidence and accuracy at a finer granularity. Our method is applied post-hoc, consequently using very little computation time and with a negligible memory footprint and is applied to off-the-shelf pre-trained classifiers. We test our method on the ResNet50 and WideResNet2810 architectures using the CIFAR10/100 and Tiny-ImageNet datasets, showing that producing per-data-point temperatures is beneficial also for the expected calibration error across the whole test set. ${ }^{1}$</p>
+<h2>1 Introduction</h2>
+<p>For neural networks to be employed in real-world safety-critical applications, we do not only require them to produce correct predictions, but also provide reliable confidence estimates in their predictions (i.e. they are calibrated). Limiting our scope to neural classifiers, using the maximum probability of the predictive distribution as a confidence measure, literature has established that a mismatch exists between such notion of confidence and the expected accuracy. Indeed, such models generally suffer from being on average overconfident over the test-set.</p>
+<p>A simple approach to rectify this issue is to perform temperature scaling [7], a post-hoc method which scales the logits by a single scalar value, obtained through cross validation. This approach improves the classifier's performance on</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>standard calibration metrics across a test dataset. However, from a per-sample point of view there are significant issues. Since the temperature is found by minimising the calibration error (in expectation) over the entire validation set, and since neural networks are overconfident on average, practically speaking, the effect of temperature scaling is to reduce the confidence for every prediction. However, as we will discuss, different samples contribute by varying amounts to the calibration error.</p>
+<p>This issue can be seen in Figure 1, which shows the histogram of the individual contributions to the calibration errors; i.e. the distribution of $p\left(\mathbf{y} \mid \boldsymbol{p}<em i="i">{i}\right)-\boldsymbol{p}</em>}$, where $p\left(\mathbf{y} \mid \boldsymbol{p<em i="i">{i}\right)$ is the accuracy and $\boldsymbol{p}</em>$ Here the mismatch between per data-point confidence and accuracy is not constant across all the data-points, and hence miscalibration cannot be fixed by scaling the logits by a single fixed value, a key assumption in vanilla temperature scaling. The calibration error varies significantly, with a small (but not insignificant) number of samples on which the network is overconfident. Consequently, scaling the predictions with a single temperature value will adjust all of the errors in the same way. Typically, the temperature values obtained are greater than 1 , resulting in a reduction of confidence of all predictions, regardless of whether they are correct with low confidence or incorrect with high confidence.}$ is the softmax probability for the data point $i$, the calibration error can be obtained by taking the weighted average over all the values. ${ }^{2</p>
+<p>To combat this, we propose a method which produces per-data-point predictions of the temperature, permitting an adequate decrease in the confidence on samples which the classifier is likely to get wrong, and an increase in the confidence on predictions it is likely to get correct. As a result, we obtain better test Expected Calibration Error (ECE) 7 ] both on in-distribution sets (i.e. the test set is i.i.d. with respect to the training set) and under covariate-shifted sets (i.e. the test set shares the same set of labels of the training set, but the inputs are not i.i.d. with respect to the training set).</p>
+<p>Like temperature scaling, our method is applied post-hoc and is very fast to train and test. We extensively test the calibration of ResNet50 [9] and WideResNet28 [48] when using our method on CIFAR10/CIFAR100 and TinyImageNet, including results under data-shift [10]. Specifically our contributions is to identify a limitation in using a constant temperature for temperature scaling and propose a novel method to predict temperature values on a per-data-point basis to address this limitation. Our method produces a temperature value that is sample dependent, allowing the method to reduce the confidence of incorrect predictions, but also increase the confidence of correct ones.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Fig. 1. Histogram of per sample contribution to calibration error, positive numbers indicate overconfidence. Here we can see that the samples contribute by different amounts to the overall calibration error. Predictions are for CIFAR-10 using a ResNet-50.</p>
+<h1>2 Problem formulation</h1>
+<h3>2.1 Network Overconfidence and Temperature Scaling</h3>
+<p>Given an input $\mathbf{x}$, a standard $K$-class neural classifier first extracts a feature embedding $\Phi(\mathbf{x})$ before computing the logits $\mathbf{s}=f(\Phi(\mathbf{x})) \in \mathbb{R}^{K}$ and finally applying the softmax operator $\boldsymbol{p}=\sigma(\mathbf{s})=\frac{\exp (\mathbf{s})}{\sum_{i} \exp \left(s_{i}\right)}$ to obtain the class probabilities for the categorical distribution, the prediction is then given as $\hat{y}=\arg \max \boldsymbol{p}$. A classifier is said to be calibrated if the confidence in its prediction (usually taken to be $\max \boldsymbol{p}$ ) matches its accuracy on expectation, i.e. if a classifier makes predictions with a confidence of $80 \%$ for a certain set of points, then it also has an accuracy of $80 \%$ on such set of points. Typically, the predictions of neural networks are overconfident, i.e. the probability of the predicted class is higher than their expected accuracy [7].</p>
+<p>Temperature scaling [7] consists of re-scaling the logits by a constant factor $T \in \mathbb{R}^{+}$before applying the softmax, i.e. $\boldsymbol{p}^{\prime}=\sigma\left(\frac{\mathbf{s}}{T}\right)$. The value of $T$ can drastically affect the entropy of the predicted distribution, which is demonstrated in Figure 2, where a value of $T&gt;1$ leads to a higher entropy distribution (the higher $T$, the higher the entropy); a value of $T&lt;1$ leads to a lower entropy distribution (the lower $T$, the more "peaky" the distribution).</p>
+<p>The temperature $T$ is usually found by minimising the ECE or the Negative Log-Likelihood (NLL) using a validation set. Typical optimal values for $T$ are usually greater than 1 [25], indicating that, on average, optimising the ECE or NLL across the validation set leads to a higher entropy of the predictions. However, this approach decreases the confidences of all the predictions without considering that the miscalibration error can vary widely on a data-point basis. For correct predictions, temperature scaling will make the predictions more under-confident, whilst for incorrect predictions, the temperature may not be the right value to bring the confidences down to a level which will make it calibrated.</p>
+<p>Loosely speaking, this suggests that further improvements in calibration can be achieved by using a variable temperature $T$, predicted on a per data-point</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Fig. 2. Example plots of Softmax distribution with different temperature values for fixed logits. Left to right: $T=0.1, T=1.0$ and $T=10.0$.
+basis (i.e. $T=g(\mathbf{x})$ ), permitting $T&gt;1$ for samples which are correctly classified, and $T&lt;1$ for the incorrect ones. This enables the model to have a greater flexibility when compensating for miscalibration, as it respects the individual contributions each sample makes to the ECE. Moreover, this approach can be applied without affecting a classifiers accuracy ${ }^{3}$.</p>
+<h1>2.2 Why Jointly Learning Temperature Alongside the Network Weights Might Go Wrong?</h1>
+<p>One might suggest introducing the temperature as one of the outputs of the network and jointly learning it as part of the training process. Here we outline why this approach of learning to predict the temperature values $T$ and the predictive probabilities $\boldsymbol{p}$ might result in suboptimal performance. Consider the last layer of a NN with parameters $\boldsymbol{w} \in \mathbb{R}^{D \times K}$ for a feature space of size $D$ and the cross entropy loss $\mathcal{L}: \mathbb{R}^{K} \rightarrow \mathbb{R}$. The gradient for the layer is given as</p>
+<p>$$
+\frac{\partial \mathcal{L}}{\partial \overline{\boldsymbol{w}}}=\frac{\partial \mathbf{s}}{\partial \overline{\boldsymbol{w}}}(\sigma(\mathbf{s})-\boldsymbol{q})
+$$</p>
+<p>where $\boldsymbol{q} \in \Delta^{K}$ denotes the one-hot ground-truth label and $\sigma(\mathbf{s})-\boldsymbol{q}=\left{\sigma\left(s_{j}\right)-q_{j}\right.$ : $j \in{1 \ldots K}^{4}, \overline{\boldsymbol{w}}$ indicates the network weights are flattened to column vector form. Inspecting the gradients indicates that the gradient starts to vanish when $s_{k} \rightarrow \infty$ and $s_{\backslash k} \rightarrow-\infty$, where $k$ is the correct class. Or to put it simply, the optimisation does not converge until the network produces one-hot logits.</p>
+<p>This forces the magnification of the network weights [25], which subsequently leads to an overconfident network and hence miscalibrated predictions. A mechanism to achieve the desired one-hot prediction without magnifying the weights could be instead to naïvely learn the temperature alongside the logits, assuming the model is trainable and converges. In this case, gradient updates would decrease the value of $T$, resulting in a lower-entropy distribution that is more "peaky". We now discuss why this approach might not work well in practice.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>If we consider the gradient of the temperature, which is given as</p>
+<p>$$
+\frac{\partial \mathcal{L}}{\partial T}=\sum_{k} \frac{q_{k}}{T^{2}}\left(s_{k} \sum_{i \backslash k} \exp \left(\frac{s_{i}}{T}\right)-\sum_{j \backslash k} s_{j} \exp \left(\frac{s_{j}}{T}\right)\right)
+$$</p>
+<p>which decreases the value of $T$ for a correct prediction $\left(\tilde{k}=\arg \max <em k="k">{k} s</em>\right)$, leading to more confident predictions, see Appendix C for a proof. Typically, the train accuracy will approach $100 \%$, meaning that gradient updates to $T$ cause it to decrease without any moderation, preventing the network from learning how to predict $T$ appropriately. In short, there is essentially only data for correct predictions, preventing crucial information on how the network should behave when it's wrong. Consequently, learning $T$ naïvely is not a feasible option as the network just learns to be confident everywhere.</p>
+<h1>2.3 Learning to Calibrate</h1>
+<p>For the reasons discussed above, we propose an approach that, similar to the standard temperature scaling of [7], works on a already trained model. However, as opposed to [7], our approach involves a new temperature prediction module (a small neural network) that operates on each input sample independently and whose objective is to extract information from the trained model itself in order to calibrate the confidences of each prediction. We call this learning to calibrate.</p>
+<p>Doing so requires learning a temperature prediction module on a data-set consisting of data-points $\mathcal{X}<em n="n">{\text {cal }}=\left{\mathbf{x}</em>}\right}^{N}, \mathcal{X<em _cal="{cal" _text="\text">{\text {train }} \cap \mathcal{X}</em>}}=\varnothing$, neural network predictions $\mathcal{P<em n="n">{\text {cal }}=\left{\boldsymbol{p}</em>}\right}^{N}$ and labels $\mathcal{Y<em n="n">{\text {cal }}=\left{\mathbf{y}</em>$. It is important to note that the objective here is to learn to assign low confidences to data points which are likely to be incorrect and high confidences to those which are likely to be correct.}\right}^{N</p>
+<p>Specifically for a given data-point $\mathbf{x} \in \mathcal{X}<em T="T">{\text {cal }}$, we propose to optimise the temperature prediction module over $T$ by maximising the log probability of the label $\mathbf{y}$ under the Categorical probability distribution parametrised by the $T$ scaled logits $\mathbf{s}$, i.e. $T^{*}=\arg \max </em>$ but keep it fixed; we are only optimising w.r.t to $T$.} \log \operatorname{Cat}(\mathbf{y} ; \operatorname{softmax}(\mathbf{s} / T))^{5}$. Here we do not optmise $\mathbf{s</p>
+<p>In situations where $\mathbf{y}=\arg \max <em k="k">{k} \boldsymbol{p}</em>$ (i.e. correct prediction), the target function is maximised when $T \rightarrow 0$, as we want the predicted probabilities to match the one-hot logits, e.g. see $T=0.1$ in Figure 2. This is equivalent to minimising the entropy of the predictive distribution by only manipulating $T$, which is the desired outcome for a correct prediction.</p>
+<p>In situations where the prediction is incorrect, $\mathbf{y} \neq \arg \max <em k="k">{k} \boldsymbol{p}</em>}$, to maximise the target function we need to maximise $\boldsymbol{p<em _tilde_k="\tilde{k">{\mathbf{y}}$ and minimise $\boldsymbol{p}</em>=\arg \max }}$, where $\tilde{k<em k="k">{k} \boldsymbol{p}</em>$. As the temperature prediction module cannot change the predicted label, the optimzation accepts the incorrect prediction and maximise the target function by flattening the Softmax outputs with $T&gt;&gt;1$, which is equivalent to maximising the entropy of the predictive distribution. This effect can be seen by considering the case where predicting class 2 in Figure 2 is</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>the incorrect prediction; among the three cases shown, $T=10$ maximises the $\operatorname{Cat}(\mathbf{y} \neq 2 ; \operatorname{softmax}(\mathbf{s} / T))$.</p>
+<h1>3 Adaptive Temperature Scaling</h1>
+<p>We are now ready to outline the specifics of our proposed temperature prediction module. Given a data-set $\mathcal{X}_{\text {cal }}$, we want to learn which samples the classifier should be confident about and which it should not. Rather than acting on the image space, we instead use the feature extractor of the classifier, as it has already learnt how to extract the information needed for class prediction and also contains a notion of the associated confidence. Additionally, working only on the feature space, as done in [7], has already provided highly promising results in calibrating models for a variety of tasks. Therefore, assuming that the feature space already contains good amount of information in order to learn to calibrate the confidences is reasonable. What we now need is a method to extract this confidence information from the feature space and leverage it appropriately to calibrate the predictions.</p>
+<p>Representing Uncertainty with the variational autoencoder (VAE) VAEs [15] act as an efficient model to obtain representations of data; the representations encapsulate the generative factors in a lower-dimensional subspace and are rich enough to reconstruct the data sample. In the specification of the generative model, the user has to specify a prior over the latent variables (typically an isotropic Gaussian) where the KL distance between the prior and approximate posterior is minimised during training. Unlike a standard autoencoder [11], there is now a mechanism to obtain a likelihood on the latent codes. In reality this value forms part of the importance weight and can be used as a proxy to the true likelihood but avoids issues associated with deep generative models [31].</p>
+<p>From a mechanistic point of view, we expect samples which are much more common to be placed in the centre of the prior. Here we leverage this idea and use the latent likelihoods as a basis to predict the temperature value. Indeed, we find empirically that this approach works well in practice. Rather than using a standard VAE which places an isotropic Guassian as the prior we instead introduce a prior for each class, which is parameterised by $\left{\lambda_{k}\right}^{K}$, allowing the classes to cluster individually. This prevents any issues with clusters for individual classes being placed in lower likelihood regions of the latent space. With this mixture prior, the evidence lower bound is given as</p>
+<p>$$
+\log p(\Phi(\mathbf{x})) \geq \mathbb{E L B D}[\Phi(\mathbf{x})]=\mathbb{E}<em _varphi="\varphi">{q</em>
+$$}(\mathbf{z} \mid \Phi(\mathbf{x}))} \log \frac{p_{\vartheta}(\Phi(\mathbf{x}) \mid \mathbf{z}) p_{\lambda_{k}}(\mathbf{z} \mid \mathbf{y})}{q_{\varphi}(\mathbf{z} \mid \Phi(\mathbf{x}))</p>
+<p>where $q_{\varphi}(\mathbf{z} \mid \Phi(\mathbf{x})), p_{\vartheta}(\Phi(\mathbf{x}) \mid \mathbf{z})$ and $p_{\lambda_{k}}(\mathbf{z} \mid \mathbf{y})$ represent the encoder, decoder and conditional prior, the parameters of the VAE are given as $\boldsymbol{\Theta}=\left{\vartheta, \varphi, \lambda_{1}, \ldots, \lambda_{K}\right}$. The parameters of the conditional prior are learnt alongside the parameters of</p>
+<p>the encoder and decoder[42], each component of the prior is modelled using a Gaussian, i.e. $\boldsymbol{\lambda}<em k="k">{k}=\left{\boldsymbol{\mu}</em>}, \boldsymbol{\sigma<em _mathbf_z="\mathbf{z">{k}\right} \in \mathbb{R}^{D</em>}}}$, where $D_{\mathbf{z}}$ is the size of the latent space. The use of this conditional prior forces the aggregate posterior for each class to match a Gaussian distribution, i.e. $\sum_{\mathbf{x} \in \mathcal{X<em k="k">{k}} q(\mathbf{z} \mid \Phi(\mathbf{x})) \approx \mathcal{N}\left(\mathbf{z} ; \boldsymbol{\mu}</em>}, \boldsymbol{\sigma<em _lambda__k="\lambda_{k">{k}\right)$. This encourages the representations for each class to cluster around a known distribution $p</em>$ ), which we will use to obtain a pseudo likelihood to predict the temperature value. The choice of the VAE was in part down to the motivation that hard samples will have lower latent-likelihood but also because empirically we found it worked well in practice. Before outlining the details of the approach in in Sec. 3.1 and Sec. 3.2, we first provide evidence of this empirical motivation to use a VAE.}}(\mathbf{z} \mid$ $\mathbf{y</p>
+<p>We now perform a preliminary experiment, which serves to investigate which samples in the latent representation contribute the most to the calibration error. Specifically, we construct a t-SNE plot for each class of CIFAR-10 but colour code the points depending on their per-data-point contributions to the calibration error. This provides a visual method for us to inspect where samples which harm calibration are placed, which can be seen in Figure 3. Here we can see that data-points which do not contribute to the calibration error tend to be placed near the centre of the cluster, and ones which do, or are incorrect, indicated by a black cross, are placed far from the centre. This highlights that the VAE is
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Fig. 3. t-SNE plot for classes cat and dog, colour indicates per data-point contribution to ECE, 0.5 indicates no contribution to ECE. Generally, samples with little contribution to calibration error (pink) are placed around the centre of the cluster, unlike samples with a high contribution (yellow and orange) which are placed near the edges. Furthermore, incorrect samples (black cross) are placed significantly far away from the cluster centre.
+at able, to some extent, to provide a basis to predict the temperature, we then utilise this representation to predict $T$ through a simple Multi Layer Perceptron.</p>
+<h1>3.1 Temperature Prediction Network</h1>
+<p>Given that the VAE structures the latent in space in a way which makes it amendable to confidence prediction, we learn a very simple MLP parameterised</p>
+<p>by $\theta$, which predicts the temperature based on the latent embeddings, using the cross entropy loss as an objective. Rather than using the latent samples as input to the MLP, given the observations in Figure 3, we choose to predict the temperature as a function of the vector of log-likelihoods on all of the conditional priors, specifically $T=g_{\theta}(\tilde{\boldsymbol{q}})$ where $g: \mathbb{R}^{K} \rightarrow \mathbb{R}$ is the MLP which predicts the temperature and $\tilde{\boldsymbol{q}}=\left{\log p_{\lambda_{k}}\left(\mathbf{z} \mid \mathbf{y}<em i="i">{k}\right) \mid \forall k\right}$, i.e each element $\tilde{\boldsymbol{q}}</em>}$ contains the log-likelihood of $\mathbf{z}$ on the corresponding conditional prior $p_{\lambda_{k}}\left(\mathbf{z} \mid \mathbf{y<em _lambda__k="\lambda_{k">{k}\right)$. Evaluating $\log p</em>$, consequently the module predicts the temperature as a non-linear transform of a pseudo-likelihood of the sample. It is also important to point out that due to the use of feature space as the input, we are able to use small architectures, making this approach very fast during training and at test time. We represent a high level overview and the graphical model in Figure 4.
+}}(\mathbf{z} \mid \mathbf{y})$ can be viewed as a pseudo likelihood of $\mathbf{x<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Fig. 4. High level architecture. The off shelf neural-network is represented by the red box, where the parameters are left unchanged, the learnable VAE encoder is indicated by $q(\mathbf{z} \mid \Phi(\mathbf{x}))$, with the $g_{\theta}(\tilde{\boldsymbol{q}})$ as the MLP predicting $T$.</p>
+<h1>3.2 Calibrated Training Details</h1>
+<p>The overall post-hoc learning algorithm is very simple and the module can be trained in under a minute on an 8 Gb Titan Xp for most datasets, depending on the validation set and feature space size, we give an overview of the procedure in Algorithm 1. We combine learning the VAE and the temperature prediction network into one objective. Specifically, we maximise the following objective</p>
+<p>$$
+\mathcal{L}(\mathbf{x}, \mathbf{y})=\mathbb{E L B O}[\Phi(\mathbf{x})]+\log \operatorname{Cat}\left(\mathbf{y} \mid \operatorname{softmax}\left(\mathbf{s} / g_{\theta}(\tilde{\boldsymbol{q}})\right)\right.
+$$</p>
+<p>with $\tilde{\boldsymbol{q}}=\left{\log p_{\lambda_{k}}(\mathbf{z} \mid \mathbf{y}) \mid \forall \mathbf{y}\right} \quad \mathbf{z} \sim q_{\phi}(\mathbf{z} \mid \mathbf{x})$ and using Normal distributions for $\mathbf{z}$; Laplace distribution over $\Phi(\mathbf{x})$ (L1 loss); and a Categorical over $\mathbf{y}$. To train the VAE, we use a held-out dataset from training the network, i.e. $\mathcal{X}<em _cal="{cal" _text="\text">{\text {train }} \cap \mathcal{X}</em>)$, as the feature space has a lower dimensionallity and simpler structure than the image space, leading to much faster training and the ability to use simpler networks.
+Calibration at Test Time During test time, the features of the data point $\Phi(\mathbf{x})$ and predicted logits are computed from the classifier $\mathbf{s}=f(\Phi(\mathbf{x}))$, the temperature can then predicted through $T=g_{\theta}(\tilde{\boldsymbol{q}})$. The calibrated predictions are then computed as $\boldsymbol{p}=\sigma(\mathbf{s} / T)$.}}=\varnothing$. We used the Adam optimiser with a learning rate of 0.001 and trained for 50 epochs. This is an additional benefit of training the VAE on the $\Phi(\mathbf{x</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">Algorithm</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nx">Learning</span><span class="w"> </span><span class="nx">Adaptive</span><span class="w"> </span><span class="nx">Temperature</span><span class="w"> </span><span class="p">(</span><span class="nx">Ada</span><span class="w"> </span><span class="nx">TS</span><span class="p">)</span>
+<span class="nx">Require</span><span class="p">:</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">mathcal</span><span class="p">{</span><span class="nx">X</span><span class="p">}</span><span class="nx">_</span><span class="p">{</span><span class="err">\</span><span class="nx">text</span><span class="w"> </span><span class="p">{</span><span class="nx">cal</span><span class="w"> </span><span class="p">}},</span><span class="w"> </span><span class="err">\</span><span class="nx">mathcal</span><span class="p">{</span><span class="nx">Y</span><span class="p">}</span><span class="nx">_</span><span class="p">{</span><span class="err">\</span><span class="nx">text</span><span class="w"> </span><span class="p">{</span><span class="nx">cal</span><span class="w"> </span><span class="p">}},</span><span class="w"> </span><span class="err">\</span><span class="nx">mathcal</span><span class="p">{</span><span class="nx">P</span><span class="p">}</span><span class="nx">_</span><span class="p">{</span><span class="err">\</span><span class="nx">text</span><span class="w"> </span><span class="p">{</span><span class="nx">cal</span><span class="w"> </span><span class="p">}}</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="nx">converged</span><span class="w"> </span><span class="nx">do</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">x</span><span class="p">},</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">y</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">leftarrow</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="nx">Random</span><span class="w"> </span><span class="nx">batch</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">nabla_</span><span class="p">{</span><span class="nx">V</span><span class="w"> </span><span class="nx">A</span><span class="w"> </span><span class="nx">E</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">leftarrow</span><span class="w"> </span><span class="err">\</span><span class="nx">nabla</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbb</span><span class="p">{</span><span class="nx">E</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbb</span><span class="p">{</span><span class="nx">L</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbb</span><span class="p">{</span><span class="nx">B</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbb</span><span class="p">{</span><span class="nx">O</span><span class="p">}[</span><span class="err">\</span><span class="nx">Phi</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">x</span><span class="p">})]</span><span class="err">\</span><span class="p">)</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">hat</span><span class="p">{</span><span class="err">\</span><span class="nx">boldsymbol</span><span class="p">{</span><span class="nx">q</span><span class="p">}}=</span><span class="err">\</span><span class="nx">left</span><span class="err">\</span><span class="p">{</span><span class="err">\</span><span class="nx">log</span><span class="w"> </span><span class="nx">p_</span><span class="p">{</span><span class="err">\</span><span class="nx">lambda_</span><span class="p">{</span><span class="nx">k</span><span class="p">}}(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">z</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">mid</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">y</span><span class="p">})</span><span class="w"> </span><span class="err">\</span><span class="nx">mid</span><span class="w"> </span><span class="err">\</span><span class="k">forall</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">y</span><span class="p">}</span><span class="err">\</span><span class="nx">right</span><span class="err">\</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">quad</span><span class="w"> </span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">z</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">sim</span><span class="w"> </span><span class="nx">q</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">z</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">mid</span><span class="w"> </span><span class="err">\</span><span class="nx">Phi</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">x</span><span class="p">}))</span><span class="w"> </span><span class="err">\</span><span class="nx">quad</span><span class="w"> </span><span class="err">\</span><span class="nx">triangleright</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="nx">Vector</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">pseudo</span><span class="w"> </span><span class="nx">likelihoods</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">nabla_</span><span class="p">{</span><span class="nx">T</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">leftarrow</span><span class="w"> </span><span class="err">\</span><span class="nx">nabla</span><span class="w"> </span><span class="err">\</span><span class="nx">log</span><span class="w"> </span><span class="err">\</span><span class="nx">operatorname</span><span class="p">{</span><span class="nx">Cat</span><span class="p">}</span><span class="err">\</span><span class="nx">left</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">y</span><span class="p">}</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="err">\</span><span class="nx">operatorname</span><span class="p">{</span><span class="nx">softmax</span><span class="p">}</span><span class="err">\</span><span class="nx">left</span><span class="p">(</span><span class="err">\</span><span class="nx">mathbf</span><span class="p">{</span><span class="nx">s</span><span class="p">}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">g_</span><span class="p">{</span><span class="err">\</span><span class="nx">theta</span><span class="p">}(</span><span class="err">\</span><span class="nx">hat</span><span class="p">{</span><span class="err">\</span><span class="nx">boldsymbol</span><span class="p">{</span><span class="nx">q</span><span class="p">}})</span><span class="err">\</span><span class="nx">right</span><span class="p">)</span><span class="err">\</span><span class="nx">right</span><span class="p">.</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="nx">triangleright</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="nx">CE</span><span class="w"> </span><span class="nx">loss</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">temperature</span>
+<span class="w">        </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="p">{</span><span class="err">\</span><span class="nx">boldsymbol</span><span class="p">{</span><span class="err">\</span><span class="nx">Theta</span><span class="p">},</span><span class="w"> </span><span class="err">\</span><span class="nx">theta</span><span class="err">\</span><span class="p">}</span><span class="nx">_</span><span class="p">{</span><span class="nx">t</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nx">leftarrow</span><span class="err">\</span><span class="p">{</span><span class="err">\</span><span class="nx">boldsymbol</span><span class="p">{</span><span class="err">\</span><span class="nx">Theta</span><span class="p">},</span><span class="w"> </span><span class="err">\</span><span class="nx">theta</span><span class="err">\</span><span class="p">}</span><span class="nx">_</span><span class="p">{</span><span class="nx">t</span><span class="p">}</span><span class="o">-</span><span class="err">\</span><span class="nx">alpha</span><span class="err">\</span><span class="nx">left</span><span class="p">(</span><span class="err">\</span><span class="nx">nabla_</span><span class="p">{</span><span class="nx">V</span><span class="w"> </span><span class="nx">A</span><span class="w"> </span><span class="nx">E</span><span class="p">}</span><span class="o">+</span><span class="err">\</span><span class="nx">nabla_</span><span class="p">{</span><span class="nx">T</span><span class="p">}</span><span class="err">\</span><span class="nx">right</span><span class="p">)</span><span class="w"> </span><span class="err">\</span><span class="nx">quad</span><span class="w"> </span><span class="err">\</span><span class="nx">triangleright</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="nx">Update</span><span class="w"> </span><span class="nx">parameters</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="p">{</span><span class="err">\</span><span class="nx">boldsymbol</span><span class="p">{</span><span class="err">\</span><span class="nx">Theta</span><span class="p">},</span><span class="w"> </span><span class="err">\</span><span class="nx">theta</span><span class="err">\</span><span class="p">}</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">end</span><span class="w"> </span><span class="k">while</span>
+</code></pre></div>
+
+<h1>4 Related Work</h1>
+<p>Uncertainty Estimation In deep learning, the most typical way to address uncertainty estimation is to make the networks output a distribution, and to extract an uncertainty measure as a function of the predictive distribution. Bayesian approaches define a prior distribution over the weights of the network and apply inference techniques to update such distributions given the training set. Given the intractability of exact inference for neural networks, several approximate variational inference schemes have been proposed [6|1|16|44|14|3]. Recent literature tries to combine the benefits of Bayesian deep learning with the training of deterministic neural networks trained via standard optimisation algorithms. Some methodologies suggest using a Laplace approximation of a trained network to approximate a Gaussian using a Laplace approximation around the optimal parameters [3917]. Others suggest replacing the head of the network with a Gaussian Process [23] or a head parametrising a Dirichlet distribution [24|13], or just performing Bayesian inference on the final layer [38]. Another family of models leverages ensembles [21] to output distributions. Given the extreme computational and memory requirements of ensembles, several techniques have been suggested to obtain the ensembling benefits more efficiently [845]</p>
+<p>Calibration Deep Neural Networks suffer from overconfident classification scores, Which can be alleviated through temperature scaling in post-processing [7]-a modern variant of Platt scaling [36]. As previously mentioned, this typically comes at the cost of decreasing the confidence in correct predictions [20]. Other approaches include histogram binning [46]; isotonic regression [47]; Bayesian binning [29|30]; and bin-wise temperature scaling [12]. Overconfidence is caused by over-fitting to the cross-entropy loss, which can be alleviated by instead using a focal loss [22|25]. In a similar fashion, [20] utilised a differentiable proxy during training to improve calibration. Label smoothing was also shown to improve calibration [26]. It has also been shown that recomputing the coefficients of batch normalization improves calibration [28]. Tangentially, [33] performed a large scale comparison of methods under dataset-shift. A similar method to ours is [5], which tackles the problem of semantic segmentation calibration by predicting per-data-point and per-pixel temperature values. Another method which</p>
+<p>is of note is [19], which transforms the softmax predictive distribution into a Dirichlet distribution.</p>
+<h1>5 Results</h1>
+<p>Before evaluating the model, we define the hypothesis we are trying to test. Specifically, we want to evaluate if predicting the temperature on a per-datapoint basis leads to improved calibration over vanilla temperature scaling. Secondly, we wish to investigate how adaptive temperature performs under dataset shift.</p>
+<p>We performed our experiments on WideResNet28-10 [48] and ResNet50 [9] architectures. We report calibration results on CIFAR10/CIFAR100 [18] and Tiny-ImageNet [43]. We conducted distribution-shit experiments using variants CIFAR10-C/CIFAR100-C to test for domain shift [10]. We used the following as models for our evaluation:</p>
+<ul>
+<li>Cross Entropy Loss, due to it's popularity and wide adoption.</li>
+<li>Brier Score [2], due to it's ability to obtain well calibrated predictions [25].</li>
+<li>Deep Ensembles [21], as it achieves state of the art results. ${ }^{6}$</li>
+</ul>
+<p>Results are obtained for multiple seeds for Cross Entropy and Brier Score, but only one seed for Deep Ensembles due to the number of models needed.</p>
+<h3>5.1 Calibration</h3>
+<p>Here we evaluate how adaptive temperature scaling affects standard calibration metrics compared to vanilla temperature scaling. We report results using the ECE, which divides the probability into equally sized bins and then computes the absolute difference between confidence and accuracy for each bin before taking the average. However, the ECE is known to be a biased estimator of the theoretical probabilistic expectation [4], whose performance depends on the binning size and on the distribution of samples in each bin. For this reason, the ECE reliability as a good miscalibration metric is being questioned and several alternatives have been proposed (e.g. [32,40,25]). Among these, we choose to also use the AdaECE [25], which uses adaptive bin sizes to ensure each bin contains the same number of samples.</p>
+<p>We report the results in Tab. 1 along with reliability plots in Figure 5, where it can be seen that adaptive temperature scaling improves calibration compared to standard temperate scaling. In all cases our method is able to outperform vanilla temperature scaling, with large improvements obtained when using the cross entropy loss, e.g. $0.93 \rightarrow 0.76$ and $3.76 \rightarrow 2.95$ ECE for CIFAR10 and CIFAR100 when using the WideResNet2810 Network.</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Fig. 5. Reliability plots for: left) vanilla predictions; middle) temperature scaling; right) adaptive temperature scaling (ours). Temperature scaling was optimised through cross validating in the range $0-10$ and optimised the ECE. CIFAR-10 on ResNet50.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Fig. 6. Left: How temperature varies when interpolating between class feature means. Here we can see that temperature increases between classes or remains high for classes who's embeddings are close together. Pairs were chosen to improve visual clarity. Dataset: CIFAR-10; architecture: ResNet50. Right: Histogram of temperature values for each image in CIFAR-10, here we can see that typically objects have a lower temperature than animals, indicating they are easier to classify. Dataset: CIFAR-10; architecture: ResNet50.</p>
+<p>Data-Shift A key hypothesis we want to test is how adaptive temperature scaling behaves under data-shift. Specifically, we use the widely used CIFAR10-C and CIFAR100-C datasets, which are corrupted versions of the CIFAR10 and CIFAR100 [10].</p>
+<p>The dataset consists of standard CIFAR images which have undergone 15 synthetic corruptions (e.g. noise, weather conditions, image properties) at varying levels. Within this scenario, the classifier should either be robust to such corruptions (retaining accuracy) or if the accuracy is compromised, reduce the confidences accordingly. As such, we report the test accuracy as well as ECE and AdaECE in Tab. 2, where adaptive temperature scaling shows improvements over temperature scaling.
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Fig. 7. How AdaECE changes with varying levels of motion-blur corruptions. Adaptive temperature consistently produces lower error rates. CIFAR10-C on ResNet50.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Scaling</th>
+<th style="text-align: center;">Accuracy ( $\uparrow$ )</th>
+<th style="text-align: center;">ECE ( $\downarrow$ )</th>
+<th style="text-align: center;">AdaECE ( $\downarrow$ )</th>
+<th style="text-align: center;">Accuracy ( $\uparrow$ )</th>
+<th style="text-align: center;">ECE ( $\downarrow$ )</th>
+<th style="text-align: center;">AdaECE ( $\downarrow$ )</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR10</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$95.52 \pm 0.43$</td>
+<td style="text-align: center;">$2.15 \pm 0.18$</td>
+<td style="text-align: center;">$2.13 \pm 0.18$</td>
+<td style="text-align: center;">$93.13 \pm 1.97$</td>
+<td style="text-align: center;">$3.75 \pm 1.32$</td>
+<td style="text-align: center;">$3.74 \pm 1.32$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$95.52 \pm 0.43$</td>
+<td style="text-align: center;">$0.93 \pm 0.20$</td>
+<td style="text-align: center;">$0.98 \pm 0.30$</td>
+<td style="text-align: center;">$93.13 \pm 1.97$</td>
+<td style="text-align: center;">$1.41 \pm 0.43$</td>
+<td style="text-align: center;">$1.45 \pm 0.44$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$95.52 \pm 0.43$</td>
+<td style="text-align: center;">$0.76 \pm 0.07$</td>
+<td style="text-align: center;">$0.86 \pm 0.20$</td>
+<td style="text-align: center;">$93.13 \pm 1.97$</td>
+<td style="text-align: center;">$1.13 \pm 0.60$</td>
+<td style="text-align: center;">$1.09 \pm 0.57$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$95.84 \pm 0.10$</td>
+<td style="text-align: center;">$0.92 \pm 0.13$</td>
+<td style="text-align: center;">$1.50 \pm 0.16$</td>
+<td style="text-align: center;">$94.59 \pm 0.23$</td>
+<td style="text-align: center;">$2.03 \pm 0.13$</td>
+<td style="text-align: center;">$2.27 \pm 0.12$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$95.84 \pm 0.10$</td>
+<td style="text-align: center;">$1.88 \pm 0.23$</td>
+<td style="text-align: center;">$1.94 \pm 0.19$</td>
+<td style="text-align: center;">$94.59 \pm 0.23$</td>
+<td style="text-align: center;">$1.67 \pm 0.24$</td>
+<td style="text-align: center;">$2.08 \pm 0.30$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$95.84 \pm 0.10$</td>
+<td style="text-align: center;">$1.65 \pm 0.15$</td>
+<td style="text-align: center;">$1.61 \pm 0.13$</td>
+<td style="text-align: center;">$94.59 \pm 0.23$</td>
+<td style="text-align: center;">$1.61 \pm 0.40$</td>
+<td style="text-align: center;">$1.53 \pm 0.44$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">96.35</td>
+<td style="text-align: center;">1.68</td>
+<td style="text-align: center;">1.61</td>
+<td style="text-align: center;">95.62</td>
+<td style="text-align: center;">1.92</td>
+<td style="text-align: center;">1.89</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">96.35</td>
+<td style="text-align: center;">0.61</td>
+<td style="text-align: center;">0.68</td>
+<td style="text-align: center;">95.62</td>
+<td style="text-align: center;">0.93</td>
+<td style="text-align: center;">0.84</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">96.37</td>
+<td style="text-align: center;">0.51</td>
+<td style="text-align: center;">0.46</td>
+<td style="text-align: center;">95.64</td>
+<td style="text-align: center;">0.60</td>
+<td style="text-align: center;">0.58</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR100</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$80.71 \pm 0.17$</td>
+<td style="text-align: center;">$5.76 \pm 0.16$</td>
+<td style="text-align: center;">$5.70 \pm 0.16$</td>
+<td style="text-align: center;">$77.91 \pm 0.33$</td>
+<td style="text-align: center;">$9.39 \pm 0.42$</td>
+<td style="text-align: center;">$9.37 \pm 0.43$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$80.71 \pm 0.17$</td>
+<td style="text-align: center;">$3.76 \pm 0.29$</td>
+<td style="text-align: center;">$3.68 \pm 0.28$</td>
+<td style="text-align: center;">$77.91 \pm 0.33$</td>
+<td style="text-align: center;">$3.63 \pm 0.21$</td>
+<td style="text-align: center;">$3.61 \pm 0.26$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$80.71 \pm 0.17$</td>
+<td style="text-align: center;">$2.95 \pm 0.41$</td>
+<td style="text-align: center;">$2.90 \pm 0.47$</td>
+<td style="text-align: center;">$77.99 \pm 0.33$</td>
+<td style="text-align: center;">$3.30 \pm 0.50$</td>
+<td style="text-align: center;">$3.32 \pm 0.47$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$79.25 \pm 0.14$</td>
+<td style="text-align: center;">$4.19 \pm 0.24$</td>
+<td style="text-align: center;">$4.13 \pm 0.22$</td>
+<td style="text-align: center;">$76.03 \pm 0.55$</td>
+<td style="text-align: center;">$4.15 \pm 0.22$</td>
+<td style="text-align: center;">$4.04 \pm 0.25$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$79.25 \pm 0.14$</td>
+<td style="text-align: center;">$3.87 \pm 0.62$</td>
+<td style="text-align: center;">$3.90 \pm 0.62$</td>
+<td style="text-align: center;">$76.03 \pm 0.55$</td>
+<td style="text-align: center;">$3.34 \pm 0.46$</td>
+<td style="text-align: center;">$3.41 \pm 0.39$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$79.25 \pm 0.14$</td>
+<td style="text-align: center;">$3.67 \pm 0.82$</td>
+<td style="text-align: center;">$3.64 \pm 0.74$</td>
+<td style="text-align: center;">$76.03 \pm 0.55$</td>
+<td style="text-align: center;">$3.30 \pm 0.50$</td>
+<td style="text-align: center;">$3.32 \pm 0.47$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">83.19</td>
+<td style="text-align: center;">4.24</td>
+<td style="text-align: center;">4.21</td>
+<td style="text-align: center;">80.90</td>
+<td style="text-align: center;">6.59</td>
+<td style="text-align: center;">6.29</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">83.18</td>
+<td style="text-align: center;">3.71</td>
+<td style="text-align: center;">3.55</td>
+<td style="text-align: center;">80.90</td>
+<td style="text-align: center;">3.22</td>
+<td style="text-align: center;">3.16</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">83.22</td>
+<td style="text-align: center;">2.95</td>
+<td style="text-align: center;">2.66</td>
+<td style="text-align: center;">80.86</td>
+<td style="text-align: center;">2.79</td>
+<td style="text-align: center;">2.77</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Tiny-ImageNet</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$60.47 \pm 0.17$</td>
+<td style="text-align: center;">$7.54 \pm 4.00$</td>
+<td style="text-align: center;">$7.53 \pm 4.09$</td>
+<td style="text-align: center;">$55.27 \pm 2.19$</td>
+<td style="text-align: center;">$8.92 \pm 2.72$</td>
+<td style="text-align: center;">$8.93 \pm 2.74$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$60.47 \pm 1.06$</td>
+<td style="text-align: center;">$6.28 \pm 2.43$</td>
+<td style="text-align: center;">$6.15 \pm 2.47$</td>
+<td style="text-align: center;">$55.27 \pm 2.19$</td>
+<td style="text-align: center;">$7.64 \pm 1.53$</td>
+<td style="text-align: center;">$7.57 \pm 1.58$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$60.04 \pm 1.20$</td>
+<td style="text-align: center;">$5.18 \pm 1.40$</td>
+<td style="text-align: center;">$5.17 \pm 1.32$</td>
+<td style="text-align: center;">$55.27 \pm 2.19$</td>
+<td style="text-align: center;">$4.51 \pm 1.76$</td>
+<td style="text-align: center;">$4.45 \pm 1.78$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$50.23 \pm 0.45$</td>
+<td style="text-align: center;">$5.56 \pm 0.63$</td>
+<td style="text-align: center;">$5.52 \pm 0.64$</td>
+<td style="text-align: center;">$42.38 \pm 1.21$</td>
+<td style="text-align: center;">$5.33 \pm 1.47$</td>
+<td style="text-align: center;">$5.37 \pm 1.47$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$50.23 \pm 0.45$</td>
+<td style="text-align: center;">$4.55 \pm 0.28$</td>
+<td style="text-align: center;">$4.43 \pm 0.63$</td>
+<td style="text-align: center;">$42.38 \pm 1.21$</td>
+<td style="text-align: center;">$3.08 \pm 0.59$</td>
+<td style="text-align: center;">$3.12 \pm 0.55$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$50.23 \pm 0.45$</td>
+<td style="text-align: center;">$4.43 \pm 0.47$</td>
+<td style="text-align: center;">$4.21 \pm 0.51$</td>
+<td style="text-align: center;">$42.38 \pm 1.21$</td>
+<td style="text-align: center;">$2.71 \pm 0.08$</td>
+<td style="text-align: center;">$2.60 \pm 0.23$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">66.16</td>
+<td style="text-align: center;">6.21</td>
+<td style="text-align: center;">6.19</td>
+<td style="text-align: center;">61.90</td>
+<td style="text-align: center;">8.89</td>
+<td style="text-align: center;">9.00</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">66.16</td>
+<td style="text-align: center;">5.12</td>
+<td style="text-align: center;">5.06</td>
+<td style="text-align: center;">61.90</td>
+<td style="text-align: center;">4.29</td>
+<td style="text-align: center;">4.43</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">66.00</td>
+<td style="text-align: center;">4.58</td>
+<td style="text-align: center;">4.41</td>
+<td style="text-align: center;">61.76</td>
+<td style="text-align: center;">4.26</td>
+<td style="text-align: center;">4.17</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1. Calibration results, here we can see that adaptive temperate scaling is able to improve calibration on a variety of models. Bold indicates best results, or with in one standard deviaiton of best results.</p>
+<p>We also expect to see adaptive temperature scaling provide improvement over temperature scaling as the intensity of corruptions are increased for CIFAR-10C. We generate plots highlighting the AdaECE calibration metric as the level of the corruption intensity is increased; the plot for motion-blur is displayed in Figure 7. Here despite a general increase in error for all methods adaptive temperature scaling consistently produces lower error rates than vanilla temperature scaling (orange) and vanilla predictions (blue). More examples are in Appendix D.</p>
+<h1>5.2 Behaviour of the Temperature Prediction Module</h1>
+<p>Can the temperature module predict high temperature in uncertain regions? If yes, then we should see a change in the temperature as we traverse the feature the space ${ }^{7}$. To conduct this experiment, inspired by the analysis provided in [34,35],</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Scaling</th>
+<th style="text-align: center;">Accuracy ( $\uparrow$ )</th>
+<th style="text-align: center;">ECE ( $\downarrow$ )</th>
+<th style="text-align: center;">AdaECE ( $\downarrow$ )</th>
+<th style="text-align: center;">Accuracy ( $\uparrow$ )</th>
+<th style="text-align: center;">ECE ( $\downarrow$ )</th>
+<th style="text-align: center;">AdaECE ( $\downarrow$ )</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR10-C</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$75.07 \pm 1.46$</td>
+<td style="text-align: center;">$15.70 \pm 1.14$</td>
+<td style="text-align: center;">$15.68 \pm 1.14$</td>
+<td style="text-align: center;">$71.45 \pm 2.96$</td>
+<td style="text-align: center;">$18.48 \pm 1.70$</td>
+<td style="text-align: center;">$18.47 \pm 1.70$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$75.07 \pm 1.46$</td>
+<td style="text-align: center;">$12.19 \pm 0.91$</td>
+<td style="text-align: center;">$12.17 \pm 0.91$</td>
+<td style="text-align: center;">$71.45 \pm 2.96$</td>
+<td style="text-align: center;">$12.72 \pm 0.64$</td>
+<td style="text-align: center;">$12.70 \pm 0.63$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$75.07 \pm 1.46$</td>
+<td style="text-align: center;">$12.03 \pm 1.31$</td>
+<td style="text-align: center;">$12.02 \pm 1.31$</td>
+<td style="text-align: center;">$71.45 \pm 2.96$</td>
+<td style="text-align: center;">$10.86 \pm 1.88$</td>
+<td style="text-align: center;">$10.83 \pm 1.87$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$75.27 \pm 0.73$</td>
+<td style="text-align: center;">$16.21 \pm 0.80$</td>
+<td style="text-align: center;">$16.45 \pm 0.78$</td>
+<td style="text-align: center;">$74.19 \pm 0.28$</td>
+<td style="text-align: center;">$15.34 \pm 0.63$</td>
+<td style="text-align: center;">$15.34 \pm 0.65$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$75.27 \pm 0.73$</td>
+<td style="text-align: center;">$15.87 \pm 0.46$</td>
+<td style="text-align: center;">$15.86 \pm 0.46$</td>
+<td style="text-align: center;">$74.19 \pm 0.28$</td>
+<td style="text-align: center;">$14.66 \pm 0.83$</td>
+<td style="text-align: center;">$14.67 \pm 0.86$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$75.27 \pm 0.73$</td>
+<td style="text-align: center;">$14.84 \pm 0.88$</td>
+<td style="text-align: center;">$14.81 \pm 0.89$</td>
+<td style="text-align: center;">$74.19 \pm 0.28$</td>
+<td style="text-align: center;">$13.39 \pm 1.18$</td>
+<td style="text-align: center;">$13.35 \pm 1.18$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">77.28</td>
+<td style="text-align: center;">13.45</td>
+<td style="text-align: center;">13.43</td>
+<td style="text-align: center;">74.84</td>
+<td style="text-align: center;">13.95</td>
+<td style="text-align: center;">13.93</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">77.28</td>
+<td style="text-align: center;">10.12</td>
+<td style="text-align: center;">10.09</td>
+<td style="text-align: center;">74.84</td>
+<td style="text-align: center;">10.37</td>
+<td style="text-align: center;">10.33</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">77.21</td>
+<td style="text-align: center;">9.29</td>
+<td style="text-align: center;">9.25</td>
+<td style="text-align: center;">74.80</td>
+<td style="text-align: center;">9.15</td>
+<td style="text-align: center;">9.12</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR100-C</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$51.74 \pm 0.39$</td>
+<td style="text-align: center;">$18.63 \pm 0.70$</td>
+<td style="text-align: center;">$18.58 \pm 0.70$</td>
+<td style="text-align: center;">$49.67 \pm 0.28$</td>
+<td style="text-align: center;">$24.27 \pm 0.89$</td>
+<td style="text-align: center;">$24.25 \pm 0.90$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$51.74 \pm 0.39$</td>
+<td style="text-align: center;">$12.28 \pm 1.14$</td>
+<td style="text-align: center;">$12.25 \pm 1.14$</td>
+<td style="text-align: center;">$49.67 \pm 0.28$</td>
+<td style="text-align: center;">$11.78 \pm 0.91$</td>
+<td style="text-align: center;">$11.76 \pm 0.91$</td>
+</tr>
+<tr>
+<td style="text-align: center;">CE</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$51.74 \pm 0.39$</td>
+<td style="text-align: center;">$12.17 \pm 0.10$</td>
+<td style="text-align: center;">$12.15 \pm 0.11$</td>
+<td style="text-align: center;">$49.72 \pm 0.29$</td>
+<td style="text-align: center;">$11.69 \pm 0.74$</td>
+<td style="text-align: center;">$11.67 \pm 0.71$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$50.58 \pm 0.28$</td>
+<td style="text-align: center;">$15.04 \pm 1.36$</td>
+<td style="text-align: center;">$15.02 \pm 1.36$</td>
+<td style="text-align: center;">$48.14 \pm 0.83$</td>
+<td style="text-align: center;">$13.43 \pm 1.06$</td>
+<td style="text-align: center;">$13.41 \pm 1.06$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$50.58 \pm 0.28$</td>
+<td style="text-align: center;">$9.81 \pm 0.84$</td>
+<td style="text-align: center;">$9.81 \pm 0.85$</td>
+<td style="text-align: center;">$48.14 \pm 0.83$</td>
+<td style="text-align: center;">$10.12 \pm 0.67$</td>
+<td style="text-align: center;">$10.10 \pm 0.67$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Brier</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$50.58 \pm 0.28$</td>
+<td style="text-align: center;">$9.56 \pm 0.82$</td>
+<td style="text-align: center;">$9.64 \pm 0.74$</td>
+<td style="text-align: center;">$48.62 \pm 0.55$</td>
+<td style="text-align: center;">$8.83 \pm 0.48$</td>
+<td style="text-align: center;">$8.86 \pm 0.48$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">54.61</td>
+<td style="text-align: center;">14.81</td>
+<td style="text-align: center;">14.78</td>
+<td style="text-align: center;">52.94</td>
+<td style="text-align: center;">19.12</td>
+<td style="text-align: center;">19.07</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">54.61</td>
+<td style="text-align: center;">12.66</td>
+<td style="text-align: center;">12.62</td>
+<td style="text-align: center;">52.94</td>
+<td style="text-align: center;">11.36</td>
+<td style="text-align: center;">11.33</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ensmbls</td>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">54.61</td>
+<td style="text-align: center;">12.02</td>
+<td style="text-align: center;">12.00</td>
+<td style="text-align: center;">53.91</td>
+<td style="text-align: center;">9.15</td>
+<td style="text-align: center;">9.15</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2. Corrupted calibration results. Here we can see that adaptive temperate scaling is able to improve calibration on a variety of models. Bold indicates best results, or within one standard deviation of best results.
+we obtain the average feature representation for each class $\phi_{k}=\frac{1}{\left|\mathcal{X}<em _mathbf_x="\mathbf{x">{k}\right|} \sum</em>} \in \mathcal{X<em k_i_="k^{(i)">{k}} \Phi(\mathbf{x})$ and measure the temperature when interpolating between two classes. i.e. we predict the temperature for the features $\left{\alpha \boldsymbol{\phi}</em>\right} \quad \alpha \in[0,1]$. We plot the interpolation results in Figure 6 (Left) for the classes in CIFAR10, where the horizontal axis represent $\alpha$ and the vertical axis represents the temperature. For some classes we see a significant rise in the temperature as we interpolate between two classes, e.g. automobile and bird. This highlights the temperature prediction models ability to assign a low temperature in regions that the classifier is certain about, e.g. around the mean and a higher temperature in less certain regions, e.g. heavily interpolated regions.}}+(1-\alpha) \boldsymbol{\phi}_{k^{(j)}</p>
+<p>Interestingly, this feature is not present for all class pairs; for some, e.g. cat and dog, where the temperature remains high between classes. We hypothesise that this is due to an interpolation between these classes being a plausible realisation of an image, unlike for automobile and bird.</p>
+<p>We further show a histogram in Figure 6 (Right), of the temperature values for each sample in CIFAR-10 and colour code according to class. Again we see a similar pattern where the animal based classes typically have a higher temperature than the objects, indicating that the network should be more uncertain. This higher temperature is obtained from the VAE learning that samples in this region are often incorrect, which is where the signal comes from to increase the temperature.</p>
+<h1>5.3 Misclassification Rejection</h1>
+<p>Calibrated uncertainty estimates should render that the models are able to reject samples in order to preserve the accuracy. In this setting we report results for AURRA, which computes the area under the rejection ratio curve[27]. We display the results in Tab. 3, where we see that adaptive temperature scaling provides a slight improvement over normal predictions and also vanilla temperature scaling. Furthermore, we would like to highlight that even though vanilla temperature scaling improves calibration, it does so at the expense of being able to reject samples; unlike adaptive temperature scaling which is able to provide the best of both worlds. It is important to stress that this is a significant advantage, as we are able to provide better calibrated predictions whilst also increasing the models ability to reject samples.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Methods</th>
+<th style="text-align: center;">AURRA-C $(\uparrow)$</th>
+<th style="text-align: center;">AURRA-DS $(\uparrow)$</th>
+<th style="text-align: center;">AURRA-E $(\uparrow)$</th>
+<th style="text-align: center;">AURRA-C $(\uparrow)$</th>
+<th style="text-align: center;">AURRA-DS $(\uparrow)$</th>
+<th style="text-align: center;">AURRA-E $(\uparrow)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$93.07 \pm 4.28$</td>
+<td style="text-align: center;">$91.84 \pm 5.24$</td>
+<td style="text-align: center;">$92.95 \pm 4.23$</td>
+<td style="text-align: center;">$93.96 \pm 0.15$</td>
+<td style="text-align: center;">$92.94 \pm 0.21$</td>
+<td style="text-align: center;">$93.87 \pm 0.16$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$92.97 \pm 4.25$</td>
+<td style="text-align: center;">$91.70 \pm 5.40$</td>
+<td style="text-align: center;">$92.67 \pm 4.41$</td>
+<td style="text-align: center;">$93.62 \pm 0.06$</td>
+<td style="text-align: center;">$92.68 \pm 0.26$</td>
+<td style="text-align: center;">$93.35 \pm 0.11$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$93.20 \pm 4.25$</td>
+<td style="text-align: center;">$92.00 \pm 5.39$</td>
+<td style="text-align: center;">$92.99 \pm 4.35$</td>
+<td style="text-align: center;">$94.03 \pm 0.18$</td>
+<td style="text-align: center;">$93.18 \pm 0.19$</td>
+<td style="text-align: center;">$93.84 \pm 0.19$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Tiny-ImageNet</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$84.21 \pm 1.09$</td>
+<td style="text-align: center;">$81.83 \pm 0.64$</td>
+<td style="text-align: center;">$83.69 \pm 1.16$</td>
+<td style="text-align: center;">$79.84 \pm 2.10$</td>
+<td style="text-align: center;">$76.71 \pm 1.64$</td>
+<td style="text-align: center;">$79.35 \pm 2.25$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$84.05 \pm 1.09$</td>
+<td style="text-align: center;">$81.63 \pm 0.64$</td>
+<td style="text-align: center;">$83.31 \pm 1.11$</td>
+<td style="text-align: center;">$79.58 \pm 2.06$</td>
+<td style="text-align: center;">$76.27 \pm 1.56$</td>
+<td style="text-align: center;">$78.59 \pm 2.07$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Adaptive TS</td>
+<td style="text-align: center;">$84.68 \pm 0.18$</td>
+<td style="text-align: center;">$81.93 \pm 0.28$</td>
+<td style="text-align: center;">$84.09 \pm 0.20$</td>
+<td style="text-align: center;">$81.26 \pm 0.49$</td>
+<td style="text-align: center;">$77.60 \pm 0.50$</td>
+<td style="text-align: center;">$80.44 \pm 0.48$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3. AURRA scores for based on: confidence (AURRA-C), Demster-Schafer [41] (AURRA-DS) and entropy (AURRA-E). Unlike temperature scaling, adaptive temperature scaling does not suffer a reduction in rejection ability.</p>
+<h3>5.4 Evaluating Hardness</h3>
+<p>Given our models ability to predict the temperature, it should naturally extract a notion of hardness, that is how difficult is it to classify. One would expect hard samples to have a high temperature and easy ones to have a low temperature. To conduct this experiment, we utilise the CIFAR-10.1 [37,43] datset, which contains "harder", but statistically similar images to CIFAR-10; conseqently this experiment is not examining data-shift, but is instead measuring the performance on challenging samples. We report the standard metrics: accuracy, ECE and AdaECE in Tab. 4, where we see that adaptive temperature is able to obtain a lower calibration error than vanilla temperature scaling for both ResNet50 and WideResNet28-10 when trained using cross entropy loss.</p>
+<p>A key hypothesis we wish to test is "does the model assign higher temperatures to harder samples?"; harder samples should naturally contain a greater amount of uncertainty in their predictions. Consequently, we should see higher temperature values assigned to harder samples (CIFAR-10.1) than to easier ones (CIFAR-10). We test this hypothesis by plotting the histogram of temperature values for CIFAR-10 and CIFAR-10.1, for both correct and incorrect predictions in Figure 8 (Right).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Methods</th>
+<th style="text-align: center;">Accuracy $(\uparrow)$</th>
+<th style="text-align: center;">ECE $(\downarrow)$</th>
+<th style="text-align: center;">AdaECE $(\downarrow)$</th>
+<th style="text-align: center;">Accuracy $(\uparrow)$</th>
+<th style="text-align: center;">ECE $(\downarrow)$</th>
+<th style="text-align: center;">AdaECE $(\downarrow)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">$85.86 \pm 2.48$</td>
+<td style="text-align: center;">$8.35 \pm 1.58$</td>
+<td style="text-align: center;">$8.15 \pm 1.68$</td>
+<td style="text-align: center;">$89.55 \pm 0.81$</td>
+<td style="text-align: center;">$5.66 \pm 0.28$</td>
+<td style="text-align: center;">$5.56 \pm 0.32$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Vanilla TS</td>
+<td style="text-align: center;">$85.86 \pm 2.48$</td>
+<td style="text-align: center;">$4.57 \pm 0.32$</td>
+<td style="text-align: center;">$4.24 \pm 0.43$</td>
+<td style="text-align: center;">$89.55 \pm 0.81$</td>
+<td style="text-align: center;">$3.64 \pm 0.25$</td>
+<td style="text-align: center;">$3.38 \pm 0.35$</td>
+</tr>
+<tr>
+<td style="text-align: center;">Adptive TS</td>
+<td style="text-align: center;">$85.86 \pm 2.48$</td>
+<td style="text-align: center;">$\mathbf{3 . 6 7} \pm \mathbf{1 . 4 1}$</td>
+<td style="text-align: center;">$\mathbf{3 . 3 5} \pm \mathbf{1 . 3 9}$</td>
+<td style="text-align: center;">$89.55 \pm 0.81$</td>
+<td style="text-align: center;">$\mathbf{3 . 5 3} \pm \mathbf{0 . 2 2}$</td>
+<td style="text-align: center;">$\mathbf{3 . 3 5} \pm \mathbf{0 . 2 0}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4. CIFAR-10.1 Results for ResNet50 and WideResNet28-10, here we see that adaptive temperature scaling is able to provide slightly improved calibration on the harder CIFAR-10.1 dataset.</p>
+<p>Here we see that generally, correct samples for CIFAR-10 (blue) are assigned a lower temperature than for CIFAR-10.1 (green), indicating that the adaptive temperature is able to recognise harder samples and assign a higher temperature increasing the uncertainty. Furthermore, we also see that adaptive temperature predicts higher temperatures for incorrect predictions for CIFAR-10 (orange), highlighting adaptive temperatures ability to reduce the confidence of samples which are likely to be incorrect. Interestingly, the same is not true for CIFAR-10.1, this is due to the fact that the samples from CIFAR-10.1 are by design harder, adaptive temperature predicts higher values of $T$ than for the easier CIFAR10 counterpart.</p>
+<h2>6 Discussion</h2>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Fig. 8. Histograms of temperature for correct predictions for CIFAR-10 and CIFAR10.1 on ResNet50. Lower temperatures are typically assigned to correct (blue) samples from CIFAR-10 but higher for incorrect samples (orange). We also see that hard samples are assigned higher values, regardless of whether they are correct or not (red and green) for CIFAR-10.1.</p>
+<p>Here we have presented a novel post-hoc method for predicting the temperature score corresponding to a given sample to make a neural network's classification confidence more calibrated. Given a data-point, our method is able predict how confident the classifier should be about its prediction, improving the calibration error, furthermore, adaptive temperature is also able to obtain better results under distribution shifts. This is achieved by leveraging the latent space of a VAE, which we found to naturally encapsulate and structure the information relating to confidence appropriately. As the model is applied post-hoc, training is very fast, requiring little computational overhead, furthermore it is very easy to implement.</p>
+<h2>Acknowledgements</h2>
+<p>This work is supported by the UKRI grant: Turing AI Fellowship EP/W002981/1 and EPSRC/MURI grant: EP/N019474/1. We would like to thank the Royal</p>
+<p>Academy of Engineering, FiveAI and Meta AI. Thanks to Kemal Oksuz for spending their valuable time to provide comments on the work.</p>
+<h1>References</h1>
+<ol>
+<li>Blundell, C., Cornebise, J., Kavukcuoglu, K., Wierstra, D.: Weight uncertainty in neural networks (May 2015) 9</li>
+<li>Brier, G.W., et al.: Verification of forecasts expressed in terms of probability. Monthly weather review 78(1), 1-3 (1950) 10</li>
+<li>Chen, T., Fox, E., Guestrin, C.: Stochastic gradient hamiltonian monte carlo. In: Xing, E.P., Jebara, T. (eds.) Proceedings of the 31st International Conference on Machine Learning. Proceedings of Machine Learning Research, vol. 32, pp. 16831691. PMLR, Bejing, China (22-24 Jun 2014), http://proceedings.mlr.press/ v32/cheni14.html 9</li>
+<li>Ding, Y., Liu, J., Xiong, J., Shi, Y.: Revisiting the evaluation of uncertainty estimation and its application to explore model Complexity-Uncertainty Trade-Off (Mar 2019) 10</li>
+<li>Ding, Z., Han, X., Liu, P., Niethammer, M.: Local temperature scaling for probability calibration. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 6889-6899 (2021) 9</li>
+<li>Gal, Y., Ghahramani, Z.: Dropout as a bayesian approximation: Representing model uncertainty in deep learning. In: international conference on machine learning. pp. 1050-1059. PMLR (2016) 9</li>
+<li>Guo, C., Pleiss, G., Sun, Y., Weinberger, K.Q.: On calibration of modern neural networks. In: International Conference on Machine Learning. pp. 1321-1330. PMLR (2017) 1, 2, 3, 5, 6, 9</li>
+<li>Havasi, M., Jenatton, R., Fort, S., Liu, J.Z., Snoek, J., Lakshminarayanan, B., Dai, A.M., Tran, D.: Training independent subnetworks for robust prediction. arXiv preprint arXiv:2010.06610 (2020) 9</li>
+<li>He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image recognition. In: Proceedings of the IEEE conference on computer vision and pattern recognition. pp. $770-778(2016) 2,10$</li>
+<li>Hendrycks, D., Dietterich, T.: Benchmarking neural network robustness to common corruptions and perturbations. arXiv preprint arXiv:1903.12261 (2019) 2, 10, 11</li>
+<li>Hinton, G.E., Zemel, R.S.: Autoencoders, minimum description length and helmholtz free energy. In: Advances in neural information processing systems. pp. $3-10(1994) 6$</li>
+<li>Ji, B., Jung, H., Yoon, J., Kim, K., et al.: Bin-wise temperature scaling (bts): Improvement in confidence calibration performance through simple scaling techniques. In: 2019 IEEE/CVF International Conference on Computer Vision Workshop (ICCVW). pp. 4190-4196. IEEE (2019) 9</li>
+<li>Joo, T., Chung, U., Seo, M.G.: Being bayesian about categorical probability (Feb 2020) 9</li>
+<li>Kim, S., Song, Q., Liang, F.: Stochastic gradient langevin dynamics algorithms with adaptive drifts (Sep 2020) 9</li>
+<li>Kingma, D.P., Welling, M.: Auto-encoding variational bayes. arXiv preprint arXiv:1312.6114 (2013) 6</li>
+<li>
+<p>Kingma, D.P., Salimans, T., Welling, M.: Variational dropout and the local reparameterization trick. In: Cortes, C., Lawrence, N., Lee, D., Sugiyama, M., Garnett, R. (eds.) Advances in Neural Information Processing Systems. vol. 28, pp. 25752583. Curran Associates, Inc. (2015), https://proceedings.neurips.cc/paper/ 2015/file/bc7316929fe1545bf0b98d114ee3ecb8-Paper.pdf 9</p>
+</li>
+<li>
+<p>Kristiadi, A., Hein, M., Hennig, P.: Being bayesian, even just a bit, fixes overconfidence in ReLU networks. In: III, H.D., Singh, A. (eds.) Proceedings of the 37th International Conference on Machine Learning. Proceedings of Machine Learning Research, vol. 119, pp. 5436-5446. PMLR (13-18 Jul 2020), http://proceedings . mlr.press/v119/kristiadi20a.html 9</p>
+</li>
+<li>Krizhevsky, A., Hinton, G., et al.: Learning multiple layers of features from tiny images (2009) 10</li>
+<li>Kull, M., Perello Nieto, M., Kängsepp, M., Silva Filho, T., Song, H., Flach, P.: Beyond temperature scaling: Obtaining well-calibrated multi-class probabilities with dirichlet calibration. Advances in neural information processing systems 32 (2019) 10</li>
+<li>Kumar, A., Sarawagi, S., Jain, U.: Trainable calibration measures for neural networks from kernel mean embeddings. In: International Conference on Machine Learning. pp. 2805-2814. PMLR (2018) 9</li>
+<li>Lakshminarayanan, B., Pritzel, A., Blundell, C.: Simple and scalable predictive uncertainty estimation using deep ensembles. Neural Information Processing System (2016) $9,10$</li>
+<li>Lin, T.Y., Goyal, P., Girshick, R., He, K., Dollár, P.: Focal loss for dense object detection. In: Proceedings of the IEEE international conference on computer vision. pp. 2980-2988 (2017) 9</li>
+<li>Liu, J.Z., Lin, Z., Padhy, S., Tran, D., Bedrax-Weiss, T., Lakshminarayanan, B.: Simple and principled uncertainty estimation with deterministic deep learning via distance awareness. arXiv preprint arXiv:2006.10108 (2020) 9</li>
+<li>Malinin, A., Gales, M.: Predictive uncertainty estimation via prior networks. Neural Information Processing System (2018) 9</li>
+<li>Mukhoti, J., Kulharia, V., Sanyal, A., Golodetz, S., Torr, P.H., Dokania, P.K.: Calibrating deep neural networks using focal loss. In: NeurIPS (2020) 3, 4, 9, 10</li>
+<li>Müller, R., Kornblith, S., Hinton, G.: When does label smoothing help? NeurIPS (2019) 9</li>
+<li>Nadeem, M.S.A., Zucker, J.D., Hanczar, B.: Accuracy-rejection curves (arcs) for comparing classification methods with a reject option. In: Machine Learning in Systems Biology. pp. 65-81. PMLR (2009) 14</li>
+<li>Nado, Z., Padhy, S., Sculley, D., D'Amour, A., Lakshminarayanan, B., Snoek, J.: Evaluating prediction-time batch normalization for robustness under covariate shift. arXiv preprint arXiv:2006.10963 (2020) 9</li>
+<li>Naeini, M.P., Cooper, G., Hauskrecht, M.: Obtaining well calibrated probabilities using bayesian binning. In: Proceedings of the AAAI Conference on Artificial Intelligence. vol. 29 (2015) 9</li>
+<li>Naeini, M.P., Cooper, G.F.: Binary classifier calibration using an ensemble of near isotonic regression models. In: 2016 IEEE 16th International Conference on Data Mining (ICDM). pp. 360-369. IEEE (2016) 9</li>
+<li>Nalisnick, E., Matsukawa, A., Teh, Y.W., Gorur, D., Lakshminarayanan, B.: Do deep generative models know what they don't know? In: International Conference on Learning Representations (2019), https://openreview.net/forum?id= H1xwNhCcYm 6</li>
+<li>Nixon, J., Dusenberry, M., Jerfel, G., Zhang, L., Tran, D.: Measuring calibration in deep learning (Sep 2019) 10</li>
+<li>
+<p>Ovadia, Y., Fertig, E., Ren, J., Nado, Z., Sculley, D., Nowozin, S., Dillon, J.V., Lakshminarayanan, B., Snoek, J.: Can you trust your model's uncertainty? evaluating predictive uncertainty under dataset shift. NeurIPS (2019) 9</p>
+</li>
+<li>
+<p>Pinto, F., Yang, H., Lim, S.N., Torr, P.H., Dokania, P.K.: Mix-maxent: improving accuracy and uncertainty estimates of deterministic neural networks. In: NeurIPS Workshop, Distribution shifts: connecting methods and applications (2021) 12</p>
+</li>
+<li>Pinto, F., Yang, H., Lim, S.N., Torr, P.H., Dokania, P.K.: Regmixup: Mixup as a regularizer can surprisingly improve accuracy and out distribution robustness. In: arXiv: 2206.14502 (2022) 12</li>
+<li>Platt, J., et al.: Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. Advances in large margin classifiers 10(3), 61-74 (1999) 9</li>
+<li>Recht, B., Roelofs, R., Schmidt, L., Shankar, V.: Do cifar-10 classifiers generalize to cifar-10? (2018), https://arxiv.org/abs/1806.00451 14</li>
+<li>Riquelme, C., Tucker, G., Snoek, J.: Deep bayesian bandits showdown. In: International Conference on Learning Representations (2018) 9</li>
+<li>Ritter, H., Botev, A., Barber, D.: A scalable laplace approximation for neural networks. In: International Conference on Learning Representations (2018), https: //openreview.net/forum?id=Skdvd2xAZ 9</li>
+<li>Roelofs, R., Cain, N., Shlens, J., Mozer, M.C.: Mitigating bias in calibration error estimation (Sep 2020) 10</li>
+<li>Sensoy, M., Kaplan, L., Kandemir, M.: Evidential deep learning to quantify classification uncertainty. Advances in Neural Information Processing Systems 31 (2018) 14</li>
+<li>Tomczak, J., Welling, M.: Vae with a vampprior. In: International Conference on Artificial Intelligence and Statistics. pp. 1214-1223. PMLR (2018) 7</li>
+<li>Torralba, A., Fergus, R., Freeman, W.T.: 80 million tiny images: A large data set for nonparametric object and scene recognition. IEEE Transactions on Pattern Analysis and Machine Intelligence 30(11), 1958-1970 (2008) 10, 14</li>
+<li>Welling, M., Teh, Y.W.: Bayesian learning via stochastic gradient langevin dynamics. In: Proceedings of the 28th International Conference on International Conference on Machine Learning. p. 681-688. ICML'11, Omnipress, Madison, WI, USA (2011) 9</li>
+<li>Wen, Y., Tran, D., Ba, J.: Batchensemble: an alternative approach to efficient ensemble and lifelong learning. In: International Conference on Learning Representations (2020), https://openreview.net/forum?id=Sklf1yrYDr 9</li>
+<li>Zadrozny, B., Elkan, C.: Obtaining calibrated probability estimates from decision trees and naive bayesian classifiers. In: Icml. vol. 1, pp. 609-616. Citeseer (2001) 9</li>
+<li>Zadrozny, B., Elkan, C.: Transforming classifier scores into accurate multiclass probability estimates. In: Proceedings of the eighth ACM SIGKDD international conference on Knowledge discovery and data mining. pp. 694-699 (2002) 9</li>
+<li>Zagoruyko, S., Komodakis, N.: Wide residual networks. arXiv preprint arXiv:1605.07146 (2016) 2, 10</li>
+</ol>
+<h1>A Gradient of Network Weights</h1>
+<p>Consider the last layer of a Neural Network with parameters $\boldsymbol{w}$ and the cross entropy loss $\mathcal{L}: \mathbb{R}^{K} \rightarrow \mathbb{R}$. The gradient of the parameters is given as $\frac{\partial \mathcal{L}}{\partial \boldsymbol{w}}=$ $\frac{\partial \mathbf{s}}{\partial \boldsymbol{w}} \frac{\partial \sigma(\mathbf{s})}{\partial \mathbf{s}} \frac{\partial \mathcal{L}}{\partial \sigma(\mathbf{s})}$, where</p>
+<p>$$
+\begin{aligned}
+&amp; \frac{\partial \mathcal{L}}{\partial \sigma\left(s_{k}\right)}=-\frac{q_{k}}{\sigma\left(s_{k}\right)} \
+&amp; \frac{\partial \sigma\left(s_{k}\right)}{\partial s_{j}}=\sigma\left(s_{k}\right)\left(\delta_{j k}-\sigma\left(s_{j}\right)\right)
+\end{aligned}
+$$</p>
+<p>the gradient for the last layers is thus given as</p>
+<p>$$
+\frac{\partial \mathcal{L}}{\partial \boldsymbol{w}}=\frac{\partial \mathbf{s}}{\partial \boldsymbol{w}}(\sigma(\mathbf{s})-\boldsymbol{q})
+$$</p>
+<p>where $\sigma(\mathbf{s})-\boldsymbol{q}=\left{\sigma\left(s_{j}\right)-q_{j}: j \in{1 \ldots K}\right.$.</p>
+<h2>B Predictions are unaffected by temperature</h2>
+<p>In neural network classification problems, the parameters of the Categorical distribution are obtained through the Softmax operator</p>
+<p>$$
+\sigma(\mathbf{s})=\frac{\exp \left(\frac{\mathbf{s}}{T}\right)}{\sum_{i} \exp \left(\frac{s_{i}}{T}\right)}
+$$</p>
+<p>with the predicted class given as $\tilde{k}=\arg \max <em k="k">{k} \sigma\left(\mathbf{s}</em>\right)$. The temperature value has no effect on the resulting prediction</p>
+<p>$$
+\begin{aligned}
+\underset{k}{\arg \max } \sigma\left(\mathbf{s}<em k="k">{k}\right) &amp; =\underset{k}{\arg \max } \frac{\mathbf{s}</em> \
+&amp; =\underset{k}{\arg \max } \mathbf{s}_{k}
+\end{aligned}
+$$}}{T</p>
+<p>Hence, the value of $T$ does not affect the class prediction.</p>
+<h2>C Gradient of Temperature</h2>
+<p>The gradient of the loss w.r.t the temperature is $\frac{\partial \mathcal{L}}{\partial T}=\frac{\partial \boldsymbol{p}}{\partial T} \frac{\partial \mathcal{L}}{\boldsymbol{p}}{ }^{T}$. The gradient of the individual class probabilities from the softmax output is</p>
+<p>$$
+\begin{aligned}
+\frac{\partial \boldsymbol{p}<em i="i">{k}}{\partial T} &amp; =\frac{\sum</em>} \exp \left(\frac{\mathbf{s<em k="k">{i}}{T}\right) \frac{\partial}{\partial T} \exp \left(\frac{\mathbf{s}</em>}}{T}\right)}{\left(\sum_{i} \exp \left(\frac{\mathbf{s<em i="i">{i}}{T}\right)\right)^{2}}-\frac{\exp \left(\frac{\mathbf{s}</em>}}{T}\right) \sum_{k} \frac{\partial}{\partial T} \exp \left(\frac{\mathbf{s<em i="i">{k}}{T}\right)}{\left(\sum</em>} \exp \left(\frac{\mathbf{s<em k="k">{i}}{T}\right)\right)^{2}} \
+&amp; =\frac{\sigma\left(\mathbf{s}</em>}\right)}{T^{2}}\left(\sum_{i \backslash k} \mathbf{s<em i="i">{i} \exp \left(\frac{\mathbf{s}</em>}}{T}\right)-\mathbf{s<em i="i">{k} \exp \left(\frac{\mathbf{s}</em>\right)\right)
+\end{aligned}
+$$}}{T</p>
+<p>Given that $\frac{\partial \mathcal{L}}{\partial \sigma\left(s_{k}\right)}=-\frac{q_{k}}{\sigma\left(s_{k}\right)}$, using the chain rule we have</p>
+<p>$$
+\frac{\partial \mathcal{L}}{\partial T}=\sum_{k} \frac{q_{k}}{T^{2}}\left(s_{k} \sum_{i \backslash k} \exp \left(\frac{s_{i}}{T}\right)-\sum_{j \backslash k} s_{j} \exp \left(\frac{s_{j}}{T}\right)\right)
+$$</p>
+<p>thus concluding the proof.</p>
+<h1>D Corruptions</h1>
+<p>We display additional plots for how AdaECE varies with corruption strength for CIFAR10-C in Figure 9, where we can see that adaptive temperature scaling consistently obtains better results than vanilla temperature scaling.</p>
+<h2>E Temperature Values</h2>
+<p>We display the average temperature values in Tab. 5, here we see that adaptive temperature obtains a similar average temperature to vanilla temperature scaling.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Network</th>
+<th style="text-align: center;">Dataset</th>
+<th style="text-align: center;">Avg. Temp <br> Vanilla Adaptive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">ResNet50</td>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">$1.484 \pm 0.1231.506 \pm 0.296$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">$1.398 \pm 0.0341.313 \pm 0.076$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">TinyImageNet</td>
+<td style="text-align: center;">$1.296 \pm 0.2341.131 \pm 0.179$</td>
+</tr>
+<tr>
+<td style="text-align: center;">WideResNet2810</td>
+<td style="text-align: center;">CIFAR-10</td>
+<td style="text-align: center;">$1.310 \pm 0.0351.294 \pm 0.072$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">CIFAR-100</td>
+<td style="text-align: center;">$1.220 \pm 0.010 \quad 1.1349$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">TinyImageNet</td>
+<td style="text-align: center;">$1.174 \pm 0.0841.017 \pm 0.117$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5. Average temperature values for neural different models.</p>
+<h2>F Training Details</h2>
+<p>We followed standard training protocols when training the neural networks. Models trained on CIFAR-10/CIFAR-100 required 350 epochs, with an initial learning rate of 0.1 , the learning rate was decreased by a factor of 10 at the milestones 150 and 250 epochs. Models trained on TinyImageNet required 100 epochs, with an initial learning rate of 0.1 , the learning rate was decreased by a factor of 10 at the milestones 43 and 72 epochs.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{7}$ assuming features of clean and corrupted inputs are not mapped exactly to the same point in the embedding space&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

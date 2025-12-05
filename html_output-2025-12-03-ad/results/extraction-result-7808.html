@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7808 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7808</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7808</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-143.html">extraction-schema-143</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how large language models are used to distill quantitative laws, equations, or functional relationships from collections of scholarly papers, including details of the models, prompting or fine‑tuning approaches, input corpora, extraction methods, types of laws, representation formats, evaluation datasets, metrics, baseline comparisons, validation procedures, and reported performance or limitations.</div>
+                <p><strong>Paper ID:</strong> paper-916a06a6d51aa93de27aac2f3e14faed08dd6706</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/916a06a6d51aa93de27aac2f3e14faed08dd6706" target="_blank">Formal Mathematics Statement Curriculum Learning</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Learning Representations</p>
+                <p><strong>Paper TL;DR:</strong> It is shown that at same compute budget, expert iteration, by which the authors mean proof search interleaved with learning, dramatically outperforms proof search only and is capable of finding and solving a curriculum of increasingly difficult problems, without the need for associated ground-truth proofs.</p>
+                <p><strong>Paper Abstract:</strong> We explore the use of expert iteration in the context of language modeling applied to formal mathematics. We show that at same compute budget, expert iteration, by which we mean proof search interleaved with learning, dramatically outperforms proof search only. We also observe that when applied to a collection of formal statements of sufficiently varied difficulty, expert iteration is capable of finding and solving a curriculum of increasingly difficult problems, without the need for associated ground-truth proofs. Finally, by applying this expert iteration to a manually curated set of problem statements, we achieve state-of-the-art on the miniF2F benchmark, automatically solving multiple challenging problems drawn from high school olympiads.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7808",
+    "paper_id": "paper-916a06a6d51aa93de27aac2f3e14faed08dd6706",
+    "extraction_schema_id": "extraction-schema-143",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.0054564999999999995,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Formal Mathematics Statement Curriculum Learning</h1>
+<p>Stanislas Polu ${ }^{1}$ Jesse Michael Han ${ }^{1}$ Kunhao Zheng ${ }^{2}$ Mantas Baksys ${ }^{3}$ Igor Babuschkin ${ }^{1}$ Ilya Sutskever ${ }^{1}$</p>
+<h4>Abstract</h4>
+<p>We explore the use of expert iteration in the context of language modeling applied to formal mathematics. We show that at same compute budget, expert iteration, by which we mean proof search interleaved with learning, dramatically outperforms proof search only. We also observe that when applied to a collection of formal statements of sufficiently varied difficulty, expert iteration is capable of finding and solving a curriculum of increasingly difficult problems, without the need for associated ground-truth proofs. Finally, by applying this expert iteration to a manually curated set of problem statements, we achieve state-of-the-art on the miniF2F benchmark, automatically solving multiple challenging problems drawn from high school olympiads.</p>
+<h2>1. Introduction</h2>
+<p>Deep learning has enjoyed spectacular success in many domains, including language (Brown et al., 2020; Devlin et al., 2018; Wu et al., 2016), vision (Radford et al., 2021; Tan \&amp; Le, 2019), and image generation (Ramesh et al., 2021; Karras et al., 2019). One domain where deep learning has not yet enjoyed a comparable success is in tasks that require extensive planning and symbolic reasoning, with the exception of two-player games (Silver et al., 2016; 2017; Berner et al., 2019; Vinyals et al., 2019). In such games, deep learning systems exhibit a considerable degree of reasoning, especially when trained with self-play combined with a search procedure such as Monte Carlo Tree Search (MCTS) (Browne et al., 2012). But the resulting reasoning abilities achieved are limited due to the relatively narrow scope of games.</p>
+<p>As such, theorem proving in interactive proof assistants, or formal mathematics, appears as an interesting game-like domain to tackle due to its increased scope. Like games, formal mathematics has an automated way of determining</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>whether a trajectory (i.e. a proof) is successful (i.e. formally correct). But the vast scope of formal mathematics means that any strong reasoning result obtained in it will be more meaningful than comparable results in games (e.g. finding proofs to mathematical conjectures), and could even be applicable to important practical problems (e.g. software verification).</p>
+<p>However, tackling formal mathematics involves two main challenges that we must address in order to continue making progress:</p>
+<p>Infinite action space Not only does formal mathematics have an extremely large search space (like Go for example), it also has an infinite action space. At each step of proof search, the model must choose not from a well-behaved finite set of actions, but a complex and infinite set of tactics, potentially involving exogenous mathematical terms that have to be generated (e.g., generating a mathematical statement to be used as a witness, an object used steps such as "there exists an $x$...", or a cut, the introduction and the chaining of a lemma in the middle of a proof).</p>
+<p>No direct self-play setup In formal mathematics, a prover is not playing against an opponent but against a set of statements to prove. When faced with a statement that is just too hard, there is no obvious reframing of the formal mathematics setup that will let the prover generate intermediary easier statements to tackle first. This asymmetry prevents naive application of the symmetric self-play algorithms commonly used in 2-player games.</p>
+<p>These two differences make a naive application of reinforcement learning to formal mathematics unlikely to succeed. Past work proposed to address the infinite action space problem by sampling from a language model (Polu \&amp; Sutskever, 2020). This paper focuses on this second problem and our basis for addressing it is the observation that the key role of self-play is to provide an unsupervised curriculum. We propose instead to supply auxiliary sets of problem statements (without requiring proofs) of varying difficulty. We empirically show that, when the difficulty of these auxiliary problems is varied enough, a simple expert iteration procedure is able to solve a curriculum of increasingly difficult problems, eventually generalizing to our target distribution. We show that this works with both automaticallygenerated and manually-curated auxiliary distributions of</p>
+<p>problems and leverage this to achieve state-of-the-art on the miniF2F benchmark. Our results suggest that continuous self-improvement in formal mathematics can potentially be reduced to the problem of generating such sets of formal statements, which we have done in part manually in this work, but could eventually be scaled in the future with more automation (such as more domain-specific statements generator or even informal to formal machine translation).</p>
+<h3>1.1. miniF2F benchmark</h3>
+<p>In this work, we target the miniF2F (Zheng et al., 2021) benchmark, which consists of 244 validation and 244 test formalized statements of mathematical problems from various competitions. We believe it to be a better measure of mathematical reasoning compared to a formal libraryderived split. Also, the extreme scarcity in formal libraries of this type of problems makes it an ideal test-bed for the expert iteration methodology studied in this paper.</p>
+<h3>1.2. Contribution</h3>
+<p>Our contributions are the following: we present lean-gym, a simple REPL interface for interacting with the Lean theorem prover; we propose an expert iteration methodology for GPT-f (Polu \&amp; Sutskever, 2020) which uses proofs generated by our models as training data to iteratively improve their performance; we demonstrate that, at fixed compute budget, expert iteration outperforms proof search only; we present a synthetic inequality generator and study how expert iteration finds and solves a curriculum of increasingly difficult problems from a set of generated statements of various difficulty; finally, we present a manually curated set of formalized problem statements and leverage it to achieve state-of-the-art performance on the miniF2F benchmark.</p>
+<h2>2. Related Work</h2>
+<p>Our work strongly relies on, and can be seen as a natural continuation of the work presented in the original GPT-f paper (Polu \&amp; Sutskever, 2020) which studies the use of language models to generate tactics, the PACT paper (Han et al., 2021) which applies GPT-f to Lean and studies the benefits from co-training on self-supervised objectives, and the miniF2F benchmark (Zheng et al., 2021).</p>
+<p>We present additional related work in Appendix A.</p>
+<h2>3. Formal Environment</h2>
+<p>We choose Lean (de Moura et al., 2015; lea) as our formal environment. Unlike Metamath (Megill \&amp; Wheeler, 2019), which has been studied in the original GPT-f paper (Polu \&amp; Sutskever, 2020), Lean benefits from high-level tactics which were shown to be beneficial in the context of
+the miniF2F benchmark (Zheng et al., 2021)-Lean proofs are typically 10x shorter than Metamath's. Also, Lean has recently received a lot of attention from the mathematical community, thanks to projects such as the Perfectoid Spaces (Buzzard et al., 2019) and the Liquid Tensor experiment (Scholze, 2020), and benefits from a vibrant community of hundreds of contributors to its main mathematical library called mathlib. We refer to the PACT paper's Background section (Han et al., 2021) for a detailed introduction to Lean in the context of neural theorem proving.</p>
+<h3>3.1. lean-gym</h3>
+<p>In the PACT paper (Han et al., 2021), proof search is performed by the Lean runtime using the LEANSTEP environment, with a generic backend interface to models. While easy to use-one just needs to plug in their model-this approach makes it difficult to alter and iterate on the search procedure because it is programmed in Lean (which is not designed or intended for cluster-wide parallelised I/O intensive tasks), and the coupling of the search procedure with the Lean runtime introduces challenges when scaling to a large number of parallel workers.</p>
+<p>To solve these issues we implemented lean-gym ${ }^{1}$ - a simple REPL interface over the standard input/output implemented in Lean directly. We present lean-gym's API and discuss some of its advantages and limitations in Appendix B.</p>
+<h3>3.2. Proof datasets extraction</h3>
+<p>We rely on the proof extraction methodology presented in the PACT paper (Han et al., 2021) to extract human tactic proof steps from mathlib (the tactic dataset) as well as the various other proof artifacts (mix1 and mix2 datasets). We also extract mathlib-{train,valid,test}, the set of statements from mathlib along the split proposed in Han et al. (2021) (the validation and test splits of tactic, mix1, mix2 being aligned with mathlib-{valid, test} as the splits are determined by declaration name hashes (across all data sources including proof-term mining) as opposed to individual proof steps or data-points).</p>
+<h2>4. Expert Iteration</h2>
+<p>Expert iteration was introduced in Silver et al. (2017) and broadly consists in iteratively training models on their previously sampled trajectories, to achieve continuous improvement. In this section we present our expert iteration methodology, including the models and pre-training strategies we rely on.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h3>4.1. Model</h3>
+<p>We use decoder-only Transformers similar to GPT-3 (Brown et al., 2020). Throughout this paper we focus on a model with 36 layers and 774 million trainable parameters (referred to as the 700 m model in the GPT-f paper (Polu \&amp; Sutskever, 2020)).</p>
+<h3>4.2. Pre-Training</h3>
+<p>We pre-train our models successively on GPT-3's postprocessed version of CommonCrawl (for 300B tokens) and an updated version of WebMath (Polu \&amp; Sutskever, 2020) (for 72B tokens) whose mix is presented in Appendix C.</p>
+<h3>4.3. Training objectives</h3>
+<h3>4.3.1. Proofstep objective</h3>
+<p>The proofstep objective, introduced in Polu \&amp; Sutskever (2020), consists in generating a PROOFSTEP (a Lean tactic) given a GOAL (a Lean tactic state). We also condition this objective on the current DECLARATION (a Lean theorem name), which remains the same throughout a proof search: DECL <DECLARATION> GOAL <GOAL> PROOFSTEP <PROOFSTEP>.</p>
+<p>The rationale for conditioning on the declaration name is to hint our models on the position of the current declaration in the mathlib library. It can be considered as a weak proxy signal for the large amount of information not shown to the model (the full environment consisting of the available imports and currently open declarations such as module names, notations, declared instances, ...). The declaration name lets models at least in principle memorize and then retrieve some of that information, knowing that lean-gym errors if a theorem or definition that is not available in the environment associated with the current declaration is used by tactics generated by our models. Also note that conversely to Polu \&amp; Sutskever (2020) and like Han et al. (2021) <GOAL> is not necessarily a single goal but a Lean tactic state, which possibly comprises multiple goals.</p>
+<h3>4.3.2. Proofsize objective</h3>
+<p>We depart from Polu \&amp; Sutskever (2020) and use a proofsize objective to guide our proof searches, which consists in generating one token that represents a proof size estimate bucket for the current goal (Lean tactic state): DECL <DECLARATION> GOAL <GOAL> PROOFSIZE <PROOFSIZE_BUCKET_TOKEN></p>
+<p>For a given goal $g$, either the goal was proved as part of the proof search and we denote its proof size (the number of tactic applications (compounded Lean tactics counting as one)) as $p s(g)$, or the goal was not proved in which case we assign the goal to a bucket that virtually represents "infinite" proof sizes.</p>
+<p>We use 11 buckets $B=0 \ldots 10$ and compute the proofsize bucket $b(g)$ for a goal $g$ by assigning infinite proof sizes to bucket 0 , all proof sizes over 20 to bucket 1 and linearly projecting proof sizes lower than 20 on the remaining buckets $2, \ldots, 10$ ( 10 being the bucket for the shortest proof sizes). In practice, when training and sampling from the model, we map $B$ to the tokens 'A'...'K'.</p>
+<p>To value goals as we run proof searches, we sample the proofsize bucket token and record the logits $p_{b}(g)$ for each viable bucket and use them to get a weighted average with the following formula: $v(g)=\frac{1}{# B} \sum_{b \in B} p_{b}(g) \cdot b$.
+As an example, if the model assigns $p_{0}=1$ (hence $p_{b \neq 0}=$ 0 ) then $v(g)=0$. Conversely if the model assigns $p_{10}=$ 1 ( 10 being the bucket for the shortest proof sizes) then $v(g)=1$.</p>
+<p>The rationale for using this proofsize objective instead of the outcome objective described in Polu \&amp; Sutskever (2020) is that (i) it achieves better performance compared to the outcome objective (see table 1), and (ii) it prioritizes goals that potentially lead to shorter proofs during proof search, creating an intrinsic incentive for the system to converge towards shorter proofs. Similarly to Polu \&amp; Sutskever (2020) we favor this token-based approach to the introduction of a separate value head to keep the overall architecture simple. This way the proofsize objective can be implemented by simply augmenting the training dataset and without any architectural change.</p>
+<h3>4.4. Bootstrapping</h3>
+<p>Bootstrapping consists in the steps required to train an initial model on both the proofstep objective and the proofsize objective.</p>
+<p>Given a pre-trained model on WebMath, we fine-tune it on the tactic dataset extracted from mathlib as well as the proof artifacts dataset mix1 as described in Han et al. (2021). This initial model, which we denote $\theta_{0}$ is solely trained on the proofstep objective. We use the validation splits of the tactic and ml datasets to early-stop training. Note that this is our only use of mathlib-valid to influence the training process throughout this paper.</p>
+<p>To generate data for the proofsize objective, we use $\theta_{0}$ to sample proofs for statements from mathlib-train. For each statement from mathlib-train (25k) we attempt $a=1$ proof searches using the cumulative logprob priority search described in Polu \&amp; Sutskever (2020) (which does not require a trained value function) using $d=512$ expansions and $e=8$ samples per expansion. We denote the set of successful proof searches created in this process as $S_{0}$.</p>
+<p>Using $S_{0}$ we generate dataset $D_{0}$ by concatenating: (i) the</p>
+<p>Table 1. Performance of $\theta_{0}$ and $\theta_{1}$ on mathlib-valid and miniF2Fvalid compared to PACT Lean GPT-f as reported in <em>Han et al. (2021); Zheng et al. (2021)</em>. All models have the same architecture. $\theta_{0}$ is sampled using cumulative logprob priority best-first search. $\theta_{1}$ is sampled using best-first search based on the proofsize objective. We report our setup ( $d=512$ expansions and $e=8$ tactic samples per expansions) as well as the setups used in <em>Han et al. (2021); Zheng et al. (2021)</em> to control for compute. We also report the performance of $\theta_{1}$ on mathlib-valid when trained using the outcome objective from <em>Polu &amp; Sutskever (2020)</em> as an ablation of our proposed proofsize objective.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">$d$</th>
+<th style="text-align: right;">$e$</th>
+<th style="text-align: right;">pass@1</th>
+<th style="text-align: right;">pass@8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">mathlib-valid</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PACT</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">$48.4 \%$</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}$ (PACT setup)</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">$48.5 \%$</td>
+<td style="text-align: right;">$57.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}$</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$46.7 \%$</td>
+<td style="text-align: right;">$57.5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$\mathbf{5 6 . 3 \%}$</td>
+<td style="text-align: right;">$\mathbf{6 6 . 3 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$ (outcome objective)</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$55.6 \%$</td>
+<td style="text-align: right;">$65.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">miniF2F-valid</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">MiniF2F</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">$23.9 \%$</td>
+<td style="text-align: right;">$29.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}$ (MiniF2F setup)</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">$27.6 \%$</td>
+<td style="text-align: right;">$31.8 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}$</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$28.4 \%$</td>
+<td style="text-align: right;">$33.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$\mathbf{2 8 . 5 \%}$</td>
+<td style="text-align: right;">$\mathbf{3 5 . 5 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$ (outcome objective)</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">$28.3 \%$</td>
+<td style="text-align: right;">$34.7 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>initial tactic dataset (proofstep objective), (ii) a deduplicated set of proofsteps extracted from the proofs in $S_{0}$ (proofstep objective) and (iii) a deduplicated set of proofsize tuples (goals and proofsize) extracted from the full proof searches in $S_{0}$ (proofsize objective).</p>
+<p>Note that the full proof searches in $S_{0}$ include goals that are visited but eventually remain unproved, which provides useful negative examples for the trained value function (even if these negatives may include provable goals that simply were not prioritized by the search). Also note that $S_{0}$ doesn’t include failed proof searches (which would contain only negative examples and no proofstep objective data).</p>
+<p>We fine-tune $\theta_{0}$ on $D_{0}$ for exactly one epoch (no use of validation data for early-stopping) to obtain our initial model $\theta_{1}$ trained on both the proofstep objective and the proofsize objective. $\theta_{0}$ is used in our expert iteration setup as base model to fine-tune from at each iteration, and $\theta_{1}$ is our first iterated model or mathlib bootstrapped model trained on both objectives.</p>
+<p>We report in Table 1 the pass rates of $\theta_{0}$ and $\theta_{1}$ on mathlibvalid and miniF2F-valid and compare with previously reported pass rates for equivalent amounts of compute. As reported in <em>Polu &amp; Sutskever (2020)</em>, training a value function to guide search greatly improves the pass rates of $\theta_{1}$ on mathlib-valid (see <em>Polu &amp; Sutskever (2020)</em> for an ablation of the value function). Interestingly, the gap between $\theta_{0}$ and $\theta_{1}$ on miniF2F-valid is not as significant, demonstrating that training a value function on proofs sampled from mathlib-train has limited transfer to miniF2F-valid. The main differences with <em>Zheng et al. (2021)</em>, potentially explaining the gap on minif2f-valid ( $27.6 \%$ vs $23.9 \%$ ), consists in the new pre-training described in section 4.2 as well as the use of a more recent mathlib checkpoint for the mix1, mix2 and tactic datasets.</p>
+<h3>4.5 Iterated sampling and training</h3>
+<p>Our expert iteration process takes as input: (i) a set of formal statements $S t$, (ii) a function $a: S t \rightarrow \mathbb{N}$ indicating the number of proof search attempts to run per statement at each iteration, (iii) a base model $\theta_{0}$ to fine-tune from at each iteration, and (iv) a mathlib bootstrapped model $\theta_{1}$ trained on both objectives.</p>
+<p>Each iteration $k$ consists in sampling proof searches for statements in $S t$ using $\theta_{k}$, filtering successful proof searches $S_{k}$ to extract a new dataset $D_{k}$, and fine-tuning $\theta_{0}$ on it to obtain $\theta_{k+1}$, on which we can iterate. To sample proof searches from $S t$ we use the best-first search described in <em>Polu &amp; Sutskever (2020)</em> with the value function described in section 4.3.2. We attempt $a(s \in S t)$ proof searches for each statement $s$ with $d=512$ expansions and $e=8$ samples per expansion. We denote the set of successful proof searches for iteration $k$ as $S_{k}$.</p>
+<p>Using $S_{k}$ we generate datasets $D_{k}$ by concatenating: (i) the initial tactic dataset (proofstep objective), (ii) a deduplicated set of proofsteps extracted from the proofs in $\bigcup_{1 \leq i \leq k} S_{k}$ (proofstep objective), and (iii) a deduplicated set of proofsize tuples (goals and proofsize) extracted from the full proof searches in $\bigcup_{1 \leq i \leq k} S_{k}$ (proofsize objective).</p>
+<p>Note that we use a global deduplication across iterations for both proofsteps and proofsize tuples which we found to be important to maintain the stability of the expert iteration procedure. This global deduplication is somewhat equivalent for each statement to growing a unique proof tree by aggregating all the proof searches that have been run for it across iterations. This virtual proof tree accumulates a growing number of positive proof paths as well as a growing number of visited goals that remain unproven. We use these goals as negative examples for the proofsize objective, labeling them with an infinite proofsize. Positive goals are deduplicated keeping the minimum proof sizes across proof searches.</p>
+<p>Finally $\theta_{k}$ is obtained by fine-tuning $\theta_{0}$ for exactly one epoch on $D_{k}$. Note that the initial tactic dataset is included in each $D_{k}$, despite $\theta_{0}$ being already trained on it (along with mix1). We found this repetition to be beneficial overall (as it adds the mathlib extracted proofsteps to our deduplicated per statements virtual proof trees) despite it leading to a slight overfit on the tactic dataset in terms</p>
+<p>of validation loss.</p>
+<h3>4.6 Expert iteration on mathlib-train</h3>
+<p>In this section we propose to set $S t$ to the statements in mathlib-train, run our expert iteration process with it and report performance on both mathlib-valid and miniF2F-valid. Performance is reported in terms of pass rate (percentage of successful proof searches) as a function of the number of attempts per statement, noted pass@ $k$ where $k$ is the number of attempts per statement at test time. To reduce noise in these metrics we generally run more than $k$ attempts at test time (generally 32 to compute pass@1 and pass@8), averaging across attempts as needed to obtain a smoother pass@ $k$ value.</p>
+<p>Given the large number of statements in mathlib-train (25k) we uniformly set $a=1$ and use $\theta_{0}$ and $\theta_{1}$ as described in section 4.4 and report pass@1 and pass@8 across 8 iterations in figure 1. The pass@1 on mathlib-valid goes from $56.3 \%$ for $\theta_{1}$ to $62.6 \%$ for $\theta_{9}$. The performance steadily improves and follows a clear logarithmic scaling law on mathlib-valid. It is also notable that, initially, transfer to out-of-distribution minif2f-valid appears limited but eventually kicks in as we reach better performance on mathlib-valid. This demonstrates that the expert iteration process does not just overfit to mathlib but also leads to improved performance on out-of-distribution statements.
+<img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1. pass@1 (plain) and pass@8 (dotted) for mathlib-valid and minif2f-valid when running 8 expert iterations with $S t$ set to be the statements in mathlib-train. The x-axis is log-scaled. It corresponds to the indices of the $\theta_{k}$ models and serves as a good proxy to compute (the amount of test-time and train-time compute per iteration being fixed). The y-axis is scaled linearly and simply shifted between the two graphs (spans an equal range).</p>
+<p>We define the cumulative pass rate at iteration $k$ as the pass rate consisting of all proof searches up to iteration $k$ (necessarily monotonic in $k$ ). Since we set $a=16$ for evaluation on mathlib-valid and minif2f-valid at each iteration, the
+<img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2. Cumulative pass rate for our expert iteration loop as well as a sample only loop where we skip re-training the model between iterations. The adjusted compute line is computed by fitting the sample only curve and shifting it to approximate a setup where we would focus all the additional compute used by expert iteration (sampling training data from mathlib-train as well as re-training models at each iteration) towards running proof searches against mathlib-valid.
+cumulative pass rate at iteration $k$ can be seen as a noisy ensembled pass@16k (multiple models $\left(\theta_{k}\right)$, no averaging). In figure 2, we report this cumulative pass rate for two iteration loops, our normal one and a sampling-only loop where we skip re-training the model between iterations and solely sample from $\theta_{1}$. This directly compares test-time compute scaling (scaling proof search attempts) to expert iteration scaling (interleaved training on new data sampled from mathlib-train) and provides a very clear visualization of the gains of expert iteration. For a fair comparison, we also report an adjusted compute line which approximates the test-time performance we would get at each iteration if we were to focus all the additional compute used by expert iteration (sampling proofs from mathlib-train as well as re-training models at each iteration) towards solely running proof searches against mathlib-valid.</p>
+<p>As shown by figure 2, the scaling exponent of expert iteration is substantially higher than the scaling exponent associated with solely scaling test-time compute (running more proof searches), demonstrating the clear benefit of expert iteration. We'll denote the fully iterated model from this section as $\theta_{9}^{\text {mathlib }}$.</p>
+<p>Even in the presence of ground-truth proofs for each of the statements in mathlib-train (tactic dataset), expert iteration generates data that further improves the performance of the model. The number of statements proved in mathlib-train goes from $17390(67.8 \%)$ at iteration 1 to $19476(76.0 \%)$ at iteration 9 , while the average proof length of these statements goes from 4.8 to 4.0. We hypothesize</p>
+<p>that this continuously improving performance through expert iteration stems from two effects: (i) the model finding new original proofs for the same statements and (ii) the model closing marginally harder statements at each iteration - which in turn provides more useful training data for the next iteration. By iteration 9, the model is trained on more than $90\%$ generated data. We present in Appendix E a few examples of original proofs found by our models on mathlib-train compared with their ground-truth versions.</p>
+<p>To verify our hypothesis that expert iteration is capable of closing a curriculum of increasingly difficult problems out of a set of problem statements, and that this capability is independent of having access to ground-truth proofs, we propose in the next section to study expert iteration applied to a synthetically generated set of problems for which we have fine-grained control on the difficulty of each statement.</p>
+<h2>5. Statement curriculum learning</h2>
+<p>In this section we focus on running expert iteration on synthetic statements generated by an inequality generator. The use of synthetic statements enables us to control the difficulty of each statement to present evidence that expert iteration can hill-climb the intrinsic difficulty gradient of the resulting set of statements. In particular, we show that, at fixed compute budget, expert iteration eventually closes proofs of hard statements that remain completely out of reach of simply sampling proof searches without interleaved training.</p>
+<h3>5.1. Synthetic inequality generator</h3>
+<p>We designed a synthetic inequality statement generator for Lean in the spirit of the INT (Wu et al., 2020) generator. The generator consists in generating inequalities from well known inequality theorems (AM-GM, Trivial inequality, Cauchy-Schwarz, Bernoulli, Young, Hölder) and composing them. It is driven by two difficulty parameters: $N_{D}$ which controls depth of composition of inequalities and $N_{S}$ which controls the complexity of the input expressions to the composed inequalities. We provide details on its implementation in Appendix D.</p>
+<p>Using this generator we generate a curriculum of 5600 inequality statements (for which we don’t have proofs), 100 for each values of $0 \leq N_{S} \leq 7$ and $0 \leq N_{D} \leq 6$. We denote this set of statements as synth-ineq.</p>
+<p>To bootstrap our models capabilities on this specific task, we also generate 100 statements of low difficulty ( $N_{D}=1$ and $N_{S}=5$ ) and formalize a proof for each of these statements. We refer to this dataset as synth-ineq-train. In the rest of this paper we adjunct this training dataset to the tactic dataset used to train our models.</p>
+<h3>5.2. Expert iteration on synthetic inequality statements</h3>
+<p>In this section we propose to set $S t$ to the union of the statements in mathlib-train and synth-ineq. Again, we uniformly set $a=1$ and use $\theta_{0}$ and $\theta_{1}$ as described in section 4.4, except that they are now also trained on synth-ineq-train.</p>
+<p>Similarly to the previous section, we report in figure 3 the cumulative pass rate for two loops, our standard expert iteration loop, and a proof search only loop where we don’t interleave training between iterations. The pass rates are reported split by values of $N_{D}$ (pooling together $0 \leq N_{S} \leq$ 7) which we found to be the main driver for difficulty.
+<img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3. Cumulative pass rate for our expert iteration loop as well as a sample only loop where we skip re-training the model between iterations. Pass rates are reported for each value of $N_{D}$ (pooling together $0 \leq N_{S} \leq 7$ ).</p>
+<p>Despite the challenging nature of these synthetic inequalities, figure 3 demonstrates that expert iteration is capable of learning the intrinsic curriculum induced by synth-ineq. In particular, expert iteration is capable of closing 6 problems of difficulty $N_{D}=6$ without having been provided with any seed ground-truth proof for this difficulty level. Note that difficulty $N_{D}=6$ remains completely out of reach of simply scaling the number of attempts per statements (the sample only loop remaining stuck at 0 for $N_{D}=6$ ).</p>
+<p>This confirms on our synthetic statements dataset synth-ineq that not only expert iteration is capable of learning the curricula occurring in a set of statements, but this process also enables the emergence of new capabilities without the need for ground-truth proofs (ability to close, highly challenging, deeply composed inequalities).</p>
+<h2>6. Targeting $\operatorname{miniF2F}$</h2>
+<p>Motivated by the results from Section 5, we curated and manually formalized a set of math exercises to target miniF2F. miniF2F statements being quite out of distribution compared to the distribution of statements present in</p>
+<p><em>mathlib</em> (which typically includes generic theorems and lemmas but very few exercises), we hypothesized that if the difficulty of this set of statements was made varied enough, expert iteration could potentially leverage it to effectively shift our models’ distribution closer to <em>miniF2F</em>’s, and in turn, improve their eventual performance on it.</p>
+<h3>6.1. Formalization effort</h3>
+<p>We manually formalized 327 statements drawn from the following sources: 302 examples and exercises from Lehoczky &amp; Rusczyk (a;b). The books are classic problem solving textbooks for students in grades 7-12 preparing for contests such as AMCs and AIMEs. 25 problems from the MATH dataset (Hendrycks et al., 2021). All problems were drawn from the train split of the dataset, focusing on difficulty 5 problems (<em>miniF2F</em> only contains problems from the test split).</p>
+<p>We refer to Zheng et al. (2021) for more details on the formalization procedure and the typical time needed for it as these problems were formalized in similar conditions. We denote this set of statements as <em>miniF2F-curriculum</em> and verified (based on problem provenance and manual inspection of statements) that it had an empty intersection with <em>miniF2F-[test,valid]</em>.</p>
+<h3>6.2. Transfer to <em>miniF2F</em></h3>
+<p>In this section we propose to set <em>St</em> to the union of the statements in <em>mathlib-train</em>, <em>synth-ineq</em> and <em>miniF2F-curriculum</em>. We uniformly set <em>a</em> = 1 on <em>mathlib-train</em> and <em>synth-ineq</em> and <em>a</em> = 8 on <em>miniF2F-curriculum</em> and use θ<sup>0</sup> and θ<sup>1</sup> as described in section 5.</p>
+<p>Similarly to previous sections, we report in figure 4 (left) the cumulative pass rate on <em>miniF2F-valid</em> of our full curriculum expert iteration loop and compare them with the <em>mathlib-train</em> only expert iteration from section 4.6. Since more compute is deployed in our full-curriculum loop (more statements) we also report a <em>mathlib-train</em> only loop taking <em>a</em> = 2. At the end of the expert iteration, 100 out of the 327 statements from <em>miniF2F-curriculum</em> end up being closed, suggesting a lack of density in our manually formalized set of statement.</p>
+<p>We also report in figure 4 (right) the <em>pass@1</em> and <em>pass@8</em> for our full curriculum expert iteration loop. The steady improvement on <em>miniF2F-valid</em> shows that the expert iteration procedure we propose does not overfit on the statements that compose the curriculum it uses. Despite the potential inefficiency of our curriculum, the improved performance associated with its use demonstrates, as hypothesized, an</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p><em>Figure 4.</em> <strong>Left:</strong> cumulative pass rate on <em>miniF2F-valid</em> for our expert iteration loop using our full curriculum (<em>mathlib-train</em>, <em>synth-ineq</em> and <em>miniF2F-curriculum</em>) compared to the expert iteration loop from section 4.6. The total number of attempts per iteration in our <em>full</em> loop is 25<em>k</em> + 5.6<em>k</em> + 8 * 327 ≈ 33.2<em>k</em>, which means the total compute deployed is higher than in the <em>mathlib-train</em> only loop (25<em>k</em>). We therefore also report in dotted a <em>mathlib-train</em> only loop, taking <em>a</em> = 2, whose total number of attempts per iteration is ≈ 50<em>k</em>. <strong>Right:</strong> <em>pass@1</em> (plain) and <em>pass@8</em> (dotted) for our expert iteration loop using our full curriculum (<em>mathlib-train</em>, <em>synth-ineq</em> and <em>miniF2F-curriculum</em>) compared to the <em>expert iteration</em> loop from section 4.6.</p>
+<p>effective transfer between <em>miniF2F-curriculum, synth-ineq</em> and <em>miniF2F-valid</em> through expert iteration. We’ll denote the fully iterated model from this section as θ<sup>fail</sup><sub>9</sub>.</p>
+<h3>6.3. Results</h3>
+<p>We report in table 2 the pass rates on <em>mathlib-[valid, test]</em> and <em>miniF2F-[valid, test]</em> for the models trained in previous sections, namely θ<sup>1</sup>, θ<sup>mathlib</sup><sub>9</sub>, and θ<sup>fail</sup><sub>9</sub>. We achieve a 47.3% pass rate (using <em>a</em> = 64 attempts) on <em>miniF2F-valid</em> and a 36.6% pass rate on <em>miniF2F-test</em>, substantially improving from the previous state-of-the-art (Zheng et al., 2021).</p>
+<p>These results include the resolution of 26 AMC12 problems, 6 AIME problems and 2 problems adapted from the IMOs. Out of these statements, 4 AMC12 problems (amc12b_2020_p5, amc12a_2009_p9, amc12a_2003_p24, amc12b_2003_p17), 2 AIME problems (aime_1984_p1, aime_1990_p4), and 2 IMO-adapted problems (imo_1961_p1, imo_1964_p2) are uniquely solved by expert iterated models, the two IMO-adapted and the two AIME problems being uniquely solved by θ<sup>fail</sup><sub>9</sub>.</p>
+<p>We provide a selection of the proofs found by our models</p>
+<p><sup>2</sup>https://github.com/openai/miniF2F/tree/statement_curriculum_learning/lean/src/statement_curriculum_learning</p>
+<p><sup>3</sup>Note that this IMO-adapted statement from <em>miniF2F-valid</em> is a much weaker version than the original problem (see Appendix F for more context)</p>
+<p>Table 2. Performance of $\theta_{1}$ (value-function based search), $\theta_{0}^{\text {mathlib }}$ (expert iterated on mathlib-train) and $\theta_{g}^{\text {full }}$ (expert iterated on our full curriculum) on mathlib-{valid, test} and miniF2F-{valid, test}. All proof searches are run with $d=512$ and $e=8$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">pass@1</th>
+<th style="text-align: center;">pass@8</th>
+<th style="text-align: center;">pass@64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">mathlib-valid</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PACT (Han et al., 2021)</td>
+<td style="text-align: center;">$48.4 \%$</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: center;">$56.3 \%$</td>
+<td style="text-align: center;">$66.3 \%$</td>
+<td style="text-align: center;">$72.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {mathlib }}$</td>
+<td style="text-align: center;">$\mathbf{6 2 . 6 \%}$</td>
+<td style="text-align: center;">$\mathbf{7 0 . 7 \%}$</td>
+<td style="text-align: center;">$\mathbf{7 5 . 8 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {full }}$</td>
+<td style="text-align: center;">$61.7 \%$</td>
+<td style="text-align: center;">$69.8 \%$</td>
+<td style="text-align: center;">$75.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">mathlib-test</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: center;">$56.5 \%$</td>
+<td style="text-align: center;">$66.9 \%$</td>
+<td style="text-align: center;">$73.7 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {mathlib }}$</td>
+<td style="text-align: center;">$\mathbf{6 3 . 0 \%}$</td>
+<td style="text-align: center;">$71.5 \%$</td>
+<td style="text-align: center;">$\mathbf{7 7 . 1 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {full }}$</td>
+<td style="text-align: center;">$62.9 \%$</td>
+<td style="text-align: center;">$\mathbf{7 1 . 6 \%}$</td>
+<td style="text-align: center;">$76.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">miniF2F-valid</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PACT (Zheng et al., 2021)</td>
+<td style="text-align: center;">$23.9 \%$</td>
+<td style="text-align: center;">$29.3 \%$</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: center;">$28.5 \%$</td>
+<td style="text-align: center;">$35.5 \%$</td>
+<td style="text-align: center;">$41.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {mathlib }}$</td>
+<td style="text-align: center;">$31.3 \%$</td>
+<td style="text-align: center;">$38.3 \%$</td>
+<td style="text-align: center;">$44.1 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {full }}$</td>
+<td style="text-align: center;">$\mathbf{3 3 . 6 \%}$</td>
+<td style="text-align: center;">$\mathbf{4 1 . 2 \%}$</td>
+<td style="text-align: center;">$\mathbf{4 7 . 3 \%}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">miniF2F-test</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PACT (Zheng et al., 2021)</td>
+<td style="text-align: center;">$24.6 \%$</td>
+<td style="text-align: center;">$29.2 \%$</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{1}$</td>
+<td style="text-align: center;">$25.9 \%$</td>
+<td style="text-align: center;">$31.1 \%$</td>
+<td style="text-align: center;">$33.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {mathlib }}$</td>
+<td style="text-align: center;">$27.2 \%$</td>
+<td style="text-align: center;">$33.0 \%$</td>
+<td style="text-align: center;">$35.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\theta_{0}^{\text {full }}$</td>
+<td style="text-align: center;">$\mathbf{2 9 . 6 \%}$</td>
+<td style="text-align: center;">$\mathbf{3 4 . 5 \%}$</td>
+<td style="text-align: center;">$\mathbf{3 6 . 6 \%}$</td>
+</tr>
+</tbody>
+</table>
+<p>for these statements as well as a qualitative analysis of them in Appendix F.</p>
+<p>Also, we achieve a higher than $75 \%$ pass rate (using $a=64$ attempts) on mathlib-{valid, test} (a new state-of-the-art as well) suggesting that our models have the potential to be effectively leveraged as proof assistants in the formalization efforts associated with mathlib.</p>
+<h2>7 Discussion</h2>
+<h3>7.1 Model Size</h3>
+<p>Throughout this paper, we used a single model size ( 774 m trainable parameters). We briefly experimented with different model sizes (not reported in this paper) and found that model size scaling is not as straightforward as in the case of unsupervised learning (Kaplan et al., 2020). We found that bigger models are better, in the sense that they consistently exhibit higher pass@1. But, they are also much more expensive to sample from. And despite their pass@1 being higher, it is often the case that for a fixed amount of compute, sampling more attempts from a smaller model leads to a better final performance.</p>
+<p>For the compute budget we had available, we estimated the model size we used to be a compelling trade-off. We leave as future work a more thorough study of these dynamics to better understand the different compute frontiers involved.</p>
+<p>Indicatively, with our 774 m parameters model, running a full expert iteration to train $\theta_{0}^{\text {full }}$ required about 2000 A100 days of compute. Running one full proof search ( $a=1$ $d=512 e=8$ ) when properly parallelised, requires on average about 0.1 A100 hour of compute.</p>
+<h3>7.2 Limitations</h3>
+<p>Despite our models' capability, as discussed in Appendix F.1, to generate cuts and witnesses, we believe that their current main limitation lies in their inability (under our proposed search procedure) to chain more than 2 or 3 non-trivial steps of mathematical reasoning, preventing them from consistently (instead of exceptionally) solving challenging olympiad problems. We've been repeatedly impressed by the complexity of some of the proofsteps generated by our models. But, proofs requiring many of such reasoning steps remain beyond our current compute horizon. Even if we solved a selection of challenging olympiad problems, our models are still very far from being competitive with the brightest students in these competitions.</p>
+<p>While our models have demonstrated some capabilities to generate cuts, the cuts they generate are often shallow (they involve only a few proofsteps and don't necessarily deeply change the structure of the proof-we refer the reader to the Cut-Elimination theorem and Carbone \&amp; Semmes (1996) for a discussion of the influence of cuts on proof size). We believe that studying language models' ability to generate cuts, and designing search procedures that leverage that capability (related ideas can be found in Czechowski et al. (2021)), are interesting avenues of research to alleviate this limitation.</p>
+<h2>8 Conclusion</h2>
+<p>In this paper we presented an expert iteration procedure for GPT-f(Polu \&amp; Sutskever, 2020), demonstrating that it is capable of solving a curriculum of increasingly difficult problems out of a set of formal statements of sufficiently varied difficulty. Our results suggest that the lack of self-play in the formal mathematics setup can be effectively compensated for by automatically as well as manually curated sets of formal statements, which are much cheaper to formalize than full proofs. Finally, we hope that the statement curriculum learning methodology we presented in this work will help accelerate progress in automated reasoning, especially if scaled with automated generation and curation of formal statements in the future.</p>
+<h2>References</h2>
+<p>Lean theorem prover. https://leanprover. github.io/about/.</p>
+<p>Bansal, K., Loos, S., Rabe, M., Szegedy, C., and Wilcox, S. Holist: An environment for machine learning of higher order logic theorem proving. In International Conference on Machine Learning, pp. 454-463, 2019a.</p>
+<p>Bansal, K., Loos, S. M., Rabe, M. N., and Szegedy, C. Learning to reason in large theories without imitation. arXiv preprint arXiv:1905.10501, 2019b.</p>
+<p>Berner, C., Brockman, G., Chan, B., Cheung, V., Dębiak, P., Dennison, C., Farhi, D., Fischer, Q., Hashme, S., Hesse, C., et al. Dota 2 with large scale deep reinforcement learning. arXiv preprint arXiv:1912.06680, 2019.</p>
+<p>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., et al. Language models are few-shot learners. arXiv preprint arXiv:2005.14165, 2020.</p>
+<p>Browne, C. B., Powley, E., Whitehouse, D., Lucas, S. M., Cowling, P. I., Rohlfshagen, P., Tavener, S., Perez, D., Samothrakis, S., and Colton, S. A survey of monte carlo tree search methods. IEEE Transactions on Computational Intelligence and AI in games, 4(1):1-43, 2012.</p>
+<p>Buzzard, K., Commelin, J., and Massot, P. Lean perfectoid spaces. https://leanprover-community. github.io/lean-perfectoid-spaces/, 2019.</p>
+<p>Carbone, A. and Semmes, S. Making proofs without modus ponens: An introduction to the combinatorics and complexity of cut elimination. Bulletin of the American Mathematical Society, 34:131-159, 1996.</p>
+<p>Czechowski, K., Odrzygóźdź, T., Zbysiński, M., Zawalski, M., Olejnik, K., Wu, Y., Kucinski, L., and Miłoś, P. Subgoal search for complex reasoning tasks. Advances in Neural Information Processing Systems, 34, 2021.
+de Moura, L., Kong, S., Avigad, J., Van Doorn, F., and von Raumer, J. The lean theorem prover (system description). In International Conference on Automated Deduction, pp. 378-388. Springer, 2015.</p>
+<p>Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805, 2018.</p>
+<p>Firoiu, V., Aygun, E., Anand, A., Ahmed, Z., Glorot, X., Orseau, L., Zhang, L., Precup, D., and Mourad, S. Training a first-order theorem prover from synthetic data. arXiv preprint arXiv:2103.03798, 2021.</p>
+<p>Han, J. M., Rute, J., Wu, Y., Ayers, E. W., and Polu, S. Proof artifact co-training for theorem proving with language models. arXiv preprint arXiv:2102.06203, 2021.</p>
+<p>Hendrycks, D., Burns, C., Kadavath, S., Arora, A., Basart, S., Tang, E., Song, D., and Steinhardt, J. Measuring mathematical problem solving with the math dataset. arXiv preprint arXiv:2103.03874, 2021.</p>
+<p>Huang, D., Dhariwal, P., Song, D., and Sutskever, I. Gamepad: A learning environment for theorem proving. arXiv preprint arXiv:1806.00608, 2018.</p>
+<p>Irving, G., Szegedy, C., Alemi, A. A., Eén, N., Chollet, F., and Urban, J. Deepmath-deep sequence models for premise selection. In Advances in Neural Information Processing Systems, pp. 2235-2243, 2016.</p>
+<p>Kaplan, J., McCandlish, S., Henighan, T., Brown, T. B., Chess, B., Child, R., Gray, S., Radford, A., Wu, J., and Amodei, D. Scaling laws for neural language models. arXiv preprint arXiv:2001.08361, 2020.</p>
+<p>Karras, T., Laine, S., and Aila, T. A style-based generator architecture for generative adversarial networks. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 4401-4410, 2019.</p>
+<p>Lehoczky, S. and Rusczyk, R. The Art of Problem Solving, Volume 1: the Basics, a. ISBN:978-0-9773045-6-1.</p>
+<p>Lehoczky, S. and Rusczyk, R. The Art of Problem Solving, Volume 2: and Beyond, b. ISBN:978-0-9773045-8-5.</p>
+<p>Li, W., Yu, L., Wu, Y., and Paulson, L. C. Modelling highlevel mathematical reasoning in mechanised declarative proofs. arXiv preprint arXiv:2006.09265, 2020.</p>
+<p>Loos, S., Irving, G., Szegedy, C., and Kaliszyk, C. Deep network guided proof search. arXiv preprint arXiv:1701.06972, 2017.</p>
+<p>Megill, N. D. and Wheeler, D. A. Metamath: A Computer Language for Pure Mathematics, 2019. URL http://us.metamath.org/downloads/ metamath.pdf.</p>
+<p>Polu, S. and Sutskever, I. Generative language modeling for automated theorem proving. arXiv preprint arXiv:2009.03393, 2020.</p>
+<p>Rabe, M. N., Lee, D., Bansal, K., and Szegedy, C. Mathematical reasoning via self-supervised skip-tree training. arXiv preprint arXiv:2006.04757, 2020.</p>
+<p>Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., et al. Learning transferable visual models from natural language supervision. arXiv preprint arXiv:2103.00020, 2021.</p>
+<p>Ramesh, A., Pavlov, M., Goh, G., Gray, S., Voss, C., Radford, A., Chen, M., and Sutskever, I. Zero-shot text-to-image generation. arXiv preprint arXiv:2102.12092, 2021.</p>
+<p>Scholze, P. Liquid tensor experiment. https: //xenaproject.wordpress.com/2020/ 12/05/liquid-tensor-experiment/, 2020.</p>
+<p>Selsam, D., Lamm, M., Bünz, B., Liang, P., de Moura, L., and Dill, D. L. Learning a sat solver from single-bit supervision. arXiv preprint arXiv:1802.03685, 2018.</p>
+<p>Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., Van Den Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V., Lanctot, M., et al. Mastering the game of go with deep neural networks and tree search. nature, 529(7587):484-489, 2016.</p>
+<p>Silver, D., Hubert, T., Schrittwieser, J., Antonoglou, I., Lai, M., Guez, A., Lanctot, M., Sifre, L., Kumaran, D., Graepel, T., et al. Mastering chess and shogi by self-play with a general reinforcement learning algorithm. arXiv preprint arXiv:1712.01815, 2017.</p>
+<p>Tan, M. and Le, Q. Efficientnet: Rethinking model scaling for convolutional neural networks. In International Conference on Machine Learning, pp. 6105-6114. PMLR, 2019.</p>
+<p>Urban, J. and Jakubův, J. First neural conjecturing datasets and experiments. arXiv preprint arXiv:2005.14664, 2020.</p>
+<p>Vinyals, O., Babuschkin, I., Czarnecki, W. M., Mathieu, M., Dudzik, A., Chung, J., Choi, D. H., Powell, R., Ewalds, T., Georgiev, P., et al. Grandmaster level in starcraft ii using multi-agent reinforcement learning. Nature, 575 (7782):350-354, 2019.</p>
+<p>Wang, M., Tang, Y., Wang, J., and Deng, J. Premise selection for theorem proving by deep graph embedding. In Advances in Neural Information Processing Systems, pp. 2786-2796, 2017.</p>
+<p>Wu, Y., Schuster, M., Chen, Z., Le, Q. V., Norouzi, M., Macherey, W., Krikun, M., Cao, Y., Gao, Q., Macherey, K., et al. Google's neural machine translation system: Bridging the gap between human and machine translation. arXiv preprint arXiv:1609.08144, 2016.</p>
+<p>Wu, Y., Jiang, A. Q., Ba, J., and Grosse, R. Int: An inequality benchmark for evaluating generalization in theorem proving. arXiv preprint arXiv:2007.02924, 2020.</p>
+<p>Yang, K. and Deng, J. Learning to prove theorems via interacting with proof assistants. arXiv preprint arXiv:1905.09381, 2019.</p>
+<p>Zheng, K., Han, J. M., and Polu, S. Minif2f: a cross-system benchmark for formal olympiad-level mathematics. arXiv preprint arXiv:2109.00110, 2021.</p>
+<h1>A. Related Work</h1>
+<p>Deep learning applied to premise selection and proof guidance Early applications of deep learning to formal mathematics focused primarily on premise selection and proof guidance. DeepMath (Irving et al., 2016) explored the use of CNNs and RNNs to predict whether a premise is useful to demonstrate a given conjecture. Their results were later improved with FormulaNet (Wang et al., 2017) by the use of graph neural networks, reminiscent of NeuroSAT (Selsam et al., 2018). Proof guidance consists in selecting the next clause to process inside an automated theorem prover. Loos et al. (2017) investigated the use of models similar to DeepMath's for proof guidance and demonstrated a significant uplift on the Mizar library. More recently Firoiu et al. (2021) demonstrated the potential of deep learning techniques to be competitive with E prover's heuristics when applied to resolution calculus while training on fully synthetic data.</p>
+<p>Deep learning applied to automated theorem-proving HOList (Bansal et al., 2019a) proposes a formal environment based on HOL Light. They achieve their best performance (Bansal et al., 2019b) with a GNN model designed for premise selection and the use of exploration. The same team studied the use of a skip-tree objective with Transformers on formal statements (Rabe et al., 2020), demonstrating, along with GPT-f (Polu \&amp; Sutskever, 2020), the potential of leveraging Transformers for formal reasoning. GamePad (Huang et al., 2018) and CoqGymn/ASTactic (Yang \&amp; Deng, 2019) introduce environments based on the Coq theorem prover. ASTactic generates tactics as programs by sequentially expanding a partial abstract syntax tree. Urban \&amp; Jakubův (2020) studied the capability of GPT-2 to produce useful conjectures for the Mizar library and IsarStep (Li et al., 2020) explored the synthesis of intermediate propositions in declarative proofs for Isabelle/HOL using Transformers.</p>
+<h2>B. Lean-gym</h2>
+<p>lean-gym presents the following API:</p>
+<ul>
+<li>init-search: declaration $\rightarrow$ tactic_state. Takes a declaration name (a theorem name from the loaded library) and initializes a search while setting the run-time environment at that particular declaration. It returns the initial tactic state along with a fresh search_id and tactic_state_id.</li>
+<li>run_tac: (tactic_state,tactic) $\rightarrow$ tactic_state. Takes a search_id and a tactic_state_id to identify a tactic state, as well as a tactic string to apply to it. It returns a new tactic state and its associated tactic_state_id.</li>
+</ul>
+<p>Below is an example in-terminal trace demonstrating the use of lean-gym's REPL interface:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>lean<span class="w"> </span>--run<span class="w"> </span>src/repl.lean
+<span class="o">[</span><span class="s2">&quot;init_search&quot;</span>,<span class="w"> </span><span class="o">[</span><span class="s2">&quot;int.prime.dvd_mul&quot;</span>,<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">]]</span>
+<span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;error&quot;</span>:null,
+<span class="w">    </span><span class="s2">&quot;search_id&quot;</span>:<span class="s2">&quot;0&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;tactic_state&quot;</span>:<span class="s2">&quot;\forall {m n : Z} {p : N}, nat.prime p</span>
+<span class="s2">                            †p|m*n\mp@subsup{\rightarrow}{}{\prime p | m.nat_abs V p | n.nat_abs&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;tactic_state_id&quot;</span>:<span class="s2">&quot;0&quot;</span>
+<span class="o">}</span>
+...
+<span class="o">[</span><span class="s2">&quot;run_tac&quot;</span>,<span class="o">[</span><span class="s2">&quot;l&quot;</span>,<span class="s2">&quot;l&quot;</span>,<span class="s2">&quot;apply (nat.prime.dvd_mul hp).mp&quot;</span><span class="o">]]</span>
+<span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;error&quot;</span>:null,
+<span class="w">    </span><span class="s2">&quot;search_id&quot;</span>:<span class="s2">&quot;1&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;tactic_state&quot;</span>:<span class="s2">&quot;m n : Z, p : N, hp : nat.prime p, h : †p|m*n</span>
+<span class="s2">        \vdash p|m.nat_abs * n.nat_abs&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;tactic_state_id&quot;</span>:<span class="s2">&quot;2&quot;</span>
+<span class="o">}</span>
+...
+</code></pre></div>
+
+<p>Using lean-gym is virtually equivalent to opening a Lean editor at a specific theorem, deleting its proof and interacting with Lean to reconstruct it.</p>
+<p>Table 3. Mix and source of data involved in the updated WebMath pre-training.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: right;">Size</th>
+<th style="text-align: left;">Mix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Github Python</td>
+<td style="text-align: right;">179 GB</td>
+<td style="text-align: left;">$25 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">arXiv Math</td>
+<td style="text-align: right;">10 GB</td>
+<td style="text-align: left;">$25 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Math StackExchange</td>
+<td style="text-align: right;">2 GB</td>
+<td style="text-align: left;">$25 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">PACT mix2</td>
+<td style="text-align: right;">28 GB</td>
+<td style="text-align: left;">$17 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Math Overflow</td>
+<td style="text-align: right;">200 M</td>
+<td style="text-align: left;">$5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">ProofWiki</td>
+<td style="text-align: right;">30 M</td>
+<td style="text-align: left;">$2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">PlanetMath</td>
+<td style="text-align: right;">25 M</td>
+<td style="text-align: left;">$1 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Providing a REPL interface over the standard input/output makes it very easy to integrate lean-gym from any programming language. Writing a wrapper in Python, as an example, only takes a few dozen lines of code. Since lean-gym is a Lean program, managing the loaded libraries is done directly using Lean's own infrastructure (using leanpkg.toml), making it quite straightforward to have access to both mathlib and miniF2F statements from the same lean-gym instance.</p>
+<p>Note that lean-gym is stateful, meaning that distributing proof searches on multiple lean-gym instances requires to track which instance is associated with which proof search. In practice, we were able to scale the use of lean-gym to thousands of cores running thousands of proof searches in parallel. Finally, lean-gym's REPL interface is blocking, preventing inner-proof search parallelization, though this limitation can probably be removed in the future.</p>
+<h1>C. WebMath</h1>
+<p>Our updated WebMath pre-training dataset consists in the mix presented in table 3.
+As demonstrated in table 3, we empirically up-weighted (compared to their token size) parts of WebMath with high-quality mathematical content while making sure they don't overfit (despite running $&gt;1$ epochs for some of them). We also included PACT mix2 directly in the WebMath pre-training to avoid having to sequence more than two pre-training phases to prepare Lean models.</p>
+<h2>D. Synthetic inequalities</h2>
+<h2>D.1. Design</h2>
+<p>The generator consists of three phases:
+Seed expressions generation The first phase consists in generating seed expressions for which we track the sign. We start by initializing an expression set $E$ composed of tuples of expressions and sign constraints, by generating $n_{v}$ variable names (letters) assumed strictly positive as well as $n_{n}$ integers (for which we know the sign). For $N_{S}$ rounds, we compose elements of $E$ using unary $(\log (\cdot), \log (1 / \cdot), \operatorname{sqrt}(\cdot))$ or binary operations $(+,-, \times, /, \wedge, \max , \min )$ for which we can deduce the sign based on the sign condition of the input expression(s) and re-inject the resulting expression and sign constraint in $E$. This produces a set $E$ of signed seed expressions of size $n_{v}+n_{n}+N_{S}$.</p>
+<p>Inequality composition The second phase consists in generating inequalities from well known inequality theorems (AMGM, Trivial inequality, Cauchy-Schwarz, Bernoulli, Young, Hölder) taking as input to these theorems expressions from $E$ based on the sign constraints required for each theorem. We finally compose these inequalities $N_{D}$ times using compositions theorems detailed in D.2. The resulting inequality is a composed inequality of depth $N_{D}$ based on $n_{v}+n_{n}+N_{S}$ seed expressions.</p>
+<p>Simplification We finally post-process these inequalities so that they are parsable by Lean and run them through Lean's simp tactic for a final simplification.
+$N_{D}$ and $N_{S}$ together control for the difficulty of the resulting inequality. $N_{D}$ controls depth of composition, while $N_{S}$ controls for obfuscation as it increases the complexity of the input expressions to the composed inequalities. When sampling inequalities, we $n_{n}=4$ and randomly sample $2 \leq n_{v} \leq 8$ at each generation. We report below examples of generated inequalities for various values of $N_{D}$ and $N_{S}$.</p>
+<h1>D.2. List of inequality composition theorems</h1>
+<p>Below is the list of theorem names from mathlib that we use to compose inequalities together. One third of the time, we only transform the current composed inequality with one of the following theorems:</p>
+<ul>
+<li>neg_le_neg</li>
+<li>inv_le_inv</li>
+<li>mul_self_le_mul_self</li>
+<li>div_le_one_of_le</li>
+</ul>
+<p>We otherwise compose the current composed inequality with a newly generated inequality using the following theorems:</p>
+<ul>
+<li>mul_le_mul</li>
+<li>add_le_add</li>
+<li>div_le_div</li>
+<li>mul_le_mul_of_nonneg</li>
+<li>le_mul_of_ratio</li>
+</ul>
+<h2>D.3. Examples</h2>
+<p>$N_{D}=0 N_{S}=0$</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Compositions</th>
+<th style="text-align: center;">AmGm a b $(67: \mathbb{R})((1: \mathbb{R}) /(10: \mathbb{R}))((1: \mathbb{R}) /(10: \mathbb{R}))((8: \mathbb{R}) /(10: \mathbb{R}))$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Statement</td>
+<td style="text-align: center;"><code>theorem synthetic_ineq_nb_seed_var_0_depth_0_p_1 (a b : \mathbb{R) (h0 : 0 &lt; a) (h1 : 0 &lt; b) : (67:</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$a^{\wedge}(10: \mathbb{R})^{\sim 1} \leq(8: \mathbb{R}) /(10: \mathbb{R}) *(67: \mathbb{R})+$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$(10: \mathbb{R})^{\sim 1} * a+b *(10: \mathbb{R})^{\sim 1}:=$ sorry</td>
+</tr>
+</tbody>
+</table>
+<p>$N_{D}=0 N_{S}=4$</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Compositions</th>
+<th style="text-align: center;">Sqnonneg a $((a)+((-68: \mathbb{R})))$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Statement</td>
+<td style="text-align: center;"><code>theorem synthetic_ineq_nb_seed_var_4_depth_0_p_4 (a b : \mathbb{R) (h0 : 0 &lt; a) (h1 : 0 &lt; b) : (2:</code></td>
+</tr>
+</tbody>
+</table>
+<p>$N_{D}=4 N_{S}=4$</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Compositions</th>
+<th style="text-align: center;">AddLeAdd <br> Bernoulli 99 c <br> AddLeAdd <br> SelfDivConst ((a) / (f)) 6 <br> LeMulOfRatio <br> SelfDivConst c 70 <br> DivLeDiv <br> Cauchy ((a) / (f)) d c (log (((59:R) + f))) <br> Young ((a) / (f)) a ((3:R)/(2:R)) ((3:R)/(1:R))</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Statement</td>
+<td style="text-align: center;"><code>theorem synthetic_ineq_nb_seed_var_4_depth_4_p_13 (a b c d e f : R) (h0 : 0 &lt; a) (h1 : 0 &lt; b) (h2 : 0 &lt; c) (h3 : 0 &lt; d) (h4 : 0 &lt; e) (h5 : 0 &lt; f) : (1:R) + (99:R) * c + (a / f / (6:R) + a * (a / f) / ((d ^ 2 + a ^ 2 / f ^ 2) * (real.log ((59:R) + f) ^ 2 + c ^ 2))) \leq ((a / f) ^ ((3:R) / (2:R)) / ((3:R) / (2:R)) + a ^ 3 / (3:R)) / (real.log ((59:R) + f) * d + a / f * c) ^ 2 * (c / (c / (70:R))) + a / f + (c + (1:R)) ^ 99 := sorry</code></td>
+</tr>
+</tbody>
+</table>
+<h1>E. Example proofs from mathlib-train</h1>
+<p>We present in this section original proofs found by our models from mathlib-train, compared with their ground-truth version.
+comap_eq_of_inverse</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Statement</th>
+<th style="text-align: center;"><code>lemma comap_eq_of_inverse {f : filter }\alpha} {g : filter \beta} { \phi : \alpha \rightarrow \beta) ( \psi : \beta \rightarrow \alpha) (eq : \psi \circ \phi = id) (h\phi : tendsto \phi f g) (h\psi : tendsto \psi g f) : comap }\phi\mathrm{ g = f :=</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Ground-truth</td>
+<td style="text-align: center;">begin <br> refine ((comap_mono \$ map_le_iff_le_comap.1 h $\psi$ ).trans _).antisymm (map_le_iff_le_comap. 1 h $\phi$ ), rw [comap_comap, eq, comap_id], exact le_rfl end</td>
+</tr>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>begin refine le_antisymm _ (filter.map_le_iff_le_comap.1 h }\phi), refine \lambda s hs, _, rw mem_comap, use [\psi ~:’ s, h\psi hs], rw [\leftarrow preimage_comp, eq, preimage_id] end</code></td>
+</tr>
+</tbody>
+</table>
+<p>sum_range_sub_sum_range</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Statement</th>
+<th style="text-align: center;"><code>lemma sum_range_sub_sum_range {a : Type}} [add_comm_group a] {f : N -&gt; a} {n m : N} {hnm : n \leq m} : \mp@subsup{\sum}{}{\textrm{k in range m, f k - \sum k in range n, f k = \sum k in (range m).filter ( }\lambda\mathrm{ k, n \leq k), f k :=</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Ground-truth</td>
+<td style="text-align: center;">begin <br> rw [ sum_sdiff (@filter_subset _ $(\lambda \mathrm{k}, \mathrm{n} \leq \mathrm{k})$ <br> (range m)), sub_eq_iff_eq_add, <br> $\leftarrow$ eq_sub_iff_add_eq, add_sub_cancel'], refine finset.sum_congr <br> (finset.ext $\$ \lambda$ a, 〈 $\lambda$ h, by simp at <em>; finish, <br> $\lambda$ h, have ham : a &lt; m := <br> lt_of_lt_of_le (mem_range.1 h) hnm, <br> by simp * at </em>&gt;) <br> ( $\lambda$ _ _, rfl) <br> end</td>
+</tr>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>begin rw [ sum_Ico_eq_sub _ hnm], congr, apply finset.ext, simp [Ico.mem, *], tauto end</code></td>
+</tr>
+</tbody>
+</table>
+<h1>prod_inv_distrib</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Statement</th>
+<th style="text-align: center;"><code>lemma prod_inv_distrib : ( \ x in s, (f x)</code>1) = ( \ x in s, f x)<code>:=</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Ground-truth</td>
+<td style="text-align: center;">begin <br> classical, <br> by_cases h : $\exists \mathrm{x} \in \mathrm{s}, \mathrm{f} \mathrm{x}=0$, <br> { simpa [prod_eq_zero_iff.mpr h, prod_eq_zero_iff] using h }, <br> { push_neg at h, <br> have h' := prod_ne_zero_iff.mpr h, <br> have hf : $\forall \mathrm{x} \in \mathrm{s},(\mathrm{f} \mathrm{x})^{\wedge 1} * \mathrm{f} \mathrm{x}=1:=\lambda \mathrm{x} \mathrm{hx}$, <br> inv_mul_cancel (h x hx), <br> apply mul_right_cancel' h', <br> simp [h, h', + finset.prod_mul_distrib, prod_congr rfl hf] } <br> end</td>
+</tr>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>begin classical; induction s using finset.induction_on with a s has ih, { simp, }, simp only [has, prod_insert has, mul_inv_rev'], finish end</code></td>
+</tr>
+</tbody>
+</table>
+<h1>F. Example proofs from minif2f-{test,valid,curriculum}</h1>
+<p>We present in this section proofs found by our models from minif2f-{test,valid,curriculum}, demonstrating some of the capabilities emerging from our training procedure.</p>
+<h2>F.1. Qualitative analysis of proofs</h2>
+<p>We provide qualitative insights in the nature of the proofs found by our models, which we believe are useful to build a better intuition of their capabilities beyond pass rate numbers. Throughout this section, we refer to statements and solutions found by our models that are presented in Appendix F along with comments describing the specificity of each proof.</p>
+<p>First, we observe that a large number of olympiad problems that are designed to be computationally challenging for humans are rendered trivial for our models through the use of Lean tactics. As an example, mathd_numbertheory_447 which is not necessarily considered straightforward for humans, can be closed in Lean by a simple refl (proof found by our models).</p>
+<p>In recent years, Lean's mathlib community has developed high-powered tactics such as linarith/nlinarith (solves (non)linear inequalities), norm_num (normalizes numerical expressions), simp (simplifies goals and hypotheses) and ring (normalizes expressions in a ring). These tactics can be used with arguments to guide their underlying search procedure. As mentioned in Zheng et al. (2021), we confirm here that our models acquire advanced capabilities to leverage these high-level tactics by providing exogenous arguments which are not present in the current tactic state. The generation of these exogenous arguments through language modeling seems to require a non-trivial amount of mathematical intuition. imo_1964_p2, imo_1961_p1 and aime_1990_p15 are good examples of such uses.</p>
+<p>We have also observed a number of proofs that require multiple non-trivial reasoning steps through the use of lowerlevel tactics such as use, have, or by_cases that generally involve producing a witness or chaining implications, requiring the generation of context specific exogenous terms. These interesting reasoning steps are structurally different from simple normalization, simplification and rewriting of hypotheses or goals because they heavily rely on our models ability to generate meaningful cuts or witnesses. This capability is, in our opinion, the most exciting stepping stone towards solving more challenging mathematical problems. See, aopsbook_v2_c8_ex1, amc12b_2020_p6 and mathd_train_algebra_217 for examples of such proofs.</p>
+<p>More generally, we also observe that proofs generated by our models have a distinctive style compared to proofs formalized by humans. This stems in part from the model's capability to leverage high-level tactics in a way that is challenging for humans as discussed in this section (e.g. one-liners such as nlinarith [sq_nonneg (x - y), sq_nonneg (y - z) ] where humans would generally decompose the problem in a less machine-like way). Additionally, as a result of our search procedure and despite the bias towards shorter proofs introduced by our value function, extraneous proofsteps (such as reversion/introduction of hypotheses, or no-op rewrites) are often interleaved with useful ones, which rarely happens in human formalizations.</p>
+<p>imo_1961_p1</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Natural language</th>
+<th style="text-align: center;">Solve the system of equations: $x+y+z=a$ $x^{2}+y^{2}+z^{2}=b^{2}$ $x y=z^{2}$ <br> where $a$ and $b$ are constants. Give the conditions that $a$ and $b$ must satisfy so that $x, y, z$ (the solutions of the system) are distinct positive numbers. Note: the formalized statement in miniF2F is a weaker problem as it focuses on the second part of the question, providing the actual conditions, and asking for a proof that the requirement entails them.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>theorem imo_1961_p1 (x y z a b : ㄹ) (h0 : 0&lt;x ^ 0&lt;y ^ 0&lt;z) (h1 : x \neq y) (h2 : y \neq z) (h3 : z \neq x) (h4 : x + y + z = a) (h5 : x^2 + y^2 + z^2 = b^2) (h6 : x * y = z^2) : 0&lt;a ^ b^2&lt;a^2 ^ a^2&lt;3*b^2:= begin revert_all, intros, rw mul_comm, split, { nlinarith [sq_nonneg (x - y), sq_nonneg (y - z)], }, split, { nlinarith [sq_nonneg (z - 1)], }, revert h3 h4, field_simp [mul_comm a b], rw [mul_comm, h5], contrapose!, rw mul_comm at h6, rw mul_comm, intro h, nlinarith [sq_nonneg (x - y), sq_nonneg (y - z)] end</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Comments</td>
+<td style="text-align: center;">The model is able to close this problem by splitting into cases, contraposing for the last case and using nlinarith. It must be noted that the arguments for the first two nlinarith uses are not necessary, however the [sq_nonneg (x - y), sq_nonneg (y - z)] argument provided on the last line is crucial to close the goal and are completely exogenous (present in no form in the tactic state before).</td>
+</tr>
+</tbody>
+</table>
+<p>imo_1964_p2</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Natural language</th>
+<th style="text-align: center;">Suppose $a, b, c$ are the sides of a triangle. Prove that $a^{2}(b+c-a)+b^{2}(c+a-b)+c^{2}(a+b-c) \leq 3 a b c$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>theorem imo_1964_p2 (a b c : ㅇ) (h0 : 0 &lt; a ^ 0 &lt; b ^ 0 &lt; c) (h1 : c &lt; a + b) (h2 : b &lt; a + c) (h3 : a &lt; b + c) : a^2*(b+c-a)+b^2*(c+a-b)+c^2*(a+b-c)     \leq 3*a*b*c := begin     nlinarith [sq_nonneg (b - a), sq_nonneg (c - b),         sq_nonneg (a - c), sq_nonneg (c - a)] end</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Comments</td>
+<td style="text-align: center;">The model is able to close an IMO problem in one-line. It correctly provides exogenous arguments to nlinarith, which are necessary to close the goal. Note that either one of the last two arguments in the sequence [sq_nonneg (b - a), sq_nonneg (c - b), sq_nonneg (a - c), sq_nonneg (c - a)] can be omitted.</td>
+</tr>
+</tbody>
+</table>
+<p>aime_1990_p15</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Natural language</th>
+<th style="text-align: center;">Find $a x^{5}+b y^{5}$ if the real numbers $a, b, x$, and $y$ satisfy the equations $a x+b y=3$, $a x^{2}+b y^{2}=7$, $a x^{3}+b y^{3}=16$, $a x^{4}+b y^{4}=42$.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Note: the formalized statement in $\operatorname{miniF2F}$ provides the answer and asks for a proof of it.</td>
+</tr>
+<tr>
+<td style="text-align: center;">Model proof</td>
+<td style="text-align: center;"><code>theorem aime_1990_p15 (a b x y : R) (h0 : a * x + b * y = 3) (h1 : a * x^2 + b * y^2 = 7) (h2 : a * x^3 + b * y^3 = 16) (h3 : a * x^4 + b * y^4 = 42) : a * x^5 + b * y^5 = 20 := begin revert_all, intros a b x y h3 h1 h2 h4, ring_nf at h1 h2, rw ~ sub_eq_zero at h1, nlinarith [sq_nonneg (x - y), sq_nonneg (a + b - 2), sq_nonneg (x + y - (2:R)), sq_nonneg (a - b - 2)] end</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Comments</td>
+<td style="text-align: center;">The model is able to close a challenging AIME problem by providing crucial exogenous arguments sq_nonneg ( $\mathrm{x}-\mathrm{y}$ ) and sq_nonneg ( $\mathrm{x}+\mathrm{y}-(2: \mathbb{R})$ ) to nlinarith, which are required to close the goal (while the other two can be removed).</td>
+</tr>
+</tbody>
+</table>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{1}$ https://github.com/openai/lean-gym&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

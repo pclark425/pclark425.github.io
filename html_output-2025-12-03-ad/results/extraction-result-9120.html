@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-9120 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-9120</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-9120</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-161.html">extraction-schema-161</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of LLMs being used as text-based simulators in specific scientific subdomains, including details on the simulation task, the accuracy or evaluation results, and any factors or variables identified as affecting simulation accuracy.</div>
+                <p><strong>Paper ID:</strong> paper-37a4c6a416e5200e9f6257d9711e54e69f4be754</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/37a4c6a416e5200e9f6257d9711e54e69f4be754" target="_blank">Process-Level Representation of Scientific Protocols with Interactive Annotation</a></p>
+                <p><strong>Paper Venue:</strong> Conference of the European Chapter of the Association for Computational Linguistics</p>
+                <p><strong>Paper TL;DR:</strong> Graph-prediction models are used to develop Process Execution Graphs, finding them to be good at entity identification and local relation extraction, while the corpus facilitates further exploration of challenging long-range relations.</p>
+                <p><strong>Paper Abstract:</strong> We develop Process Execution Graphs (PEG), a document-level representation of real-world wet lab biochemistry protocols, addressing challenges such as cross-sentence relations, long-range coreference, grounding, and implicit arguments. We manually annotate PEGs in a corpus of complex lab protocols with a novel interactive textual simulator that keeps track of entity traits and semantic constraints during annotation. We use this data to develop graph-prediction models, finding them to be good at entity identification and local relation extraction, while our corpus facilitates further exploration of challenging long-range relations.</p>
+                <p><strong>Cost:</strong> 0.004</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-9120",
+    "paper_id": "paper-37a4c6a416e5200e9f6257d9711e54e69f4be754",
+    "extraction_schema_id": "extraction-schema-161",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00442725,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Process-Level Representation of Scientific Protocols with Interactive Annotation</h1>
+<p>Ronen Tamari ${ }^{\dagger * <em>}$ Fan Bai ${ }^{\ddagger}$ Alan Ritter ${ }^{\ddagger}$ Gabriel Stanovsky ${ }^{\dagger </em>}$<br>${ }^{\dagger}$ The Hebrew University of Jerusalem<br>${ }^{\ddagger}$ Georgia Institute of Technology<br>${ }^{*}$ Allen Institute for Artificial Intelligence<br>{ronent, gabis}@cs.huji.ac.il<br>{fan.bai,alan.ritter}@cc.gatech.edu</p>
+<h4>Abstract</h4>
+<p>We develop Process Execution Graphs (PEG), a document-level representation of real-world wet lab biochemistry protocols, addressing challenges such as cross-sentence relations, long-range coreference, grounding, and implicit arguments. We manually annotate PEGs in a corpus of complex lab protocols with a novel interactive textual simulator that keeps track of entity traits and semantic constraints during annotation. We use this data to develop graph-prediction models, finding them to be good at entity identification and local relation extraction, while our corpus facilitates further exploration of challenging long-range relations. ${ }^{1}$</p>
+<h2>1 Introduction</h2>
+<p>There is a drive in recent years towards automating wet lab environments, where menial benchwork procedures such as pipetting, centrifuging, or incubation are software-controlled, and either executed by fully automatic lab equipment (Lee and Miles, 2018), or with a human-in-the-loop (Keller et al., 2019). These environments allow reliable and precise experiment reproducbility while relieving researchers from tedious and laborious work which is prone to human error (Bates et al., 2017; Prabhu and Urban, 2017). To achieve this, several programmatic formalisms are developed to describe an experiment as an executable program. For example, Autoprotocol (Lee and Miles, 2018) defines a mix predicate taking three arguments: mode, speed, and duration.</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: We develop a scaffold (center) between sentence-level lab procedure representations (top) and low-level, lab-specific instructions (bottom). The Process Execution Graph (PEG) captures documentlevel relations between procedures (orange rounded nodes) and their arguments (blue rectangular nodes).</p>
+<p>A promising direction to leverage automatic wet-lab environments is a conversion from natural language protocols, written in expressive free-form language, to low-level instructions, ensuring a nonambiguous, repeatable description of experiments.</p>
+<p>In this work, we focus on a crucial first step towards such conversion - the extraction and representation of the relations conveyed by the protocol in a formal graph structure, termed Process Execution Graphs (PEG), exemplified in Figure 1. PEGs capture both concrete, exact quantities ("30 minutes"), as well as vague instructions ("swirl gently"). A researcher can then port the PEG (either manually or automatically) to their specific lab equipment, e.g., specifying what constitutes a gentle swirl setting and adding missing arguments, such as the temperature of the</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Example interaction with our simulator, showing predicate grounding ("chill" is a temp_type operation) input assignment ("vial" is an argument of "chill"), validation (warning for a missing argument) and auto-complete driven by state-tracking, where only legal instructions in a given state are presented.
+incubation in Figure 1.
+Formally, PEGs are directed, acyclic labeled graphs, capturing how objects in the lab (e.g., cells, tubes) are manipulated by lab operations (e.g., mixing, incubating), and in what order. Importantly, PEGs capture relations which may span across multiple sentences and implicit arguments. For example, the PEG in Figure 1 explicitly captures the relation between culture tubes, mentioned in the first sentence, and swirl and incubate which appear in later sentences.</p>
+<p>To annotate long and complex lab protocols, we develop a text-based game annotation interface simulating objects and actions in a lab environment (see example in Figure 2). Our annotators are given wet-lab protocols written in natural language taken from biochemistry publications, and are asked to repeat their steps by issuing textual commands to the simulator. The commands are deterministically converted to our PEG representation. This interface takes much of the burden off annotators by keeping track of object traits and commonsense constraints. For example, when the annotator issues a transfer command for a container, the simulator moves all its contents as well. We find that in-house annotators were able to effectively use this interface on complex protocols, achieving good agreement.</p>
+<p>Finally, we use this data to explore several models, building upon recent advances in graph prediction algorithms (Luan et al., 2019; Wadden et al., 2019). We thoroughly analyze model performance and find that our data introduces interesting new challenges, such as complex coreference resolution and long-range, cross-sentence relation identification.</p>
+<p>In conclusion, we make the following contributions:</p>
+<ul>
+<li>We formalize a PEG representation for free-form, natural language lab protocols, providing a semantic scaffold between free-form scientific literature and low-level instruments instruction.</li>
+<li>We develop a novel annotation interface for procedural text annotation using text-based games, and show that it is intuitive enough for wet-lab protocol annotation by non-experts.</li>
+<li>We release X-WLP, a challenging corpus of 279 PEGs representing document-level lab protocols. This size is on par with similar corpora of procedural text (Dalvi et al., 2018; Mysore et al., 2019; Vaucher et al., 2020).</li>
+<li>We develop two graph parsers: a pipeline model which chains predictions for graph subcomponents, and a joint-model of mention and relation detectors.</li>
+</ul>
+<h2>2 Background and Motivation</h2>
+<p>Several formalisms for programmatic lab controller interfaces were developed in recent years (Yachie and Natsume, 2017; Lee and Miles, 2018). For instance, Autoprotocol defines 35 lab commands, including spin, incubate, and mix. ${ }^{2}$ While these define wet-lab experiments in a precise and unambiguous manner, they do not readily replace their natural language description in scientific publications, much like a model implementation in python does not replace its high-level description in ML papers. Similarly to ML model descriptions, lab protocols are often not specified enough to support direct conversion to low-level programs. For example, the protocol in Figure 1 does not specify the swirling (mixing) speed or its duration.</p>
+<p>Our process execution graph (PEG) captures the predicate-argument structure of the protocol, allowing it to be more lenient than a programming language (for example, capturing that gently modifies swirl). Better suited to represent underspecified natural language, PEGs can serve as a convenient scaffold to support downstream tasks such as text-to-code assistants (Mehr et al., 2020). For example, by asking researchers to fill in missing required arguments for swirl.</p>
+<p>To annotate PEGs, we leverage the sentencelevel annotations of Kulkarni et al. (2018) (WLP henceforth). WLP, exemplified at the top of</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Figure 1, collected sentence-level structures using the BRAT annotation tool (Stenetorp et al., 2012). For example, capturing that cells, culture tubes are arguments for add. However, WLP does not capture cross-sentence implicit relations such that culture tubes are an argument for incubate. These are abundant in lab protocols, require tracking entities across many sentences, and are not easy to annotate using BRAT (see discussion in §4). We vastly extend upon WLP annotations, aiming to capture the full set of expressed protocol relations, using a novel text-based games annotation interface which lends itself to procedural text annotation.</p>
+<h2>3 Task Definition: Process Execution Graphs</h2>
+<p>Intuitively, we extend the WLP annotations (Kulkarni et al., 2018) from the sentence level to entire documents, aiming to capture all of the relations in the protocol. Formally, our representation is a directed, labeled, acyclic graph structure, dubbed a Process Execution Graph (PEG), exemplified in Figures 1 and 3, and formally defined below.</p>
+<p>Nodes PEG nodes are triggered by explicit text spans in the protocol, e.g., "swirl", or "ice". Nodes consist of two types: (1) predicates, marked in orange: denoting lab operations, such as add or incubate; and (2) arguments, marked in blue: representing physical lab objects (e.g., culture tubes, cells), exact quantities ( 30 minutes), or abstract instructions (e.g., gently).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Operation type</th>
+<th style="text-align: left;">Frequent example spans</th>
+<th style="text-align: center;">Count</th>
+<th style="text-align: right;">Pct.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Transfer</td>
+<td style="text-align: left;">add, transfer, place</td>
+<td style="text-align: center;">1301</td>
+<td style="text-align: right;">33.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temperature</td>
+<td style="text-align: left;">incubate, store, thaw</td>
+<td style="text-align: center;">503</td>
+<td style="text-align: right;">12.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treatment</td>
+<td style="text-align: left;">Initiate, run, do not vortex</td>
+<td style="text-align: center;">469</td>
+<td style="text-align: right;">11.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">General</td>
+<td style="text-align: left;">mix, vortex, inverting</td>
+<td style="text-align: center;">346</td>
+<td style="text-align: right;">8.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mix</td>
+<td style="text-align: left;">spin, centrifuge, pellet</td>
+<td style="text-align: center;">282</td>
+<td style="text-align: right;">7.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spin</td>
+<td style="text-align: left;">prepare, make, set up</td>
+<td style="text-align: center;">178</td>
+<td style="text-align: right;">4.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;">discard, decant, pour off</td>
+<td style="text-align: center;">170</td>
+<td style="text-align: right;">4.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Destroy</td>
+<td style="text-align: left;">remove, elute, extract</td>
+<td style="text-align: center;">168</td>
+<td style="text-align: right;">4.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">count, weigh, measure</td>
+<td style="text-align: center;">149</td>
+<td style="text-align: right;">3.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Measure</td>
+<td style="text-align: left;">wash, rinse, clean</td>
+<td style="text-align: center;">146</td>
+<td style="text-align: right;">3.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wash</td>
+<td style="text-align: left;">wait, sit, leave</td>
+<td style="text-align: center;">114</td>
+<td style="text-align: right;">2.9</td>
+</tr>
+<tr>
+<td style="text-align: left;">Time</td>
+<td style="text-align: left;">cover, seal, cap</td>
+<td style="text-align: center;">68</td>
+<td style="text-align: right;">1.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Seal</td>
+<td style="text-align: left;">change, transform, changes</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: right;">0.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Convert</td>
+<td style="text-align: left;">change, transform, changes</td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Details of PEG predicate types, along with example frequent trigger spans and relative frequency in X-WLP.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Argument type</th>
+<th style="text-align: left;">Frequent example spans</th>
+<th style="text-align: center;">Count</th>
+<th style="text-align: right;">Pct.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Reagent</td>
+<td style="text-align: left;">supernatant, dna, sample</td>
+<td style="text-align: center;">3362</td>
+<td style="text-align: right;">32.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Measurement</td>
+<td style="text-align: left;">$1.5 \mathrm{~mL}, 595 \mathrm{~nm}, 1 \mathrm{pmol}$</td>
+<td style="text-align: center;">1924</td>
+<td style="text-align: right;">18.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Setting</td>
+<td style="text-align: left;">overnight, room temperature</td>
+<td style="text-align: center;">1622</td>
+<td style="text-align: right;">15.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Location</td>
+<td style="text-align: left;">tube, ice, plates</td>
+<td style="text-align: center;">1373</td>
+<td style="text-align: right;">13.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modifier</td>
+<td style="text-align: left;">gently, carefully, clean</td>
+<td style="text-align: center;">1070</td>
+<td style="text-align: right;">10.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Device</td>
+<td style="text-align: left;">forceps, pipette tip</td>
+<td style="text-align: center;">590</td>
+<td style="text-align: right;">5.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Method</td>
+<td style="text-align: left;">dilutions, pipetting</td>
+<td style="text-align: center;">271</td>
+<td style="text-align: right;">2.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Seal</td>
+<td style="text-align: left;">lid, cap, aluminum foil</td>
+<td style="text-align: center;">97</td>
+<td style="text-align: right;">0.9</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Details of PEG argument types, along with example frequent trigger spans and relative frequency in X-WLP.</p>
+<p>Node grounding The PEG formulation above is motivated as a scaffold towards fully-executable lab programs employed in automatic lab environments. To achieve this, we introduce an ontology for each of the node types, based on the Autoprotocol specification (Lee and Miles, 2018), as indicated below each text span in Figures 1 and 3. For example, swirl corresponds to an Autoprotocol mix operation, a culture tube is of type location, and 30 minutes is a setting. See Tables 1, 2 for details of predicate and argument types respectively, their frequencies in our data and example spans.</p>
+<p>Edges Following PropBank notation (Kingsbury and Palmer, 2003), PEGs consist of three types of edges derived from the Autoprotocol ontology, and denoted by their labels: (1) core-roles (e.g., "ARG0", "ARG1"): indicating predicate-specific roles, aligning with Autoprotocol's ontology. For example, $A R G 0$ of mix assigns the element to be mixed; (2) non-core roles (e.g., "setting", "site", or "co-ref"): indicate predicate-agnostic relations. For example, the site argument always marks the location in which a predicate is taking place; and (3) temporal edges, labeled with a special "succ" label: define a temporal transitive ordering between predicates. In Figure 1, add occurs before swirl, which occurs before incubate. See Table 3 for predicate-specific core-role semantics, and Table 6 for non-cores roles types and frequencies of all roles in X-WLP. See Appendix A. 3 for the rules defining what relations can hold between various entity types.</p>
+<p>Relation to Autoprotocol As shown at the bottom of Figure 1, a PEG is readily convertible to Autoprotocol or similar laboratory interfaces once it is fully instantiated, thanks to edge labels and node grounding to an ontology. For example, a</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Operation</th>
+<th style="text-align: left;">Role Semantics</th>
+<th style="text-align: left;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">ARG0 centrifuged to</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Spin</td>
+<td style="text-align: left;">produce solid phase</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">ARG1 and/or liquid</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">phase ARG2</td>
+<td style="text-align: left;">ARG0 converted to ARG1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Convert</td>
+<td style="text-align: left;">ARG0 converted to ARG1</td>
+<td style="text-align: left;">ARG0, ARG1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Seal</td>
+<td style="text-align: left;">ARG0 sealed with ARG1</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;">ARG* are created</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">General</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Destroy</td>
+<td style="text-align: left;">ARG* discarded</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Measure</td>
+<td style="text-align: left;">ARG* to be measured</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mix</td>
+<td style="text-align: left;">ARG* are mixed</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">ARG0 removed from ARG1</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temperature</td>
+<td style="text-align: left;">ARG* to be heated/cooled</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treatment</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Time</td>
+<td style="text-align: left;">Wait after operation on ARG0</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transfer</td>
+<td style="text-align: left;">ARG* are sources,</td>
+<td style="text-align: left;">ARG0, site</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wash</td>
+<td style="text-align: left;">transferred to "site"</td>
+<td style="text-align: left;">ARG0</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Details of core role semantics for all operation types. The "Required" column specifies which roles must be filled for a given operation. ARG* is short for {ARG0, ARG1, ARG2}.
+researcher can specify what gently means in terms of mixing speed for their particular lab instruments.</p>
+<p>Reentrancies and cross-sentence relations While the PEG does not form directed cycles, ${ }^{3}$ it does form non-directed cycles (or reentrancies) where there exists nodes $u, v$ such that there are two different paths from $u$ to $v$. This occurs when an object participates in two or more temporallydependent operations. For example, see culture tubes, which participates in all operations in Figure 1. In addition, edges $(u, v)$ may be triggered either by within-sentence relations, when both $u$ and $v$ are triggered by spans in the same sentence, or by cross-sentence relations, when $u$ and $v$ are triggered by spans in different sentences. In the following section we will show that both reentrancies and cross-sentence relations, which are not captured by previous annotations, are abundant in our annotations.</p>
+<h2>4 Data Collection: The X-WLP Corpus</h2>
+<p>In this section, we describe in detail the creation of our annotated corpus: X-WLP. The protocols in X-WLP are a subset ( $44.8 \%$ ) of those annotated in the WLP corpus. These were chosen because they are covered well by Autoprotocol's ontology (for details on ontology coverage, see §A.1).</p>
+<p>In total, we collected 3,708 sentences ( 54.1 K</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 4: Statistics of our annotated corpus (X-WLP). X-WLP annotates complex documents, constituting more than 13 sentences on average. X-WLP overall size is on par with other recent procedural corpora, including ProPara (Dalvi et al., 2018), material science (MSPTC; Mysore et al. (2019)) and chemical synthesis procedures (CSP; Vaucher et al. (2020)). CSP is comprised of annotated sentences (document level information is not provided).
+tokens) in 279 wet lab protocols annotated with our graph representation. As can be seen in Table 4, X-WLP annotates long examples, often spanning dozens of sentences, and its size is comparable (e.g., in terms of annotated words) to the ProPara corpus (Dalvi et al., 2018) and other related procedural datasets.</p>
+<h3>4.1 WLP as a Starting Point</h3>
+<p>Despite WLP's focus on sentence-level relations (see top of Figure 1), it is a valuable starting point for a document-level representation. We pre-populate our PEG representations with WLP's gold object mentions (e.g., cells, 30 minutes), operation mentions (swirl and incubate), and within-sentence relations (e.g., between gently and swirl). We ask annotators to enrich them with type grounding for operations and arguments, as well as cross-sentence relations, as defined in $\S 3$. From these annotations we obtain process-level representations as presented in Figures 1 and 3.</p>
+<h3>4.2 Process-Level Annotation Interface: Text-Based Simulator</h3>
+<p>Annotating cross-sentence relations and grounding without a dedicated user interface is an arduous and error-prone prospect. Consider as an example the ligation mixture mention in Figure 3. This mention is a metonym for vial ( 5 sentences earlier), after mixing in the ligase. This kind of metonymic co-reference is known to be difficult for annotation (Jurafsky and Martin, 2009), and indeed, such complicated annotation has been a factor in the omission of cross-sentence information in similar domains (Mysore et al., 2019). A simulator can provide a natural way to account for it by</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: A full process gold PEG annotation from X-WLP for a real-world wet lab protocol whose text is presented in the lower right corner (protocol 512), exemplifying several common properties: (1) complex, technical language, in relatively short sentences; (2) a chain of temporally-dependent, cross-sentence operations; (3) a common object that is being acted upon through side effects throughout the process (vial); and (4) vial is mostly omitted in the text after being introduced in the first sentence, despite participating in all following sentences. In the last sentence it appears with a metonymic expression (ligation mixture).
+representing the relevant temporal and contextual information: after sentence 4, vial contains the ligation buffer mixed with other entities.</p>
+<p>To overcome these challenges and achieve highquality annotations for this complex task, we develop a simulator annotation interface, building upon the TextWorld framework (Côté et al., 2018). This approach uses text-based games as the underlying simulator environment, which we adapt to the biochemistry domain. The human annotator interacts with the text-based interface to simulate the raw wet lab protocol (Figure 2): setting the types of operations (the first interaction sets the span "chill" as a temperature operation) and assigning their inputs (the last line assigns vial as an input to chill), while the simulator tracks entity states and ensures the correct number and type of arguments, based on the Autoprotocol ontology. For example, the second interaction in Figure 2 indicates a missing argument for the chill operation (the argument to be chilled). Finally, tracking temporal dependency ("succ" edges) is also managed entirely by the simulator by tracking the order in which the annotator issues the different operations.</p>
+<p>Further assistance is provided to annotators in the form of an auto-complete tool (last interaction in Figure 2), visualization of current PEG and a simple heuristic "linter" (Johnson, 1977) which flags errors such as ignored entities by producing a score based on the number of connected components in the output PEG.</p>
+<p>See the project web page for the complete annotation guidelines, visualizations of annotated protocols, and demonstration videos of the annotation process.</p>
+<h3>4.3 Data Analysis</h3>
+<p>Four in-house CS undergraduate students with interest in NLP used our simulator to annotate the protocols of X-WLP, where 44 of the protocols were annotated by two different annotators to estimate agreement.</p>
+<p>Inter-annotator agreement. We turn to the literature on abstract meaning representation (AMR; Banarescu et al., 2013) for established graph agreement metrics, which we adapt to our setting. Similarly to our PEG representation, the AMR formalism has predicate and argument nodes (lab operations and entities in our notation) and directed labeled edges which can form undirected cycles through reentrancies (nodes with multiple incoming edges). ${ }^{4}$ In Table 5 we report a graph Smatch score (Cai and Knight, 2013) widely used to quantify AMR's graph structure agreement, as well as finer grained graph agreement metrics, adapted from Damonte et al. (2017). Smatch values are comparable to those obtained for AMR, where reported gold agreement</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Agreement Metric</th>
+<th style="text-align: left;">F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Smatch</td>
+<td style="text-align: left;">84.99</td>
+</tr>
+<tr>
+<td style="text-align: left;">Argument identification</td>
+<td style="text-align: left;">89.72</td>
+</tr>
+<tr>
+<td style="text-align: left;">Predicate identification</td>
+<td style="text-align: left;">86.68</td>
+</tr>
+<tr>
+<td style="text-align: left;">Core roles</td>
+<td style="text-align: left;">80.52</td>
+</tr>
+<tr>
+<td style="text-align: left;">Re-entrancies</td>
+<td style="text-align: left;">73.12</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: X-WLP inter-annotator agreement metrics. Smatch (Cai and Knight, 2013) quantifies overall graph structure. Following metrics provide a finer-grained break down (Damonte et al., 2017).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Relation</th>
+<th style="text-align: left;"># Intra.</th>
+<th style="text-align: left;"># Inter.</th>
+<th style="text-align: left;">Total</th>
+<th style="text-align: left;"># Re-entrancy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Core</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG0</td>
+<td style="text-align: left;">2962</td>
+<td style="text-align: left;">952</td>
+<td style="text-align: left;">3914</td>
+<td style="text-align: left;">1645</td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG1</td>
+<td style="text-align: left;">560</td>
+<td style="text-align: left;">127</td>
+<td style="text-align: left;">687</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG2</td>
+<td style="text-align: left;">84</td>
+<td style="text-align: left;">123</td>
+<td style="text-align: left;">207</td>
+<td style="text-align: left;">77</td>
+</tr>
+<tr>
+<td style="text-align: left;">Total (core)</td>
+<td style="text-align: left;">3606</td>
+<td style="text-align: left;">1202</td>
+<td style="text-align: left;">4808</td>
+<td style="text-align: left;">1725</td>
+</tr>
+<tr>
+<td style="text-align: left;">Non-Core</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">- site</td>
+<td style="text-align: left;">1306</td>
+<td style="text-align: left;">325</td>
+<td style="text-align: left;">1631</td>
+<td style="text-align: left;">360</td>
+</tr>
+<tr>
+<td style="text-align: left;">- setting</td>
+<td style="text-align: left;">3499</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">3501</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- usage</td>
+<td style="text-align: left;">1114</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">1138</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- co-ref</td>
+<td style="text-align: left;">129</td>
+<td style="text-align: left;">1575</td>
+<td style="text-align: left;">1704</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- located-at</td>
+<td style="text-align: left;">199</td>
+<td style="text-align: left;">72</td>
+<td style="text-align: left;">271</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- measure</td>
+<td style="text-align: left;">2936</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">2954</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- modifier</td>
+<td style="text-align: left;">1861</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">1863</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">- part-of</td>
+<td style="text-align: left;">72</td>
+<td style="text-align: left;">65</td>
+<td style="text-align: left;">137</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">Total (non-core)</td>
+<td style="text-align: left;">11116</td>
+<td style="text-align: left;">2083</td>
+<td style="text-align: left;">13199</td>
+<td style="text-align: left;">360</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temporal</td>
+<td style="text-align: left;">1218</td>
+<td style="text-align: left;">788</td>
+<td style="text-align: left;">2006</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;">Grand Total</td>
+<td style="text-align: left;">$15940(80 \%)$</td>
+<td style="text-align: left;">$4073(20 \%)$</td>
+<td style="text-align: left;">20013</td>
+<td style="text-align: left;">2085</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Breakdown of PEG relation types by frequency in X-WLP, showing counts of inter/intra-sentence relations. Re-entrancies are possible only for core and "site" arguments, and may be either inter or intrasentence.
+varies between $0.69-0.89$ (Cai and Knight, 2013), while our task deals with longer, paragraph length representations. Reentrancies are the hardest for annotators to agree on, probably since they involve longer-range, typically cross-sentence relations. On the other hand, local decisions such as argument and predicate identification achieve higher agreement, and also benefit greatly from the annotations of WLP.</p>
+<p>Information gain from process-level annotation. Analysis of the relations in X-WLP, presented in Table 6, reveals that a significant proportion of arguments in PEGs are re-entrancies (32.4\%) or cross-sentence (50.3\%). ${ }^{5}$ Figure 3 shows a representative example, with the vial participating in multiple re-entrancies and long-range relations,</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 7: Comparison of average arguments per operation and percentage of semantically underspecified operations (missing core arguments) in WLP and X-WLP.
+triggered by each sentence in the protocol. These relations are crucial to correctly model the protocols at the process level, and are inherently missed by sentence-level formalisms, showing the value of our annotations.</p>
+<p>To shed light on the additional process-level information captured by our approach relative to WLP, in Table 7 we compare the average number of arguments per operation node as well as the amount of operation nodes with no core arguments. For example, see the swirl instruction at the top of Figure 1: in WLP, this predicate has no core role argument and is thus semantically under-defined. X-WLP correctly captures the core role of culture tubes. By definition, our use of input validation by the simulator prevents semantic under-specification, which is likely a significant factor in the higher counts for cross-sentence relations and overall average arguments in X-WLP.</p>
+<p>Annotation cost. The time to annotate an average document of 13.29 sentences was approximately 53 minutes (roughly 4 minutes per sentence), not including annotator training. Our annotator pay was 13 USD / hour. The overall annotation budget for X-WLP was roughly 3,200 USD.</p>
+<h2>5 Models</h2>
+<p>We present two approaches for PEG prediction. First, in $\S 5.1$ we design models for separate graph sub-component prediction, which are chained to form a pipeline PEG prediction model. Second, in $\S 5.2$ we present a model which directly predicts the entire PEG using a span-graph prediction approach.</p>
+<h3>5.1 Pipeline Model (PIPELINE)</h3>
+<p>A full PEG representation as defined in $\S 3$ can be obtained by chaining the following models which predict its sub-components. In all of these, we use SciBERT (Beltagy et al., 2019) which was trained on scientific texts similar to our domain.</p>
+<p>Mention identification. Given a scientific protocol written in natural language, we begin by identifying all experiment-involved text spans mentioning lab operations (predicates) or entities and their traits (arguments), which are the building blocks for PEGs. We model this problem of mention identification as a sequence tagging problem. Specifically, we transfer span-level mention labels, which are annotated in the WLP corpus into token-level labels using the BIO tagging scheme, then fine-tune the SciBERT model for token classification.</p>
+<p>Predicate grounding. Next, we ground predicate nodes into the operation ontology types discussed in $\S 3$. See Table 1 in the Appendix for the complete list. Predicted mentions are marked using special start and end tokens ([E-start] and [E-end]), then fed as input to SciBERT. The contextual embedding of [E-start] is input to a linear softmax layer to predict the fine-grained operation type.</p>
+<p>Operation argument role labeling. Once the operation type is identified, we predict its semantic arguments and their roles. Given an operation and an argument mention, four special tokens are used to specify the positions of their spans (Baldini Soares et al., 2019). Type information is also encoded into the tokens, for example, when the types of the operator and its argument are mix-op and reagent respectively, four special tokens [El-mix-op-start], [El-mix-op-end], [E2-rg-start] and [E2-rg-end] are used to denote the spans of the mention pair. After feeding the input into SciBERT, the contextualized embeddings of [El-op-mix-start] and [E2-rg-start] are concatenated as input to a linear layer that is used to predict the entity's argument role. Arguments of an operation can be selected from anywhere in the protocol, leading to many crosssentence operation-argument link candidates. To accommodate cross-sentence argument roles, we use the entire document as input to SciBERT for each mention pair. However, SciBERT is limited to processing sequences of at most 512 tokens. To address this limitation, longer documents are truncated in a way that preserves surrounding context, when encoding mention pairs. ${ }^{6}$ Only 8</p>
+<p><sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup>of the 279 protocols in our dataset contain more than 512 tokens.</p>
+<p>Temporal ordering. Finally, we model order of operations using the succ relation (see Figure 3). These are predicted using a similar approach as argument role labeling, where special tokens are used to encode operation spans.</p>
+<h3>5.2 Jointly-Trained Model (Multi-TASK)</h3>
+<p>To explore the benefits of jointly modeling mentions and relations, we experiment with a graph-based multi-task framework based on DyGIE++ model (Wadden et al., 2019). Candidate mention spans are encoded using SciBERT, and a graph is constructed based on predicted X-WLP relations and argument roles. A message-passing neural network is then used to predict mention spans while propagating information about related spans in the graph (Dai et al., 2016; Gilmer et al., 2017; Jin et al., 2018).</p>
+<p>This approach requires computing hidden state representations for all $O\left(n^{4}\right)$ pairs of spans in an input text, which for long sequences, will exhaust GPU memory. While Wadden et al. (2019) considered primarily within-sentence relations, our model must consider relations across the entire protocol, which makes this a problem of practical concern. To address this, we encode a sliding window of $w$ adjacent sentences when the full protocol does not fit into memory, allowing smaller windows for the start and end of the protocol, and concatenate sentences within each window as inputs to the model. As a result, each sentence is involved in $w$ windows leading to repeated, possibly contradicting predictions for both mentions and relations. To handle this, we output predictions agreed upon by at least $k$ windows, where $k$ is a hyperparameter tuned on a development set.</p>
+<h2>6 Experiments</h2>
+<p>In $\S 5$, we presented a pipelined approach to PEG prediction based on SciBERT and a messagepassing neural network that jointly learns span and relation representations. Next, we describe the details of our experiments and present empirical results demonstrating that X-WLP supports training models that can predict PEGs from natural language instructions.</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Data Split</th>
+<th style="text-align: left;">System</th>
+<th style="text-align: center;">$F_{1}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">original</td>
+<td style="text-align: left;">Kulkarni et al. (2018)</td>
+<td style="text-align: center;">78.0</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">Wadden et al. (2019)</td>
+<td style="text-align: center;">$\mathbf{7 9 . 7}$</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">PiPELINE</td>
+<td style="text-align: center;">78.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">X-WLP-eval</td>
+<td style="text-align: left;">PiPELINE</td>
+<td style="text-align: center;">74.7</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Mention identification test set $\mathrm{F}_{1}$ scores for models on the WLP dataset. Top: WLP dataset with the original train/dev/test split. Bottom: excluding X-WLP protocols from the WLP training data, and using them for evaluation.</p>
+<p>Data. X-WLP is our main dataset including 279 fully annotated protocols. Statistics of X-WLP are presented in Table 4. Additionally, we have 344 protocols from the original WLP dataset. We use this auxiliary data only for training mention taggers in the pipeline model, and use X-WLP for all other tasks. For argument role labeling and temporal ordering, negative instances are generated by enumerating all possible mention pairs whose types appear at least once in the gold data. We use 5 -fold cross validation; 2 folds ( 112 protocols) are used for development, and the other 3 folds ( 167 protocols) are used to report final results.</p>
+<p>Model setup. The PiPELINe framework employs a separate model for each task, by default using the propagated predictions from previous tasks as input. In addition, we evaluate the model for each task with gold input denoted as PiPELINE (gold). Finally, the Multi-TASK framework learns all tasks together and we decompose its performance into the component subtasks.</p>
+<p>Implementation details. We use the uncased version of SciBERT ${ }^{7}$ for all our models due to the importance of in-domain pre-training. The models under the PiPELINE system are implemented using Huggingface Transformers (Wolf et al., 2020), and we use AdamW with the learning rate $2 \times 10^{-5}$ for SciBERT finetuing. For the Multi-TASK framework, we set the widow size $w$ to 5 , the maximum value that enables the model to fit in GPU memory. For all other hyperparameters, we follow the settings of the WLP experiments in (Wadden et al., 2019).</p>
+<h3>6.1 Results</h3>
+<p>The results of the two models on the different subtasks are presented in Tables 8- 11. We identify three main observations based on these results.</p>
+<p><sup id="fnref7:0"><a class="footnote-ref" href="#fn:0">1</a></sup>Table 9: Predicate grounding test set results.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Task</th>
+<th style="text-align: center;">MULTI-TASK</th>
+<th style="text-align: center;">PiPELINE</th>
+<th style="text-align: center;"># gold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Core</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">- All roles</td>
+<td style="text-align: center;">$\mathbf{5 7 . 9}$</td>
+<td style="text-align: center;">53.7</td>
+<td style="text-align: center;">2839</td>
+</tr>
+<tr>
+<td style="text-align: left;">- All roles (gold mentions)</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">76.5</td>
+<td style="text-align: center;">2839</td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG0</td>
+<td style="text-align: center;">$\mathbf{6 1 . 0}$</td>
+<td style="text-align: center;">57.1</td>
+<td style="text-align: center;">2313</td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG1</td>
+<td style="text-align: center;">$\mathbf{3 6 . 1}$</td>
+<td style="text-align: center;">32.9</td>
+<td style="text-align: center;">412</td>
+</tr>
+<tr>
+<td style="text-align: left;">- ARG2</td>
+<td style="text-align: center;">$\mathbf{6 9 . 7}$</td>
+<td style="text-align: center;">61.4</td>
+<td style="text-align: center;">114</td>
+</tr>
+<tr>
+<td style="text-align: left;">Non-Core</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">- All roles</td>
+<td style="text-align: center;">$\mathbf{5 5 . 7}$</td>
+<td style="text-align: center;">48.8</td>
+<td style="text-align: center;">4826</td>
+</tr>
+<tr>
+<td style="text-align: left;">- All roles (gold mentions)</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">78.1</td>
+<td style="text-align: center;">4826</td>
+</tr>
+<tr>
+<td style="text-align: left;">- site</td>
+<td style="text-align: center;">$\mathbf{5 8 . 7}$</td>
+<td style="text-align: center;">55.4</td>
+<td style="text-align: center;">962</td>
+</tr>
+<tr>
+<td style="text-align: left;">- setting</td>
+<td style="text-align: center;">$\mathbf{7 7 . 4}$</td>
+<td style="text-align: center;">74.7</td>
+<td style="text-align: center;">974</td>
+</tr>
+<tr>
+<td style="text-align: left;">- usage</td>
+<td style="text-align: center;">$\mathbf{3 5 . 6}$</td>
+<td style="text-align: center;">33.0</td>
+<td style="text-align: center;">296</td>
+</tr>
+<tr>
+<td style="text-align: left;">- co-ref</td>
+<td style="text-align: center;">$\mathbf{3 9 . 8}$</td>
+<td style="text-align: center;">36.7</td>
+<td style="text-align: center;">1014</td>
+</tr>
+<tr>
+<td style="text-align: left;">- measure</td>
+<td style="text-align: center;">$\mathbf{6 3 . 3}$</td>
+<td style="text-align: center;">56.6</td>
+<td style="text-align: center;">804</td>
+</tr>
+<tr>
+<td style="text-align: left;">- modifier</td>
+<td style="text-align: center;">$\mathbf{5 1 . 0}$</td>
+<td style="text-align: center;">41.8</td>
+<td style="text-align: center;">519</td>
+</tr>
+<tr>
+<td style="text-align: left;">- located-at</td>
+<td style="text-align: center;">9.7</td>
+<td style="text-align: center;">$\mathbf{1 3 . 3}$</td>
+<td style="text-align: center;">179</td>
+</tr>
+<tr>
+<td style="text-align: left;">- part-of</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">$\mathbf{1 0 . 8}$</td>
+<td style="text-align: center;">78</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temporal Ordering</td>
+<td style="text-align: center;">$\mathbf{6 1 . 8}$</td>
+<td style="text-align: center;">57.3</td>
+<td style="text-align: center;">2176</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temp. Ord. (gold mentions)</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">76.3</td>
+<td style="text-align: center;">2176</td>
+</tr>
+</tbody>
+</table>
+<p>Table 10: Operation argument role labeling (core and non-core roles, decomposed by relation) and temporal ordering test set $\mathrm{F}_{1}$ performance.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Split</th>
+<th style="text-align: center;">MULTI-TASK</th>
+<th style="text-align: center;">PiPELINE</th>
+<th style="text-align: center;"># gold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Intra-sentence</td>
+<td style="text-align: center;">$\mathbf{6 3 . 4}$</td>
+<td style="text-align: center;">58.2</td>
+<td style="text-align: center;">2160</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inter-sentence</td>
+<td style="text-align: center;">$\mathbf{3 2 . 5}$</td>
+<td style="text-align: center;">39.1</td>
+<td style="text-align: center;">679</td>
+</tr>
+</tbody>
+</table>
+<p>Table 11: Operation argument role labeling (core roles) test set $\mathrm{F}_{1}$, decomposed based on whether the operation and the argument are triggered within the same sentence (intra-sentence) versus different sentences (inter-sentence).</p>
+<p>First, PiPELINE outperforms Multi-TASK on the operation classification task in Table 9, as it uses all protocols from WLP as additional training data to improve mention tagging.</p>
+<p>Second, Multi-TASK performs better than the PiPELINE approach on most relation classification tasks in Table 10, but is worse than PiPELINE when PiPELINE uses gold mentions, demonstrating that jointly modeling mentions and relations helps in mitigating error propagation.</p>
+<p>Third, cross-sentence relations are challenging for both models, as shown in Table 11. This explains the low performance of co-ref, which is comprised of $92.4 \%$ cross-sentence relations.</p>
+<p>In addition, there are a couple of interesting points to note. In Table 8, the performance of PiPELINE on the X-WLP subset is lower than its performance on the WLP test set, likely because</p>
+<p>there are fewer protocols in the training set. For the relation-decomposed performance in Table 10, we can see that some of the relations like "ARG2" can be correctly predicted by MULTI-TASK using only a few gold labels while some more widely used relations are harder to learn, such as "ARG0" and "site"; indeed, "ARG2" is only used in the spin operation (see Table 3), while the other roles participate in more diverse contexts.</p>
+<h2>7 Related Work</h2>
+<p>Natural Language Processing (NLP) for scientific procedural text is a rapidly growing field. Todate, most approaches have focused on textmining applications (Isayev, 2019) and typically annotate only shallow, sentence-level semantic structures (e.g., Fig. 1, top). Examples include WLP (Kulkarni et al., 2018) and materials science procedures (Mysore et al., 2019; Kuniyoshi et al., 2020). Recent interest in automation of lab procedures has also led to sentence-level annotation of procedural texts with action sequences designed to facilitate execution (Vaucher et al., 2020).</p>
+<p>However, as noted in recent concurrent work (Mehr et al., 2020), neither sentence-level semantic structures nor action sequences are sufficient for the goal of converting text to a machine-executable synthesis procedure; for this purpose, a more structured, process-level semantic representation is required. In particular, executable representations require a structured declaration of the locations and states of the different materials throughout a process, details not represented by sentence-level annotations. Our simulator can naturally represent such information by maintaining a stateful model of the process. Simulation fidelity can be controlled by implementing the execution semantics of operations to the level of detail required.</p>
+<p>Mehr et al. (2020) have similarly proposed a process-level executable representation, but use an NLP pipeline consisting primarily of rules and simple pattern matching, relying on a human-in-the-loop for corrections; linking our approach with their framework is a promising future direction.</p>
+<p>Structurally, PEGs are similar to abstract meaning representation (AMR; Banarescu et al. 2013), allowing us to use agreement and performance metrics developed for AMR. In contrast with the sentence-level AMR, a major challenge in this work is annotating and predicting
+procedure-level representations. ${ }^{8}$
+Another line of research focuses on procedural text understanding for more general domains: simple scientific processes (Dalvi et al., 2018), open domain procedural texts (Tandon et al., 2020), and cooking recipes (Kiddon et al., 2015; Bosselut et al., 2018). These works represent process-level information and entity state changes, but typically feature shorter processes, simpler language and an open ontology, compared with our domain-specific terminology and grounded ontology.</p>
+<p>Our framework also provides a link to text-based game approaches to procedural text understanding. Tamari et al. (2019) modelled scientific procedures with text-based games but used only synthetic data. Our simulator enables leveraging recent advances on text-based games agents (e.g., (Adhikari et al., 2020)) towards natural language understanding.</p>
+<h2>8 Conclusion</h2>
+<p>We developed a novel meaning representation and simulation-based annotation interface, enabling the collection of process-level annotations of experimental procedures, as well as two parsers (pipeline and joint modelling) trained on this data. Our dataset and experiments present several directions for future work, including the modelling of challenging long range dependencies, application of text-based games for procedural text understanding, and extending simulation-based annotation to new domains.</p>
+<h2>Acknowledgments</h2>
+<p>We would like to thank Peter Clark, Noah Smith, Yoav Goldberg, Dafna Shahaf, and Reut Tsarfaty for many fruitful discussions and helpful comments, as well as the X-WLP annotators: Pranay Methuku, Rider Osentoski, Noah Zhang and Michael Zhan. This work was partially supported by an Allen Institute for AI Research Gift to Gabriel Stanovsky. This material is based upon work supported by the NSF (IIS1845670) and the Defense Advanced Research Projects Agency (DARPA) under Contract No. HR001119C0108. The views, opinions, and/or findings expressed are those of the author(s) and should not be interpreted as representing the official views or policies of the Department of Defense or the U.S. Government.</p>
+<p><sup id="fnref8:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>References</h2>
+<p>Ashutosh Adhikari, Xingdi Yuan, Marc-Alexandre Côté, Mikulás Zelinka, Marc-Antoine Rondeau, Romain Laroche, Pascal Poupart, Jian Tang, Adam Trischler, and Will Hamilton. 2020. Learning dynamic belief graphs to generalize on text-based games. Advances in Neural Information Processing Systems, 33.</p>
+<p>Livio Baldini Soares, Nicholas FitzGerald, Jeffrey Ling, and Tom Kwiatkowski. 2019. Matching the blanks: Distributional similarity for relation learning. In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages 2895-2905, Florence, Italy. Association for Computational Linguistics.</p>
+<p>Laura Banarescu, Claire Bonial, Shu Cai, Madalina Georgescu, Kira Griffitt, Ulf Hermjakob, Kevin Knight, Philipp Koehn, Martha Palmer, and Nathan Schneider. 2013. Abstract meaning representation for sembanking. In LAW@ACL.</p>
+<p>Maxwell Bates, Aaron J Berliner, Joe Lachoff, Paul R Jaschke, and Eli S Groban. 2017. Wet lab accelerator: a web-based application democratizing laboratory automation for synthetic biology. ACS synthetic biology, 6(1):167-171.</p>
+<p>Iz Beltagy, Kyle Lo, and Arman Cohan. 2019. SciBERT: A pretrained language model for scientific text. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 3615-3620, Hong Kong, China. Association for Computational Linguistics.</p>
+<p>Antoine Bosselut, Corin Ennis, Omer Levy, Ari Holtzman, Dieter Fox, and Yejin Choi. 2018. Simulating action dynamics with neural process networks. In International Conference on Learning Representations.</p>
+<p>Shu Cai and Kevin Knight. 2013. Smatch: an evaluation metric for semantic feature structures. In Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers), pages 748-752, Sofia, Bulgaria. Association for Computational Linguistics.</p>
+<p>Marc-Alexandre Côté, Ákos Kádár, Xingdi Yuan, Ben Kybartas, Tavian Barnes, Emery Fine, James Moore, Matthew Hausknecht, Layla El Asri, Mahmoud Adada, et al. 2018. Textworld: A learning environment for text-based games. In Workshop on Computer Games, pages 41-75. Springer.</p>
+<p>Hanjun Dai, Bo Dai, and Le Song. 2016. Discriminative embeddings of latent variable models for structured data. In International conference on machine learning, pages 2702-2711.</p>
+<p>Bhavana Dalvi, Lifu Huang, Niket Tandon, Wen-tau Yih, and Peter Clark. 2018. Tracking state changes in procedural text: a challenge dataset and models for
+process paragraph comprehension. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers), pages 1595-1604, New Orleans, Louisiana. Association for Computational Linguistics.</p>
+<p>Marco Damonte, Shay B. Cohen, and Giorgio Satta. 2017. An incremental parser for Abstract Meaning Representation. In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics: Volume 1, Long Papers, pages 536-546, Valencia, Spain. Association for Computational Linguistics.</p>
+<p>Justin Gilmer, Samuel S Schoenholz, Patrick F Riley, Oriol Vinyals, and George E Dahl. 2017. Neural message passing for quantum chemistry. In Proceedings of the 34th International Conference on Machine Learning-Volume 70. JMLR. org.</p>
+<p>Olexandr Isayev. 2019. Text mining facilitates materials discovery. Nature, 571(7763):42-43.</p>
+<p>Wengong Jin, Regina Barzilay, and Tommi Jaakkola. 2018. Junction tree variational autoencoder for molecular graph generation. In International Conference on Machine Learning.</p>
+<p>Stephen C Johnson. 1977. Lint, a C program checker. Citeseer.</p>
+<p>Daniel Jurafsky and James H. Martin. 2009. Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition, second edition. Pearson Prentice Hall.</p>
+<p>Ben Keller, Justin Vrana, Abraham Miller, Garrett Newman, and Eric Klavins. 2019. Aquarium: The Laboratory Operating System version 2.6.0.</p>
+<p>Chloé Kiddon, Ganesa Thandavam Ponnuraj, Luke Zettlemoyer, and Yejin Choi. 2015. Mise en place: Unsupervised interpretation of instructional recipes. In Proceedings of the 2015 Conference on Empirical Methods in Natural Language Processing, pages 982992, Lisbon, Portugal. Association for Computational Linguistics.</p>
+<p>Paul Kingsbury and Martha Palmer. 2003. Propbank: the next level of treebank.</p>
+<p>Chaitanya Kulkarni, Wei Xu, Alan Ritter, and Raghu Machiraju. 2018. An annotated corpus for machine reading of instructions in wet lab protocols. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 2 (Short Papers), pages 97106, New Orleans, Louisiana. Association for Computational Linguistics.</p>
+<p>Fusataka Kuniyoshi, Kohei Makino, Jun Ozawa, and Makoto Miwa. 2020. Annotating and extracting synthesis process of all-solid-state batteries from</p>
+<p>scientific literature. In Proceedings of the 12th Language Resources and Evaluation Conference, pages 1941-1950, Marseille, France. European Language Resources Association.</p>
+<p>Peter L Lee and Benjamin N Miles. 2018. Autoprotocol driven robotic cloud lab enables systematic machine learning approaches to designing, optimizing, and discovering novel biological synthesis pathways. In SIMB Annual Meeting 2018. SIMB.</p>
+<p>Yi Luan, Dave Wadden, Luheng He, Amy Shah, Mari Ostendorf, and Hannaneh Hajishirzi. 2019. A general framework for information extraction using dynamic span graphs. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pages 3036-3046, Minneapolis, Minnesota. Association for Computational Linguistics.
+S. Hessam M. Mehr, Matthew Craven, Artem I. Leonov, Graham Keenan, and Leroy Cronin. 2020. A universal system for digitization and automatic execution of the chemical synthesis literature. Science, 370(6512):101-108.</p>
+<p>Ben Miles and Peter L. Lee. 2018. Achieving reproducibility and closed-loop automation in biological experimentation with an iot-enabled lab of the future. SLAS TECHNOLOGY: Translating Life Sciences Innovation, 23(5):432-439. PMID: 30045649.</p>
+<p>Sheshera Mysore, Zachary Jensen, Edward Kim, Kevin Huang, Haw-Shiuan Chang, Emma Strubell, Jeffrey Flanigan, Andrew McCallum, and Elsa Olivetti. 2019. The materials science procedural text corpus: Annotating materials synthesis procedures with shallow semantic structures. In Proceedings of the 13th Linguistic Annotation Workshop, pages 56-64.</p>
+<p>Tim O'Gorman, Michael Regan, Kira Griffitt, Ulf Hermjakob, Kevin Knight, and Martha Palmer. 2018. AMR beyond the sentence: the multisentence AMR corpus. In Proceedings of the 27th International Conference on Computational Linguistics, pages 3693-3702, Santa Fe, New Mexico, USA. Association for Computational Linguistics.</p>
+<p>Gurpur Rakesh D Prabhu and Pawel L Urban. 2017. The dawn of unmanned analytical laboratories. TrAC Trends in Analytical Chemistry, 88:41-52.</p>
+<p>Pontus Stenetorp, Sampo Pyysalo, Goran Topić, Tomoko Ohta, Sophia Ananiadou, and Jun'ichi Tsujii. 2012. Brat: A web-based tool for nlp-assisted text annotation. In Proceedings of the Demonstrations at the 13th Conference of the European Chapter of the Association for Computational Linguistics, EACL '12, page 102-107, USA. Association for Computational Linguistics.</p>
+<p>Ronen Tamari, Hiroyuki Shindo, Dafna Shahaf, and Yuji Matsumoto. 2019. Playing by the book: An interactive game approach for action graph extraction from text. In Proceedings of the Workshop on Extracting Structured Knowledge from Scientific Publications, pages 62-71, Minneapolis, Minnesota. Association for Computational Linguistics.</p>
+<p>Niket Tandon, Keisuke Sakaguchi, Bhavana Dalvi, Dheeraj Rajagopal, Peter Clark, Michal Guerquin, Kyle Richardson, and Eduard Hovy. 2020. A dataset for tracking entities in open domain procedural text. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), pages 6408-6417, Online. Association for Computational Linguistics.</p>
+<p>Alain C. Vaucher, Federico Zipoli, Joppe Geluykens, Vishnu H. Nair, Philippe Schwaller, and Teodoro Laino. 2020. Automated extraction of chemical synthesis actions from experimental procedures. Nature Communications, 11(1):1-11.</p>
+<p>David Wadden, Ulme Wennberg, Yi Luan, and Hannaneh Hajishirzi. 2019. Entity, relation, and event extraction with contextualized span representations. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pages 5784-5789, Hong Kong, China. Association for Computational Linguistics.</p>
+<p>Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu, Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame, Quentin Lhoest, and Alexander M. Rush. 2020. Transformers: State-of-the-art natural language processing. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations, pages 38-45, Online. Association for Computational Linguistics.</p>
+<p>Nozomu Yachie and Tohru Natsume. 2017. Robotic crowd biology with maholo labdroids. Nature Biotechnology, 35(4):310-312.</p>
+<h2>A Annotation Schema</h2>
+<p>In the following subsections, we provide further details of the annotation schema used. Section $\S$ A. 1 describes how the ontology was constructed based on Autoprotocol, and $\S$ A. 2 provides details on ontology coverage for the X-WLP protocols which were chosen for annotation. Section §A. 3 details the rules defining valid PEG edges, or what relations can hold between various entity types. The annotation guidelines given to annotators are available on the project web page.</p>
+<h2>A. 1 Ontology Construction</h2>
+<p>Operation nodes correspond to "action" entities in WLP. In X-WLP, to facilitate conversion to executable instructions, we further add a fine-grain operation type; for each operation, annotators were required to select the closest operation type, or a general type if none applied.</p>
+<p>To define our operation type ontology, we consulted the Autoprotocol (Miles and Lee, 2018) open source standard used for executable biology lab protocols. Autoprotocol defines 35 different operation types, ${ }^{9}$ from which we grouped relevant types into higher level clusters; X-WLP operation types are broadly aligned with Autoprotocol operation types, but are more general in scope, to not limit applicability to any one platform. For example, we use a more general measure operation type rather than the specific types of measurement operations in Autoprotocol (spectrophotometry, measure-volume, etc.).</p>
+<p>Table 12 maps between X-WLP operation types and their equivalents in Autoprotocol, if one exists. The X-WLP operation types do not perfectly overlap with Autoprotocol as the former is written for humans, while the latter is designed for the more constrained domain of robot execution. Accordingly, some operations not currently supported in Autoprotocol were added, like wash. See Table 1 for example mention spans for each X-WLP operation type.</p>
+<p>The set of supported operations was chosen to maximize coverage over the types of operations found in the sentence-level annotations of WLP (see §A. 2 below for details).</p>
+<p><sup id="fnref9:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h2>A. 2 Ontology Coverage</h2>
+<p>To identify candidate protocols for annotation which were well covered by the ontology, we created a mapping between ontology instruction types and the 100 most frequent text-spans of WLP action entities (constituting $74 \%$ of all action spans in WLP). WLP action text spans that didn't correspond to any ontology instruction were mapped to a general label; action text spans that could be mapped to the ontology we call ontologycovered actions. For annotation in X-WLP, we then selected WLP protocols estimated to have a high percentage of ontology-covered actions (based on the mapping above). This simple method was found to be effective in practice, as measured by the actual ontology coverage of X-WLP annotations, summarized in Fig. 4.</p>
+<p>For each annotated protocol, we calculated the percentage of known (not general) operations. Fig. 4 plots, for each coverage percentile ( $y$-axis), the percentage ( $x$-axis) of X-WLP protocols with at least $y$ percent known operations. From the plot we can see for example that half of the protocols in X-WLP have $&gt;90 \%$ ontology coverage, and $90 \%$ of the protocols have $&gt;70 \%$ ontology coverage.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">X-WLP Operation</th>
+<th style="text-align: left;">Autoprotocol Instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Spin</td>
+<td style="text-align: left;">Spin</td>
+</tr>
+<tr>
+<td style="text-align: left;">Convert</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;">Seal</td>
+<td style="text-align: left;">Seal, Cover</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;">Oligosynthesize, Provision</td>
+</tr>
+<tr>
+<td style="text-align: left;">General</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;">Destroy</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Absorbance, Fluorescence,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Luminescence, IlluminaSeq,</td>
+</tr>
+<tr>
+<td style="text-align: left;">Measure</td>
+<td style="text-align: left;">SangerSeq, MeasureConcentration,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">MeasureMass, MeasureVolume,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">CountCells, Spectrophotometry,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">FlowCytometry, FlowAnalyze,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">ImagePlate</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mix</td>
+<td style="text-align: left;">Agitate</td>
+</tr>
+<tr>
+<td style="text-align: left;">Remove</td>
+<td style="text-align: left;">Unseal, Uncover</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temperature Treatment</td>
+<td style="text-align: left;">Thermocycle, Incubate,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">FlashFreeze</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">AcousticTransfer,</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transfer</td>
+<td style="text-align: left;">MagneticTransfer,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Dispense, Provision,</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LiquidHandle, Autopick</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wash</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;">Time</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+</tbody>
+</table>
+<p>Table 12: Mapping between X-WLP operation types and corresponding Autoprotocol instructions (if any exist). Autoprotocol operations tend to be more specific as they are intended for machine execution. X-WLP protocols are written for humans, so operation types are defined at a higher level of abstraction.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Plot displaying for each coverage percentile ( $y$-axis), the percentage ( $x$-axis) of X-WLP protocols with at least $y$ percent known (ontology-covered) operations.</p>
+<h2>A. 3 Syntax governing PEG edges</h2>
+<p>Formally, edges are represented by triplets of the form $(s, r, t)$ where $s$ and $t$ are argument nodes and $r$ is a core or non-core role. Dependent on a particular role $r$, certain restrictions may apply to the fine-grained type of $s$ and $t$, as described below.</p>
+<h2>A.3.1 Core Roles</h2>
+<p>Core roles, displayed in Table 3, represent operation specific roles, for example "ARG1" for the seal operation is a seal entity representing the seal of the "ARG0" argument. For core roles, the following restrictions hold:</p>
+<ul>
+<li>Source nodes $s$ are restricted to any of the object types $s \in$ {reagent, device, seal, location} representing physical objects. The only exception to this rule is that "ARG1" for the seal operation must be a seal entity.</li>
+<li>Target node $t$ is a predicate of one of the types in Table 1.</li>
+<li>$r$ is a core argument relation, $r \in$ {ARG0, ARG1, ARG2} or ARG* for short.</li>
+<li>Certain roles may be required for a valid predicate $t$, for example the transfer operation requires at minimum both source and target arguments to be specified by the ARG0 and "site" roles, respectively.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Role</th>
+<th style="text-align: left;">Source Types</th>
+<th style="text-align: left;">Target Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">co-ref</td>
+<td style="text-align: left;">Object</td>
+<td style="text-align: left;">Object</td>
+</tr>
+<tr>
+<td style="text-align: left;">measure</td>
+<td style="text-align: left;">Measurement</td>
+<td style="text-align: left;">Object</td>
+</tr>
+<tr>
+<td style="text-align: left;">setting</td>
+<td style="text-align: left;">Setting</td>
+<td style="text-align: left;">Object</td>
+</tr>
+<tr>
+<td style="text-align: left;">modifier</td>
+<td style="text-align: left;">Modifier</td>
+<td style="text-align: left;">Object, Operation, <br> Measurement</td>
+</tr>
+<tr>
+<td style="text-align: left;">usage</td>
+<td style="text-align: left;">Method, Object</td>
+<td style="text-align: left;">Operation</td>
+</tr>
+<tr>
+<td style="text-align: left;">located-at</td>
+<td style="text-align: left;">Object</td>
+<td style="text-align: left;">Object</td>
+</tr>
+<tr>
+<td style="text-align: left;">part-of</td>
+<td style="text-align: left;">Object</td>
+<td style="text-align: left;">Object</td>
+</tr>
+</tbody>
+</table>
+<p>Table 13: Details of non-core roles and restrictions on source and target node types. Object is short for the set of entity types representing physical objects: {reagent, device, seal, location}.</p>
+<h2>A.3.2 Non-core Roles</h2>
+<p>Non-core roles (e.g., "setting", "site", or "co-ref") indicate predicate-agnostic labels. For example, the site argument always marks the location in which a predicate is taking place. Non-core roles are displayed in Table 13, and role-specific restrictions on $s$ and $t$ are listed under "Source Types" and "Target Types", respectively.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{9}$ Based on https://github.com/autoprotocol/ autoprotocol-python/blob/master/ autoprotocol/instruction.py as of January 2021.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref9:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>to keep at most $(512-n) / 2$ words for each side.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

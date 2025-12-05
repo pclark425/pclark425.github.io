@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7558 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7558</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7558</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-139.html">extraction-schema-139</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models being used to detect anomalies in lists or tabular data, including the methods, datasets, evaluation metrics, and results.</div>
+                <p><strong>Paper ID:</strong> paper-ab96816b707cd2a8ebc191ee5a74cb458a6f3174</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/ab96816b707cd2a8ebc191ee5a74cb458a6f3174" target="_blank">A baseline for unsupervised advanced persistent threat detection in system-level provenance</a></p>
+                <p><strong>Paper Venue:</strong> Future generations computer systems</p>
+                <p><strong>Paper TL;DR:</strong> This report evaluates the effectiveness of unsupervised batch and streaming anomaly detection algorithms over multiple gigabytes of provenance traces recorded on four different operating systems to determine whether they can detect realistic APT-like attacks reliably and efficiently.</p>
+                <p><strong>Cost:</strong> 0.005</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7558",
+    "paper_id": "paper-ab96816b707cd2a8ebc191ee5a74cb458a6f3174",
+    "extraction_schema_id": "extraction-schema-139",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.00526025,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>A baseline for unsupervised advanced persistent threat detection in system-level provenance</h1>
+<p>Ghita Berrada James Cheney<br>Himan Mookherjee<br>Sidahmed Benabderrahmane William Maxwell<br>Alec Theriault Ryan Wright</p>
+<h4>Abstract</h4>
+<p>Advanced persistent threats (APT) are stealthy, sophisticated, and unpredictable cyberattacks that can steal intellectual property, damage critical infrastructure, or cause millions of dollars in damage. Detecting APTs by monitoring system-level activity is difficult because manually inspecting the high volume of normal system activity is overwhelming for security analysts. We evaluate the effectiveness of unsupervised batch and streaming anomaly detection algorithms over multiple gigabytes of provenance traces recorded on four different operating systems to determine whether they can detect realistic APT-like attacks reliably and efficiently. This report is the first detailed study of the effectiveness of generic unsupervised anomaly detection techniques in this setting.</p>
+<h2>1 Introduction</h2>
+<p>For the past few years, damaging security/data breaches have frequently made the headlines [Gootman, 2016, Silver-Greenberg et al., 2014, Lee et al., 2014, Karchefsky and Rao, 2017]. These breaches are all examples of "advanced persistent threats" (APTs). Advanced Persistent Threats (APTs) are long-running, stealthy attacks designed to penetrate specific target systems, carry out either pre-determined or dynamically updated instructions from an adversary, and persist (while avoiding detection) for as long as required to accomplish the adversary's goals, such as data theft [Silver-Greenberg et al., 2014, Gootman, 2016] or corruption of the target organization's data and damaging of critical systems.</p>
+<p>Security experts warn that APTs are now "part and parcel of doing business" [Auty, 2015] and concede that it would be unrealistic for all such attacks to be prevented and blocked [Smith, 2013, Maisey, 2014, Auty, 2015], partly because even the best designed security systems are bound to have flaws and partly because the targeted nature of the attacks means that the adversaries will persistently try to gain access to the target's system, adapting and changing their approaches if need be, until they reach their goal or the cost of succeeding far outweighs the benefits to be gained. As a result, the experts consider that, while adopting state-of-the-art prevention techniques is a must, the focus should shift to continuously monitoring the systems, detecting APTs in a timely fashion and minimizing their damage.</p>
+<p>Traditional security software and measures (e.g. anti-virus software, system security policies) generally fail to detect APTs since APTs tend to mimic normal business logic and rely on actions that respect social norms (e.g. work schedule of targeted users) or system security policies. Moreover, the fact that APTs are long-running campaigns that consist of multiple steps further complicates their detection, in particular when relying on event logs and audit trails that only provide partial information on temporally and spatially localized events.</p>
+<p>Provenance-tracking has been proposed as a basis for security (e.g. provenance-based access control [Park et al., 2012]). It has been suggested that mining provenance data to analyze and identify causal relationships among system activities could help identify security threats and malicious actions, such as data exfiltration, that might go undetected with policy-driven approaches and other classical perimeter defence-based methods [Jewell and Beaver, 2011, Zhang et al., 2012, Awad et al., 2016, Jenkinson et al., 2017].</p>
+<p>As appealing as the idea of monitoring provenance-like records to aid security sounds, there are, however, numerous challenges to making it a reality. Beyond the issues linked with recording the provenance itself (e.g. level of provenance granularity, fault tolerance, trustworthiness of the recorded trace [Jenkinson et al., 2017]), the recorded provenance traces are expected to be large in volume, with anomalous system activity (if any) likely to constitute but a very small fraction of the recorded traces. Analyzing provenance traces to identify anomalous activity that would suggest an ongoing APT attack is a typical "needle in a haystack" problem further compounded by the variety of possible APT patterns and the lack of available fully annotated</p>
+<p>data. Typical supervised learning techniques cannot therefore be used to detect (rare) APT patterns ${ }^{1}$. Furthermore, unsupervised anomaly detection over streaming graphs is challenging [Akoglu et al., 2015]. We know of only one paper on anomaly detection over streaming provenance graph data [Manzoor et al., 2016] but this approach relies on an initial training stage over "normal" example graphs, i.e. it is semisupervised.</p>
+<p>In an operational security scenario, it is critical to be able to provide actionable information quickly. Security analysts can usually identify and forensically investigate suspicious behavior (such as processes that have been subverted or created by an attacker) once it is brought to their attention. However, in typical system traces, each day of activity may lead to a gigabyte or more of provenance trace information, corresponding to hundreds or thousands of processes, almost all of which are benign. In this paper, we consider the key subproblem of quickly identifying unusual process activity that warrants manual inspection. Our approach summarizes process activity using categorical or binary features such as the kinds of events performed by a process, the process executable name and parent executable name, and IP addresses and ports accessed. We focus on categorical data because attacks typically involve rare combinations of such attributes.</p>
+<p>This article evaluates the effectiveness of several algorithms for unsupervised, categorical anomaly detection:</p>
+<ul>
+<li>FPOutlier (or Frequent Pattern Outlier Factor (FPOF)) [He et al., 2005]</li>
+<li>Outlier Degree (or OD) [Narita and Kitagawa, 2008]</li>
+<li>One-Class Classification by Compression (or OC3) [Smets and Vreeken, 2011]</li>
+<li>CompreX [Akoglu et al., 2012]</li>
+<li>Attribute Value Frequency (or AVF) [Koufakou et al., 2007, Tan et al., 2013]</li>
+</ul>
+<p>All of these algorithms except for AVF are based on mining frequent itemsets or association rules and using these results to assign anomaly scores. Moreover, these mining-based techniques are all batch algorithms: in a first pass, the data is mined and analyzed (sometimes taking a lengthy period) and in a second pass, the scores are assigned. AVF is, instead, based on a simple analysis of the frequencies of the attributes. The original paper proposing AVF also only considered a batch setting, but later work [Tan et al., 2013] showed how to modify AVF to a one-pass, streaming algorithm. We therefore refer to batch and streaming AVF in this paper.</p>
+<p>We apply our work to provenance traces containing example APT attacks (on several different host operating systems) produced as part of the DARPA Transparent Computing program, in which attacks constitute as little as $0.01 \%$ of the data. We evaluated all of the above algorithms in batch mode. Our experiments show that on our dataset, AVF has anomaly detection performance comparable or better than the itemset mining-based techniques, typically finding at least some parts of the attack within the top $1 \%$ or even $0.1 \%$.</p>
+<p>We also conducted experiments comparing batch and streaming AVF, using a modified form of the one-pass algorithm of [Tan et al., 2013] that allows blocks of different sizes, in order to study how detection performance is affected by streaming. Our experiments comparing batch and streaming AVF with different block sizes show that there is little degradation in anomaly detection performance. Although our work (like any anomalydetection technique) does not guarantee to find all attacks, our contribution demonstrates that unsupervised anomaly detection can help find APT-style attacks that currently go unnoticed, enabling analysts to focus their efforts where they are most needed.</p>
+<p>This article does not propose new anomaly detection algorithms, and does not evaluate all of the possible algorithms for unsupervised anomaly detection on categorical data. All of the algorithms evaluated either have publicly-available implementations, or were easy to re-implement. It is possible that better results could be obtained using other algorithms that we have not yet tried; nevertheless, our results do establish a baseline against which new approaches (or evaluation of other existing algorithms) can be measured. Such a baseline is essential as a basis for assessing the effectiveness of more sophisticated algorithms, and whether their complexity is justified by increases in effectiveness.
+The main contributions of this paper are:</p>
+<ul>
+<li>Establishing baseline results for five categorical anomaly detection methods, i.e FPOF, OD, OC3, Comprex and AVF (in both batch and streaming modes for AVF) for the task of detecting APT-like activity in system provenance traces</li>
+</ul>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<ul>
+<li>Thoroughly evaluating and comparing the effectiveness of these five anomaly detection methods for the studied task</li>
+<li>Showing that some methods, namely OC3 and AVF, already produce useful detection results in reasonable times despite their relative simplicity ("naive" set of features requiring barely any domain knowledge or tweaking and/or very simple anomaly scoring strategy e.g. AVF) and that these results can, in some cases (e.g. AVF), very easily be replicated in a streaming setting</li>
+<li>Discussing appropriate metrics for the detection task and proposing a metric from information retrieval (normalized discounted gain) as a suitable metric</li>
+</ul>
+<p>The structure of the rest of this paper is as follows. Section 2 presents the overall system architecture and outlines our approach. Section 3 reviews AVF and our variant of streaming AVF. Section 4 presents an experimental evaluation of the effectiveness of the different approaches, establishing a baseline for unsupervised anomaly detection on this data. Section 5 summarizes related work on APTs and anomaly detection. Section 6 concludes and suggests directions for future work.</p>
+<p>A short glossary of acronyms used in the paper is included as an appendix.</p>
+<h1>2 Overview</h1>
+<h3>2.1 Provenance trace analysis</h3>
+<p>In this section, we situate our work as part of a realistic provenance-based security scenario. Figure 1 outlines the architecture of our system, which is designed to interoperate with several different (provenance) recorders [Gehani and Tariq, 2012, Jenkinson et al., 2017], each running on a different operating system and generating different styles of provenance graphs recording system activity (albeit in a common format). In this paper, we consider four sources, running on Android, Linux, BSD and Windows operating systems.</p>
+<p>Our system receives the provenance graph data from each recording system, as a stream of JSON records in a binary format, and ingests the data into a graph database, Neo4J. In addition, ingestion performs some additional data integration and deduplication steps to deal with some idiosyncrasies among the sources. The different systems use the shared data model in different ways, for example storing information in different places, at different levels of granularity, or just not populating some fields. We remove some information that is not consistently recorded and reorganize other information so that typical queries can be written portably across data sources. Deduplication is important because the recorders add their own unique identifiers for operating system processes and other objects. This is necessary to avoid ambiguity given that operating system-issued process identifiers or filenames are not unique over long periods of time (i.e. days). However, some recording systems create multiple records referring to the same process (or other object) with different unique identifiers. The ingester attempts to detect and merge these duplicates, using heuristics such as "two processes with the same process ID and started at the same time are identical".</p>
+<p>Once the graph data has been ingested, we extract Boolean-valued datasets called contexts from the graph (an example of context is provided in Table 1). Each context represents an aspect of process behavior as a Boolean-valued vector. As a simple example, we could use attributes corresponding to event types (read, write, etc.) with value ' 1 ' meaning that the process performed at least one event of that type and ' 0 ' otherwise; the exact number of such events is ignored. We discuss additional contexts later in this section. Contexts can be extracted using queries over the fully-ingested data, for forensic analysis, or by incrementally maintaining appropriate data structures and periodically emitting new records. Each context can then be run through the anomaly detection algorithms described in Section 3, yielding a score for each process.</p>
+<p>These scores are provided to the user interface (User Interface (UI)) frontend, which allows analysts to explore the graph using queries, or search for anomalies based on the scores. Figure 2 shows a typical provenance graph created using the UI graph visualization system, as a result of a successful attack detection. This illustration highlights that even fairly simple activities can yield complex graphs involving multiple read/write or network access events.</p>
+<p>Our system has participated in several DARPA exercises in concert with the recording systems, in which realistic background activity was simulated on each system, and realistic APT-style attacks were performed, yielding several gigabytes of raw trace data, corresponding to tens of millions of nodes and edges. We have manually annotated the data to indicate the processes constituting the attacks for each of these scenarios. Typically, the number of processes involved in an attack is very small: for example, in the largest dataset, there are over 282,000 processes (representing seven days of activity), and only 46 of them (i.e. around $0.016 \%$ ) are involved in the attack. Even if we optimistically assume an analyst can recognize an attack process in just 10 seconds, screening 200,000 processes would take over 23 days. Thus, although attacks are often easy</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Architecture of our approach
+to recognize once brought to the attention of an analyst, the sheer volume of background activity makes it imperative to find ways to automatically direct attention to suspicious activity.</p>
+<h1>2.2 Contexts</h1>
+<p>We now give the details of the contexts that form the starting point for our proposed algorithms. In our approach, the context definitions are the only places where domain knowledge about the data is used. We consider the following contexts:</p>
+<ul>
+<li>ProcessEvent (Process Event (PE)): The integrated traces use event types such as open, close, exit, etc. to describe process activity in a OS-independent way. A process $p$ has attribute $t y$ if $p$ ever performs an event of type $t y$ (disregarding the exact number of events).</li>
+<li>ProcessExec (Process Exec (PX)): The attributes are executable names nm, for example ls or sudo. A process $p$ has attribute $n m$ if $p$ is an instance of executable $n m$.</li>
+<li>ProcessParent (Process Parents (PP)): The attributes are again executable names nm. A process $p$ has attribute $n m$ if $p$ is a child process of an executable named $n m$.</li>
+<li>ProcessNetflow (Process Network (PN)): The attributes are IP addresses ip and port numbers pn. A process $p$ has attributes $i p$ and $p n$ if it ever communicates with IP address $i p$ at port $p n$.</li>
+<li>ProcessAll (Process All (PA)): the combination of all of the above contexts, with attributes renamed to avoid any ambiguity (for example between PX and PP).</li>
+</ul>
+<p>These contexts may seem rather simplistic. For example, it seems intuitive to also consider files accessed by processes as attributes. Also, it would make sense to consider more complex attributes that look for patterns that are known to be suspicious, such as downloading a file, executing it, and then deleting it. However, our goal is to minimize the amount of fine-tuning needed to obtain useful results. There is also a trade-off between granularity of attributes and performance: the more attributes we track, the more work needs to be done at each step. Nevertheless, it would be worthwhile, in subsequent work, to consider richer contexts or well-chosen attributes that encode domain knowledge about what activities are suspicious. It might also be interesting to consider features that extend existing contexts, for example:</p>
+<ul>
+<li>the number of times each type of event is performed or the frequency of each type of event performed (as opposed to just whether particular types of event are performed as in PE)</li>
+<li>Netflow properties not taken into account in PN such as total number of bytes transferred</li>
+</ul>
+<p>Such features would require discretization if they are to be used with the categorical anomaly detection methods explored in this paper. Otherwise, they would have to be used with numerical anomaly detection methods yet to be explored, with the results of such methods then fused with those obtained from categorical anomaly detection methods. This is beyond the scope of the current paper and will be explored in future work.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Example of attack provenance graph</p>
+<p>Each of these contexts can also be extracted from the data incrementally, as the data is ingested. For each process encountered, we construct an attribute vector with value 1 for each attribute the process has (in a given context) and 0 otherwise. The resulting sequence of vectors constitutes a dataset $D=x^{(1)}, \ldots, x^{(n)}$ which we use as the starting point for the algorithms in the next section.</p>
+<p>Table 1: Example of context: process identifiers vs type of system events, i.e ProcessEvent (PE) context (extracted from Android provenance graph)</p>
+<p>Object_ID EVENT_CLONE EVENT_CHECK_FILE_ATTRIBUTES EVENT_OTHER EVENT_MPROTECT EVENT_CLOSE EVENT_CREATE _OBJECT EVENT_LSEEK EVENT_UNLINK EVENT_WAIT EVENT_MODIFY _PROCESS EVENT_RECVFROM EVENT_MODIFY _FILE_ATTRIBUTES EVENT_WRITE EVENT_BIND EVENT_READ EVENT_RENAME EVENT_OPEN EVENT_LOADLIBRARY EVENT_CONNECT EVENT_SENDTO EVENT_SENDMSG</p>
+<p>285d5fed- 06dc-32ae -a04a- 13cc9426616b 1e3548c0- b030-3591 -97ac- 71b67bbcb305 b4f1724e- 0ba1-316b -973f- 69e5d5e3490c e2a4e818- 3ce2-3626 -8e22- 134b542d1d77 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 1 1 0 1 1 1 0 0 0 0 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </p>
+<h1>3 Algorithms</h1>
+<p>We consider datasets $D$ to be sequences of $m$-dimensional Boolean vectors, where there are $n&gt;0$ vectors and $m&gt;0$ attribute values. Likewise, we consider data sources to be streams of $m$-dimensional vectors. In either case, we consider a typical record $x^{(i)}$ at position $i$ and write $x_{j}^{(i)}$ for the value of attribute $j$ in $x^{(i)}$. We assume for simplicity that all attributes are Boolean-valued. It is not difficult to generalize to finite sets of attribute values. We also assume that the number of possible attributes $m$ is fixed.</p>
+<p>We start by reviewing the various batch-only approaches then describe both Attribute Value Frequency algorithm version, the original batch Attribute Value Frequency (AVF) algorithm [Koufakou et al., 2007] and its extension to a streaming setting. We present the original algorithm in a batch processing form, i.e. where we assume we have all of the data before computing scores. We show how to modify it to obtain an online algorithm that gives a good approximation of the results of the batch algorithm, and allows for a choice of different window sizes. This algorithm is a mild variation of the one-pass AVF algorithm [Tan et al., 2013].</p>
+<h3>3.1 Batch-only anomaly detection techniques</h3>
+<p>In this section, we briefly review the batch-only algorithms for anomaly detection in the literature used in our evaluation. These descriptions are not exhaustive; the respective research papers should be consulted for full details.</p>
+<h3>3.1.1 FPOutlier (FPOF)</h3>
+<p>The FPOutlier algorithm [He et al., 2005] starts by mining frequent itemsets according to a support parameter minsupp (the algorithm only mines and considers itemsets that occur in a fraction of data transactions higher or equal to minsupp). Then each object is assigned a score corresponding roughly to the number of frequent itemsets it contains. Thus, larger scores correspond to more occurrences of frequent itemsets, meaning that anomalous objects should have low scores. This approach seems well-suited to detect anomalies corresponding to expected, but missing, activity. However, objects that have unusual activity but also display a large number of common patterns may have high scores and not be considered anomalous. In addition, the fact that this approach has a tunable parameter is problematic in an unsupervised setting, since it means that we need to guess an appropriate value for this parameter in advance. We reimplemented FPOutlier using standard itemset mining libraries.</p>
+<h3>3.1.2 Outlier Degree (OD)</h3>
+<p>The Outlier Degree algorithm [Narita and Kitagawa, 2008] also starts by mining frequent itemsets as well as high-confidence rules, so there are two parameters, minsupp governing the minimum support of the itemsets and minconf governing the minimum confidence of the rules. Then each object is scored by applying the high-confidence rules to it, and assigning a score corresponding roughly to the difference between the object's actual behavior and expected behavior (according to the rules). For example, if $X \rightarrow Y$ is a high-confidence rule and object $O$ displays behavior $X$ but not $Y$, this will contribute to the score. High scores correspond to larger differences between actual and expected behavior, so are more anomalous. Like FPOutlier, this approach seems more likely to consider missing, but expected, behaviors to be anomalous, and could miss anomalies that consist of rare behaviors that do not occur frequently enough to participate in rules. Also, the presence of two tunable parameters is even more problematic from the point of view of unsupervised anomaly detection. We reimplemented OD using standard itemset and rule mining libraries.</p>
+<h3>3.1.3 One-Class Classification by Compression (OC3)</h3>
+<p>OC3 [Smets and Vreeken, 2011] is based on a compression technique for identifying "interesting" itemsets, implemented using the Krimp algorithm [Vreeken et al., 2011]. Essentially, the idea is to first mine frequent itemsets from the data, and then identify a subset of the itemsets that help to compress the data well. Then, each object is assigned an anomaly score corresponding to its estimated compressed size. If the compression algorithm has done a good job, then objects exhibiting commonly occurring patterns will compress well, and anomalies will not. So high compression sizes (i.e high scores) point to anomalies. OC3 can take a minsupp support parameter, but parameter tuning is typically not necessary because the compression algorithm will filter out any non-useful itemsets; therefore we used the smallest possible minsupp setting in our experiments. The implementation of Krimp is available and we modified it slightly to perform OC3-style anomaly scoring.</p>
+<h1>3.1.4 CompreX</h1>
+<p>CompreX [Akoglu et al., 2012] is perhaps the most sophisticated approach studied to date. It is based on compression, like OC3, but uses a different compression strategy. CompreX searches for a partition of the attributes such that each set of attributes in the partition has high mutual information. Since there are exponentially many partitions to consider, CompreX starts with the finest partition (all attributes are in their own class) and greedily searches for pairs of classes to merge. Each resulting partition is then compressed separately, to obtain an anomaly score for each record based on its compressed size, as in OC3. CompreX has no tuning parameters and was shown experimentally to be competitive or superior in anomaly detection performance to Krimp/OC3 on several datasets. However, CompreX's default search strategy is quadratic in the number of attributes; therefore, it was not usable on contexts with over 20-30 attributes.</p>
+<h3>3.2 Attribute Value Frequency (AVF)</h3>
+<p>In this section, we describe the original batch Attribute Value Frequency (AVF) algorithm [Koufakou et al., 2007] and then its modification to suit a streaming setting [Tan et al., 2013]. Unlike the algorithms mentioned earlier, AVF is rather simple and does not require additional background material to describe, both in the batch and streaming settings. Since we implemented both variants of AVF from scratch in a unified way, rather than reusing existing libraries or implementations as for the other approaches, we will spell out the details.</p>
+<p>Attribute Value Frequency (AVF) [Koufakou et al., 2007] is a non-parametric outlier detection technique appropriate for categorical data and was shown to be fast, scalable and accurate on a variety of standard data sets. The algorithm relies on the intuition that outliers in a dataset have values of attributes which occur infrequently. That the attribute values in a data point are infrequent can be determined simply by computing the frequencies of the respective attribute values across the data.</p>
+<p>Given a dataset $D$ of size $n$, we write $c_{j}$ for the number of occurrences of attribute value 1 for attribute $j$, i.e. $c_{j}=\left|\left{i \mid x_{j}^{(i)}=1\right}\right|=\sum_{i=1}^{n} x_{j}^{(i)}$. Then, the AVF score of a data point $x$ is:</p>
+<p>$$
+\operatorname{AVF}(x)=\frac{1}{m} \sum_{j=1}^{m}\left(x_{j} c_{j}+\left(1-x_{j}\right)\left(n-c_{j}\right)\right)
+$$</p>
+<p>That is, when $x_{j}=1$, the contribution to the score for attribute $x_{j}$ is $c_{j}$, the number of occurrences of $j$-value of 1 , and when $x_{j}=0$, the contribution is the number of occurrences of a $j$-value of 0 . The initial multiplication by $1 / m$ effectively averages the counts, so $0 \leq \operatorname{AVF}(x) \leq n$, but such scaling has no effect on the relative ordering among scores in the batch setting. Lower AVF scores indicate more unusual behavior.</p>
+<p>Example 1 (Running example). To illustrate AVF, we introduce a small running example with four processes $P_{17}, P_{42}, P_{1337}, P_{007}$ and three attributes abc.com, xyz.com and evil.com, corresponding to network addresses accessed by the processes. In this (extremely simplistic) example, $P_{17}$ and $P_{42}$ are innocuous activity and access both abc.com and xyz.com, while $P_{1337}$ is a naive attacker that only accesses evil.com and $P_{007}$ is a more sophisticated attacker that accesses all three in order to attempt to camouflage its behavior. This behavior corresponds to the following dataset:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">id</th>
+<th style="text-align: center;">abc.com</th>
+<th style="text-align: center;">xyz.com</th>
+<th style="text-align: center;">evil.com</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$P_{17}$</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">$P_{42}$</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">$P_{1337}$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">$P_{007}$</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>We calculate the frequencies of the three attributes as $c_{\text {abc.com }}=c_{\text {xyz.com }}=3$ and $c_{\text {evil.com }}=2$. Thus, the AVF scores are:</p>
+<p>$$
+\begin{aligned}
+\operatorname{AVF}\left(P_{17}\right) &amp; =\frac{1}{3}(3+3+2)=\frac{8}{3} \
+\operatorname{AVF}\left(P_{42}\right) &amp; =\frac{1}{3}(3+3+2)=\frac{8}{3} \
+\operatorname{AVF}\left(P_{1337}\right) &amp; =\frac{1}{3}(1+1+2)=\frac{4}{3} \
+\operatorname{AVF}\left(P_{007}\right) &amp; =\frac{1}{3}(3+3+2)=\frac{8}{3}
+\end{aligned}
+$$</p>
+<p>The naive attacker's isolated access of evil.com, together with failure to mask its activity with common behavior, results in a lower score, while the more sophisticated attacker's score is the same as that of the first two processes.</p>
+<p>Streaming AVF: Naive approach A simple, but unfortunately too naive, approach to streaming the AVF algorithm is to maintain the attribute value counts incrementally as data is processed, and use the current counts to score each new transaction. That is, if $c_{j}^{(i)}$ are the counts calculated for $x^{(1)} \ldots x^{(i)}$, then to score a new record $x=x^{(i+1)}$ we proceed as follows:</p>
+<p>$$
+\operatorname{AVF}<em j="1">{\text {naive }}^{(i)}(x)=\frac{1}{m} \sum</em>\right)\right)
+$$}^{m}\left(x_{j} c_{j}^{(i)}+\left(1-x_{j}\right)\left(i-c_{j}^{(i)</p>
+<p>However, because the counts are monotonically increasing, this means that the scoring will be heavily biased towards considering records appearing early in the dataset to be anomalous. For example:</p>
+<p>Example 2. Continuing our running example, we need to update the counts after each step. Thus, the AVF scores are:</p>
+<p>$$
+\begin{aligned}
+\operatorname{AVF}\left(P_{17}\right) &amp; =\frac{1}{3}(0+0+1)=\frac{1}{3} \
+\operatorname{AVF}\left(P_{42}\right) &amp; =\frac{1}{3}(1+1+2)=\frac{4}{3} \
+\operatorname{AVF}\left(P_{1337}\right) &amp; =\frac{1}{3}(1+1+0)=\frac{2}{3} \
+\operatorname{AVF}\left(P_{007}\right) &amp; =\frac{1}{3}(2+2+1)=\frac{5}{3}
+\end{aligned}
+$$</p>
+<p>In this (admittedly extreme) example, the first process $P_{17}$ is judged most anomalous, followed by $P_{1337}$, then $P_{42}$ and finally $P_{007}$.</p>
+<p>Streaming AVF As observed by [Tan et al., 2013], the problem is that the "scale" of the AVF scores is not fixed in the streaming setting, since seeing an attribute whose value has occurred only once means something very different for the 5th record in the dataset than for the 5000th record.</p>
+<p>Instead, to compute AVF-like scores incrementally, we propose to use the frequency counts to estimate probabilities for each attribute. We initially take $p_{j}^{(0)}=0$ since the data is typically sparse (having relatively few attribute values $x_{j}=1$ ); however, any other initial probability distribution could be used based on domain knowledge. Next, for each new record $x^{(i+1)}$, we adjust the probability $p_{j}^{(i+1)}$ of each attribute value $j$ being 1 after seeing $x^{(i+1)}$ as follows:</p>
+<p>$$
+p_{j}^{(i+1)}=\frac{n \times p_{j}^{(i)}+x_{j}}{i+1}
+$$</p>
+<p>We then calculate the AVF score for the $i+1$ st record $x=x^{(i+1)}$ as follows:</p>
+<p>$$
+\operatorname{AVF}^{(i+1)}(x)=\frac{1}{m} \sum_{j=1}^{m}\left(x_{j} p_{j}^{(i+1)}+\left(1-x_{j}\right)\left(1-p_{j}^{(i+1)}\right)\right)
+$$</p>
+<p>Note that, in the batch setting, dividing the counts by $n$ and summing probabilities instead of counts would not affect the final results, because all the counts are divided by the same $n$. However, for the streaming setting, we update the attribute value probabilities after each step, so the results of AVF scoring will be different in the streaming setting.</p>
+<p>Example 3. Continuing our running example, we now update the probabilities after each step. Thus, the AVF scores are:</p>
+<p>$$
+\begin{aligned}
+\operatorname{AVF}\left(P_{17}\right) &amp; =\frac{1}{3}(0+0+1)=\frac{1}{3} \
+\operatorname{AVF}\left(P_{42}\right) &amp; =\frac{1}{3}\left(\frac{1}{2}+\frac{1}{2}+1\right)=\frac{2}{3} \
+\operatorname{AVF}\left(P_{1337}\right) &amp; =\frac{1}{3}\left(\frac{1}{3}+\frac{1}{3}+0\right)=\frac{2}{9} \
+\operatorname{AVF}\left(P_{007}\right) &amp; =\frac{1}{3}\left(\frac{1}{2}+\frac{1}{2}+\frac{1}{4}\right)=\frac{5}{12}
+\end{aligned}
+$$</p>
+<p>The naive attacker's behavior results in a lower (more anomalous) score than the first process $P_{17}$.</p>
+<h1>3.2.1 Analysis</h1>
+<p>As outlined already, the batch AVF approach is implementable as two scans over the data, and the online AVF approach can be implemented in a single, linear scan, where scoring each new record and updating the frequencies takes $O(m)$ time and space. Both algorithms just need to maintain the number of records $n$ and the</p>
+<p>$m$ counts or probabilities. Thus, the overall time complexity of each algorithm is $O(n m)$ and the space required is $O(m)$. In our experiments, the number of attributes $m$ ranges from around 20 to over 14,000. Our approach may not scale well if the attributes are fine-grained and $m$ is much larger than $n$.</p>
+<p>Another concern the reader might have is regarding arithmetic precision and overflow. If fixed-size (say, 32-bit) integers are used, then whenever we are in danger of overflowing we can rescale by dividing all of the counts by 2; this is exactly what is done in arithmetic coding [Witten et al., 1987]. Our implementation uses arbitrary-precision arithmetic.</p>
+<h1>4 Experimental evaluation</h1>
+<h3>4.1 Experimental setup</h3>
+<p>The experiments were run on a desktop with an Intel Core i7-6700 CPU ( 3.4 GHz ), 16 GB RAM, running Ubuntu 16.04. The raw provenance trace data was ingested on a variety of machines and the contexts used in the experiments were extracted and stored as CSV files ${ }^{2}$. We do not report the experimental setup for the ingestion stage here in detail; however, it is easily able to keep up with the data in real-time (that is, ingestion of data representing 7 days of system activity takes much less than 7 days). Our experiments focus on evaluating the detection effectiveness and runtime cost of the anomaly detection algorithms on the given context data.</p>
+<h3>4.2 Datasets</h3>
+<p>In our experiments, we use two data collections described in Table 2 and representing two attack scenarios, each consisting of several days' worth of activity in a DARPA evaluation of provenance-tracking systems, running on Windows, BSD, Linux and Android respectively. These data collections result from two exercises for evaluating provenance recorders and anomaly detection techniques. The first data collection/scenario (a) consists of roughly 5 days of processes and netflows activities, whereas the second data collection/scenario (b) corresponds to around 8 days of data generated in similar conditions to the previous scenario. The provenance graphs have been recorded on four different tracking systems, running on Windows, BSD, Linux and Android respectively, each of which was subject to (part of) an APT-style campaign. The main differences between scenarios 1 and 2 concern the background activity workload, the quality and the robustness of the attacks, and the size of the provenance graphs.</p>
+<p>Table 2 records, for each triplet context (rows 3 to 7)/OS/scenario (OS and scenarios are columns), the number of transactions $n$ (top value per context row) and the number of attributes $m$ (bottom value per context row). The number of processes encountered in each system varies significantly: in particular, the Linux dataset records from 3-10 times as many distinct processes compared to the Windows or BSD datasets and up to 2400 times as many processes compared to Android. Some contexts are empty, e.g. PP for Android in Scenario 1, where information about parent process relationships was unavailable. In general, among the base contexts, the PE context usually has the largest number of processes, followed by PX and PP, while PN or PX have the largest number of attributes, followed by PP. The number of attacks per OS/scenario is extremely low and ranges from 8 (Windows both scenarios) to 46 (Linux scenario 2). Note that the size of the original dataset does not directly correlate with the number of processes or attributes. For example, in scenario 1, the Android dataset is the largest but has the fewest processes and attributes, because the provenance recorder for Android records a great deal of low-level app activity and dynamic information flow tracking, which we do not analyze. The last row represents the percentage of attacks observed in each OS/context. For example, there are 8 attack processes in the Windows data $(0.04 \%)$ in the first scenario, and $8(0.07 \%)$ in the second one. The percentage of attacks per OS/scenario goes as low as $0.004 \%$ (BSD scenario 2) and as high as $8.8 \%$ (Android scenario 1).</p>
+<h3>4.3 Evaluation metrics</h3>
+<p>The anomaly detection methods that we evaluate output a ranking of processes according to their degree of suspiciousness/anomaly scores. These methods do not explicitly classify or label entities as anomalous or normal. Moreover, the data is unbalanced, with between $0.004 \%$ and $8.8 \%$ of the data belonging to attacks. A high accuracy could be obtained by simpliy classifying all processes as non-attacks, so accuracy would be a poor indicator of model quality: this is the accuracy paradox [Thomas and Balakrishnan, 2008]. That being the case, it would not be appropriate to use metrics usually employed to evaluate classification methods.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 2: Description of the datasets used during the experiments. In each context row (rows 3 to 7), the element at the top shows the number of rows (processes) and the element at the bottom the number of columns (attributes).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Windows</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">BSD</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Linux</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Android</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Scenario</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Scenario</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Scenario</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Scenario</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">Size</td>
+<td style="text-align: center;">743</td>
+<td style="text-align: center;">9.53</td>
+<td style="text-align: center;">288</td>
+<td style="text-align: center;">1.27</td>
+<td style="text-align: center;">2858</td>
+<td style="text-align: center;">25.9</td>
+<td style="text-align: center;">2688</td>
+<td style="text-align: center;">10.9</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">MB</td>
+<td style="text-align: center;">GB</td>
+<td style="text-align: center;">MB</td>
+<td style="text-align: center;">GB</td>
+<td style="text-align: center;">MB</td>
+<td style="text-align: center;">GB</td>
+<td style="text-align: center;">MB</td>
+<td style="text-align: center;">GB</td>
+</tr>
+<tr>
+<td style="text-align: center;">ProcessEvent <br> (PE)</td>
+<td style="text-align: center;">17569</td>
+<td style="text-align: center;">11151</td>
+<td style="text-align: center;">76903</td>
+<td style="text-align: center;">224624</td>
+<td style="text-align: center;">247160</td>
+<td style="text-align: center;">282087</td>
+<td style="text-align: center;">102</td>
+<td style="text-align: center;">12106</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">29</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">27</td>
+</tr>
+<tr>
+<td style="text-align: center;">ProcessExec <br> (PX)</td>
+<td style="text-align: center;">17552</td>
+<td style="text-align: center;">11077</td>
+<td style="text-align: center;">76698</td>
+<td style="text-align: center;">224246</td>
+<td style="text-align: center;">186726</td>
+<td style="text-align: center;">271088</td>
+<td style="text-align: center;">102</td>
+<td style="text-align: center;">12106</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">215</td>
+<td style="text-align: center;">388</td>
+<td style="text-align: center;">107</td>
+<td style="text-align: center;">135</td>
+<td style="text-align: center;">154</td>
+<td style="text-align: center;">140</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">44</td>
+</tr>
+<tr>
+<td style="text-align: center;">ProcessParent <br> (PP)</td>
+<td style="text-align: center;">14007</td>
+<td style="text-align: center;">10922</td>
+<td style="text-align: center;">76455</td>
+<td style="text-align: center;">223780</td>
+<td style="text-align: center;">173211</td>
+<td style="text-align: center;">263730</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">77</td>
+<td style="text-align: center;">84</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">37</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">11</td>
+</tr>
+<tr>
+<td style="text-align: center;">ProcessNetflow <br> (PN)</td>
+<td style="text-align: center;">92</td>
+<td style="text-align: center;">329</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">42888</td>
+<td style="text-align: center;">3125</td>
+<td style="text-align: center;">6589</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">4550</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">13963</td>
+<td style="text-align: center;">125</td>
+<td style="text-align: center;">136</td>
+<td style="text-align: center;">62</td>
+<td style="text-align: center;">81</td>
+<td style="text-align: center;">6225</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">213</td>
+</tr>
+<tr>
+<td style="text-align: center;">ProcessAll <br> (PA)</td>
+<td style="text-align: center;">17569</td>
+<td style="text-align: center;">11151</td>
+<td style="text-align: center;">76903</td>
+<td style="text-align: center;">224624</td>
+<td style="text-align: center;">247160</td>
+<td style="text-align: center;">282104</td>
+<td style="text-align: center;">102</td>
+<td style="text-align: center;">12106</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">14431</td>
+<td style="text-align: center;">606</td>
+<td style="text-align: center;">296</td>
+<td style="text-align: center;">265</td>
+<td style="text-align: center;">299</td>
+<td style="text-align: center;">6435</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">295</td>
+</tr>
+<tr>
+<td style="text-align: center;">nb_attacks</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">46</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\% \frac{n b \cdot a t t a c k s}{n b _p r o c e s s e s}$</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0.004</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">8.8</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+</tbody>
+</table>
+<h1>4.3.1 Normalized discounted cumulative gain</h1>
+<p>To evaluate the anomaly detection algorithms described earlier, we propose using a metric called the normalized discounted cumulative gain metric (or nDCG for short). It is a metric often used in information retrieval to assess the quality of a ranking.</p>
+<p>Given a typical document search application, Järvelin and Kekäläinen [2002] argued that, from a user's perspective, relevant documents are more valuable to a user than marginally relevant documents and a relevant document ranked high in the returned list of results is more valuable than an equally relevant document ranked lower in the list. A user may be reasonably assumed to scan the list of returned results from the beginning before interrupting the scan at some point correlated with time availability, effort required as well as the cumulated information from documents already seen. So it is safe to assume that relevant documents located further down the list of returned results are unlikely to be seen by the user as they would require more time and effort and become less valuable. Taking these facts into account, Järvelin and Kekäläinen [2002] introduced the nDCG measure.</p>
+<p>We similarly argue that, in our application, processes that are part of an attack but are ranked very low by an anomaly detection technique are virtually useless to an analyst since his/her monitoring burden would increase substantially with the amount of processes to be checked (not to talk about issues such as acquired loss of trust in the automated monitoring system and discarding of its alerts as well as the increased potential for misses and errors with the increase of data to monitor). Because of this, we believe nDCG to be an appropriate metric for our application.</p>
+<p>To compute the nDCG, we start by computing a score called discounted cumulative gain or DCG. The basis of DCG is that each document/entity in the ranking is assigned a relevance score and is penalized by a value logarithmically proportional to its position/rank in the list of results. The DCG is therefore computed as follows:</p>
+<p>$$
+D C G_{N}=\sum_{i=1}^{N} \frac{r e l_{i}}{\log _{2}(i+1)}
+$$</p>
+<p>where $N$ is the number of entities/documents in the list, $r e l_{i}$ the relevance score of the $i$-th entity/document in the list.</p>
+<p>Since the length of result lists can vary and the DCG score does not take that into account, it is common to normalize the DCG score by the ideal DCG score (iDCG), which is simply the best achievable DCG score, i.e. the score that would be achieved if all relevant entities were at the top of the list (and in the case of different degrees of relevance, with the highest values of relevance at the very top). Assuming we have $p$ relevant entities in the list, we have:</p>
+<p>$$
+i D C G_{N}=\sum_{i=1}^{N} \frac{r e l_{i}}{\log <em N="N">{2}(i+1)} \quad n D C G</em>
+$$}=\frac{D C G_{N}}{i D C G_{N}</p>
+<p>In our case, we only consider entities to be either relevant (processes that are part of an attack) or irrelevant (processes with normal behavior) and assign a relevance score $r e l_{i}$ of 1 to attack processes and of 0 to benign processes, and the idealized score results from ranking all $k$ attack processes at positions $1, \ldots, k$. The closer the nDCG score to 1 , the better the ranking.</p>
+<h1>4.3.2 Area under curve</h1>
+<p>The receiver operator characteristic curve (or ROC curve) for a given ranking of objects plots the fraction of true positives found against the number of false positives found. The area under Receiver Operator Characteristic curve (also called Area Under Curve (AUC)) is often used as a measure of anomaly detection performance</p>
+<p>In our case, the AUC would correspond to the proportion of processes with normal behavior ranked lower than processes that are part of an attack, computed as follows:</p>
+<p>$$
+\frac{1}{|A||\bar{A}|}|{(\alpha, \beta): r(\alpha)&lt;r(\beta),(\alpha, \beta) \in A \times \bar{A}}|
+$$</p>
+<p>where $A$ is the set of elements with a relevant label (i.e. elements that are part of an attack), $\bar{A}$ is the set of elements with an irrelevant label (i.e. elements that have a normal behavior), $r(\alpha)$ (resp. $r(\beta)$ ) is the rank assigned to $\alpha$ (resp. $\beta$ ) by the method to be evaluated. The best performance for a method under this metric (resp. the worst performance) is achieved with AUC of one (resp. of zero).</p>
+<p>However, in the presence of sparse anomalies in large datasets, the AUC score's usefulness is somewhat limited. The AUC can either overestimate the effectiveness of an algorithm (e.g. if all attacks are found at rank 900-1000 out of 200,000 then the AUC will be over 0.995 but the results are still nearly useless), or underestimate it (e.g. if half of the attacks are found in the top 10 and the other half at rank 100,000, then the maximum AUC is around 0.75 even though these results might be very valuable). Berrada and Cheney [2019] reported some experiments on the same datasets including both AUC values and nDCG scores for the OC3 and AVF algorithms and found that the scores are loosely correlated but AUC scores are typically uniformly high values and much higher than nDCG scores. AUC scores usually fell in the relatively narrow range 0.75-0.99 (which would seem to indicate that all algorithms perform well in the attack detection task), whereas nDCG scores range typically from $0.2-0.8$ (suggesting more nuanced performances). Based on this, AUC values wouldn't necessarily allow to properly discriminate between well performing and poorly performing algorithms. We will therefore present only the nDCG scores for the batch algorithms, but present both nDCG and AUC scores for the comparison of batch and streaming AVF in order to understand whether either metric is affected by stream processing or block size.</p>
+<h3>4.4 Forensic anomaly detection</h3>
+<p>In this section we consider the following empirical question:</p>
+<ul>
+<li>Q1: Can the five batch methods (FPOF, OD, OC3, CompreX, AVF) detect APT-style attacks effectively?</li>
+</ul>
+<p>We first evaluate the effectiveness and performance of the batch version of AVF compared with several other offline techniques, such as FPOutlier (FPOF) [He et al., 2005], Outlier-degree (OD) [Narita and Kitagawa, 2008], OC3 [Smets and Vreeken, 2011], and CompreX [Akoglu et al., 2012].</p>
+<p>FPOF and OD were reimplemented in Python according to the descriptions of the algorithms. We reused publicly-available implementations of OC3 and CompreX ${ }^{2}$, implemented in C++ and Matlab respectively. The FPOF, OD and OC3 methods require setting some parameters, which is not the case for AVF or CompreX. For OC3, we used the lowest possible support parameter and used closed itemset mining to reduce the total number of itemsets considered in the mining stage. For FPOF and OD, we considered a range of support</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Forensic analysis results: Linux (scenario 1)
+and confidence parameter settings in the range $0.1-0.9$ and 0.97 and report the best results obtained using any parameter setting.</p>
+<p>We report the results of all algorithms running on the contexts described in Section 2.2 in Table 3 for the first scenario, and Table 4 for the second one. Some algorithms did not finish within a reasonable time (more than 3 hours) and when this is the case we write $D N F$. This happens most often with CompreX on contexts where there are large numbers of attributes, because CompreX searches for a partition of the attributes into groups with high mutual information, which seems to exhibit quadratic running time in the number of attributes.</p>
+<p>FPOF and OD were not competitive on any dataset, even after trying several possible support and confidence parameter values and taking the maximum nDCG score. The best two methods are AVF and OC3: in scenario 1, AVF produced the best (or tied) results in 8 out of 19 scenarios and OC3 produced the best (or tied) results, in 12 out of 19 scenarios. In the second attack scenario, AVF produced the best results in 4 out of 20 scenarios and OC3 produced the best results, in 12 out of 20 scenarios. AVF's performance degrades significantly from scenario 1 to scenario 2 (the nDCG range goes from a 0.20-0.84 range in scenario 1 to a 0.17-0.42 range in scenario 2), in particular for the BSD and Android datasets, which might be due to both a large increase in the size of BSD and Android contexts as well as a drop in the percentage of attacks present in the data. AVF performs best on small to medium datasets. In contrast, OC3's performance is more stable between scenarios (the nDCG range goes from 0.21-0.74 in scenario 1 to 0.22-0.84 in scenario 2) and less affected by increase in context size/drop in attack percentage (the performance only really drops for BSD-related contexts and by a smaller margin than in the case of AVF).</p>
+<p>CompreX was not able to complete within a reasonable time; for wider contexts such as PX or PP, it usually did not terminate within a few minutes. Akoglu et al. [2012] mention that CompreX could be run as an anytime algorithm, but the available implementation does not support this. In the few cases where CompreX completed in a reasonable time ( 5 out of 20 scenarios in scenario 1 and 4 out of 20 scenarios in scenario 2), it frequently outperformed both OC3 and AVF and performed best in most cases ( 3 out of 5 times for scenario 1 and 3 out of 4 times for scenario 2).</p>
+<p>In general, nDCG scores were highest for the Android dataset with the first attack scenario (between 0.830.84) and lowest for the Linux dataset, suggesting a rough (but unsurprising) correlation between the amount of data and difficulty of ranking attacks effectively. OC3 and AVF performed considerably better than any other technique on the different datasets. Likewise, no single context was consistently best, and considering all contexts joined together in PA was not always better than considering one of the base contexts.</p>
+<p>To help build intuition regarding how the nDCG scores correspond to actual rankings, we visualize the results of AVF for Linux (first attack scenario) in Figure 3. This "band diagram" shows the positions of the attacks in the rankings obtained by AVF for the five contexts. The x -axis of the figure is logarithmic scale, so red lines far to the left represent attacks ranked within the top 10, then top 100, etc. As this figure illustrates, an nDCG score of 0.43 (obtained by AVF on the PX context in the 1st scenario) corresponds to two attacks found in the top 10, while scores of under 0.3 tend to correspond to the highest-ranked attacks occuring at</p>
+<p>rank 100-1000.
+Overall, we can conclude that, AVF and OC3 are competitive since they generated the highest nDCG scores in both scenarios.</p>
+<p>Tables 5-14 show the running times for the various algorithms (Tables 5 to 9 for Scenario 1 and Tables 10 to 14 for Scenario 2). Just as with detection performance, the best performing algorithms in terms of running time are OC3 followed by AVF: most scenarios complete under 3 minutes ( 18 out 20 for both OC3 and AVF for scenario and 19 out of 20 for both OC3 and AVF for scenario 2). Runtime-wise, FPOF, CompreX and OD were significantly more expensive (in the cases where they complete, they typically run in minutes rather than seconds) compared to OC3 or AVF. As mentioned previously, Comprex does not complete in a reasonable time in most cases (it only completes in $20 \%$ to $25 \%$ of the cases depending on the scenario). Both OD and FPOF complete in more than 3 minutes in a significant proportion of the cases ( 7 out of 20 cases for scenario 1 and 14 out 20 cases for scenario 2 ) so are not competitive in terms of running time as well as detection performance: both algorithms start with frequent itemset/frequent rule mining, which is notoriously computationally expensive particularly for low support and/or confidence thresholds.</p>
+<p>Table 3: Evaluation of batch anomaly scoring in Scenario 1 (nDCG scores). The higher the score (i.e the closer to 1) the better. The best score per OS (row) is highlighted in bold.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">$\mathbf{0 . 6 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 6 0}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">$\mathbf{0 . 5 4}$</td>
+<td style="text-align: center;">0.51</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">$\mathbf{0 . 3 8}$</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">0.27</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">0.74</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">$\mathbf{0 . 8 4}$</td>
+</tr>
+</tbody>
+</table>
+<p>(a) ProcessEvent</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">$\mathbf{0 . 2 8}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 8}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">$\mathbf{0 . 4 9}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.34</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 4 3}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">$\mathbf{0 . 3 9}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 3 9}$</td>
+</tr>
+</tbody>
+</table>
+<p>(b) ProcessExec</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">$\mathbf{0 . 2 1}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 1}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">$\mathbf{0 . 4 3}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.30</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">$\mathbf{0 . 2 4}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.20</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+</tbody>
+</table>
+<p>(c) ProcessParent</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">0.36</td>
+<td style="text-align: center;">0.36</td>
+<td style="text-align: center;">$\mathbf{0 . 7 1}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.58</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">$\mathbf{0 . 3 2}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.26</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">$\mathbf{0 . 4 8}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.31</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.42</td>
+<td style="text-align: center;">0.36</td>
+<td style="text-align: center;">$\mathbf{0 . 6 7}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.47</td>
+</tr>
+</tbody>
+</table>
+<p>(d) ProcessNetflow</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 5 2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">$\mathbf{0 . 6 5}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.52</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 4 6}$</td>
+<td style="text-align: center;">0.29</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.34</td>
+<td style="text-align: center;">0.64</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 8 3}$</td>
+</tr>
+</tbody>
+</table>
+<p>(e) ProcessAll</p>
+<p>Table 4: Evaluation of batch anomaly scoring in Scenario 2 (nDCG scores). The higher the score (i.e the closer to 1) the better. The best score per OS (row) is highlighted in bold.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 3}$</td>
+<td style="text-align: center;">$\mathbf{0 . 2 3}$</td>
+<td style="text-align: center;">0.21</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">$\mathbf{0 . 2 4}$</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.19</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.38</td>
+<td style="text-align: center;">$\mathbf{0 . 4 6}$</td>
+<td style="text-align: center;">0.29</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.36</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">0.32</td>
+<td style="text-align: center;">$\mathbf{0 . 7 8}$</td>
+<td style="text-align: center;">0.30</td>
+</tr>
+</tbody>
+</table>
+<p>(a) ProcessEvent</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 4}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">$\mathbf{0 . 5 1}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.17</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">$\mathbf{0 . 4 2}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 4 2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">$\mathbf{0 . 3 9}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 3 8}$</td>
+</tr>
+</tbody>
+</table>
+<p>(b) ProcessExec</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 2}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 2 2}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">$\mathbf{0 . 2 9}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.17</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">$\mathbf{0 . 4 2}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">$\mathbf{0 . 3 9}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+</tbody>
+</table>
+<p>(c) ProcessParent</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 1 5}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.37</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">$\mathbf{0 . 4 0}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.35</td>
+</tr>
+</tbody>
+</table>
+<p>(d) ProcessNetflow</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">FPOF</th>
+<th style="text-align: center;">OD</th>
+<th style="text-align: center;">OC3</th>
+<th style="text-align: center;">CompreX</th>
+<th style="text-align: center;">AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">BSD</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">$\mathbf{0 . 3 8}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">$\mathbf{0 . 4 1}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">DNF</td>
+</tr>
+<tr>
+<td style="text-align: left;">Android</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.34</td>
+<td style="text-align: center;">$\mathbf{0 . 8 2}$</td>
+<td style="text-align: center;">DNF</td>
+<td style="text-align: center;">0.35</td>
+</tr>
+</tbody>
+</table>
+<p>(e) ProcessAll</p>
+<p>Table 5: Running time results (in seconds) for ProcessEvent context in scenario 1.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>47.90</td>
+<td>57.38</td>
+<td>0.62</td>
+<td>60.76</td>
+<td>0.79</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>3418.85</td>
+<td>3641.86</td>
+<td>3.54</td>
+<td>214.79</td>
+<td>4.59</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>814.15</td>
+<td>890.87</td>
+<td>7.30</td>
+<td>564.51</td>
+<td>12.59</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.44</td>
+<td>0.46</td>
+<td>0.01</td>
+<td>13.22</td>
+<td>0.01</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Running time results (in seconds) for ProcessExec context in scenario 1.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>3.65</td>
+<td>3.62</td>
+<td>3.72</td>
+<td>DNF</td>
+<td>12.09</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>28.78</td>
+<td>26.26</td>
+<td>2.81</td>
+<td>DNF</td>
+<td>20.98</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>473.57</td>
+<td>578.44</td>
+<td>18.47</td>
+<td>DNF</td>
+<td>84.08</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.46</td>
+<td>0.04</td>
+<td>0.02</td>
+<td>DNF</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: Running time results (in seconds) for ProcessParent context in scenario 1.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>16.03</td>
+<td>8.48</td>
+<td>0.56</td>
+<td>DNF</td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>65.70</td>
+<td>65.08</td>
+<td>0.95</td>
+<td>DNF</td>
+<td>3.83</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>286.41</td>
+<td>268.52</td>
+<td>2.18</td>
+<td>DNF</td>
+<td>14.34</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Running time results (in seconds) for ProcessNetflow context in scenario 1.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>0.25</td>
+<td>0.27</td>
+<td>1120.22</td>
+<td>DNF</td>
+<td>156.66</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>36.41</td>
+<td>37.48</td>
+<td>0.01</td>
+<td>DNF</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>5.80</td>
+<td>1.99</td>
+<td>0.12</td>
+<td>DNF</td>
+<td>0.59</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.06</td>
+<td>0.01</td>
+<td>0.009</td>
+<td>DNF</td>
+<td>0.01</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9: Running time results (in seconds) for ProcessAll context in scenario 1.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>2576.82</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>3333.97</td>
+<td>3632.50</td>
+<td>57.98</td>
+<td>DNF</td>
+<td>566.31</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>181.35</td>
+<td>DNF</td>
+<td>1951.59</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.191</td>
+<td>0.24</td>
+<td>0.03</td>
+<td>DNF</td>
+<td>0.08</td>
+</tr>
+</tbody>
+</table>
+<p>Table 10: Running time results (in seconds) for ProcessEvent context in scenario 2.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>0.18</td>
+<td>46.67</td>
+<td>0.89</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>1840.7</td>
+<td>2692.35</td>
+<td>533.96</td>
+<td>2975.59</td>
+<td>17.20</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>2768.14</td>
+<td>6054.92</td>
+<td>22.77</td>
+<td>970.79</td>
+<td>16.16</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>1551.88</td>
+<td>1551.88</td>
+<td>0.71</td>
+<td>45.81</td>
+<td>0.80</td>
+</tr>
+</tbody>
+</table>
+<p>Table 11: Running time results (in seconds) for ProcessExec context in scenario 2.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>4.71</td>
+<td>DNF</td>
+<td>23.45</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>302.46</td>
+<td>323.59</td>
+<td>32.72</td>
+<td>DNF</td>
+<td>100.07</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>514.98</td>
+<td>513.23</td>
+<td>42.30</td>
+<td>DNF</td>
+<td>131.05</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>15.14</td>
+<td>7.29</td>
+<td>0.51</td>
+<td>DNF</td>
+<td>1.24</td>
+</tr>
+</tbody>
+</table>
+<p>Table 12: Running time results (in seconds) for ProcessParent context in scenario 2.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>0.50</td>
+<td>DNF</td>
+<td>2.15</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>326.34</td>
+<td>280.18</td>
+<td>6.98</td>
+<td>DNF</td>
+<td>18.46</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>417.15</td>
+<td>437.27</td>
+<td>8.92</td>
+<td>DNF</td>
+<td>27.63</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.016</td>
+<td>0.015</td>
+<td>0.02</td>
+<td>DNF</td>
+<td>0.001</td>
+</tr>
+</tbody>
+</table>
+<p>Table 13: Running time results (in seconds) for ProcessNetflow context in scenario 2.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>0.05</td>
+<td>DNF</td>
+<td>0.12</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>32.76</td>
+<td>36.55</td>
+<td>1.82</td>
+<td>DNF</td>
+<td>7.02</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>4.60</td>
+<td>4.89</td>
+<td>45.51</td>
+<td>DNF</td>
+<td>28615.57</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>0.90</td>
+<td>0.65</td>
+<td>0.63</td>
+<td>DNF</td>
+<td>0.83</td>
+</tr>
+</tbody>
+</table>
+<p>Table 14: Running time results (in seconds) for ProcessAll context in scenario 2.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FPOF</th>
+<th>OD</th>
+<th>OC3</th>
+<th>CompreX</th>
+<th>AVF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+</tr>
+<tr>
+<td>BSD</td>
+<td>DNF</td>
+<td>3146.47</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+<td>DNF</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>1715.82</td>
+<td>700.81</td>
+<td>5.92</td>
+<td>DNF</td>
+<td>16.22</td>
+</tr>
+</tbody>
+</table>
+<h1>4.5 Streaming anomaly detection</h1>
+<p>In this section, we consider the following empirical questions:</p>
+<ul>
+<li>Q2: Is the detection performance of streaming AVF competitive with batch AVF in terms of nDCG and AUC?</li>
+<li>Q3: Is the runtime performance of streaming AVF competitive with batch AVF?</li>
+</ul>
+<h3>4.5.1 Detection performance</h3>
+<p>To evaluate the streaming version of AVF, we generated 10 randomly-shuffled versions of each dataset from Scenario 1 and ran the streaming algorithm on each dataset. We consider different randomly-shuffled datasets in order to avoid any dependence on a particular order of processing the data; it could be that analyzing the data ordered by time could produce better (or worse) results. In practice, it is not guaranteed that we will see all processes in temporal order, because records for some long-lived processes may not become available until the process terminates. We divided the datasets into block sizes of various granularities ( $1 \%, 5 \%, 10 \%, 25 \%$ of the data) to investigate the effect of granularity on effectiveness and performance. For each dataset and block size, we computed the median ranking of each attack over the 10 shuffled runs. These median rankings are taken to be representative.</p>
+<p>We present nDCG and AUC results for the PA context only; these results are representative of the base contexts. Table 15 summarizes the nDCG and AUC metrics for the streaming algorithm (with four different block sizes) and for the batch algorithm (at the bottom). These results show that the nDCG scores for all four datasets are fairly stable, with only the Windows dataset displaying degradation of nDCG score of more than 0.01. Likewise, the AUC scores of most streaming variants were close to those of the batch algorithm, with only the Windows and Android AUC scores changing by more than 0.01 . Overall these results suggest that small block sizes do not significantly degrade the usefulness of the results of AVF scoring.</p>
+<p>Figure 4 plots the ratio of true positives found vs. ranking position, for the four different PA datasets. The red lines are the performance of the batch AVF algorithm while the blue lines are the streaming versions. (For the BSD dataset, the differences are not visible.) We can also gain a stronger intuition regarding the usefulness of the results from these figures: for example, for the Linux PA context we can see that the nDCG score of 0.298 corresponds to finding about half of the attacks in the first $1 \%$ of the rankings, while others are not found until $40 \%$. Figure 4 also shows that, for most datasets (except Android), at least $80 \%$ of true positives (i.e attacks) are found in the top $5 \%$ of the data.</p>
+<h3>4.5.2 Analysis time</h3>
+<p>Figure 5 summarizes the time taken per run for both batch and streaming versions of AVF (the streaming times were obtained by taking the median of the times over the ten runs on shuffled inputs). Note that the y-axis is logarithmic scale. The running time is in general proportional to the amount of data in each context (number of rows $\times$ number of columns). In particular, the time needed for PA is often considerably longer than the times needed for the other contexts. The reason is that some contexts (such as PE) have many rows and few columns, while others (such as PN) have many columns and few rows. Combining them into PA yields a very sparse context with many zeros. We plan to investigate whether using a more succinct storage format for the contexts, or combining the scores of the subcontexts, might lead to better performance. The streaming execution times also increase, as expected, with the increase of streaming block size.</p>
+<p>Table 15: Summary of the detection performance of batch and streaming AVF on PA for each dataset, and for block sizes of $1 \%, 5 \%, 10 \%$, and $25 \%$. nDCG and AUC scores (higher is better)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Windows</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">BSD</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Linux</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Android</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">nDCG</td>
+<td style="text-align: center;">AUC</td>
+<td style="text-align: center;">nDCG</td>
+<td style="text-align: center;">AUC</td>
+<td style="text-align: center;">nDCG</td>
+<td style="text-align: center;">AUC</td>
+<td style="text-align: center;">nDCG</td>
+<td style="text-align: center;">AUC</td>
+</tr>
+<tr>
+<td style="text-align: left;">Stream 1\%</td>
+<td style="text-align: center;">0.518</td>
+<td style="text-align: center;">0.993</td>
+<td style="text-align: center;">0.524</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.298</td>
+<td style="text-align: center;">0.927</td>
+<td style="text-align: center;">0.832</td>
+<td style="text-align: center;">0.872</td>
+</tr>
+<tr>
+<td style="text-align: left;">Stream 5\%</td>
+<td style="text-align: center;">0.490</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.524</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.298</td>
+<td style="text-align: center;">0.928</td>
+<td style="text-align: center;">0.828</td>
+<td style="text-align: center;">0.857</td>
+</tr>
+<tr>
+<td style="text-align: left;">Stream 10\%</td>
+<td style="text-align: center;">0.522</td>
+<td style="text-align: center;">0.994</td>
+<td style="text-align: center;">0.524</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.298</td>
+<td style="text-align: center;">0.927</td>
+<td style="text-align: center;">0.826</td>
+<td style="text-align: center;">0.849</td>
+</tr>
+<tr>
+<td style="text-align: left;">Stream 25\%</td>
+<td style="text-align: center;">0.496</td>
+<td style="text-align: center;">0.985</td>
+<td style="text-align: center;">0.525</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.298</td>
+<td style="text-align: center;">0.928</td>
+<td style="text-align: center;">0.828</td>
+<td style="text-align: center;">0.858</td>
+</tr>
+<tr>
+<td style="text-align: left;">Batch</td>
+<td style="text-align: center;">0.527</td>
+<td style="text-align: center;">0.996</td>
+<td style="text-align: center;">0.524</td>
+<td style="text-align: center;">0.984</td>
+<td style="text-align: center;">0.298</td>
+<td style="text-align: center;">0.927</td>
+<td style="text-align: center;">0.834</td>
+<td style="text-align: center;">0.878</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Percentage of processes seen versus percentage of attacks detected for PA
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Analysis time (batch AVF vs. streaming AVF)</p>
+<h1>5 Related work</h1>
+<p>Prior work on APTs is mostly concerned with describing/modeling the characteristics of an APT and its attack model [Sood and Enbody, 2013, Virvilis et al., 2013, Chen et al., 2014], sometimes using case studies [Karchefsky and Rao, 2017]. A few recent studies address the APT detection problem by constructing models of normal behavior against which incoming data is compared and flagged as anomalous if it deviates from the learned models. Friedberg et al. [2015] explain the shortcomings of current security solutions with regards to APT detection, in particular contending that preventive security mechanisms and signature-based methods are not enough to tackle the challenge of APTs, and propose an anomaly detection-based framework to detect APTs by learning a model of normal system behavior from host-based security logs and detecting deviations. Siddiqui et al. [2016] use the fractal dimension as a feature to classify TCP/IP session data patterns into anomalous (and part of an APT) or normal patterns. Moya et al. [2017] construct decision tree-based models of normal network activity based on features extracted from firewall logs, then use the learned models to classify incoming network traffic. Some work has also been done on the detection of specific patterns that might be part of an APT attack e.g. detection of data leakage/data exfiltration [Jewell and Beaver, 2011, Awad et al., 2016] or detection of command and control (C\&amp;C) domains [Niu et al., 2017]. Another recent paper [Lamprakis et al., 2017] reconstructs a Web requests dependencies graph from Web requests logs using domain knowledge and proposes an unsupervised approach relying on the reconstructed graph to identify APT C\&amp;C channels. In contrast, in this paper, we seek to evaluate APT detection approaches developped on host-based data (unlike [Lamprakis et al., 2017, Niu et al., 2017, Siddiqui et al., 2016, Moya et al., 2017] that rely on datasets recording various aspects of network activity) that use as little domain knowledge as possible (the goal being to check the detection performance on datasets constructed to minimize the amount of pre-processing and fine-tuning) and try to detect traces of APT activity without targeting a specific type of APT pattern (unlike [Jewell and Beaver, 2011, Awad et al., 2016]).</p>
+<p>There is a considerable literature on intrusion and malware detection, which is mainly split in two approaches: misuse detection (e.g. [Kumar and Spafford, 1994]) and anomaly detection (e.g. [Ji et al., 2016]). The principle of misuse detection is to search for events (i.e. known attacks) that match predefined signatures and patterns. Methods relying on misuse detection can only detect attacks whose signature and patterns are known, which would be unsuitable for APT detection. By contrast, anomaly detection assumes abnormal behaviours can come in varied, potentially unknown, shapes and focuses on detecting activity that deviates from normal activity i.e. activity usually recorded on a particular host or network.</p>
+<p>There are several comprehensive surveys of anomaly detection and outlier detection that consider categorical data, continuous data, and structured data (e.g. graphs) [Chandola et al., 2009, Akoglu et al., 2015]. Of these approaches, graph anomaly detection appears the most relevant for our problem, but most of this work has considered special cases of graphs (e.g. undirected or unlabeled), whereas provenance graph data has rich structure (labeled nodes, labeled edges, multiple properties on nodes and edges). Anomaly detection approaches for provenance graphs reported so far rely on training on benign traces [Manzoor et al., 2016], require user-provided annotations [Hossain et al., 2017], or assume that the background activity is highly regular [Ul Hassan et al., 2018]. Another recent contribution by Siddiqui et al. [2018] shows that human-in-the-loop feedback can be used in a semi-supervised way to improve detection results over baseline unsupervised detectors over numerical data. Berrada and Cheney [2019] investigated aggregation of anomaly scores/ranks from different contexts, and found that using AVF and OC3 as base detectors, simple score or rank aggregation techniques provide improved detection performance.</p>
+<p>On the other hand, there are a number of generic approaches to anomaly detection for discrete (categorical) data [He et al., 2005, Narita and Kitagawa, 2008, Koufakou et al., 2007, 2011, Smets and Vreeken, 2011, Bertens et al., 2017, Akoglu et al., 2012, Bertens et al., 2017]. Most of these approaches first mine the data for frequent itemsets or association rules, and all then perform anomaly scoring in a second pass over the data. A onepass, streaming variant of AVF was presented by Tan et al. [2013]. Some approaches, notably OC ${ }^{3}$ [Smets and Vreeken, 2011] and CompreX [Akoglu et al., 2012], are based on the Minimum Description Length (MDL) principle [Grünwald, 2007]. Both perform a preprocessing stage to find a compressed representation of the dataset, then consider the resulting compressed size of each record as its score. Since $\mathrm{OC}^{3}$ was often the most effective batch algorithm, we think it would be interesting to develop a streaming approach based on MDL, either by adapting the underlying Krimp compression algorithm [Vreeken et al., 2011] to support streaming anomaly detection, or by building on streaming compression techniques such as adaptive arithmetic coding [Witten et al., 1987]. The UPC algorithm of Bertens et al. [2017] is also based on pattern mining and MDL, and is inherently a two-pass approach, but seeks a different kind of anomalies than AVF, OC3, and CompreX, consisting of unexpectedly rare combinations of frequent itemsets.</p>
+<p>There are also some anomaly detection techniques for mixed categorical and numerical data [Yamanishi et al., 2004, Koufakou and Georgiopoulos, 2010] that could be applied to pure categorical data. The ODMAD algorithm [Koufakou and Georgiopoulos, 2010], like most categorical techniques, performs an initial off-line</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{2}$ http://eda.mmci.uni-saarland.de/prj/&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-7731 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-7731</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-7731</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-141.html">extraction-schema-141</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how large language models estimate probabilities for future real-world scientific discoveries, including model details, prediction targets, datasets, forecasting horizon, probability estimation methods, evaluation metrics, reported performance, calibration quality, baselines, limitations, and concrete probability examples.</div>
+                <p><strong>Paper ID:</strong> paper-7a15950dc71079285a4eaf195de5aadd87c41b40</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/7a15950dc71079285a4eaf195de5aadd87c41b40" target="_blank">Fine-Tuning Language Models from Human Preferences</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> This paper builds on advances in generative pretraining of language models to apply reward learning to four natural language tasks: continuing text with positive sentiment or physically descriptive language, and summarization tasks on the TL;DR and CNN/Daily Mail datasets.</p>
+                <p><strong>Paper Abstract:</strong> Reward learning enables the application of reinforcement learning (RL) to tasks where reward is defined by human judgment, building a model of reward by asking humans questions. Most work on reward learning has used simulated environments, but complex information about values is often expressed in natural language, and we believe reward learning for language is a key to making RL practical and safe for real-world tasks. In this paper, we build on advances in generative pretraining of language models to apply reward learning to four natural language tasks: continuing text with positive sentiment or physically descriptive language, and summarization tasks on the TL;DR and CNN/Daily Mail datasets. For stylistic continuation we achieve good results with only 5,000 comparisons evaluated by humans. For summarization, models trained with 60,000 comparisons copy whole sentences from the input but skip irrelevant preamble; this leads to reasonable ROUGE scores and very good performance according to our human labelers, but may be exploiting the fact that labelers rely on simple heuristics.</p>
+                <p><strong>Cost:</strong> 0.006</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-7731",
+    "paper_id": "paper-7a15950dc71079285a4eaf195de5aadd87c41b40",
+    "extraction_schema_id": "extraction-schema-141",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.005821,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Fine-Tuning Language Models from Human Preferences</h1>
+<p>Daniel M. Ziegler<em> Nisan Stiennon</em> Jeffrey Wu Tom B. Brown<br>Alec Radford Dario Amodei Paul Christiano Geoffrey Irving<br>OpenAI<br>{dmz,nisan,jeffwu,tom,alec,damodei,paul,irving}@openai.com</p>
+<h4>Abstract</h4>
+<p>Reward learning enables the application of reinforcement learning (RL) to tasks where reward is defined by human judgment, building a model of reward by asking humans questions. Most work on reward learning has used simulated environments, but complex information about values is often expressed in natural language, and we believe reward learning for language is a key to making RL practical and safe for real-world tasks. In this paper, we build on advances in generative pretraining of language models to apply reward learning to four natural language tasks: continuing text with positive sentiment or physically descriptive language, and summarization tasks on the TL;DR and CNN/Daily Mail datasets. For stylistic continuation we achieve good results with only 5,000 comparisons evaluated by humans. For summarization, models trained with 60,000 comparisons copy whole sentences from the input but skip irrelevant preamble; this leads to reasonable ROUGE scores and very good performance according to our human labelers, but may be exploiting the fact that labelers rely on simple heuristics.</p>
+<h2>1. Introduction</h2>
+<p>We would like to apply reinforcement learning to complex tasks defined only by human judgment, where we can only tell whether a result is good or bad by asking humans. To do this, we can first use human labels to train a model of reward, and then optimize that model. While there is a long history of work learning such models from humans through interaction, this work has only recently been applied to modern deep learning, and even then has only been applied to relatively simple simulated environments (Christiano et al., 2017; Ibarz et al., 2018; Bahdanau et al., 2018). By contrast, real world settings in which humans need to specify com-</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>plex goals to AI agents are likely to both involve and require natural language, which is a rich medium for expressing value-laden concepts. Natural language is particularly important when an agent must communicate back to a human to help provide a more accurate supervisory signal (Irving et al., 2018; Christiano et al., 2018; Leike et al., 2018).</p>
+<p>Natural language processing has seen substantial recent advances. One successful method has been to pretrain a large generative language model on a corpus of unsupervised data, then fine-tune the model for supervised NLP tasks (Dai and Le, 2015; Peters et al., 2018; Radford et al., 2018; Khandelwal et al., 2019). This method often substantially outperforms training on the supervised datasets from scratch, and a single pretrained language model often can be fine-tuned for state of the art performance on many different supervised datasets (Howard and Ruder, 2018). In some cases, fine-tuning is not required: Radford et al. (2019) find that generatively trained models show reasonable performance on NLP tasks with no additional training (zero-shot).</p>
+<p>There is a long literature applying reinforcement learning to natural language tasks. Much of this work uses algorithmically defined reward functions such as BLEU for translation (Ranzato et al., 2015; Wu et al., 2016), ROUGE for summarization (Ranzato et al., 2015; Paulus et al., 2017; Wu and Hu, 2018; Gao et al., 2019b), music theory-based rewards (Jaques et al., 2017), or event detectors for story generation (Tambwekar et al., 2018). Nguyen et al. (2017) used RL on BLEU but applied several error models to approximate human behavior. Wu and Hu (2018) and Cho et al. (2019) learned models of coherence from existing text and used them as RL rewards for summarization and long-form generation, respectively. Gao et al. (2019a) built an interactive summarization tool by applying reward learning to one article at a time. Experiments using human evaluations as rewards include Kreutzer et al. (2018) which used off-policy reward learning for translation, and Jaques et al. (2019) which applied the modified Q-learning methods of Jaques et al. (2017) to implicit human preferences in dialog. Yi et al. (2019) learned rewards from humans to fine-tune dialog models, but smoothed the rewards to allow supervised learning. We refer to Luketina et al. (2019) for a survey of</p>
+<p>RL tasks involving language as a component, and for RL results using transfer learning from language. RL is not the only way to incorporate ongoing human feedback: Hancock et al. (2019) ask humans what a dialogue system should have said instead, then continue supervised training.</p>
+<p>In this paper, we combine the pretraining advances in natural language processing with human preference learning. We fine-tune pretrained language models with reinforcement learning rather than supervised learning, using a reward model trained from human preferences on text continuations. Following Jaques et al. (2017; 2019), we use a KL constraint to prevent the fine-tuned model from drifting too far from the pretrained model. We apply our method to two types of tasks: continuing text in a way that matches a target style, either positive sentiment or vividly descriptive, and summarizing text from the CNN/Daily Mail or TL;DR datasets (Hermann et al., 2015; Völske et al., 2017). Our motivation is NLP tasks where supervised data sets are unavailable or insufficient, and where programmatic reward functions are poor proxies for our true goals.</p>
+<p>For stylistic continuation, 5,000 human comparisons (each choosing the best of 4 continuations) result in the fine-tuned model being preferred by humans 86% of the time vs. zeroshot and 77% vs. fine-tuning to a supervised sentiment network. For summarization, we use 60,000 human samples to train models that can roughly be described as “smart copiers”: they typically copy whole sentences from the input, but vary what they copy to skip irrelevant initial text. This copying behavior emerged naturally from the data collection and training process; we did not use any explicit architectural mechanism for copying as in See et al. (2017); Gehrmann et al. (2018). One explanation is that copying is an easy way to be accurate, given that we did not instruct labelers to penalize copying but do instruct them to penalize inaccuracy. It may also reflect the fact that some labelers check for copying as a fast heuristic to ensure a summary is accurate. Indeed, human labelers significantly prefer our models to supervised fine-tuning baselines and even to human-written reference summaries, but not to a lead-3 baseline which copies the first three sentences.</p>
+<p>For summarization, we continue to collect additional data and retrain our reward model as the policy improves (online data collection). We also test offline data collection where we train the reward model using data from the original language model only; offline data collection significantly reduces the complexity of the training process. For the TL;DR dataset, human labelers preferred the policy trained with online data collection 71% of the time, and in qualitative evaluations the offline model often provides inaccurate summaries. In contrast, for stylistic continuation we found that offline data collection worked similarly well. This may be related to the style tasks requiring very little data; Radford</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Our training processes for reward model and policy. In the online case, the processes are interleaved.</p>
+<p>et al. (2017) show that generatively trained models can learn to classify sentiment from very few labeled examples.</p>
+<p>In concurrent work, Böhm et al. (2019) also use human evaluations to learn a reward function for summarization, and optimize that reward function with RL. Their work provides a more detailed investigation of the learned policy and reward function on the CNN/Daily Mail dataset, while we are interested in exploring learning from human feedback more generally and at larger computational scale. So we consider several additional tasks, explore the effects of on-policy reward model training and more data, and fine-tune large language models for both reward modeling and RL.</p>
+<h2>2. Methods</h2>
+<p>We begin with a vocabulary $\Sigma$ and a language model $\rho$ which defines a probability distribution over sequences of tokens $\Sigma^{n}$ via</p>
+<p>$$
+\rho(x_0 \cdots x_{n-1}) = \prod_{0 \leq k &lt; n} \rho(x_k | x_0 \cdots x_{k-1})
+$$</p>
+<p>We will apply this model to a task with input space $X = \Sigma^{\leq m}$, data distribution $\mathcal{D}$ over $X$, and output space $Y = \Sigma^n$. For example, $x \in X$ could be an article of up to 1000 words and $y \in Y$ could be a 100-word summary. $\rho$ defines a probabilistic policy for this task via $\rho(y|x) = \rho(xy)/\rho(x)$: fixing the beginning of the sample to $x$ and generating subsequent tokens using $\rho$.</p>
+<p>We initialize a policy $\pi = \rho$, and then fine-tune $\pi$ to perform the task well using RL. If the task was defined by a reward function $r : X \times Y \to \mathbb{R}$, then we could use RL to directly optimize the expected reward:</p>
+<p>$$
+\mathbb{E}<em _mathcal_D="\mathcal{D" _sim="\sim" x="x">{\pi}[r] = \mathbb{E}</em> [r(x, y)]
+$$}, y \sim \pi(\cdot|x)</p>
+<p>However, we want to perform tasks defined by human judgments, where we can only learn about the reward by asking humans. To do this, we will first use human labels to train a reward model, and then optimize that reward model.</p>
+<p>Following <em>Christiano et al. (2017)</em>, we ask human labelers to pick which of several values of $y_{i}$ is the best response to a given input $x$. ${ }^{1}$ We ask humans to choose between four options $\left(y_{0}, y_{1}, y_{2}, y_{3}\right)$; considering more options allows a human to amortize the cost of reading and understanding the prompt $x$. Let $b \in{0,1,2,3}$ be the option they select. Having collected a dataset $S$ of $\left(x, y_{0}, y_{1}, y_{2}, y_{3}, b\right)$ tuples, we fit a reward model $r: X \times Y \rightarrow \mathbb{R}$ using the loss</p>
+<p>$$
+\operatorname{loss}(r)=\mathbb{E}<em i="i">{\left{x,\left{y</em>\right}<em b="b">{i}, b\right} \sim S}\left[\log \frac{e^{r\left(x, y</em>\right]
+$$}\right)}}{\sum_{t} e^{r\left(x, y_{i}\right)}</p>
+<p>Since the reward model needs to understand language, we initialize it as a random linear function of the final embedding output of the language model policy $\rho$ following <em>Radford et al. (2018)</em> (see section 4.2 for why we initialize from $\rho$ rather than $\pi$ ). To keep the scale of the reward model consistent across training, we normalize it so that it has mean 0 and variance 1 for $x \sim \mathcal{D}, y \sim \rho(\cdot \mid x)$.
+Now we fine-tune $\pi$ to optimize the reward model $r$. To keep $\pi$ from moving too far from $\rho$, we add a penalty with expectation $\beta \mathrm{KL}(\pi, \rho)$ (see table 10 for what happens without this). That is, we perform RL on the modified reward</p>
+<p>$$
+R(x, y)=r(x, y)-\beta \log \frac{\pi(y \mid x)}{\rho(y \mid x)}
+$$</p>
+<p>We either choose a constant $\beta$ or vary it dynamically to achieve a particular value of $\mathrm{KL}(\pi, \rho)$; see section 2.2. This term has several purposes: it plays the role of an entropy bonus, it prevents the policy from moving too far from the range where $r$ is valid, and in the case of our style continuation tasks it also is an important part of the task definition: we ask humans to evaluate style, but rely on the KL term to encourage coherence and topicality.
+Our overall training process is:</p>
+<ol>
+<li>Gather samples $\left(x, y_{0}, y_{1}, y_{2}, y_{3}\right)$ via $x \sim \mathcal{D}, y_{i} \sim$ $\rho(\cdot \mid x)$. Ask humans to pick the best $y_{i}$ from each.</li>
+<li>Initialize $r$ to $\rho$, using random initialization for the final linear layer of $r$. Train $r$ on the human samples using loss (1).</li>
+<li>Train $\pi$ via Proximal Policy Optimization (PPO, <em>Schulman et al. (2017)</em>) with reward $R$ from (2) on $x \sim \mathcal{D}$.</li>
+<li>In the online data collection case, continue to collect additional samples, and periodically retrain the reward model $r$. This is described in section 2.3.
+<sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup></li>
+</ol>
+<h3>2.1. Pretraining details</h3>
+<p>We use a 774 M parameter version of the GPT-2 language model in <em>Radford et al. (2019)</em> trained on their WebText dataset and their 50,257 token invertible byte pair encoding to preserve capitalization and punctuation ( [Sennrich et al., 2015]). The model is a Transformer with 36 layers, 20 heads, and embedding size 1280 ( [Vaswani et al., 2017]).</p>
+<p>For stylistic continuation tasks we perform supervised finetuning of the language model to the BookCorpus dataset of <em>Zhu et al. (2015)</em> prior to RL fine-tuning; we train from scratch on WebText, supervised fine-tune on BookCorpus, then RL fine-tune to our final task. To improve sample quality, we use a temperature of $T&lt;1$ for all experiments; we modify the initial language model by dividing logits by $T$, so that future sampling and RL with $T=1$ corresponds to a lower temperature for the unmodified pretrained model.</p>
+<h3>2.2. Fine-tuning details</h3>
+<p>Starting with the pretrained language model, the reward model is trained using the Adam optimizer ( [Kingma and Ba, 2014]) with loss (1). The batch size is 8 for style tasks and 32 for summarization, and the learning rate is $1.77 \times 10^{-5}$ for both. We use a single epoch to avoid overfitting to the small amount of human data, and turn off dropout.</p>
+<p>For training the policy $\pi$, we use the PPO2 version of Proximal Policy Optimization from <em>Dhariwal et al. (2017)</em>. We use 2 M episodes ( $x, y$ pairs), $\gamma=1$, four PPO epochs per batch with one minibatch each, and default values for the other parameters. We use batch size 1024 for style tasks and 512 for summarization. We do not use dropout for policy training. The learning rate was $1.41 \times 10^{-5}$ for style tasks and $7.07 \times 10^{-6}$ for summarization.</p>
+<p>Models trained with different seeds and the same KL penalty $\beta$ sometimes end up with quite different values of $\mathrm{KL}(\pi, \rho)$, making them hard to compare. To fix this, for some experiments we dynamically vary $\beta$ to target a particular value of $\mathrm{KL}(\pi, \rho)$ using the log-space proportional controller</p>
+<p>$$
+\begin{aligned}
+e_{t} &amp; =\operatorname{clip}\left(\frac{\mathrm{KL}\left(\pi_{t}, \rho\right)-\mathrm{KL}<em _target="{target" _text="\text">{\text {target }}}{\mathrm{KL}</em>,-0.2,0.2\right) \
+\beta_{t+1} &amp; =\beta_{t}\left(1+K_{\beta} e_{t}\right)
+\end{aligned}
+$$}}</p>
+<p>We used $K_{\beta}=0.1$.
+For supervised fine-tuning baselines, we fine-tune for 1 epoch on the CNN/Daily Mail and TL;DR training sets (for TL;DR we removed 30K examples to serve as a validation set). We decayed the learning rate to 0 with a cosine schedule; for the initial value, we swept over 8 log-linearly spaced options between $10^{-4}$ and $3 \times 10^{-4}$. We also experimented with different dropout rates, and found a rate of 0.1 to work best. We then chose the model with the best validation loss.</p>
+<h3>2.3. Online data collection</h3>
+<p>If the trained policy $\pi$ is very different from the zero-shot policy $\rho$, the reward model will suffer a large distributional shift from training on samples from $\rho$ to evaluation on samples from $\pi$. To prevent this, we can collect human data throughout RL fine-tuning, continuously gathering new data by sampling from $\pi$ and retraining the reward model. As section 3 shows, online data collection was important for summarization but not for the simpler style tasks.</p>
+<p>In the online case, we will choose a function $l(n)$ describing how many labels we want before beginning the $n^{\text {th }}$ PPO episode. Let $N_{\pi}=2 \times 10^{6}$ be the total number of PPO episodes, $N_{r}^{0}=l(0)$ be an initial number of human labels, and $N_{r}$ be the total number of human labels. We take</p>
+<p>$$
+l(n)=N_{r}^{0}+\left(N_{r}-N_{r}^{0}\right)\left(1-\left(1-n / N_{\pi}\right)^{2}\right)
+$$</p>
+<p>We pause before the $n^{\text {th }}$ PPO episode if we have fewer than $l(n)$ labels. We send another batch of requests to the labelers if the total requests so far is less than $l(n)+1000$, to ensure they have at least 1000 outstanding queries at any time. We train the reward model before the first PPO episode, and then retrain it 19 more times at evenly spaced values of $l(n)$. Each time we retrain we reinitialize $r$ to a random linear layer on top of $\rho$ and do a single epoch through the labels collected so far. The offline case is the limit $N_{r}=N_{r}^{0}$.</p>
+<p>To estimate overall progress, we gather validation samples consisting of $x \sim \mathcal{D} ; y_{0}, y_{1} \sim \rho(\cdot \mid x) ; y_{2}, y_{3} \sim \pi(\cdot \mid x)$ at a constant rate; human labels on these give how often $\pi$ beats $\rho$. Since validation samples are only used to evaluate the current $\pi$, we can add them to the training set for $r$. In order to estimate inter-labeler agreement, $5 \%$ of queries are answered 5 times by different labelers. Label counts in section 3 include validation samples and repeated labels.</p>
+<h3>2.4. Human labeling</h3>
+<p>We use Scale AI to collect labels. The Scale API accepts requests of the form $\left(x, y_{0}, y_{1}, y_{2}, y_{3}\right)$ and returns selections $b \in{0,1,2,3}$. We describe the task to Scale through a combination of instructions (appendix A) and a dataset of about 100 example comparisons from the authors.</p>
+<p>Unlike many tasks in ML, our queries do not have unambiguous ground truth, especially for pairs of similar outputs (which play a large role in our training process, since we train $r$ on pairs of labels sampled from a single policy $\pi$ ). This means that there is significant disagreement even between labelers who have a similar understanding of the task and are trying to rate consistently. On 4-way comparisons for sentiment and TL;DR summarization, authors of this paper agree about $60 \%$ of the time (vs. $25 \%$ for random guessing). This low rate of agreement complicates the quality control process for Scale; the authors agree with Scale</p>
+<p>Mock sentiment learning curves (KL 8)
+<img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Learning curves for a 124M-parameter model with mock sentiment reward, targeting a KL of 8 nats. Lines and shaded areas show mean and range for 5 seeds. Early on the reward model sometimes speeds up training, a phenomenon also observed by Christiano et al. (2017).
+labelers $38 \%$ of the time on sentiment and $46 \%$ of the time on TL;DR summarization. We give further details of the human data collection and quality evaluation in appendix B.</p>
+<p>For final evaluation of two models $A$ and $B$, we generate either 2-way comparisons between pairs $(a \sim A, b \sim B)$ or 4 -way comparisons with quadruples $\left(a_{0}, a_{1} \sim A, b_{0}, b_{1} \sim\right.$ $B)$, randomize the order in which samples are presented, and present these comparisons to Scale. Evaluating the quality of a model trained by Scale using the same set of humans from Scale is perilous: it demonstrates that $r$ and $\pi$ have succeeded in fitting to the human reward, but does not show that those human evaluations capture what we really care about, and our models are incentivized to exploit idiosyncracies of the labeling process. We include samples from our models so that readers can judge for themselves.</p>
+<h2>3. Experiments</h2>
+<p>In section 3.1.1, we test our approach to RL fine-tuning of language models by using a mock labeler (a sentiment model trained on a review classification problem) as a stand-in for human labels. We show that RL fine-tuning is effective at optimizing this complex but somewhat artificial reward. In section 3.1.2, we show that we can optimize language models from human preferences on stylistic continuation tasks (sentiment and physical descriptiveness) with very little data, and that in the sentiment case the results are preferred to optimizing the review sentiment model. In section 3.2 we apply RL fine-tuning to summarization on the CNN/Daily Mail and TL;DR datasets, show that the resulting models are essentially "smart copiers", and discuss these results in the context of other summarization work.</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Allowing the policy $\pi$ to move further from the initial policy $\rho$ as measured by $\mathrm{KL}(\pi, \rho)$ achieves higher reward at the cost of less natural samples. Here we show the optimal KL vs. reward for 124M-parameter mock sentiment (as estimated by sampling), together with results using PPO. Runs used 2M episodes, except for the top series.</p>
+<p>We release code ${ }^{2}$ for reward modeling and fine-tuning in the offline data case. Our public version of the code only works with a smaller 124M parameter model with 12 layers, 12 heads, and embedding size 768 . We include fine-tuned versions of this smaller model, as well as some of the human labels we collected for our main experiments (note that these labels were collected from runs using the larger model).</p>
+<h3>3.1. Stylistic continuation tasks</h3>
+<p>We first apply our method to stylistic text continuation tasks, where the policy is presented with an excerpt from the BookCorpus dataset (Zhu et al., 2015) and generates a continuation of the text. The reward function evaluates the style of the concatenated text, either automatically or based on human judgments. We sample excerpts with lengths of 32 to 64 tokens, and the policy generates 24 additional tokens. We set the temperature of the pretrained model to $T=0.7$ as described in section 2.1.</p>
+<h3>3.1.1. MOCK SENTIMENT TASK</h3>
+<p>To study our method in a controlled setting, we first apply it to optimize a known reward function $r_{s}$ designed to reflect some of the complexity of human judgments. We construct</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup>$r_{s}$ by training a classifier ${ }^{3}$ on a binarized, balanced subsample of the Amazon review dataset of McAuley et al. (2015). The classifier predicts whether a review is positive or negative, and we define $r_{s}(x, y)$ as the classifier's log odds that a review is positive (the input to the final sigmoid layer).</p>
+<p>Optimizing $r_{s}$ without constraints would lead the policy to produce incoherent continuations, but as described in section 2.2 we include a KL constraint that forces it to stay close to a language model $\rho$ trained on BookCorpus.</p>
+<p>The goal of our method is to optimize a reward function using only a small number of queries to a human. In this mock sentiment experiment, we simulate human judgments by assuming that the "human" always selects the continuation with the higher reward according to $r_{s}$, and ask how many queries we need to optimize $r_{s}$.</p>
+<p>Figure 2 shows how $r_{s}$ evolves during training, using either direct RL access to $r_{s}$ or a limited number of queries to train a reward model. 20 k to 60 k queries allow us to optimize $r_{s}$ nearly as well as using RL to directly optimize $r_{s}$.</p>
+<p>Because we know the reward function, we can also analytically compute the optimal policy and compare it to our learned policies. With a constraint on the KL divergence</p>
+<p><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: Human evaluations comparing the zero-shot model with offline fine-tuned models using varying amounts of human data. We report how often the fine-tuned model is preferred by a majority of 3 labelers. We omit error bars because we lack an estimate of the largest source of variance (randomness across training runs).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Sentiment</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Descriptiveness</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">5k offline vs. zero-shot</td>
+<td style="text-align: center;">88\%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">12\%</td>
+<td style="text-align: center;">86\%</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline vs. mock</td>
+<td style="text-align: center;">77\%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">23\%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline vs. 20k offline</td>
+<td style="text-align: center;">48\%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">52\%</td>
+<td style="text-align: center;">47\%</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline vs. 5k online</td>
+<td style="text-align: center;">50\%</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">50\%</td>
+<td style="text-align: center;">48\%</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Human evaluations for the sentiment and descriptiveness tasks. We sample 1024 excerpts from the BookCorpus test set and report how often each model's continuations were preferred, as judged by a majority of 3 labelers.
+$\mathrm{KL}(\pi, \rho)$ between the learned policy $\pi$ and the language model $\rho$, the optimal policy has the form:</p>
+<p>$$
+\pi_{\text {opt }}(y \mid x) \propto \rho(y \mid x) e^{r_{x}(x, y) / \beta}
+$$</p>
+<p>We approximate the reward of this policy for given $x$ and $\beta$ by sampling a large number of continuations from $\rho(y \mid x)$ and reweighting them by $e^{r_{x}(x, y) / \beta}$. Figure 3 compares the reward obtained by our policies to the estimated optimal reward across a range of KL values. There is a significant gap from optimality after training the policy on 2 M continuations-the number used in our main experimentsthough it is largely closed with more training. Our policies continue to receive higher rewards for larger KL divergences, where we cannot afford to approximate $\pi_{\text {opt }}$ by sampling.</p>
+<h3>3.1.2. HUMAN EVALUATIONS OF CONTINUATIONS</h3>
+<p>We apply our method to two continuation tasks defined by human judgments:</p>
+<p>Sentiment: Humans are asked to reward "positive and happy" continuations.</p>
+<p>Descriptiveness: Humans are asked to reward "vividly descriptive" continuations.</p>
+<p>The human labelers are presented with a BookCorpus excerpt and four possible continuations; they are asked to select the best continuation. Full instructions for labelers are provided in appendix A (although labelers also learned from $\sim 50$ example comparisons labeled by the authors and so the instructions do not completely define the task).</p>
+<p>To make the labeling task more natural, we select excerpts that start and end with a period. When sampling continuations that will be presented to humans, we use rejection sampling to ensure there is a period between tokens 16 and 24 and then truncate at that period. ${ }^{4}$ During the RL finetuning, we penalize continuations that don't have such a period by giving them a fixed reward of -1 .</p>
+<p>We dynamically adjusted $\beta$ to obtain a KL divergence of 6 nats for descriptiveness and 10 nats for sentiment (section 2.2).</p>
+<p>We trained a range of models using different amounts of feedback, testing both offline data collection where humans</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">context</th>
+<th style="text-align: left;">Pearl thought to herself that what they were about to do was exactly the sort of thing <br> that they could do to help the villagers. They were all terrified of these guys. <br> At the police station the three walked up to the counter behind which was a senior <br> constable studying some papers.</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Continuation 1</td>
+<td style="text-align: left;">Continuation 2</td>
+<td style="text-align: left;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: left;">"Hello, I'm Pearl and this is <br> my friend, Mike," said Pearl.</td>
+<td style="text-align: left;">"May we speak to the police <br> officer, sir?" asked the one in <br> charge.</td>
+<td style="text-align: left;">'Hello, can I help you?' <br> 'Yes, we're the same people <br> that the people were talking <br> about.</td>
+</tr>
+<tr>
+<td style="text-align: left;">5k offline <br> fine-tune</td>
+<td style="text-align: left;">He turned to them with a <br> smile. "Good afternoon, <br> ladies. I'm Detective Inspec- <br> tor Jones.</td>
+<td style="text-align: left;">The constable stood up and <br> smiled as he saw them, obvi- <br> ously pleased to see them.</td>
+<td style="text-align: left;">He smiled at them and waved <br> them in, his eyes twinkling as <br> he listened to their tales.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: Three random $(T=0.7)$ continuations for our sentiment continuation task. Chosen from appendix table 11; see appendix for more.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">context</th>
+<th style="text-align: left;">"I do not know if it was Viking related, but it could have been." <br> "Really?" Ailia said. Is it safe to be traveling here then? Ailia looked behind her to <br> make sure they weren't being followed.</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Continuation 1</td>
+<td style="text-align: left;">Continuation 2</td>
+<td style="text-align: left;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: left;">There were no signs of any- <br> one. <br> "It is safe enough," Ailios <br> said.</td>
+<td style="text-align: left;">"Because I have a friend that <br> is in the area and he will be <br> coming with us.</td>
+<td style="text-align: left;">It was hard to see that far. "I <br> do not like that word.</td>
+</tr>
+<tr>
+<td style="text-align: left;">5k offline <br> fine-tune</td>
+<td style="text-align: left;">Kaya crouched low, her eyes <br> wide in the moonlight. Her <br> body was tense.</td>
+<td style="text-align: left;">She put her hand on the <br> sword strapped to her back, <br> and then pulled it out.</td>
+<td style="text-align: left;">She strode out the door <br> and walked down the street, <br> her nose wrinkled in disap- <br> proval.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 3: Three random $(T=0.7)$ continuations for our descriptiveness continuation task. Chosen from appendix table 12; see appendix for more.
+rate only the initial language model's continuation, and online data collection where humans continuously rate the current policy's continuations (section 2.3). We then compared these different policies to each other and to the zero-shot performance of the original language model. The results are shown in fig. 4 and table 1. Each model comparison is based on 1024 four-way continuation comparisons, two from each of the models being compared, each rated by 3 humans.</p>
+<p>For these continuation tasks, offline and online data collection give similar performance. We find that very little human data is required for fine-tuning: performance with $5 \mathrm{k}, 10 \mathrm{k}$, and 20 k reward model training samples is similar, degrading only for less than 5 k samples. ${ }^{5}$ The model trained using the review sentiment classifier from section 3.1.1 does poorly relative to models optimized using human preference: in $77 \%$ of contexts, labelers preferred the output of the model trained with real human feedback.</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h3>3.2. Summarization</h3>
+<p>We also applied our method to two summarization tasks: the CNN/Daily Mail dataset of Hermann et al. (2015) and the TL;DR dataset of Völske et al. (2017). We sample articles or Reddit posts, truncate to 500 tokens, add a "\n\nTL;DR:" suffix (and for CNN/Daily Mail, a "Article: \n\n" prefix) and let the policy respond with up to 75 tokens. We set the temperature of the pretrained model to $T=0.5$ for CNN/Daily Mail and $T=0.7$ for TL;DR. To make the task more natural for humans, we ensure articles consist of whole sentences by truncating to the last newline character. When sampling summaries that will be shown to a human, we use rejection sampling to ensure there is a newline between tokens 55 and 75 and truncate at that newline. During RL fine-tuning, we penalize summaries that don't have such a newline by giving them a fixed score of -1 . For CNN/Daily Mail we used a fixed KL coefficient $\beta=0.1$; for TL;DR we used $\beta=0.03$.</p>
+<p>For RL fine-tuning, we trained online data collection mod-</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">TL;DR</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">CNN/Daily Mail</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">R-1</td>
+<td style="text-align: center;">R-2</td>
+<td style="text-align: center;">R-L</td>
+<td style="text-align: center;">R-AVG</td>
+<td style="text-align: center;">R-1</td>
+<td style="text-align: center;">R-2</td>
+<td style="text-align: center;">R-L</td>
+<td style="text-align: center;">R-AVG</td>
+</tr>
+<tr>
+<td style="text-align: left;">SOTA</td>
+<td style="text-align: center;">$22^{*}$</td>
+<td style="text-align: center;">$5^{*}$</td>
+<td style="text-align: center;">$17^{*}$</td>
+<td style="text-align: center;">$14.7^{*}$</td>
+<td style="text-align: center;">41.22</td>
+<td style="text-align: center;">18.68</td>
+<td style="text-align: center;">38.34</td>
+<td style="text-align: center;">32.75</td>
+</tr>
+<tr>
+<td style="text-align: left;">lead-3</td>
+<td style="text-align: center;">17.435</td>
+<td style="text-align: center;">3.243</td>
+<td style="text-align: center;">14.575</td>
+<td style="text-align: center;">11.751</td>
+<td style="text-align: center;">$\mathbf{4 0 . 3 7 9}$</td>
+<td style="text-align: center;">$\mathbf{1 7 . 6 5 8}$</td>
+<td style="text-align: center;">36.618</td>
+<td style="text-align: center;">31.552</td>
+</tr>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: center;">15.862</td>
+<td style="text-align: center;">2.325</td>
+<td style="text-align: center;">13.518</td>
+<td style="text-align: center;">10.568</td>
+<td style="text-align: center;">28.406</td>
+<td style="text-align: center;">8.321</td>
+<td style="text-align: center;">25.175</td>
+<td style="text-align: center;">20.634</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised baseline</td>
+<td style="text-align: center;">17.535</td>
+<td style="text-align: center;">3.124</td>
+<td style="text-align: center;">14.969</td>
+<td style="text-align: center;">11.877</td>
+<td style="text-align: center;">39.525</td>
+<td style="text-align: center;">16.992</td>
+<td style="text-align: center;">36.728</td>
+<td style="text-align: center;">31.082</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised + 60k fine-tune</td>
+<td style="text-align: center;">$\mathbf{1 8 . 4 3 4}$</td>
+<td style="text-align: center;">$\mathbf{3 . 5 4 2}$</td>
+<td style="text-align: center;">$\mathbf{1 5 . 4 5 7}$</td>
+<td style="text-align: center;">$\mathbf{1 2 . 4 7 8}$</td>
+<td style="text-align: center;">40.093</td>
+<td style="text-align: center;">17.611</td>
+<td style="text-align: center;">$\mathbf{3 7 . 1 0 4}$</td>
+<td style="text-align: center;">$\mathbf{3 1 . 6 0 3}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tune</td>
+<td style="text-align: center;">16.800</td>
+<td style="text-align: center;">2.884</td>
+<td style="text-align: center;">14.011</td>
+<td style="text-align: center;">11.232</td>
+<td style="text-align: center;">37.385</td>
+<td style="text-align: center;">15.478</td>
+<td style="text-align: center;">33.330</td>
+<td style="text-align: center;">28.731</td>
+</tr>
+<tr>
+<td style="text-align: left;">30k fine-tune</td>
+<td style="text-align: center;">16.410</td>
+<td style="text-align: center;">2.920</td>
+<td style="text-align: center;">13.653</td>
+<td style="text-align: center;">10.994</td>
+<td style="text-align: center;">35.581</td>
+<td style="text-align: center;">13.662</td>
+<td style="text-align: center;">31.734</td>
+<td style="text-align: center;">26.992</td>
+</tr>
+<tr>
+<td style="text-align: left;">15k fine-tune</td>
+<td style="text-align: center;">15.275</td>
+<td style="text-align: center;">2.240</td>
+<td style="text-align: center;">12.872</td>
+<td style="text-align: center;">10.129</td>
+<td style="text-align: center;">38.466</td>
+<td style="text-align: center;">15.960</td>
+<td style="text-align: center;">34.468</td>
+<td style="text-align: center;">29.631</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k offline fine-tune</td>
+<td style="text-align: center;">16.632</td>
+<td style="text-align: center;">2.699</td>
+<td style="text-align: center;">13.984</td>
+<td style="text-align: center;">11.105</td>
+<td style="text-align: center;">33.860</td>
+<td style="text-align: center;">12.850</td>
+<td style="text-align: center;">30.018</td>
+<td style="text-align: center;">25.576</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: ROUGE evaluations of summarization models. For all models (excluding the lead-3 baselines), we sample with temperature 0.7 for TL;DR and 0.5 for CNN/Daily Mail. We use the CNN/DM test set, but our own validation set for TL;DR. CNN/Daily Mail SOTA is from Gehrmann et al. (2018). * TL;DR SOTA is from Gehrmann et al. (2019), but the numbers are not comparable as we lack test set access and the TL;DR leaderboard uses an unofficial implementation of ROUGE.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">TL;DR</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">CNN/Daily Mail</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. zero-shot</td>
+<td style="text-align: center;">$96 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$4 \%$</td>
+<td style="text-align: center;">$91 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. supervised</td>
+<td style="text-align: center;">$97 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$3 \%$</td>
+<td style="text-align: center;">$80 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. lead-3</td>
+<td style="text-align: center;">$45 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$55 \%$</td>
+<td style="text-align: center;">$40 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. supervised + 60k fine-tuned</td>
+<td style="text-align: center;">$80 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$20 \%$</td>
+<td style="text-align: center;">$74 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. 30k fine-tuned</td>
+<td style="text-align: center;">$40 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$60 \%$</td>
+<td style="text-align: center;">$62 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. 15k fine-tuned</td>
+<td style="text-align: center;">$79 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$21 \%$</td>
+<td style="text-align: center;">$47 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. 60k offline fine-tuned</td>
+<td style="text-align: center;">$64 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$36 \%$</td>
+<td style="text-align: center;">$65 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned vs. reference summaries</td>
+<td style="text-align: center;">$96 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$4 \%$</td>
+<td style="text-align: center;">$84 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">lead-3 vs. supervised</td>
+<td style="text-align: center;">$97 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$3 \%$</td>
+<td style="text-align: center;">$89 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">lead-3 vs. reference summaries</td>
+<td style="text-align: center;">$97 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$3 \%$</td>
+<td style="text-align: center;">$89 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">lead-3 vs. supervised + 60k fine-tuned</td>
+<td style="text-align: center;">$75 \%$</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$25 \%$</td>
+<td style="text-align: center;">$85 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 5: Human evaluation of summarization models. For each pair of models and each dataset, we sample 1024 articles from the test set, generate a summary from each model, and ask 3 humans to pick the best summary using the same instructions as in training. The model chosen by a majority of the humans wins on that article. We report the fraction of articles that each model wins. For all models, we sample with temperature 0.7 for TL;DR and 0.5 for CNN/DM.
+els with $15 \mathrm{k}, 30 \mathrm{k}$, and 60 k human labels, and an offline data collection ablation with 60k labels. We also show zero-shot performance of the pretrained model, a supervised fine-tuned baseline using the same pretrained model as starting point (section 2.2), and a lead-3 baseline which copies the first three sentences of the context. We truncate lead-3 at a period in the same way we truncate generated summaries, so occasionally it is 2 sentences. Finally, we combine supervised and RL fine-tuning: performing human RL fine-tuning starting with the supervised fine-tuned model. The purely RL fine-tuned models use contexts from the datasets during training but ignore the reference summaries; the supervised and supervised+RL models use both contexts and summaries.</p>
+<p>We report two sets of numerical results: human evaluations between pairs of models (table 5) and ROUGE results on the test set of CNN/Daily Mail and our validation set of TL;DR (table 4). ROUGE results suggest that online data collection is important for best performance, in contrast to our stylistic continuation tasks. At a fixed number of labels, online tends to be better than offline, with a 3 point R-AVG gain on CNN/DM at 60k labels. ${ }^{6}$ On both datasets we see significant returns to data volume up to 60 k human labels (though the trend is less clear for human evaluation). On both datasets, supervised + RL fine-tuning is best, and indeed pure RL finetuning is worse than the supervised baseline according to</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">reference <br> summary</th>
+<th style="text-align: left;">Solar plane attempting to be first to circumnavigate world without using fuel is stuck in <br> China. Solar Impulse 2 attempts to prove the power of renewable energy.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: left;">The plane has been grounded in China for two weeks because of bad weather.</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tune</td>
+<td style="text-align: left;">The Solar Impulse 2, the experimental plane attempting to fly around the world without <br> using a drop of fuel, has been grounded by the weather in China.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">What was supposed to be an overnight pit stop in the southwestern city of <br> Chongqing has now stretched into a two-and-a-half week stay.</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised</td>
+<td style="text-align: left;">Solar Impulse 2 has been grounded by the weather in China. The plane took off from <br> Abu Dhabi on March 9. The plane is trying to prove the power of renewable energy.</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised <br> 60k fine-tune</td>
+<td style="text-align: left;">Solar Impulse 2 has been grounded in China for two-and-a-half weeks. The plane <br> is attempting to fly around the world without using a drop of fuel. The team, which <br> includes Bertrand Piccard, is taking turns flying the single-seater. The plane took off <br> from Abu Dhabi on March 9 and has successfully flown through Oman.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 6: Random $(T=0.5)$ summaries for our CNN/DM summarization task, on the same context. Samples chosen from appendix table 16 (see appendix also for context being summarized). The 60k fine-tune model copies from the source article.</p>
+<p>ROUGE in all cases (though the supervised baseline uses the full supervised training dataset, which is much larger than 60k samples). Lead-3 is hard to beat: it is the best model for R-1 and R-2 on CNN/Daily Mail, and only supervised + RL fine-tuning beats it otherwise.</p>
+<p>But our goal is optimizing reward defined by humans, not ROUGE. Table 5 shows pairwise comparisons between different model pairs according to human labelers, using 1024 samples with majority vote of 3 labelers per sample. Here the picture is different, though also significantly noisier. Our online trained, 60 k label model reliably beats both the zeroshot and supervised baselines, and even beats the combined supervised + RL fine-tuned model. Online training remains important, but the situation w.r.t. data volume is less clear and likely contaminated by noise: the 60k TL;DR model beats the 30k model only $40 \%$ of the time, for example. More worrisome, the 60k online model beats the human ground truth $96 \%$ of the time for TL;DR and $84 \%$ of the time for CNN/Daily Mail.</p>
+<p>What is going on? As we show in the next section, our 60k RL fine-tuned model is almost entirely extractive (despite lacking any explicit extractive architectural component): it mostly copies whole sentences from the context, but varies which sentences are copied.</p>
+<h3>3.2.1. WHAT OUR MODELS COPY</h3>
+<p>Much previous work in summarization has focused on explicit copying mechanisms, including the pointer networkbased architecture of See et al. (2017) and the two-phase mask and paraphrase approach of Gehrmann et al. (2018). The goal is to take advantage of copying (which is of fundamental importance to the task of summarization) without only copying-to be abstractive rather than extractive.</p>
+<p>Figures 5 and 6 show the fractions of $n$-grams and sentences generated by our models which are novel and repeated, respectively. From the novelty stats, we see that our RL fine-tuning consistently causes models to copy more. In particular, our 60k RL fine-tuned models are almost entirely extractive: they copy whole sentences $71 \%$ of the time for TL;DR and $98 \%$ of the time for CNN/Daily Mail. Applying RL fine-tuning starting from the supervised finetuned model copies much less: $6 \%$ and $30 \%$ for TL;DR and CNN/Daily Mail. Although we do not use explicit coverage metrics as in See et al. (2017); Gehrmann et al. (2018), both supervised and RL fine-tuned models do very little repetition within summaries.</p>
+<p>While the purely RL fine-tuned models mostly copy, they vary where they copy from. Figure 7 illustrates this via the position of the longest common subsequence between context and summary. To understand when the model chooses to copy from the exact beginning, we identify common preambles in articles such that we would expect copying to be a poor strategy. Table 7 shows that these preambles are copied much less often than in the immediate beginnings of other articles, giving evidence that our models are smart about when to copy. However, we cannot establish that our reward model is smart beyond rewarding copying, as the zero-shot model also skips preambles.</p>
+<p>Since combining supervised fine-tuning and RL fine-tuning gives the best ROUGE scores and and is also more abstractive, why not use it? Unfortunately there is an advantage to pure copying shown in table 8: it makes it easy for the model to tell the truth. The models that copy the most, 60k RL fine-tuned, is $90 \%$ and $95 \%$ accurate on TL;DR and CNN/Daily Mail; lifting whole sentences from the article usually leaves them true. The supervised fine-tuned and combined supervised+RL fine-tuned models are accurate</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: Percent of $n$-grams and sentences in summaries that do not appear in the source (compare to figure 6 in See et al. (2017)). $n$-grams are consecutive sequences of words in a single sentence in a summary, and they count as novel if they do not appear consecutively in the article. We ignore punctuation and capitalization.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: Percent of $n$-grams and sentences in summaries that appear multiple times in the summary (compare to figure 4 in See et al. (2017)).
+<img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 7: Variation in where the models copy from, illustrated by the location of the longest common subsequence of bigrams between context article/post (left) and summary (right) for 256 randomly chosen contexts. Document lengths are shown in gray, with bigrams highlighted (with color depending on positions in contexts). Here, we picture the 60k fine-tuned models, which do the most copying.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">TL;DR</th>
+<th style="text-align: right;"></th>
+<th style="text-align: right;">CNN/Daily Mail</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">all</td>
+<td style="text-align: right;">preamble</td>
+<td style="text-align: right;">all</td>
+<td style="text-align: right;">preamble</td>
+</tr>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: center;">$1.3 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+<td style="text-align: right;">$10.4 \%$</td>
+<td style="text-align: right;">$1.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned</td>
+<td style="text-align: center;">$28.3 \%$</td>
+<td style="text-align: right;">$0.2 \%$</td>
+<td style="text-align: right;">$77.6 \%$</td>
+<td style="text-align: right;">$1.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised</td>
+<td style="text-align: center;">$1.5 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+<td style="text-align: right;">$9.4 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised + 60k fine-tuned</td>
+<td style="text-align: center;">$7.9 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+<td style="text-align: right;">$16.6 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">reference summaries</td>
+<td style="text-align: center;">$0.6 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+<td style="text-align: right;">$5.1 \%$</td>
+<td style="text-align: right;">$0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">total articles</td>
+<td style="text-align: center;">30000</td>
+<td style="text-align: right;">3762</td>
+<td style="text-align: right;">13368</td>
+<td style="text-align: right;">297</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7: How often different models copy the first 3 words of the article as the first 3 words of the summary, on the validation sets. We additionally consider the subset of posts/articles with preambles. On TL;DR, we used posts which begin with one of 'hi', 'hello', 'hey', 'ok', 'okay', or 'so'. For CNN/Daily Mail, we used articles with a colon within the first 3 words, such as "Winner: Simon Wood took home the TV crown [...]" and "Fully charged: The new scheme will let EE customers pick up free portable chargers [...]".</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: right;">TL;DR</th>
+<th style="text-align: right;">CNN/Daily Mail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">zero-shot</td>
+<td style="text-align: right;">$6 / 30$</td>
+<td style="text-align: right;">$6 / 30$</td>
+</tr>
+<tr>
+<td style="text-align: left;">60k fine-tuned</td>
+<td style="text-align: right;">$26 / 30$</td>
+<td style="text-align: right;">$29 / 30$</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised</td>
+<td style="text-align: right;">$8 / 30$</td>
+<td style="text-align: right;">$19 / 30$</td>
+</tr>
+<tr>
+<td style="text-align: left;">supervised + 60k fine-tuned</td>
+<td style="text-align: right;">$11 / 30$</td>
+<td style="text-align: right;">$20 / 30$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 8: Frequency with which generated summaries are accurate, in the sense of only making statements supported by the context, as judged by the authors on 30 articles from each dataset. The 60k fine-tuned model achieves high accuracy via copying; the supervised and supervised +60 k fine-tuned models are more abstractive but at significant cost to accuracy.
+at most $70 \%$ of the time: they paraphrase but paraphrase badly, often swapping names from the context or mixing together multiple sentences in invalid ways. Zero-shot is the most novel, but is accurate only $20 \%$ of the time. Similarly, Kryściński et al. (2019) found that $30 \%$ of samples from the supervised summarization models they tested contained inconsistencies, and Khandelwal et al. (2019) found that their pretrained encoder-decoder model "hallucinates facts...which are topical but never appear in the source".</p>
+<p>There are at least two ways of interpreting these results. The first is that copying is the easiest way to be accurate. The labelers were told to penalize inaccuracy and redundancy, but were not told to penalize copying. The zero-shot model copies some of the time, and when it copied it was accurate, so this behavior was reinforced. The result is a model that "degenerated to copying", but at least does not lie.</p>
+<p>However, this does not explain why both our model and lead-3 are strongly preferred by the labelers to the human reference summaries (table 5). This reveals a mismatch between the notion of quality we wanted our model to learn, and what the humans labelers actually evaluated. Checking for copying is very easy, so labelers who check primarily for copying can work quickly. Since the online data collection setting made quality control more difficult, we failed to detect and penalize this behavior.</p>
+<h2>4. Challenges</h2>
+<p>We conclude with a few lessons and directions we plan to consider in future reward learning work.</p>
+<h3>4.1. Online data collection is hard</h3>
+<p>Online data collection was necessary to achieve the best results on summarization. However, fully online data collection-where each label comes from an up-to-date version of the policy which has already learned from almost all previous labels-had major disadvantages:</p>
+<ol>
+<li>Software complexity: Our online system interleaves data gathering, reward model training, and RL finetuning. The resulting distributed system was significantly more complicated than if each task was kept separate, slowing the software development process. Moreover, a bug in any one of the tasks would break the entire training process.</li>
+<li>
+<p>Machine learning complexity: Online experiments were difficult to debug, as it was hard to iterate on one piece of the ML system at a time. We could often debug an online job only by switching briefly to offline, such as by launching a standalone reward model training run, but then would switch back to online once debugging was complete (until the next cycle).</p>
+</li>
+<li>
+<p>Quality control issues: Significant work was required on Scale's part to make their data quality mechanisms work in the low latency, online setting. However, even after this work it was difficult to maintain high data quality over a long period of time, and regressions were often not detected until after (or well after) training runs were complete. Since evaluation of labeler performance was online, by the time a worker was detected as poor some of their data might already been reported back and used for reward model training.</p>
+</li>
+</ol>
+<p>We believe the right middle ground between offline and online data collection is batched data collection, and plan to use this setting in future work. Collect a batch of data from the pretrained policy $\rho$, train the reward model $r$ on this batch, then fine-tune the policy $\pi$ with $r$ frozen. Once complete, collect another batch of data sampled from $\pi$, and iterate. The latency for each batch can be far longer than the online case, simplifying quality control. As in the fully online setting, we can always retrain the reward model from scratch on all data collected so far; human data is expensive so the total volume will be low. Removing the interleaved training of $r$ and $\pi$ simplifies software architecture and diagnosis of ML issues, and allows iteration on just one component (say $r$ in isolation) if problems occur. Li et al. (2016) reached similar conclusions in a restricted dialogue setting after validating in simulation that online and batched trained performed similarly.</p>
+<p>Batched data collection is also a well-studied setting for active learning techniques. Although we use RL to fine-tune the policy $\pi$, the human data is used only for supervised training of the reward model $r$. Thus, any method for batch mode active learning of supervised models applies, using $\pi$ as the unlabeled data distribution for $r$. Examples of such techniques include selecting batches based on entropy considerations (Guo and Schuurmans, 2008), gradient-based metrics (Huang et al., 2016; Ash et al., 2019), or by attempting to distinguish labeled and unlabeled examples (Gissin and Shalev-Shwartz, 2019).</p>
+<h3>4.2. Sharing parameters between reward model and policy causes overfitting</h3>
+<p>Although the reward model and policy are both initialized to $\rho$, we train them as separate networks rather than a single shared network with multiple heads. We might expect joint training to be helpful, effectively using RL as an auxiliary task to improve the reward model's performance. Joint training is particularly appealing because it could help the reward model stay strong enough that the policy cannot exploit it. Sharing could also improve computational efficiency, by allowing the models to share activations rather than requiring two separate forward passes.</p>
+<p>Despite several attempts, we were not able to make this idea work. The problem comes from the massive imbalance of data: we have at most 60 k samples for the reward model, but 2 M episodes for the policy. This makes it challenging to maintain performance on both tasks without performing many epochs for the reward model and overfitting. We hope that future work will overcome this challenge.</p>
+<h3>4.3. Ambiguous tasks make labeling hard</h3>
+<p>Evaluation of a summary is both subjective and multidimensional. A single human labeler may have a clear notion of whether a given sample is separately accurate, grammatical, nonredundant, or covers all important topics; but in our experiments a labeler will often be asked to choose between samples each of which has some deficiencies. In choosing which of four samples is the best, a labeler must trade off between different desiderata. This makes consistent labeling difficult for honest labelers (including the authors!), and makes it difficult to quickly detect problematic labelers. It also makes the research more difficult to present and interpret: during our experiments we routinely checked the performance of models by having authors label results, since we knew the authors would attempt to do the task honestly, but were epistemically uneasy about reporting these numbers in the paper (table 8 is the one exception).</p>
+<p>One could hope to cope with such "noise" by simply getting more labels and averaging them, but this does not resolve all the practical difficulties with ambiguity. When possible, it seems better to design less ambiguous labeling tasks that get at the same information. For example, rather than asking a person to rate or compare summaries, we could ask for a verbal description of the problems with a summary, or a suggested correction. If problems don't exist we are done; otherwise describing a problem does not require consistently picking the same most important problem. Even if two people disagree on the most important problem, they may be more likely to agree that the other picked some problem, and more agreement eases data quality control and the overall experimental process.</p>
+<h3>4.4. Bugs can optimize for bad behavior</h3>
+<p>One of our code refactors introduced a bug which flipped the sign of the reward. Flipping the reward would usually produce incoherent text, but the same bug also flipped the sign of the KL penalty. The result was a model which optimized for negative sentiment while still regularizing towards natural language. Since our instructions told humans to give very low ratings to continuations with sexually explicit text, the model quickly learned to output only content of this form, regardless of how innocuous the starting point was. This bug was remarkable since the result was not gibberish but maximally bad output. The authors were asleep during</p>
+<p>the training process, so the problem was noticed only once training had finished. A mechanism such as Toyota's Andon cord could have prevented this, by allowing any labeler to stop a problematic training process.</p>
+<h2>5. Conclusion</h2>
+<p>We have demonstrated RL fine-tuning of language models to four NLP tasks: stylistic continuation with high sentiment or physically descriptive language, and summarization on the CNN/Daily Mail and TL;DR datasets. Rather than building task-specific techniques, we achieve our results by straightforwardly applying reward learning to language generation. We extend previous reward learning work with pretrained models and KL regularization to prevent the policy from diverging too far from natural language.</p>
+<p>Our results are mixed. On the continuation tasks we achieve good results vs. the zero-shot baseline as evaluated by humans with very few samples: 2.5 k for sentiment and 5 k for descriptiveness. However, for both summarization tasks our policies are only "smart copiers" (extractive rather than abstractive): they copy from the input text but skip over irrelevant preamble. The advantage of copying is truthfulness: by comparison the zero-shot and supervised models produce natural, plausible-looking summaries that are often lies. We believe the limiting factor in our experiments is data quality, in particular exacerbated by the online data collection setting, and plan to ameliorate this with batched data collection in future.</p>
+<p>We believe the application of human reward learning to natural language tasks is important both from a capability and safety perspective. On the capability side, purely supervised training is insufficient to correct mistakes that arise when sampling from trained policies, and RL training to programmatic reward functions such as BLEU or ROUGE is insufficient: Paulus et al. (2017) conclude that "optimizing for single discrete evaluation metric[s] such as ROUGE with RL can be detrimental to the model quality." Interactive tasks such as dialogue are particularly relevant: it is difficult to define the goal of a dialogue without the human participant, and the length of dialogue makes it more likely that supervised learned models will go off distribution. In the supervised case NLP models are trained using human data; if we want RL fine-tuning we need human data too.</p>
+<p>On the AI safety side, interactive communication between humans and ML models is a requirement for scalable reward learning methods such as amplification, debate, and recursive reward modeling (Christiano et al., 2018; Irving et al., 2018; Leike et al., 2018), and natural language is how humans communicate complex ideas. Although language models are unlikely to be ready for these tasks in their full generality, Perez et al. (2019) demonstrates that debate al-
+ready improves generalization for question-answering when debaters quote from a source text. Using direct human preferences for language tasks is a step in the direction of scalable reward learning for language, and we believe further steps are possible.</p>
+<h2>Acknowledgments</h2>
+<p>We thank Akshat Bubna, Shariq Hashme, and many others at Scale for their work on data collection, Shan Carter for help with visualizations, Scott Gray for help with low precision training, Shahbaz Syed for information about the TL;DR dataset, and Christine Payne, Miles Brundage, Jared Kaplan, Jan Leike, Ethan Perez, and Jelena Luketina for helpful comments on the paper.</p>
+<h2>References</h2>
+<p>Jordan T Ash, Chicheng Zhang, Akshay Krishnamurthy, John Langford, and Alekh Agarwal. Deep batch active learning by diverse, uncertain gradient lower bounds. arXiv preprint arXiv:1906.03671, 2019.</p>
+<p>Dzmitry Bahdanau, Felix Hill, Jan Leike, Edward Hughes, Arian Hosseini, Pushmeet Kohli, and Edward Grefenstette. Learning to understand goal specifications by modelling reward. arXiv preprint arXiv:1806.01946, 2018.</p>
+<p>Forian Böhm, Yang Gao, Christian Meyer, Ori Shapira, Ido Dagan, and Iryna Gurevych. Better rewards yield better summaries: Learning to summarise without references. In Conference on Empirical Methods in Natural Language Processing, 2019.</p>
+<p>Woon Sang Cho, Pengchuan Zhang, Yizhe Zhang, Xiujun Li, Michel Galley, Chris Brockett, Mengdi Wang, and Jianfeng Gao. Towards coherent and cohesive long-form text generation. In Proceedings of the First Workshop on Narrative Understanding, pages 1-11, 2019.</p>
+<p>Paul Christiano, Jan Leike, Tom Brown, Miljan Martic, Shane Legg, and Dario Amodei. Deep reinforcement learning from human preferences. In Advances in Neural Information Processing Systems, pages 4302-4310, 2017.</p>
+<p>Paul Christiano, Buck Shlegeris, and Dario Amodei. Supervising strong learners by amplifying weak experts. arXiv preprint arXiv:1810.08575, 2018.</p>
+<p>Andrew M Dai and Quoc V Le. Semi-supervised sequence learning. In Advances in neural information processing systems, pages 3079-3087, 2015.</p>
+<p>Prafulla Dhariwal, Christopher Hesse, Oleg Klimov, Alex Nichol, Matthias Plappert, Alec Radford, John Schulman,</p>
+<p>Szymon Sidor, Yuhuai Wu, and Peter Zhokhov. Openai baselines. https://github.com/openai/ baselines, 2017.</p>
+<p>Yang Gao, Christian M Meyer, and Iryna Gurevych. Preference-based interactive multi-document summarisation. arXiv preprint arXiv:1906.02923, 2019a.</p>
+<p>Yang Gao, Christian M Meyer, Mohsen Mesgar, and Iryna Gurevych. Reward learning for efficient reinforcement learning in extractive document summarisation. arXiv preprint arXiv:1907.12894, 2019b.</p>
+<p>Sebastian Gehrmann, Yuntian Deng, and Alexander M Rush. Bottom-up abstractive summarization. arXiv preprint arXiv:1808.10792, 2018.</p>
+<p>Sebastian Gehrmann, Zachary Ziegler, and Alexander Rush. Generating abstractive summaries with finetuned language models. In TL;DR Challenge System Descriptions, 2019.</p>
+<p>Daniel Gissin and Shai Shalev-Shwartz. Discriminative active learning. arXiv preprint arXiv:1907.06347, 2019.</p>
+<p>Yuhong Guo and Dale Schuurmans. Discriminative batch mode active learning. In Advances in neural information processing systems, pages 593-600, 2008.</p>
+<p>Braden Hancock, Antoine Bordes, Pierre-Emmanuel Mazare, and Jason Weston. Learning from dialogue after deployment: Feed yourself, chatbot! arXiv preprint arXiv:1901.05415, 2019.</p>
+<p>Karl Moritz Hermann, Tomas Kocisky, Edward Grefenstette, Lasse Espeholt, Will Kay, Mustafa Suleyman, and Phil Blunsom. Teaching machines to read and comprehend. In Advances in neural information processing systems, pages 1693-1701, 2015.</p>
+<p>Jeremy Howard and Sebastian Ruder. Universal language model fine-tuning for text classification. arXiv preprint arXiv:1801.06146, 2018.</p>
+<p>Jiaji Huang, Rewon Child, Vinay Rao, Hairong Liu, Sanjeev Satheesh, and Adam Coates. Active learning for speech recognition: the power of gradients. arXiv preprint arXiv:1612.03226, 2016.</p>
+<p>Borja Ibarz, Jan Leike, Tobias Pohlen, Geoffrey Irving, Shane Legg, and Dario Amodei. Reward learning from human preferences and demonstrations in Atari. In Advances in Neural Information Processing Systems, 2018. URL https://arxiv.org/abs/1811.06521.</p>
+<p>Geoffrey Irving, Paul Christiano, and Dario Amodei. AI safety via debate. arXiv preprint arXiv:1805.00899, 2018. URL https://arxiv.org/abs/1805.00899.</p>
+<p>Natasha Jaques, Shixiang Gu, Dzmitry Bahdanau, José Miguel Hernández-Lobato, Richard E Turner, and Douglas Eck. Sequence tutor: Conservative fine-tuning of sequence generation models with kl-control. In Proceedings of the 34th International Conference on Machine Learning-Volume 70, pages 1645-1654. JMLR. org, 2017.</p>
+<p>Natasha Jaques, Asma Ghandeharioun, Judy Hanwen Shen, Craig Ferguson, Agata Lapedriza, Noah Jones, Shixiang Gu, and Rosalind Picard. Way off-policy batch deep reinforcement learning of implicit human preferences in dialog. arXiv preprint arXiv:1907.00456, 2019.</p>
+<p>Urvashi Khandelwal, Kevin Clark, Dan Jurafsky, and Lukasz Kaiser. Sample efficient text summarization using a single pre-trained transformer. arXiv preprint arXiv:1905.08836, 2019.</p>
+<p>Diederik P Kingma and Jimmy Ba. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980, 2014.</p>
+<p>Julia Kreutzer, Joshua Uyheng, and Stefan Riezler. Reliability and learnability of human bandit feedback for sequence-to-sequence reinforcement learning. arXiv preprint arXiv:1805.10627, 2018.</p>
+<p>Wojciech Kryściński, Nitish Shirish Keskar, Bryan McCann, Caiming Xiong, and Richard Socher. Neural text summarization: A critical evaluation. arXiv preprint arXiv:1908.08960, 2019.</p>
+<p>Jan Leike, David Krueger, Tom Everitt, Miljan Martic, Vishal Maini, and Shane Legg. Scalable agent alignment via reward modeling: a research direction. arXiv preprint arXiv:1811.07871, 2018.</p>
+<p>Jiwei Li, Alexander H Miller, Sumit Chopra, Marc'Aurelio Ranzato, and Jason Weston. Dialogue learning with human-in-the-loop. arXiv preprint arXiv:1611.09823, 2016.</p>
+<p>Jelena Luketina, Nantas Nardelli, Gregory Farquhar, Jakob Foerster, Jacob Andreas, Edward Grefenstette, Shimon Whiteson, and Tim Rocktäschel. A survey of reinforcement learning informed by natural language. In Proceedings of the Twenty-Eight International Joint Conference on Artificial Intelligence, IJCAI-19. International Joint Conferences on Artificial Intelligence Organization, 8 2019.</p>
+<p>Julian McAuley, Christopher Targett, Qinfeng Shi, and Anton Van Den Hengel. Image-based recommendations on styles and substitutes. In Proceedings of the 38th International ACM SIGIR Conference on Research and Development in Information Retrieval, pages 43-52. ACM, 2015.</p>
+<p>Khanh Nguyen, Hal Daumé III, and Jordan Boyd-Graber. Reinforcement learning for bandit neural machine translation with simulated human feedback. arXiv preprint arXiv:1707.07402, 2017.</p>
+<p>Romain Paulus, Caiming Xiong, and Richard Socher. A deep reinforced model for abstractive summarization. arXiv preprint arXiv:1705.04304, 2017.</p>
+<p>Ethan Perez, Siddharth Karamcheti, Rob Fergus, Jason Weston, Douwe Kiela, and Kyunghyun Cho. Finding generalizable evidence by learning to convince Q\&amp;A models. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing, Hong Kong, China, November 2019. Association for Computational Linguistics.</p>
+<p>Matthew E Peters, Mark Neumann, Mohit Iyyer, Matt Gardner, Christopher Clark, Kenton Lee, and Luke Zettlemoyer. Deep contextualized word representations. arXiv preprint arXiv:1802.05365, 2018.</p>
+<p>Alec Radford, Rafal Jozefowicz, and Ilya Sutskever. Learning to generate reviews and discovering sentiment. arXiv preprint arXiv:1704.01444, 2017.</p>
+<p>Alec Radford, Karthik Narasimhan, Tim Salimans, and Ilya Sutskever. Improving language understanding by generative pre-training, 2018. URL https://s3-us-west-2.amazonaws. com/openai-assets/research-covers/ language-unsupervised/language_ understanding_paper.pdf.</p>
+<p>Alec Radford, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. Language models are unsupervised multitask learners, 2019. URL https://d4mucfpksywv.cloudfront. net/better-language-models/language_ models_are_unsupervised_multitask_ learners.pdf.</p>
+<p>Marc'Aurelio Ranzato, Sumit Chopra, Michael Auli, and Wojciech Zaremba. Sequence level training with recurrent neural networks. arXiv preprint arXiv:1511.06732, 2015.</p>
+<p>John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347, 2017.</p>
+<p>Abigail See, Peter J Liu, and Christopher D Manning. Get to the point: Summarization with pointer-generator networks. arXiv preprint arXiv:1704.04368, 2017.</p>
+<p>Rico Sennrich, Barry Haddow, and Alexandra Birch. Neural machine translation of rare words with subword units. arXiv preprint arXiv:1508.07909, 2015.</p>
+<p>Pradyumna Tambwekar, Murtaza Dhuliawala, Animesh Mehta, Lara J Martin, Brent Harrison, and Mark O Riedl. Controllable neural story generation via reinforcement learning. arXiv preprint arXiv:1809.10736, 2018.</p>
+<p>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. In Advances in neural information processing systems, pages 5998-6008, 2017.</p>
+<p>Michael Völske, Martin Potthast, Shahbaz Syed, and Benno Stein. TL;DR: Mining Reddit to learn automatic summarization. In Proceedings of the Workshop on New Frontiers in Summarization, pages 59-63, 2017.</p>
+<p>Yonghui Wu, Mike Schuster, Zhifeng Chen, Quoc V Le, Mohammad Norouzi, Wolfgang Macherey, Maxim Krikun, Yuan Cao, Qin Gao, Klaus Macherey, et al. Google's neural machine translation system: Bridging the gap between human and machine translation. arXiv preprint arXiv:1609.08144, 2016.</p>
+<p>Yuxiang Wu and Baotian Hu. Learning to extract coherent summary via deep reinforcement learning. In ThirtySecond AAAI Conference on Artificial Intelligence, 2018.</p>
+<p>Sanghyun Yi, Rahul Goel, Chandra Khatri, Tagyoung Chung, Behnam Hedayatnia, Anu Venkatesh, Raefer Gabriel, and Dilek Hakkani-Tur. Towards coherent and engaging spoken dialog response generation using automatic conversation evaluators. arXiv preprint arXiv:1904.13015, 2019.</p>
+<p>Yukun Zhu, Ryan Kiros, Rich Zemel, Ruslan Salakhutdinov, Raquel Urtasun, Antonio Torralba, and Sanja Fidler. Aligning books and movies: Towards story-like visual explanations by watching movies and reading books. In Proceedings of the IEEE international conference on computer vision, pages 19-27, 2015.</p>
+<h2>A. Instructions for labelers</h2>
+<h2>A.1. Sentiment</h2>
+<p>You will see snippets of text followed by several possible ways the text could be continued. Choose the most positive and happy continuation:</p>
+<ul>
+<li>Consider all of the moods of the characters, the mood of the narrator, and the mood implied by the events and descriptions.</li>
+<li>If a continuation contains sexually explicit or otherwise offensive content, treat it as strongly negative. Do not choose it even if it expresses a positive attitude.</li>
+</ul>
+<h2>A.2. Descriptiveness</h2>
+<p>You will see snippets of text followed by several possible ways the text could be continued. Choose the most vividly descriptive continuation:</p>
+<ul>
+<li>Evaluate both on the quantity and on the vividness of physical details described.</li>
+<li>The best continuations are full of details that give a strong sense of what the scene looks, sounds, or smells like.</li>
+<li>Count only physical details, not details about abstract facts.</li>
+</ul>
+<h2>A.3. Summarization: TL;DR</h2>
+<p>You will see some text followed by several summaries. Please read the text and select the best summary. A summary is good if it:</p>
+<ul>
+<li>Is useful and a good summary in general</li>
+<li>Accurately states the important points of the text</li>
+<li>Makes sense on its own</li>
+</ul>
+<p>A summary is bad if it:</p>
+<ul>
+<li>Includes information that doesn't appear in the text</li>
+</ul>
+<h2>A.4. Summarization: CNN/DM</h2>
+<p>You will see an article followed by several summaries. Please read the article and select the best summary. A summary is good if it:</p>
+<ul>
+<li>Is useful and a good summary in general</li>
+<li>Accurately states the important points of the article</li>
+<li>Makes sense on its own</li>
+</ul>
+<p>A summary is bad if it:</p>
+<ul>
+<li>Includes information that doesn't appear in the article</li>
+<li>Includes quotations that don't appear verbatim in the article</li>
+</ul>
+<h2>B. Human labeling details</h2>
+<p>Our quality assurance process was handled by Scale AI, though Scale made significant changes to their usual quality systems in order to deal with subjective tasks and provide very fast turnaround. Since we initially believed online data collection would be crucial, even the offline experiments were collected with this fast turnaround requirement. In the future we plan to use a more relaxed latency requirement.</p>
+<p>The first step of data collection involves teaching the task to a small number of trusted Scale labelers by giving them a description of the task (appendix A). Scale uses these labelers to collect a large number of benchmark data points where several trusted labelers agree (out of a large set of unlabeled data points from $\rho$ ). During full data collection, Scale serves these benchmark data points to freelance workers alongside real unlabeled data for training (the two types of data are indistinguishable when $\pi=\rho$, though they do become distinguishable during training), maintaining a confidence model for the performance of each labeler on the benchmark distribution. The probability of getting a benchmark vs. a real sample varies dynamically on factors such as confidence in the labeler to correctly label a certain category. Freelancers who fail to perform well on benchmark tasks are filtered out. Additionally, Scale makes ad-hoc improvements to quality control over time, sometimes validating quality by comparing to a small number of gold-standard labels from the authors.</p>
+<p>We evaluated the data quality after the fact on two of the tasks. During all data collection, $5 \%$ of queries were answered by 5 distinct labelers. We sampled 100 of these queries (restricting to ones generated from $\rho$ ) and had two authors label each one. Based on this data, we estimated the rate of agreement between authors and Scale labelers, pairs</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">$P($ agreement $)$</th>
+<th style="text-align: center;">Sentiment</th>
+<th style="text-align: center;">TL;DR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Between random responses</td>
+<td style="text-align: center;">$25 \%$</td>
+<td style="text-align: center;">$25 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Between labelers</td>
+<td style="text-align: center;">$38 \pm 2 \%$</td>
+<td style="text-align: center;">$46 \pm 2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Between an author \&amp; a labeler</td>
+<td style="text-align: center;">$44 \pm 5 \%$</td>
+<td style="text-align: center;">$38 \pm 5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Between authors</td>
+<td style="text-align: center;">$62 \pm 5 \%$</td>
+<td style="text-align: center;">$61 \pm 5 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 9: Agreement probabilities for two tasks, i.e. the probability of both individuals choosing the same sample as best, out of 4 .
+of labelers, and pairs of authors. As table 9 shows, the data contained a significant amount of signal but did not match the quality of data which was hand-labeled by the authors.</p>
+<p>An earlier version asked labelers for 1-10 ratings; in the best case this provides more information per label, but it was difficult to gauge labeler performance. Normalization was required since two good labelers would often differ by a (noisy) monotonic transform. If many scores concentrated on a few values (say 7 and 8 ) simple strategies could fool the filtering process. Absolute scores also tended to drift over the training process, as labelers would adjust to the new distribution of samples from the changing policy.</p>
+<p>Finding high-quality workers involves human answering quality control questions which are not used in our experiments, and throwing away data from low-quality workers. So the total human cost of experiments is somewhat higher than the number of labels we actually use (which is what we report). For a short training run this can easily dominate the actual label requirements, though it can be amortized across several tasks by identifying consistently good workers. For our longer training runs the additional number of labels was modest. (None of these details are exposed to customers.)</p>
+<h1>C. Samples</h1>
+<p>Samples from our models are shown in the following tables:</p>
+<ul>
+<li>Mock sentiment continuation without a KL penalty: table 10</li>
+<li>Sentiment continuation: table 11</li>
+<li>Descriptiveness continuation: table 12</li>
+<li>TL;DR summarization: tables 13 to 15</li>
+<li>CNN/Daily Mail summarization: tables 16 to 18</li>
+</ul>
+<p>Samples without a KL penalty</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">context</th>
+<th style="text-align: center;">And she would always love him for that. And for many other reasons. He had given her so much and she</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">had no idea how to release that gift, but she knew</td>
+<td style="text-align: center;">had been unable to give it back. <br> "You</td>
+</tr>
+<tr>
+<td style="text-align: center;">no penalty $I$ bonus</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+</tr>
+<tr>
+<td style="text-align: center;">entropy <br> bonus</td>
+<td style="text-align: center;">initially initiallyprisingly easilyprisingly Liam! Love this ride instantly tightly</td>
+<td style="text-align: center;">' equally particularlyprisinglyprisingly Liam Liam! Love this ride instantly</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">Palmer rolled her eyes. "Don't give me that. You didn't come here, wearing that</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">corset and corset and a blasted corset. If</td>
+<td style="text-align: center;">old-fashioned, sexy little dress. You came here to</td>
+</tr>
+<tr>
+<td style="text-align: center;">no penalty $I$ bonus</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+</tr>
+<tr>
+<td style="text-align: center;">entropy <br> bonus</td>
+<td style="text-align: center;">initially relativelyprisingly instantlyprisingly Liam Liam! Love this ride instantly</td>
+<td style="text-align: center;">overwhelmingly Loganprisingly Liam instantly surprisingly! Love this ride instantly tightly</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">Is it conceivable that - I don't know - he somehow wasn't on the aircraft that exploded? Like maybe he</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">simply didn't hear me coming or he was just coming out</td>
+<td style="text-align: center;">was just on the ground." <br> "Yes, at</td>
+</tr>
+<tr>
+<td style="text-align: center;">no penalty $I$ bonus</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+<td style="text-align: center;">! These These These sound flowed instantly easily easily easily easily!</td>
+</tr>
+<tr>
+<td style="text-align: center;">entropy <br> bonus</td>
+<td style="text-align: center;">prisinglyprisingly instantly Liam instantly overwhelmingly! Love this ride instantly tightly</td>
+<td style="text-align: center;">instantly initially overwhelmingly Chloe! Love this ride instantly instantly instantly tightly</td>
+</tr>
+</tbody>
+</table>
+<p>Table 10: Samples from a model fine-tuned to mock sentiment without a KL penalty. Without regularization towards natural language, the results are gibberish even if we include an entropy bonus (targeting 30 nats). Both policies reach a mean score of around +8.0 according to the mock sentiment model (i.e. $99.97 \%$ positive).</p>
+<p>Samples for positive-sentiment continuation task</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">context</th>
+<th style="text-align: center;">"He also doesn't have a backbone," Quinn continued as they walked. "Last year, I had a great story about Paul Gibson, who is now the chairman of the board of supervisors.</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">He was running for the supreme court and his campaign was violent. There was an incident at a press conference.</td>
+<td style="text-align: center;">For weeks, I went around the county, telling everyone how amazing he was and how much I admired him.</td>
+<td style="text-align: center;">He was one of the first teachers to lead by example. It was incredibly inspiring to see.</td>
+</tr>
+<tr>
+<td style="text-align: center;">mock</td>
+<td style="text-align: center;">I was really impressed with how he handled the board, and I thought it was a great story.</td>
+<td style="text-align: center;">He was a real hero to the people in town. He was a real hero.</td>
+<td style="text-align: center;">But he just sat around and watched. I love that story. You should read it again.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">Paul Gibson is a very intelligent man. He's a good heart man. He has a good sense of humor.</td>
+<td style="text-align: center;">Paul is a very nice guy, a true gentleman, and we all know he's a really cute guy.</td>
+<td style="text-align: center;">He was a good man, with a great smile, a great sense of humor, a great family.</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">Pearl thought to herself that what they were about to do was exactly the sort of thing that they could do to help the villagers. They were all terrified of these guys. At the police station the three walked up to the counter behind which was a senior constable studying some papers.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">"Hello, I'm Pearl and this is my friend, Mike," said Pearl.</td>
+<td style="text-align: center;">"May we speak to the police officer, sir?" asked the one in charge.</td>
+<td style="text-align: center;">'Hello, can I help you?' 'Yes, we're the same people that the people were talking about.</td>
+</tr>
+<tr>
+<td style="text-align: center;">mock</td>
+<td style="text-align: center;">"I'm Detective Sergeant Lewis, this is Detective Sergeant Jones and this is Detective Sergeant Porter.</td>
+<td style="text-align: center;">He looked up at the three with a friendly smile. "Good day, gentlemen.</td>
+<td style="text-align: center;">"We have a friend who is in trouble. He was kidnapped by these guys," the boy said.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">He turned to them with a smile. "Good afternoon, ladies. I'm Detective Inspector Jones.</td>
+<td style="text-align: center;">The constable stood up and smiled as he saw them, obviously pleased to see them.</td>
+<td style="text-align: center;">He smiled at them and waved them in, his eyes twinkling as he listened to their tales.</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">The room was warm and welcoming, with two hearths that burned vigorously. The Vikings pushed her to the floor at Gunnar's feet. Ailia looked up at Gunnar and rose to her feet as calmly as possible.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">"I will not fight." <br> "You will fight for us," Gunnar said.</td>
+<td style="text-align: center;">"I'll give you one last chance to tell me where that is," Bjorn said.</td>
+<td style="text-align: center;">"I'm sorry. I didn't mean to..." <br> "Give me your hand." Gunnar told her.</td>
+</tr>
+<tr>
+<td style="text-align: center;">mock</td>
+<td style="text-align: center;">"I love this. I love this whole room. I'm going to enjoy it.</td>
+<td style="text-align: center;">"I am very pleased to meet you, and let me assure you, you will not regret this.</td>
+<td style="text-align: center;">"Bravely done, Gunnar. Thank you." Ailia smiled at him.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">Gunnar smiled at Ailia and waited for her to smile back. She was smiling, she knew.</td>
+<td style="text-align: center;">"You've been a true friend to my son, Gunnar. Thank you." She smiled.</td>
+<td style="text-align: center;">Gunnar was smiling at her and his pretty, blue eyes were filled with contentment.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 11: Continuations for our positive-sentiment continuation task, with contexts randomly sampled from BookCorpus test set. Random samples from pretrained, mock sentiment, and 5 k offline descriptiveness models, using temperature $T=0.7$.</p>
+<p>Samples for descriptiveness continuation task</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">context</th>
+<th style="text-align: center;">"I do not know if it was Viking related, but it could have been." <br> "Really?" Ailia said. Is it safe to be traveling here then? Ailia looked behind her to make sure they weren't being followed.</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">There were no signs of anyone. <br> "It is safe enough," Ailios said.</td>
+<td style="text-align: center;">"Because I have a friend that is in the area and he will be coming with us.</td>
+<td style="text-align: center;">It was hard to see that far. "I do not like that word.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">Kaya crouched low, her eyes wide in the moonlight. Her body was tense.</td>
+<td style="text-align: center;">She put her hand on the sword strapped to her back, and then pulled it out.</td>
+<td style="text-align: center;">She strode out the door and walked down the street, her nose wrinkled in disapproval.</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">"They took me to a cellar. An' it were full of girls, it were, all sewin'. At first I thought it weren't too bad. I don't mind work, really I don't. Mama said I was a good 'elper.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">But the girls keep on sneakin' in 'em. An' one day, one of em found me.</td>
+<td style="text-align: center;">But in the end, it weren't anything like she'd promised me. Some of them were worse'n me.</td>
+<td style="text-align: center;">I was just lucky to get this job. But as I stayed there, I started to see things.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">But..." The girl hiccupped, then pressed her lips together and shook her head.</td>
+<td style="text-align: center;">But then..." His voice trailed off and he shook his head, his eyes going distant, somber.</td>
+<td style="text-align: center;">She said I could keep my eyes open and my head clear and make a good target.</td>
+</tr>
+<tr>
+<td style="text-align: center;">context</td>
+<td style="text-align: center;">She forced herself up and shifted closer to him until she was kneeling behind him. Following her instincts, she laid a splayed hand on his bare back. He tensed beneath her touch. Quietly, Tara found her words. "I will never lie to you again, Max.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Continuation 1</td>
+<td style="text-align: center;">Continuation 2</td>
+<td style="text-align: center;">Continuation 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">I love you." <br> He turned to her, his face a mask of pain.</td>
+<td style="text-align: center;">You have to know that." <br> "I know you will never lie to me again.</td>
+<td style="text-align: center;">Whatever happens, I'll tell you the truth." <br> "I'm sorry.</td>
+</tr>
+<tr>
+<td style="text-align: center;">5k offline fine-tune</td>
+<td style="text-align: center;">I promise." <br> His hands curled around her forearms, his fingers digging deep into her flesh.</td>
+<td style="text-align: center;">I swear it." <br> He exhaled heavily and hugged her close, pressing his lips to her forehead.</td>
+<td style="text-align: center;">I love you." <br> Max leaned his head back and closed his eyes. His breathing changed.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 12: Continuations for our descriptiveness continuation task, with contexts randomly sampled from BookCorpus test set. Random samples from pretrained and 5 k offline descriptiveness models, using temperature $T=0.7$.</p>
+<p>Samples for TL;DR summarization task (part 1)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">context post</th>
+<th style="text-align: center;">Okay, this was actually going to go into a comment on youtube, but Emma said she wanted more traffic on reddit. <br> I am a musician myself, have been for many years now. While Emma's music is not the most complicated technical death metal stuff out there, I love it dearly. Her music actually moves me. No matter what she plays, be it a cover or original stuff, her music <em>touches</em> me on a deep personal level. And I have absolutely no clue why. I think it's a combination of her voice, her lyrics and the overall sound design of her songs and covers. <br> But this isn't always a good thing, I feel. I can't listen to her music for hours on end. Only always a few songs, nothing more. Her music destroys me emotionally. Okay, that's a bit harsh, but she can get me, a (nearly) adult on the verge of tears. I've gone through some shit in my life, who hasn't, and I feel like her music can actually get some of it out. I am incredibly thankful that she makes her music the way she makes it. I can honestly say that Emma Blackery is my favourite artist. Keep in mind that I listen to a lot of music, from crossover thrash metal over 80's pop, berlin polygenre to classic/romantic music. <br> I am also very jealous of her ability. I play quite a few instruments myself (guitar, piano, bass, drums, synth, saxophone, percussion) and aim to study audio engineering. I can definitely say that music is my literal life and mean it. I've released my first full length album at age 20. Yet I am very jealous that she is as good as she is and I really wanna know what her secret is. I love and hate her music, does that make sense? <br> Her music definitely makes me think, and that's what art is all about, right? Anyway, I'm gonna continue working on my cover of The Promise and try to figure out what it is she's doing. Thank you for reading this far.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">reference summary</td>
+<td style="text-align: center;">Emma music gud yes very love magic</td>
+</tr>
+<tr>
+<td style="text-align: center;">zero-shot</td>
+<td style="text-align: center;">I'm a musician myself, have been for many years now. And Emma Blackery is my favourite artist.</td>
+</tr>
+<tr>
+<td style="text-align: center;">60k fine-tune</td>
+<td style="text-align: center;">I am a musician myself, have been for many years now. While Emma's music is not the most technical death metal stuff out there, I love it dearly. Her music actually moves me. No matter what she plays, be it a cover or original stuff, her music <em>touches</em> me on a deep personal level.</td>
+</tr>
+<tr>
+<td style="text-align: center;">supervised <br> supervised + <br> 60k fine-tune</td>
+<td style="text-align: center;">I'm jealous of Emma Blackery's music and I have no clue why. <br> Emma Blackery is my favourite artist, and I love her music to death. I wish I could listen to her music all the time. However, I feel like her music destroys me emotionally. I feel like I need to enjoy her music for the human part of it, and not the technical part. She's my favourite artist.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 13: Random $(T=0.7)$ summaries for our TL;DR summarization task, with contexts randomly sampled from TL;DR validation set.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{6}$ That said, different training runs have considerable variation and it is expensive to run multiple seeds with humans, so it is possible that this gap is largely noise.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>${ }^{3}$ The model is a Transformer with 6 layers, 8 attention heads, and embedding size 512 .&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

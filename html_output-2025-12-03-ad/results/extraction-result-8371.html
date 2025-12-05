@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8371 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8371</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8371</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-149.html">extraction-schema-149</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <p><strong>Paper ID:</strong> paper-f680d47a51a0e470fcb228bf0110c026535ead1b</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/f680d47a51a0e470fcb228bf0110c026535ead1b" target="_blank">Progress measures for grokking via mechanistic interpretability</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Learning Representations</p>
+                <p><strong>Paper TL;DR:</strong> This work argues that progress measures can be found via mechanistic interpretability: reverse-engineering learned behaviors into their individual components, and defines progress measures that allow to study the dynamics of training and split training into three continuous phases: memorization, circuit formation, and cleanup.</p>
+                <p><strong>Paper Abstract:</strong> Neural networks often exhibit emergent behavior, where qualitatively new capabilities arise from scaling up the amount of parameters, training data, or training steps. One approach to understanding emergence is to find continuous \textit{progress measures} that underlie the seemingly discontinuous qualitative changes. We argue that progress measures can be found via mechanistic interpretability: reverse-engineering learned behaviors into their individual components. As a case study, we investigate the recently-discovered phenomenon of ``grokking'' exhibited by small transformers trained on modular addition tasks. We fully reverse engineer the algorithm learned by these networks, which uses discrete Fourier transforms and trigonometric identities to convert addition to rotation about a circle. We confirm the algorithm by analyzing the activations and weights and by performing ablations in Fourier space. Based on this understanding, we define progress measures that allow us to study the dynamics of training and split training into three continuous phases: memorization, circuit formation, and cleanup. Our results show that grokking, rather than being a sudden shift, arises from the gradual amplification of structured mechanisms encoded in the weights, followed by the later removal of memorizing components.</p>
+                <p><strong>Cost:</strong> 0.015</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e8371.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e8371.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>FourierMult</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Fourier multiplication algorithm for modular addition</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A mechanistic circuit learned by small transformers that represents inputs as sines and cosines at a sparse set of discrete frequencies, composes them via trigonometric identities in attention/MLP to compute cos(w_k (a+b)) and sin(w_k (a+b)), and reads out logits by multiplying with cos(w_k c)/sin(w_k c) and summing across key frequencies so constructive interference peaks at the correct c = a+b (mod P).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>One-layer ReLU Transformer (small)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>One-layer (no LayerNorm) ReLU transformer trained on modular addition mod P (mainline P=113). Architecture: embedding dim d=128, 4 attention heads (head dim 32), MLP hidden size 512, vocabulary 113, no embed/unembed tying. Training: full-batch AdamW (lr=0.001, weight decay=1), 40k epochs, trained on 30% of all input pairs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Modular addition: predict c = (a + b) mod P for P=113 (one-hot token inputs for a and b).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Inputs are embedded as vectors whose components are sinusoidal responses at a small set of key frequencies w_k = 2πk/P (embedding W_E is sparse in Fourier basis). Attention heads and MLP compute degree-2 polynomials in sines/cosines (implementing trig product-to-sum identities) to produce cos(w_k(a+b)) and sin(w_k(a+b)). The neuron→logit map W_L (≈ W_U W_out) is approximately rank-10, with ten directions corresponding to cos(w_k c) and sin(w_k c) for five key k; W_L reads linear projections u_k^T MLP ≈ α_k cos(w_k(a+b)) and v_k^T MLP ≈ β_k sin(w_k(a+b)), and logits ≈ Σ_k α_k cos(w_k(a+b-c)). Multiple frequencies are summed so constructive interference yields a much larger logit at the true c.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Mechanistic probes and interventions: DFTs of embedding, logits, and W_L; regressions of W_L onto cos/sin basis; projection of MLP activations onto u_k and v_k; computing fraction of variance explained (FVE) by single cos(w_k(a+b)) / sin(w_k(a+b)) terms; approximating neuron activations by degree-2 polynomials in a single frequency; replacing neurons with polynomial approximations; ablating specific Fourier-frequency components of logits (zeroing DFT components); projecting MLP activations to the 10 readout directions or to their nullspace; linearizing sigmoid/softmax in attention for analysis.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Final behaviour: model reaches ≈100% train accuracy early and later ≈100% test accuracy after grokking. Example numeric losses from mainline run: final test loss ≈2.4e-7 (original logits). Approximations and ablations: approximating logits as Σ_k α_k cos(w_k(a+b-c)) explains ≈95% of logit variance and reduced test loss from 2.4e-7 to 4.7e-8; replacing 433 neurons by degree-2 polynomial approximations increased loss only ~3% (2.41e-7 → 2.48e-7) and had no accuracy change; restricting neurons to only key-frequency cos/sin terms improved loss by 77% to 5.54e-8; projecting MLP activations onto the 10 W_L directions decreased loss ≈50% to 1.19e-7; ablating all non-key frequencies (keeping only key frequencies) improved loss ~70% to 7.24e-8; ablating any single key frequency increases loss dramatically (often to chance or worse; see ablation table where removing key frequencies yields losses ≈6.5–11.0 much worse than final loss).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Initial memorization (overfitting) phase where model attains 100% train but poor test accuracy; dependence on weight decay and limited data for grokking: without regularization or with much more data the grokking phenomenon disappears (no separate memorization phase). Model's chosen key frequencies vary across random seeds; early memorization components can mask the generalizing Fourier circuit until weight decay removes them (grokking occurs during cleanup when memorization is removed). Removing key frequencies catastrophically breaks generalization; single-frequency representations have unwanted secondary peaks hence the model uses multiple frequencies.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Four independent lines: (1) Periodicity: embeddings, attention scores, MLP neuron activations, and logits show sparse Fourier spectra concentrated on a few key k (W_E and W_L sparse in Fourier basis). (2) Readout structure: W_L DFT shows ten dominant directions (cos and sin for five k); approximating W_L as Σ_k cos(w_k) u_k^T + sin(w_k) v_k^T leaves <0.55% Frobenius residual. (3) MLP projections: u_k^T MLP(a,b) and v_k^T MLP(a,b) are well fit by multiples of cos(w_k(a+b)) and sin(w_k(a+b)) with FVE typically >93% and often ~96–98%. (4) Interventions: ablating key frequencies in logits drops performance to chance/worse, ablating non-key frequencies often improves loss; replacing neurons by polynomial approximations and regressing logits to predicted cos(w(a+b-c)) preserves or improves performance. Additional micro-evidence: attention heads' patterns are well-approximated by single-frequency cos/sin differences and OV outputs concentrated on corresponding frequencies, producing degree-2 polynomial terms needed for trig identities.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Mechanism was discovered on small, specific models/tasks (one-layer, P=113, small datasets); key-frequency indices differ by seed and architecture; the approach relies on strong periodic structure and a single clean circuit—larger models / real-language arithmetic may use different or multiple overlapping circuits, making generalization of these findings nontrivial. The progress measures and ablation diagnostics are hand-designed for this task and may not generalize. Grokking (abrupt test improvement) arises from cleanup (weight decay removing memorization) after the circuit is already present, so the presence of the circuit alone does not guarantee immediate generalization until memorizing components are removed.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Progress measures for grokking via mechanistic interpretability', 'publication_date_yy_mm': '2023-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8371.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e8371.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Restr/ExclLoss</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Restricted and Excluded Loss progress measures</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Two mechanistic progress measures derived from the Fourier interpretation: restricted loss measures performance when keeping only the constant term plus the cos(w_k(a+b)) and sin(w_k(a+b)) terms (key frequencies); excluded loss measures performance when removing the key frequencies from logits to quantify reliance on memorization vs Fourier circuit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>One-layer ReLU Transformer (small)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Same model as above (d=128, 4 heads, MLP 512) trained on modular addition mod 113 with AdamW and weight decay.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Modular addition (a+b mod P), used to track internal acquisition of the Fourier multiplication circuit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Not a representation but a diagnostic: restricted loss isolates contribution of the hypothesized Fourier circuit by zeroing all Fourier-logit components except the constant and the 20 sin/cos terms for the five key frequencies; excluded loss removes those key-frequency components to isolate memorization.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Intervention in Fourier (logit) space: perform 2D DFT on logits across inputs (a,b), zero selected frequency components (either keep only key frequencies or remove key frequencies), inverse-transform, then measure loss/accuracy on train and test sets over time.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Dynamics over training (mainline run): restricted loss begins declining during circuit formation (before test loss improves); excluded loss rises during circuit formation (train/test loss flat); during cleanup restricted loss continues falling and test loss drops sharply (grokking event). Epoch ranges observed: memorization 0–1.4k, circuit formation 1.4k–9.4k, cleanup 9.4k–14k. Ablating all non-key frequencies (restricted) improved final loss (~70% drop to 7.24e-8). Excluded loss plateaued during cleanup while test loss fell.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>These measures are task-specific and require identification of key frequencies; they do not by themselves predict the exact timing of the grokking phase transition (no general criticality threshold provided). They rely on a correct mechanistic decomposition; if the circuit is different or distributed, these measures may be misleading.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Empirical training curves show restricted loss improving before test loss, excluded loss increasing during circuit formation, and a sharp Gini increase (sparsification in Fourier basis) and weight-norm drop during cleanup. These aligned signals support the interpretation that a Fourier circuit is formed before grokking and memorization components are removed later by weight decay.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Progress measures are specific to the discovered circuit and require mechanistic interpretability to design; they may not generalize to other tasks/models. The measures reveal continuous internal progress but do not give a predictive threshold for when test performance will jump.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Progress measures for grokking via mechanistic interpretability', 'publication_date_yy_mm': '2023-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8371.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e8371.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>FourierAblationProbing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Fourier-space ablations, neuron projection and regression probes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A suite of probing/intervention methods used to validate the Fourier multiplication mechanism: DFTs of weights/activations, regressions of logits onto cos(w(a+b-c)) terms, projecting MLP activations onto readout directions, replacing neurons with polynomial fits, and ablating frequency components in logits.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>One-layer ReLU Transformer (small)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Same experimental details as above (P=113, d=128, 4 heads, MLP=512, AdamW with weight decay).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Modular addition (a+b mod P), used as substrate for probing.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Operational description of probes: identify sparse Fourier components in W_E and W_L; extract u_k and v_k directions corresponding to cos(w_k c) and sin(w_k c); check MLP projections u_k^T MLP and v_k^T MLP for single-term cos(w_k(a+b)) / sin(w_k(a+b)) structure; approximate neurons with degree-2 polynomials of a single frequency.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Methods used: discrete Fourier transforms (on embedding axes, logits and neuron-logit map); ordinary least squares regression of logits onto Σ_k cos(w_k(a+b-c)); projecting MLP activations onto u_k/v_k and onto their nullspace; per-neuron polynomial fits; replacement of neuron activations by their polynomial approximations; zeroing selected DFT components of logits (per-frequency ablation); linearizing sigmoid/softmax in attention; measuring fraction of variance explained (FVE) for fits; measuring Frobenius residuals when approximating W_L by cos/sin directions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Key experimental outcomes: W_L approximation residual <0.55% (Frobenius norm); projections u_k^T MLP/v_k^T MLP approximated by single cos/sin terms with FVE often >93% and commonly ~96–98%; approximating logits by Σ_k α_k cos(w_k(a+b-c)) explains ≈95% logit variance and can reduce loss (2.4e-7 → 4.7e-8); projecting MLP onto 10 key directions lowered loss ≈50% (to 1.19e-7); projecting onto nullspace increased loss to ≈5.27 (worse than uniform); ablating key frequencies yields catastrophic loss increases (examples: loss to ≈6.5–11.0 in other seeds), while ablating non-key frequencies often improves loss (~70% drop). Replacing 433 neurons by degree-2 polynomial approximations increased loss only ~3%.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Ablations show the circuit is necessary: removing key-frequency components breaks generalization; the learned frequencies and numeric coefficients vary by random seed and run, implying sensitivity of the discovered decomposition; some attention heads act as amplifiers rather than clean single-frequency processors, and analysis required per-component inspection (manual effort).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Strong causal/ablative evidence: performance degrades severely when key-frequency components are removed (causal necessity), and performance is preserved or improved when non-key components are removed or when neurons are replaced by the analytically-derived polynomial approximations (sufficiency and robustness). High FVE and small residuals in regressions and matrix decompositions provide quantitative support for the factorized Fourier picture.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Progress measures for grokking via mechanistic interpretability', 'publication_date_yy_mm': '2023-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Grokking: Generalization beyond overfitting on small algorithmic datasets <em>(Rating: 2)</em></li>
+                <li>Towards understanding grokking: An effective theory of representation learning <em>(Rating: 2)</em></li>
+                <li>A mathematical framework for transformer circuits <em>(Rating: 2)</em></li>
+                <li>In-context learning and induction heads <em>(Rating: 1)</em></li>
+                <li>Interpretability in the wild: a circuit for indirect object identification in gpt-2 small <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8371",
+    "paper_id": "paper-f680d47a51a0e470fcb228bf0110c026535ead1b",
+    "extraction_schema_id": "extraction-schema-149",
+    "extracted_data": [
+        {
+            "name_short": "FourierMult",
+            "name_full": "Fourier multiplication algorithm for modular addition",
+            "brief_description": "A mechanistic circuit learned by small transformers that represents inputs as sines and cosines at a sparse set of discrete frequencies, composes them via trigonometric identities in attention/MLP to compute cos(w_k (a+b)) and sin(w_k (a+b)), and reads out logits by multiplying with cos(w_k c)/sin(w_k c) and summing across key frequencies so constructive interference peaks at the correct c = a+b (mod P).",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "One-layer ReLU Transformer (small)",
+            "model_description": "One-layer (no LayerNorm) ReLU transformer trained on modular addition mod P (mainline P=113). Architecture: embedding dim d=128, 4 attention heads (head dim 32), MLP hidden size 512, vocabulary 113, no embed/unembed tying. Training: full-batch AdamW (lr=0.001, weight decay=1), 40k epochs, trained on 30% of all input pairs.",
+            "arithmetic_task_type": "Modular addition: predict c = (a + b) mod P for P=113 (one-hot token inputs for a and b).",
+            "mechanism_or_representation": "Inputs are embedded as vectors whose components are sinusoidal responses at a small set of key frequencies w_k = 2πk/P (embedding W_E is sparse in Fourier basis). Attention heads and MLP compute degree-2 polynomials in sines/cosines (implementing trig product-to-sum identities) to produce cos(w_k(a+b)) and sin(w_k(a+b)). The neuron→logit map W_L (≈ W_U W_out) is approximately rank-10, with ten directions corresponding to cos(w_k c) and sin(w_k c) for five key k; W_L reads linear projections u_k^T MLP ≈ α_k cos(w_k(a+b)) and v_k^T MLP ≈ β_k sin(w_k(a+b)), and logits ≈ Σ_k α_k cos(w_k(a+b-c)). Multiple frequencies are summed so constructive interference yields a much larger logit at the true c.",
+            "probing_or_intervention_method": "Mechanistic probes and interventions: DFTs of embedding, logits, and W_L; regressions of W_L onto cos/sin basis; projection of MLP activations onto u_k and v_k; computing fraction of variance explained (FVE) by single cos(w_k(a+b)) / sin(w_k(a+b)) terms; approximating neuron activations by degree-2 polynomials in a single frequency; replacing neurons with polynomial approximations; ablating specific Fourier-frequency components of logits (zeroing DFT components); projecting MLP activations to the 10 readout directions or to their nullspace; linearizing sigmoid/softmax in attention for analysis.",
+            "performance_metrics": "Final behaviour: model reaches ≈100% train accuracy early and later ≈100% test accuracy after grokking. Example numeric losses from mainline run: final test loss ≈2.4e-7 (original logits). Approximations and ablations: approximating logits as Σ_k α_k cos(w_k(a+b-c)) explains ≈95% of logit variance and reduced test loss from 2.4e-7 to 4.7e-8; replacing 433 neurons by degree-2 polynomial approximations increased loss only ~3% (2.41e-7 → 2.48e-7) and had no accuracy change; restricting neurons to only key-frequency cos/sin terms improved loss by 77% to 5.54e-8; projecting MLP activations onto the 10 W_L directions decreased loss ≈50% to 1.19e-7; ablating all non-key frequencies (keeping only key frequencies) improved loss ~70% to 7.24e-8; ablating any single key frequency increases loss dramatically (often to chance or worse; see ablation table where removing key frequencies yields losses ≈6.5–11.0 much worse than final loss).",
+            "error_types_or_failure_modes": "Initial memorization (overfitting) phase where model attains 100% train but poor test accuracy; dependence on weight decay and limited data for grokking: without regularization or with much more data the grokking phenomenon disappears (no separate memorization phase). Model's chosen key frequencies vary across random seeds; early memorization components can mask the generalizing Fourier circuit until weight decay removes them (grokking occurs during cleanup when memorization is removed). Removing key frequencies catastrophically breaks generalization; single-frequency representations have unwanted secondary peaks hence the model uses multiple frequencies.",
+            "evidence_for_mechanism": "Four independent lines: (1) Periodicity: embeddings, attention scores, MLP neuron activations, and logits show sparse Fourier spectra concentrated on a few key k (W_E and W_L sparse in Fourier basis). (2) Readout structure: W_L DFT shows ten dominant directions (cos and sin for five k); approximating W_L as Σ_k cos(w_k) u_k^T + sin(w_k) v_k^T leaves &lt;0.55% Frobenius residual. (3) MLP projections: u_k^T MLP(a,b) and v_k^T MLP(a,b) are well fit by multiples of cos(w_k(a+b)) and sin(w_k(a+b)) with FVE typically &gt;93% and often ~96–98%. (4) Interventions: ablating key frequencies in logits drops performance to chance/worse, ablating non-key frequencies often improves loss; replacing neurons by polynomial approximations and regressing logits to predicted cos(w(a+b-c)) preserves or improves performance. Additional micro-evidence: attention heads' patterns are well-approximated by single-frequency cos/sin differences and OV outputs concentrated on corresponding frequencies, producing degree-2 polynomial terms needed for trig identities.",
+            "counterexamples_or_challenges": "Mechanism was discovered on small, specific models/tasks (one-layer, P=113, small datasets); key-frequency indices differ by seed and architecture; the approach relies on strong periodic structure and a single clean circuit—larger models / real-language arithmetic may use different or multiple overlapping circuits, making generalization of these findings nontrivial. The progress measures and ablation diagnostics are hand-designed for this task and may not generalize. Grokking (abrupt test improvement) arises from cleanup (weight decay removing memorization) after the circuit is already present, so the presence of the circuit alone does not guarantee immediate generalization until memorizing components are removed.",
+            "uuid": "e8371.0",
+            "source_info": {
+                "paper_title": "Progress measures for grokking via mechanistic interpretability",
+                "publication_date_yy_mm": "2023-01"
+            }
+        },
+        {
+            "name_short": "Restr/ExclLoss",
+            "name_full": "Restricted and Excluded Loss progress measures",
+            "brief_description": "Two mechanistic progress measures derived from the Fourier interpretation: restricted loss measures performance when keeping only the constant term plus the cos(w_k(a+b)) and sin(w_k(a+b)) terms (key frequencies); excluded loss measures performance when removing the key frequencies from logits to quantify reliance on memorization vs Fourier circuit.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "One-layer ReLU Transformer (small)",
+            "model_description": "Same model as above (d=128, 4 heads, MLP 512) trained on modular addition mod 113 with AdamW and weight decay.",
+            "arithmetic_task_type": "Modular addition (a+b mod P), used to track internal acquisition of the Fourier multiplication circuit.",
+            "mechanism_or_representation": "Not a representation but a diagnostic: restricted loss isolates contribution of the hypothesized Fourier circuit by zeroing all Fourier-logit components except the constant and the 20 sin/cos terms for the five key frequencies; excluded loss removes those key-frequency components to isolate memorization.",
+            "probing_or_intervention_method": "Intervention in Fourier (logit) space: perform 2D DFT on logits across inputs (a,b), zero selected frequency components (either keep only key frequencies or remove key frequencies), inverse-transform, then measure loss/accuracy on train and test sets over time.",
+            "performance_metrics": "Dynamics over training (mainline run): restricted loss begins declining during circuit formation (before test loss improves); excluded loss rises during circuit formation (train/test loss flat); during cleanup restricted loss continues falling and test loss drops sharply (grokking event). Epoch ranges observed: memorization 0–1.4k, circuit formation 1.4k–9.4k, cleanup 9.4k–14k. Ablating all non-key frequencies (restricted) improved final loss (~70% drop to 7.24e-8). Excluded loss plateaued during cleanup while test loss fell.",
+            "error_types_or_failure_modes": "These measures are task-specific and require identification of key frequencies; they do not by themselves predict the exact timing of the grokking phase transition (no general criticality threshold provided). They rely on a correct mechanistic decomposition; if the circuit is different or distributed, these measures may be misleading.",
+            "evidence_for_mechanism": "Empirical training curves show restricted loss improving before test loss, excluded loss increasing during circuit formation, and a sharp Gini increase (sparsification in Fourier basis) and weight-norm drop during cleanup. These aligned signals support the interpretation that a Fourier circuit is formed before grokking and memorization components are removed later by weight decay.",
+            "counterexamples_or_challenges": "Progress measures are specific to the discovered circuit and require mechanistic interpretability to design; they may not generalize to other tasks/models. The measures reveal continuous internal progress but do not give a predictive threshold for when test performance will jump.",
+            "uuid": "e8371.1",
+            "source_info": {
+                "paper_title": "Progress measures for grokking via mechanistic interpretability",
+                "publication_date_yy_mm": "2023-01"
+            }
+        },
+        {
+            "name_short": "FourierAblationProbing",
+            "name_full": "Fourier-space ablations, neuron projection and regression probes",
+            "brief_description": "A suite of probing/intervention methods used to validate the Fourier multiplication mechanism: DFTs of weights/activations, regressions of logits onto cos(w(a+b-c)) terms, projecting MLP activations onto readout directions, replacing neurons with polynomial fits, and ablating frequency components in logits.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "One-layer ReLU Transformer (small)",
+            "model_description": "Same experimental details as above (P=113, d=128, 4 heads, MLP=512, AdamW with weight decay).",
+            "arithmetic_task_type": "Modular addition (a+b mod P), used as substrate for probing.",
+            "mechanism_or_representation": "Operational description of probes: identify sparse Fourier components in W_E and W_L; extract u_k and v_k directions corresponding to cos(w_k c) and sin(w_k c); check MLP projections u_k^T MLP and v_k^T MLP for single-term cos(w_k(a+b)) / sin(w_k(a+b)) structure; approximate neurons with degree-2 polynomials of a single frequency.",
+            "probing_or_intervention_method": "Methods used: discrete Fourier transforms (on embedding axes, logits and neuron-logit map); ordinary least squares regression of logits onto Σ_k cos(w_k(a+b-c)); projecting MLP activations onto u_k/v_k and onto their nullspace; per-neuron polynomial fits; replacement of neuron activations by their polynomial approximations; zeroing selected DFT components of logits (per-frequency ablation); linearizing sigmoid/softmax in attention; measuring fraction of variance explained (FVE) for fits; measuring Frobenius residuals when approximating W_L by cos/sin directions.",
+            "performance_metrics": "Key experimental outcomes: W_L approximation residual &lt;0.55% (Frobenius norm); projections u_k^T MLP/v_k^T MLP approximated by single cos/sin terms with FVE often &gt;93% and commonly ~96–98%; approximating logits by Σ_k α_k cos(w_k(a+b-c)) explains ≈95% logit variance and can reduce loss (2.4e-7 → 4.7e-8); projecting MLP onto 10 key directions lowered loss ≈50% (to 1.19e-7); projecting onto nullspace increased loss to ≈5.27 (worse than uniform); ablating key frequencies yields catastrophic loss increases (examples: loss to ≈6.5–11.0 in other seeds), while ablating non-key frequencies often improves loss (~70% drop). Replacing 433 neurons by degree-2 polynomial approximations increased loss only ~3%.",
+            "error_types_or_failure_modes": "Ablations show the circuit is necessary: removing key-frequency components breaks generalization; the learned frequencies and numeric coefficients vary by random seed and run, implying sensitivity of the discovered decomposition; some attention heads act as amplifiers rather than clean single-frequency processors, and analysis required per-component inspection (manual effort).",
+            "evidence_for_mechanism": "Strong causal/ablative evidence: performance degrades severely when key-frequency components are removed (causal necessity), and performance is preserved or improved when non-key components are removed or when neurons are replaced by the analytically-derived polynomial approximations (sufficiency and robustness). High FVE and small residuals in regressions and matrix decompositions provide quantitative support for the factorized Fourier picture.",
+            "uuid": "e8371.2",
+            "source_info": {
+                "paper_title": "Progress measures for grokking via mechanistic interpretability",
+                "publication_date_yy_mm": "2023-01"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Grokking: Generalization beyond overfitting on small algorithmic datasets",
+            "rating": 2
+        },
+        {
+            "paper_title": "Towards understanding grokking: An effective theory of representation learning",
+            "rating": 2
+        },
+        {
+            "paper_title": "A mathematical framework for transformer circuits",
+            "rating": 2
+        },
+        {
+            "paper_title": "In-context learning and induction heads",
+            "rating": 1
+        },
+        {
+            "paper_title": "Interpretability in the wild: a circuit for indirect object identification in gpt-2 small",
+            "rating": 1
+        }
+    ],
+    "cost": 0.015074,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>PROGRESS MEASURES FOR GROKKING VIA MECHANISTIC INTERPRETABILITY</h1>
+<p>Neel Nanda ${ }^{\star, \dagger}$ Lawrence Chan ${ }^{\ddagger}$ Tom Lieberum ${ }^{\dagger}$ Jess Smith ${ }^{\dagger}$ Jacob Steinhardt ${ }^{\ddagger}$</p>
+<h4>Abstract</h4>
+<p>Neural networks often exhibit emergent behavior, where qualitatively new capabilities arise from scaling up the amount of parameters, training data, or training steps. One approach to understanding emergence is to find continuous progress measures that underlie the seemingly discontinuous qualitative changes. We argue that progress measures can be found via mechanistic interpretability: reverseengineering learned behaviors into their individual components. As a case study, we investigate the recently-discovered phenomenon of "grokking" exhibited by small transformers trained on modular addition tasks. We fully reverse engineer the algorithm learned by these networks, which uses discrete Fourier transforms and trigonometric identities to convert addition to rotation about a circle. We confirm the algorithm by analyzing the activations and weights and by performing ablations in Fourier space. Based on this understanding, we define progress measures that allow us to study the dynamics of training and split training into three continuous phases: memorization, circuit formation, and cleanup. Our results show that grokking, rather than being a sudden shift, arises from the gradual amplification of structured mechanisms encoded in the weights, followed by the later removal of memorizing components.</p>
+<h2>1 INTRODUCTION</h2>
+<p>Neural networks often exhibit emergent behavior, in which qualitatively new capabilities arise from scaling up the model size, training data, or number of training steps (Steinhardt, 2022; Wei et al., 2022a). This has led to a number of breakthroughs, via capabilities such as in-context learning (Radford et al., 2019; Brown et al., 2020) and chain-of-thought prompting (Wei et al., 2022b). However, it also poses risks: Pan et al. (2022) show that scaling up the parameter count of models by as little as $30 \%$ can lead to emergent reward hacking.</p>
+<p>Emergence is most surprising when it is abrupt, as in the case of reward hacking, chain-of-thought reasoning, or other phase transitions (Ganguli et al., 2022; Wei et al., 2022a). We could better understand and predict these phase transitions by finding hidden progress measures (Barak et al., 2022): metrics that precede and are causally linked to the phase transition, and which vary more smoothly. For example, Wei et al. (2022a) show that while large language models show abrupt jumps in their performance on many benchmarks, their cross-entropy loss decreases smoothly with model scale. However, cross-entropy does not explain why the phase changes happen.</p>
+<p>In this work, we introduce a different approach to uncovering hidden progress measures: via mechanistic explanations. ${ }^{\dagger}$ A mechanistic explanation aims to reverse engineer the mechanisms of the network, generally by identifying the circuits (Cammarata et al., 2020; Elhage et al., 2021) within a model that implement a behavior. Using such explanations, we study grokking, where models abruptly transition to a generalizing solution after a large number of training steps, despite initially overfitting (Power et al., 2022). Specifically, we study modular addition, where a model takes inputs $a, b \in{0, \ldots, P-1}$ for some prime $P$ and predicts their sum $c \bmod P$. Small transformers trained with weight decay on this task consistently exhibit grokking (Figure 2, Appendix C.2).</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: The algorithm implemented by the one-layer transformer for modular addition. Given two numbers $a$ and $b$, the model projects each point onto a corresponding rotation using its embedding matrix. Using its attention and MLP layers, it then composes the rotations to get a representation of $a+b \bmod P$. Finally, it "reads off" the logits for each $c \in{0,1, \ldots, P-1}$, by rotating by $-c$ to get $\cos (w(a+b-c))$, which is maximized when $a+b \equiv c \bmod P$ (since $w$ is a multiple of $\frac{2 \pi}{P}$ ).</p>
+<p>We reverse engineer the weights of these transformers and find that they perform this task by mapping the inputs onto a circle and performing addition on the circle. Specifically, we show that the embedding matrix maps the inputs $a, b$ to sines and cosines at a sparse set of key frequencies $w_{k}$. The attention and MLP layers then combine these using trigonometric identities to compute the sine and cosine of $w_{k}(a+b)$, and the output matrices shift and combine these frequencies.</p>
+<p>We confirm this understanding with four lines of evidence (Section 4): (1) the network weights and activations exhibit a consistent periodic structure; (2) the neuron-logit map $W_{L}$ is well approximated by a sum of sinusoidal functions of the key frequencies, and projecting the MLP activations onto these sinusoidal functions lets us "read off" trigonometric identities from the neurons; (3) the attention heads and MLP neuron are well approximated by degree-2 polynomials of trigonometric functions of a single frequency; and (4) ablating key frequencies used by the model reduces performance to chance, while ablating the other $95 \%$ of frequencies slightly improves performance.</p>
+<p>Using our understanding of the learned algorithm, we construct two progress measures for the modular addition task-restricted loss, where we ablate every non-key frequency, and excluded loss, where we instead ablate all key frequencies. Both metrics improve continuously prior to when grokking occurs. We use these metrics to understand the training dynamics underlying grokking and find that training can be split into three phases: memorization of the training data; circuit formation, where the network learns a mechanism that generalizes; and cleanup, where weight decay removes the memorization components. Surprisingly, the sudden transition to perfect test accuracy in grokking occurs during cleanup, after the generalizing mechanism is learned. These results show that grokking, rather than being a sudden shift, arises from the gradual amplification of structured mechanisms encoded in the weights, followed by the later removal of memorizing components.</p>
+<h1>2 Related Work</h1>
+<p>Phase Changes. Recent papers have observed that neural networks quickly develop novel qualitative behaviors as they are scaled up or trained longer (Ganguli et al., 2022; Wei et al., 2022a). McGrath et al. (2021) find that AlphaZero quickly learns many human chess concepts between 10k and 30 k training steps and reinvents human opening theory between 25 k and 60 k training steps.</p>
+<p>Grokking. Grokking was first reported in Power et al. (2022), which trained two-layer transformers on several algorithmic tasks and found that test accuracy often increased sharply long after achieving perfect train accuracy. Millidge (2022) suggests that this may be due to SGD being a random walk on the optimal manifold. Our results echo Barak et al. (2022) in showing that the network instead makes continuous progress toward the generalizing algorithm. Liu et al. (2022) construct small examples of grokking, which they use to compute phase diagrams with four separate "phases" of learning. Thilak et al. (2022) argue that grokking can arise without explicit regularization, from an optimization anomaly they dub the slingshot mechanism, which may act as an implicit regularizer.</p>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: The train and test accuracy (left) and train and test loss (right) of one-layer transformers on the modular addition task described in Section 3, over 5 random seeds. These models consistently exhibit grokking: they quickly overfit early on in training, but then later learn to generalize.</p>
+<p>Circuits-style mechanistic interpretability. The style of post-hoc mechanistic interpretability in Section 4 is heavily inspired by the Circuits approach of Cammarata et al. (2020), Elhage et al. (2021), and Olsson et al. (2022).</p>
+<p>Progress measures. Barak et al. (2022) introduce the notion of progress measures-metrics that improve smoothly and that precede emergent behavior. They prove theoretically that training would amplify a certain mechanism and heuristically define a progress measure. In contrast, we use mechanistic intepretability to discover progress measures empirically.</p>
+<h1>3 SETUP AND BACKGROUND</h1>
+<p>We train transformers to perform addition $\bmod P$. The input to the model is of the form " $a b=$ ", where $a$ and $b$ are encoded as $P$-dimensional one-hot vectors, and $=$ is a special token above which we read the output $c$. In our mainline experiment, we take $P=113$ and use a one-layer ReLU transformer, token embeddings with $d=128$, learned positional embeddings, 4 attention heads of dimension $d / 4=32$, and $n=512$ hidden units in the MLP. In other experiments, we vary the depth and dimension of the model. We did not use LayerNorm or tie our embed/unembed matrices.</p>
+<p>Our mainline dataset consists of $30 \%$ of the entire set of possible inputs (that is, $30 \%$ of the $113 \cdot$ 113 pairs of numbers $\bmod P$ ). We use full batch gradient descent using the AdamW optimizer (Loshchilov \&amp; Hutter, 2017) with learning rate $\gamma=0.001$ and weight decay parameter $\lambda=1$. We perform 40,000 epochs of training. As there are only $113 \cdot 113$ possible pairs, we evaluate test loss and accuracy on all pairs of inputs not used for training.</p>
+<p>Networks trained on this task consistently exhibit grokking. As Figure 2 shows, our networks first overfit the training set: train accuracy quickly converges to $100 \%$ and the train loss quickly declines, while the test accuracy remains low and the test loss remains high. After around 10,000 epochs, the network generalizes and test accuracy increases to near $100 \%$. In robustness experiments, we confirm that grokking consistently occurs for other architectures and prime moduli (Appendix C.2). In Section 5.3 we find that grokking does not occur without regularization.</p>
+<p>To describe transformer components, we follow the conventions and notations laid out in Elhage et al. (2021). We focus on the $d \times p$ embedding matrix $W_{E}$, the $d \times n$ output matrix of the MLP layer $W_{\text {out }}$, and the $P \times d$ unembedding matrix $W_{U} .{ }^{2}$ Let $\operatorname{Logits}(a, b)$ denote the logit vector on inputs $a, b$, and $M L P(a, b)$ denote the MLP activations. Empirically, our networks do not significantly use the skip connection around the MLP (Appendix A.1), so $\operatorname{Logits}(a, b) \approx W_{U} W_{\text {out }} \operatorname{MLP}(a, b)$. We therefore also study the $P \times n$ neuron-logit map $W_{L}=W_{U} W_{\text {out }}$.</p>
+<h3>3.1 The Fourier Multiplication Algorithm</h3>
+<p>We claim that the learned networks use the following algorithm (Figure 1):</p>
+<ul>
+<li>Given two one-hot encoded tokens $a, b$ map these to $\sin \left(w_{k} a\right), \cos \left(w_{k} a\right), \sin \left(w_{k} b\right)$, and $\cos \left(w_{k} b\right)$ using the embedding matrix, for various frequencies $w_{k}=\frac{2 k \pi}{P}, k \in \mathbb{N}$.</li>
+</ul>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<ul>
+<li>Compute $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$ using the trigonometric identities:</li>
+</ul>
+<p>$$
+\begin{aligned}
+&amp; \cos \left(w_{k}(a+b)\right)=\cos \left(w_{k} a\right) \cos \left(w_{k} a\right)-\sin \left(w_{k} a\right) \sin \left(w_{k} b\right) \
+&amp; \sin \left(w_{k}(a+b)\right)=\sin \left(w_{k} a\right) \cos \left(w_{k} b\right)+\cos \left(w_{k} a\right) \sin \left(w_{k} b\right)
+\end{aligned}
+$$</p>
+<p>In our networks, this is computed in the attention and MLP layers.</p>
+<ul>
+<li>For each output logit $c$, compute $\cos \left(w_{k}(a+b-c)\right)$ using the trigonometric identity:</li>
+</ul>
+<p>$$
+\cos \left(w_{k}(a+b-c)\right)=\cos \left(w_{k}(a+b)\right) \cos \left(w_{k} c\right)+\sin \left(w_{k}(a+b)\right) \sin \left(w_{k} c\right)
+$$</p>
+<p>This is a linear function of the already-computed values $\cos \left(w_{k}(a+b)\right), \sin \left(w_{k}(a+b)\right)$ and is implemented in the product of the output and unembedding matrices $W_{L}$.</p>
+<ul>
+<li>The unembedding matrix also adds together $\cos \left(w_{k}(a+b-c)\right)$ for the various $k \mathrm{~s}$. This causes the cosine waves to constructively interfere at $c^{<em>}=a+b \bmod p$ (giving $c^{</em>}$ a large logit), and destructively interfere everywhere else (thus giving small logits to other cs).</li>
+</ul>
+<p>We refer to this algorithm as Fourier multiplication, and will justify our claim in detail in Section 4.</p>
+<h1>4 REVERSE ENGINEERING A ONE-LAYER TRANSFORMER</h1>
+<p>In this section, we describe four lines of evidence that our transformers are using the Fourier multiplication algorithm described in Section 3.1. Here we apply our analysis to the mainline model from Section 3; the results are broadly consistent for other models, including across different number of layers, different fractions of the training data, and different prime moduli (see Appendix C.2, especially Table 5).
+Our first line of evidence involves examining the network weights and activations and observing consistent periodic structure that is unlikely to occur by chance (Section 4.1). Moreover, when we take Fourier transforms, many components are either sparse or nearly sparse in the Fourier domain, supported on a handful of key frequencies.
+We next look into the actual mechanisms implemented in the model weights (Section 4.2). We show that the unembedding matrix $W_{L}$ is (approximately) rank 10, where each direction corresponds to the cosine or sine of one of 5 key frequencies. Projecting the MLP activations onto the components of $W_{L}$ approximately produces multiples of the functions $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$, showing that the MLP layer does compute these sums.
+To better understand the mechanism, we zoom in to individual neurons (Section 4.3). We find that the attention heads and most neurons are well-approximated by degree-2 polynomials of sines and cosines at a single frequency. Moreover, the corresponding direction in $W_{L}$ also contains only that frequency. This suggests that the model's computations are (1) localized across frequencies and (2) mostly aligned with the neuron basis.
+Finally, we use ablations to confirm that our interpretation is faithful (Section 4.4). We replace various components of the model by the components of the Fourier multiplication algorithm and find that doing so consistently does not harm and sometimes even improves model performance.</p>
+<h3>4.1 SUGGESTIVE EVIDENCE: SURPRISING PERIODICITY</h3>
+<p>The first line of evidence that the network is using the algorithm described in Section 3.1 is the surprising periodicity in the activations of the transformer. That is, the output of every part of the network is periodic as a function of the input tokens.</p>
+<p>Periodicity in the embeddings. We start by examining the embeddings. We apply a Fourier transform along the input dimension of the embedding matrix $W_{E}$ then compute the $\ell_{2}$-norm along the other dimension; results are shown in Figure 3. We plot only the components for the first 56 frequencies, as the norm of the components for frequencies $k$ and $P-k$ are symmetric. The embedding matrix $W_{E}$ is sparse in the Fourier basis-it only has significant nonnegligible norm at 6 frequencies. Of these frequencies, only 5 appear to be used significantly in later parts of the model (corresponding to $k \in{14,35,41,42,52})$. We dub these the key frequencies of the model.</p>
+<p>Periodicity in attention heads and MLP neuron activations. This periodic structure recurs throughout the network. As an example, we plot the attention weight at position 0 for every combination of two inputs for head 0 in Figure 4. The attention exhibits a periodic structure with frequency</p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: (Left) The norms of the Fourier components in the embedding matrix $W_{E}$. As discussed in Section 4.1, the sparsity of $W_{E}$ in the Fourier basis is evidence that the network is operating in this basis. Of the six non-zero frequencies, five "key frequencies" appear in later parts of the network, corresponding to $k \in{14,35,41,42,52}$. (Right) Norm of Fourier components of the neuron-logit map $W_{L}$. A Fourier transform is taken over the logit axis, and then the norm is taken over the neuron axis. As discussed in Section 4.2, $W_{L}$ is well-approximated by the 5 key frequencies $w_{k}$.
+<img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: (Left) The attention score for head 0 from the token ' $=$ ' to ' $a$ ', as a function of inputs $a, b$. (Center) The activations of MLP neuron 0 given inputs $a, b$. Both the attention scores and the neuron activations are periodic (Section 4.1). (Right) The norm of the Fourier components of the logits (2D Fourier transform is taken over the inputs $a, b$, and then norm is taken over the logit axis). There are 20 significant components corresponding to the 5 key frequencies (Section 4.1).
+$k=35$. In Figure 4, we also plot the activations of MLP neuron 0 for every combination of inputs. The activations are periodic with frequency $k=42$. We see similar patterns for other attention heads and MLP neurons (Appendix C.1).
+Periodicity in logits. Finally, the logits are also periodic. In Figure 4, we represent the logits in the 2D Fourier basis over the inputs, then take the $\ell_{2}$-norm over the output dimension. There are only twenty components with significant norm, corresponding to the products of sines and cosines for the five key frequencies $w_{k}$. These show up as five $2 \times 2$ blocks in Figure 4.</p>
+<h1>4.2 Mechanistic Evidence: Composing Model Weights</h1>
+<p>We now demonstrate that the model implements the trigonometric identity (1) as follows: the functions $\cos \left(w_{k}(a+b)\right), \sin \left(w_{k}(a+b)\right)$ are linearly represented in the MLP activations, and the unembed matrix reads these linear directions and multiplies them by $\cos \left(w_{k} c\right), \sin \left(w_{k} c\right)$ respectively.</p>
+<p>We will do this in two steps. First, we show that $W_{L}$ (the matrix mapping MLP activations to logits) is (approximately) rank 10 and can be well approximated as:</p>
+<p>$$
+W_{L}=\sum_{k \in{14,35,41,42,52}} \cos \left(w_{k}\right) u_{k}^{T}+\sin \left(w_{k}\right) v_{k}^{T}
+$$</p>
+<p>for some $u_{k}, v_{k} \in \mathbb{R}^{512}$, where $\cos \left(w_{k}\right), \sin \left(w_{k}\right) \in \mathbb{R}^{113}$ are vectors whose $c$ th entry is $\cos \left(w_{k} c\right)$ and $\sin \left(w_{k} c\right)$. Second, note that our model implements the logits for $a, b$ as:</p>
+<p>$$
+\operatorname{Logits}(a, b)=W_{L} \operatorname{MLP}(a, b) \approx \sum_{k} \cos \left(w_{k}\right) u_{k}^{T} \operatorname{MLP}(a, b)+\sin \left(w_{k}\right) v_{k}^{T} \operatorname{MLP}(a, b)
+$$</p>
+<p>We check empirically that the terms $u_{k}^{T} \operatorname{MLP}(a, b)$ and $v_{k}^{T} \operatorname{MLP}(a, b)$ are approximate multiples of $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)(&gt;90 \%$ of variance explained). Thus the network computes trigonometric functions in the MLP and reads them off as claimed. As a sanity check, we confirm</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$W_{L}$ Component</th>
+<th style="text-align: center;">Fourier components of $u_{k}^{T} \operatorname{MLP}(a, b)$ or $v_{k}^{T} \operatorname{MLP}(a, b)$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{14} c\right)$</td>
+<td style="text-align: center;">$44.6 \cos \left(w_{14} a\right) \cos \left(w_{14} b\right)-43.6 \sin \left(w_{14} a\right) \sin \left(w_{14} b\right) \approx 44.1 \cos \left(w_{14}(a+b)\right)$</td>
+<td style="text-align: center;">$93.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{14} c\right)$</td>
+<td style="text-align: center;">$44.1 \sin \left(w_{14} a\right) \cos \left(w_{14} b\right)+44.1 \cos \left(w_{14} a\right) \sin \left(w_{14} b\right) \approx 44.1 \sin \left(w_{14}(a+b)\right)$</td>
+<td style="text-align: center;">$93.5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{35} c\right)$</td>
+<td style="text-align: center;">$40.7 \cos \left(w_{35} a\right) \cos \left(w_{35} b\right)-43.6 \sin \left(w_{35} a\right) \sin \left(w_{35} b\right) \approx 42.2 \cos \left(w_{35}(a+b)\right)$</td>
+<td style="text-align: center;">$96.8 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{35} c\right)$</td>
+<td style="text-align: center;">$41.8 \sin \left(w_{35} a\right) \cos \left(w_{35} b\right)+41.8 \cos \left(w_{35} a\right) \sin \left(w_{35} b\right) \approx 41.8 \sin \left(w_{35}(a+b)\right)$</td>
+<td style="text-align: center;">$96.5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{41} c\right)$</td>
+<td style="text-align: center;">$44.8 \cos \left(w_{41} a\right) \cos \left(w_{41} b\right)-44.8 \sin \left(w_{41} a\right) \sin \left(w_{41} b\right) \approx 44.8 \cos \left(w_{41}(a+b)\right)$</td>
+<td style="text-align: center;">$97.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{41} c\right)$</td>
+<td style="text-align: center;">$44.5 \sin \left(w_{41} a\right) \cos \left(w_{41} b\right)+44.5 \cos \left(w_{41} a\right) \sin \left(w_{41} b\right) \approx 44.5 \sin \left(w_{41}(a+b)\right)$</td>
+<td style="text-align: center;">$97.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{42} c\right)$</td>
+<td style="text-align: center;">$64.6 \cos \left(w_{42} a\right) \cos \left(w_{42} b\right)-68.5 \sin \left(w_{42} a\right) \sin \left(w_{42} b\right) \approx 66.6 \cos \left(w_{42}(a+b)\right)$</td>
+<td style="text-align: center;">$96.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{42} c\right)$</td>
+<td style="text-align: center;">$67.8 \sin \left(w_{42} a\right) \cos \left(w_{42} b\right)+67.8 \cos \left(w_{42} a\right) \sin \left(w_{42} b\right) \approx 67.8 \sin \left(w_{42}(a+b)\right)$</td>
+<td style="text-align: center;">$96.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{52} c\right)$</td>
+<td style="text-align: center;">$60.5 \cos \left(w_{52} a\right) \cos \left(w_{52} b\right)-65.5 \sin \left(w_{52} a\right) \sin \left(w_{52} b\right) \approx 63.0 \cos \left(w_{52}(a+b)\right)$</td>
+<td style="text-align: center;">$97.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{52} c\right)$</td>
+<td style="text-align: center;">$64.5 \sin \left(w_{52} a\right) \cos \left(w_{52} b\right)+64.5 \cos \left(w_{52} a\right) \sin \left(w_{52} b\right) \approx 64.5 \sin \left(w_{52}(a+b)\right)$</td>
+<td style="text-align: center;">$98.2 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: For each of the directions $u_{k}$ or $v_{k}$ (corresponding to the $\cos \left(w_{k}\right)$ and $\sin \left(w_{k}\right)$ components respectively) in the unembedding matrix, we take the dot product of the MLP activations with that direction, then perform a Fourier transform (middle column; only two largest coefficients shown). We then compute the fraction of variance explained (FVE) if we replace the projection with a single term proportional to $\cos \left(w_{k}(a+b)\right)$ or $\sin \left(w_{k}(a+b)\right)$, and find that it is consistently close to 1 .
+that the logits are indeed well-approximated by terms of the form $\cos \left(w_{k}(a+b-c)\right)$ ( $95 \%$ of variance explained).
+$W_{L}$ is well approximated by $\cos \left(w_{k} c\right)$ and $\sin \left(w_{k} c\right)$. We perform a discrete Fourier transform (DFT) on the logit axis of $W_{L}$ and look at the 10 directions $u_{k}, v_{k}$ corresponding to $\sin \left(w_{k}\right)$ and $\cos \left(w_{k}\right)$. When we approximate $W_{L}$ with $\sum_{k \in{14,35,41,42,52}} \cos \left(w_{k}\right) u_{k}^{T}+\sin \left(w_{k}\right) v_{k}^{T}$, the residual has Frobenius norm that is under $0.55 \%$ of the norm of $W_{L}$. This shows that $W_{L}$ is well approximated by the 10 directions corresponding to $\cos \left(w_{k}\right)$ and $\sin \left(w_{k}\right)$ for each of the five key frequencies. We also plot the norms of each direction in Figure 3, and find that no Fourier component outside the 5 key frequencies has significant norm.</p>
+<p>The unembedding matrix "reads off" terms of the form $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$ from the MLP neurons. Next, we take the dot product of the MLP activations with each of the directions $u_{k}, v_{k}$ for $k \in{14,35,41,42,52}$. Table 1 displays the results: the dot products $u_{k}^{T} \operatorname{MLP}(a, b)$ and $v_{k}^{T} \operatorname{MLP}(a, b)$ are well approximated by a multiple of terms of the form</p>
+<p>$$
+\begin{aligned}
+&amp; \cos \left(w_{k}(a+b)\right)=\cos \left(w_{k} a\right) \cos \left(w_{k} b\right)-\sin \left(w_{k} a\right) \sin \left(w_{k} b\right), \text { and } \
+&amp; \sin \left(w_{k}(a+b)\right)=\sin \left(w_{k} a\right) \cos \left(w_{k} b\right)+\cos \left(w_{k} a\right) \sin \left(w_{k} b\right) .
+\end{aligned}
+$$</p>
+<p>That is, for each key frequency $k, u_{k}$ and $v_{k}$ are linear directions in the space of MLP neuron activations that represent $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$.
+Logits are well approximated by a weighted sum of $\cos \left(w_{k}(a+b-c)\right)$ s. We approximate the output logits as the sum $\sum_{k} \alpha_{k} \cos \left(w_{k}(a+b-c)\right)$ for $k \in{14,35,41,42,52}$ and fit the coefficients $\alpha_{k}$ via ordinary least squares. This approximation explains $95 \%$ of the variance in the original logits. This is surprising-the output logits are a $113 \cdot 113 \cdot 113$ dimensional vector, but are wellapproximated with just the 5 directions predicted by our interpretation. If we evaluate test loss using this logit approximation, we actually see an improvement in loss, from $2.4 \cdot 10^{-7}$ to $4.7 \cdot 10^{-8}$.
+Taken together, these results confirm that the model computes sums of terms of the form $\cos \left(w_{k}(a+b-c)\right)=\cos \left(w_{k}(a+b)\right) \cos \left(w_{k} c\right)+\sin \left(w_{k}(a+b)\right) \sin \left(w_{k} c\right)$.</p>
+<h1>4.3 ZOoming In: Approximating NeURons With Sines and Cosines</h1>
+<p>In the previous section, we showed how the model computes its final logits by using $W_{L}$ to "read off" trigonometric identities represented in the MLP neurons. We now examine the attention heads and MLP neurons to understand how the identities come to be represented at the MLP layer. In Appendix C.1.2, we show that two of the attention heads approximately compute degree-2 polynomials of sines and cosines of a particular frequency (and the other two are used to increase the magnitude of the input embeddings in the residual stream). Here, we show that most neurons are also well-approximated by degree-2 polynomials, and the map from neurons to logits is localized by frequency.
+Most MLP neurons approximately compute a degree-2 polynomial of a single frequency. We next try to approximate the activations of each MLP neuron by a degree- 2 polynomial of one of the 5 key frequencies. As shown in Figure 5, out of 512 total neurons, 433 ( $84.6 \%$ ) have over $85 \%$ of their variance explained with a single frequency.</p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: (Left) Most neurons are well-approximated by degree-2 polynomials of a single frequency. (Right) A heatmap showing weights in $W_{L}$ corresponding to each of the 44 neurons of frequency 14. The non-trivial components correspond to $\sin (w_{1})$ and $\cos (w_{2})$ for $k=14$.
+<img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: The loss of the transformer (lower=better) when ablating each frequency $k \in{1,2, \ldots, 56}$ and everything except for the five key frequencies (restricted loss). We include the original unablated loss for reference. Ablating key frequencies causes a performance drop, while the other ablations do not harm performance.</p>
+<p>Maps to the logits are localized by frequency. We partition these 433 neurons by the frequencies with the highest variance explained. For each resulting subset, the map $W_{L}$ from neurons to logits has only two non-trivial components, corresponding to sine and cosine at that frequency. For example, in Figure 5 we plot the 44 columns of $W_{L}$ corresponding to the 44 neurons in the $k=14$ cluster and find that the only non-negligible components are $\sin \left(\frac{2 k \pi}{P}\right)$ and $\cos \left(\frac{2 k \pi}{P}\right)$ for $k=14$.</p>
+<h1>4.4 CORRECTNESS CHECKS: ABLATIONS</h1>
+<p>In previous sections, we showed that various components of the model were well-approximated by sparse combinations of sines and cosines. We verify that these approximations are faithful to the model's functionality, by replacing each component with its approximation. This generally does not hurt the performance of the model and in some cases improves it.</p>
+<p>MLP neurons. In Section 4.3, we identified 433 neurons that were well-approximated by a degree-2 polynomial. We replace each of these neurons' activation value by the corresponding polynomial, leaving the other neurons untouched. This increases loss by only $3 \%$ in relative terms (from $2.41 \cdot$ $10^{-7}$ to $2.48 \cdot 10^{-7}$ ) and has no effect on accuracy.</p>
+<p>We can instead apply a stricter ablation to the MLP layer and restrict each neuron's activation to just the components of the polynomial corresponding to terms of the form $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$ in the key frequencies. This improves loss by $77 \%$ (to $5.54 \cdot 10^{-8}$ ), validating that the logits are calculated by trig identities of neurons as detailed in Section 4.2.</p>
+<p>Logit frequencies. Next, we ablate various components of the final logits in the Fourier space. To do so, we take a 2D DFT on the $113 \cdot 113 \cdot 113$ logit matrix over all $113 \cdot 113$ pairs of inputs to get the logits in the Fourier basis, then set various frequencies in this basis to 0 .</p>
+<p>We begin by ablating the components corresponding to each of the key frequencies. As reported in Figure 6, ablating any key frequency causes a significant increase in loss. This confirms that the five frequencies identified in previous sections are indeed necessary components of the transformer. In contrast, ablating other frequencies does not hurt the model at all.</p>
+<p>We then ablate all $113 \cdot 113-40$ of the Fourier components besides key frequencies; this ablation actually improves performance (loss drops $70 \%$ to $7.24 \cdot 10^{-8}$ ).</p>
+<p><img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 7: How each of the progress measures in Section 5.1 changes over the course of training. The lines delineate the 3 phases of training: memorization, circuit formation, and cleanup (and a final stable phase). (Top Left) Excluded loss increases during circuit formation, while train and test loss remain flat. (Top Right) The restricted loss begins declining before test loss declines, but has an inflection point when grokking begins to occur. (Bottom Left) The Gini coefficient of the norms of the Fourier components of $W_{E}$ and $W_{L}$ increase sharply during cleanup. (Bottom Right) The sums of squared weights decreases smoothly during circuit formation and more sharply during cleanup, indicating that both phases are linked to weight decay.</p>
+<p>Directions in $W_{L}$. In Section 4.2, we found that $W_{L}$ is well approximated by the 10 directions corresponding to the cosine and sine of key frequencies. If we project the MLP activations to these 10 directions, loss decreases 50\% to $1.19 \cdot 10^{-7}$. If we instead projected the MLP activations onto the nullspace of these 10 directions, loss increases to 5.27 -worse than uniform. This suggests that the network achieves low loss using these and only these 10 directions.</p>
+<h1>5 UNDERSTANDING GROKKING BEHAVIOR USING PROGRESS MEASURES</h1>
+<p>We now use our mechanistic understanding of the network to define two progress measures: metrics that can be computed during training that track the progress of the model over the course of training, including during phase transitions. This allows us to study how the network reaches its final solution.</p>
+<h3>5.1 ProgReSS MEASUReS</h3>
+<p>We translate the ablations in Section 4.4 into two progress measures: restricted and excluded loss.
+Restricted loss. Since the final network uses a sparse set of frequencies $w_{k}$, it makes sense to check how well intermediate versions of the model can do using only those frequencies. To measure this, we perform a 2D DFT on the logits to write them as a linear combination of waves in $a$ and $b$, and set all terms besides the constant term and the 20 terms corresponding to $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$ for the five key frequencies to 0 . We then measure the loss of the ablated network.</p>
+<p>Excluded loss. Instead of keeping the important frequencies $w_{k}$, we next remove only those key frequencies from the logits but keep the rest. We measure this on the training data to track how much of the performance comes from Fourier multiplication versus memorization. The idea is that the memorizing solution should be spread out in the Fourier domain, so that ablating a few directions will leave it mostly unaffected, while the generalizing solution will be hurt significantly.</p>
+<p>Beyond these, we will also measure (1) the Gini coefficient (Hurley \&amp; Rickard, 2009) of the norms of the Fourier components of $W_{E}$ and $W_{L}$, which measures the sparsity of $W_{E}$ and $W_{L}$ in the Fourier basis, and (2) the $\ell_{2}$-norm of the weights during training, since weight decay should push these down once the train loss is near zero.</p>
+<h1>5.2 PHASES OF GROKKING: MEMORIZATION, CIRCUIT FORMATION, AND CLEANUP</h1>
+<p>Using the mainline model from Section 4, we plot the excluded loss, restricted loss, Gini coefficient of the matrices $W_{U}$ and $W_{L}$, and sum of squared weights in Figure 7. We find that training splits into three phases, which we call the memorization, circuit formation, and cleanup phases. (We show similar results for other models in Appendix C.2.)
+Memorization (Epochs 0k-1.4k). We first observe a decline of both excluded and train loss, with test and restricted loss both remaining high and the Gini coefficient staying relatively flat. In other words, the model memorizes the data, and the frequencies $w_{k}$ used by the final model are unused.
+Circuit formation (Epochs 1.4k-9.4k). In this phase, excluded loss rises, sum of squared weights falls, restricted loss starts to fall, and test and train loss stay flat. This suggests that the model's behavior on the train set transitions smoothly from the memorizing solution to the Fourier multiplication algorithm. The fall in the sum of squared weights suggests that circuit formation likely happens due to weight decay. Notably, the circuit is formed well before grokking occurs.
+Cleanup (Epochs 9.4k-14k). In this phase, excluded loss plateaus, restricted loss continues to drop, test loss suddenly drops, and sum of squared weights sharply drops. As the completed Fourier multiplication circuit both solves the task well and has lower weight than the memorization circuit, weight decay encourages the network to shed the memorized solution in favor of focusing on the Fourier multiplication circuit. This is most cleanly shown in the sharp increase in the Gini coefficient for the matices $W_{E}$ and $W_{L}$, which shows that the network is becoming sparser in the Fourier basis.</p>
+<h3>5.3 Grokking and WeIGHT Decay</h3>
+<p>In the previous section, we saw that each phase of grokking corresponded to an inflection point in the $\ell_{2}$-norm of the weights. This suggests that weight decay is an important component of grokking and drives progress towards the generalizing solution. In Appendix D.1, we provide additional evidence that weight decay is necessary for grokking: smaller amounts of weight decay causes the network to take significantly longer to grok (echoing the results on toy models from Liu et al. (2022)), and our networks do not grok on the modular arithmetic task without weight decay or some other form of regularization. In Appendix C.2, we also find that the amount of data affects grokking: when networks are provided with enough data, there is no longer a gap between the train and test losses (instead, both decline sharply some number of epochs into training). Finally, in Appendix D. 3 we replicate these results on several additional algorithmic tasks.</p>
+<h2>6 CONCLUSION AND DISCUSSION</h2>
+<p>In this work, we use mechanistic interpretability to define progress measures for small transformers trained on a modular addition task. We find that the transformers embed the input onto rotations in $\mathbb{R}^{2}$ and compose the rotations using trigonometric identities to compute $a+b \bmod 113$. Using our reverse-engineered algorithm, we define two progress measures, along which the network makes continuous progress toward the final algorithm prior to the grokking phase change. We see this work as a proof of concept for using mechanistic interpretability to understand emergent behavior.</p>
+<p>Larger models and realistic tasks. In this work, we studied the behavior of small transformers on a simple algorithmic task, solved with a single circuit. On the other hand, larger models use larger, more numerous circuits to solve significantly harder tasks (Cammarata et al., 2020; Wang et al., 2022). The analysis reported in this work required significant amounts of manual effort, and our progress metrics are specific to small networks on one particular algorithmic task. Methods for automating the analysis and finding task-independent progress measures seem necessary to scale to other, larger models. We discuss possible scenarios for more realistic applications in Appendix F.
+Discovering phase change thresholds. While the progress measures we defined in Section 5.1 increase relatively smoothly before the phase transition (and suffice to allow us to understand grokking for this task) we lack a general notion of criticality that would allow us to predict when the phase transition will happen ex ante. Future work should develop theory and practice in order to apply progress measures to predict the timing of emergent behavior.</p>
+<h1>REPRODUCIbILITY STATEMENT</h1>
+<p>An annotated Colab notebook containing the code to replicate our results, including download instructions for model checkpoints, is available at https://neelnanda.io/ grokking-paper.</p>
+<h2>AUTHOR CONTRIBUTIONS</h2>
+<p>Neel Nanda was the primary research contributor. He reverse engineered the weights of the mainline model to discover the Fourier multiplication algorithm and found the lines of evidence in Section 4. He also discovered the restricted and excluded loss progress measures and that grokking in mainline model could be divided into three discrete phases. Finally, he found the link between grokking, limited data, and phase transitions by exhibiting grokking in other settings with phase transitions.</p>
+<p>Lawrence Chan was invaluable to the framing and technical writing of this work. In addition, he created the Gini coefficient progress measure and performed the analysis in the appendices exploring to what extent the results on the mainline model applied to the other small transformer models, including with other random seeds, architectures, prime moduli, and regularization methods.</p>
+<p>Tom Lieberum contributed to the early stages of this work by creating a minimal setup of grokking with a 1L Transformer on the modular addition task with no LayerNorm and finding the surprising periodicity within the model's internals.</p>
+<p>Jess Smith performed experiments exploring grokking with different random seeds, architectures, and other hyper-parameters.</p>
+<p>Jacob Steinhardt helped clarify and distill the results, provided significant amounts of editing and writing feedback, and suggested the progress measure frame.</p>
+<h2>ACKNOWLEDGMENTS</h2>
+<p>In writing this paper, our thinking and exposition was greatly clarified by correspondence with and feedback from Oliver Balfour, David Bau, Sid Black, Nick Cammarata, Stephen Casper, Bilal Chughtai, Arthur Conmy, Xander Davies, Ben Edelman, Nelson Elhage, Ryan Greenblatt, Jacob Hilton, Evan Hubinger, Zac Kenton, Janos Kramar, Lauro Langosco, Tao Lin, David Lindner, Eric Michaud, Vlad Mikulik, Noa Nabeshima, Chris Olah, Michela Paganini, Michela Paganini, Alex Ray, Rohin Shah, Buck Shlegeris, Alex Silverstein, Ben Toner, Johannes Treutlein, Nicholas Turner, Vikrant Varma, Vikrant Varma, Kevin Wang, Martin Wattenberg, John Wentworth, and Jeff Wu.</p>
+<p>We'd also like to thank Adam Gleave and Chengcheng Tan for providing substantial editing help, and Noa Nabeshima and Vlad Mikulik for pair programming with Neel.</p>
+<p>This work draws heavily on the interpretability techniques and framework developed by Elhage et al. (2021) and Olsson et al. (2022).</p>
+<p>We trained our models using PyTorch (Paszke et al., 2019) and performed our data analysis using NumPy (Harris et al., 2020), Pandas (Wes McKinney, 2010), and einops (Rogozhnikov, 2022). Our figures were made using Plotly (Plotly Technologies Inc., 2015).</p>
+<p>Neel would like to thank Jemima Jones for providing practical and emotional support as he navigated personal challenges while contributing to this paper, and to the Schelling Residency for providing an excellent research environment during the distillation stage. He would also like to thank the Anthropic interpretability team, most notably Chris Olah, for an incredibly generous amount of mentorship during his time there, without which this investigation would never have happened.</p>
+<h2>REFERENCES</h2>
+<p>Boaz Barak, Benjamin L Edelman, Surbhi Goel, Sham Kakade, Eran Malach, and Cyril Zhang. Hidden progress in deep learning: Sgd learns parities near the computational limit. arXiv preprint arXiv:2207.08799, 2022.</p>
+<p>Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are few-shot learners. Advances in neural information processing systems, 33:1877-1901, 2020.</p>
+<p>Nick Cammarata, Shan Carter, Gabriel Goh, Chris Olah, Michael Petrov, Ludwig Schubert, Chelsea Voss, Ben Egan, and Swee Kiat Lim. Thread: Circuits. Distill, 2020. doi: 10.23915/distill.00024. https://distill.pub/2020/circuits.</p>
+<p>Nelson Elhage, Neel Nanda, Catherine Olsson, Tom Henighan, Nicholas Joseph, Ben Mann, Amanda Askell, Yuntao Bai, Anna Chen, Tom Conerly, Nova DasSarma, Dawn Drain, Deep Ganguli, Zac Hatfield-Dodds, Danny Hernandez, Andy Jones, Jackson Kernion, Liane Lovitt, Kamal Ndousse, Dario Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Chris Olah. A mathematical framework for transformer circuits. Transformer Circuits Thread, 2021. https://transformer-circuits.pub/2021/framework/index.html.</p>
+<p>Jonathan Frankle and Michael Carbin. The lottery ticket hypothesis: Finding sparse, trainable neural networks. arXiv preprint arXiv:1803.03635, 2018.</p>
+<p>Deep Ganguli, Danny Hernandez, Liane Lovitt, Amanda Askell, Yuntao Bai, Anna Chen, Tom Conerly, Nova Dassarma, Dawn Drain, Nelson Elhage, et al. Predictability and surprise in large generative models. In 2022 ACM Conference on Fairness, Accountability, and Transparency, pp. $1747-1764,2022$.</p>
+<p>Charles R. Harris, K. Jarrod Millman, Stéfan J. van der Walt, Ralf Gommers, Pauli Virtanen, David Cournapeau, Eric Wieser, Julian Taylor, Sebastian Berg, Nathaniel J. Smith, Robert Kern, Matti Picus, Stephan Hoyer, Marten H. van Kerkwijk, Matthew Brett, Allan Haldane, Jaime Fernández del Río, Mark Wiebe, Pearu Peterson, Pierre Gérard-Marchant, Kevin Sheppard, Tyler Reddy, Warren Weckesser, Hameer Abbasi, Christoph Gohlke, and Travis E. Oliphant. Array programming with NumPy. Nature, 585(7825):357-362, September 2020. doi: 10.1038/ s41586-020-2649-2. URL https://doi.org/10.1038/s41586-020-2649-2.</p>
+<p>Niall Hurley and Scott Rickard. Comparing measures of sparsity. IEEE Transactions on Information Theory, 55(10):4723-4741, 2009.</p>
+<p>Ziming Liu, Ouail Kitouni, Niklas Nolte, Eric J Michaud, Max Tegmark, and Mike Williams. Towards understanding grokking: An effective theory of representation learning. arXiv preprint arXiv:2205.10343, 2022.</p>
+<p>Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. arXiv preprint arXiv:1711.05101, 2017.</p>
+<p>Thomas McGrath, Andrei Kapishnikov, Nenad Tomašev, Adam Pearce, Demis Hassabis, Been Kim, Ulrich Paquet, and Vladimir Kramnik. Acquisition of chess knowledge in alphazero. arXiv preprint arXiv:2111.09259, 2021.</p>
+<p>Beren Millidge. Grokking 'grokking', 2022. URL https://www.beren.io/ 2022-01-11-Grokking-Grokking/.</p>
+<p>Catherine Olsson, Nelson Elhage, Neel Nanda, Nicholas Joseph, Nova DasSarma, Tom Henighan, Ben Mann, Amanda Askell, Yuntao Bai, Anna Chen, Tom Conerly, Dawn Drain, Deep Ganguli, Zac Hatfield-Dodds, Danny Hernandez, Scott Johnston, Andy Jones, Jackson Kernion, Liane Lovitt, Kamal Ndousse, Dario Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Chris Olah. In-context learning and induction heads. Transformer Circuits Thread, 2022. https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html.</p>
+<p>Alexander Pan, Kush Bhatia, and Jacob Steinhardt. The effects of reward misspecification: Mapping and mitigating misaligned models. arXiv preprint arXiv:2201.03544, 2022.</p>
+<p>Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et al. Pytorch: An imperative style, highperformance deep learning library. Advances in neural information processing systems, 32, 2019.</p>
+<p>Plotly Technologies Inc. Collaborative data science, 2015. URL https://plot.ly.</p>
+<p>Alethea Power, Yuri Burda, Harri Edwards, Igor Babuschkin, and Vedant Misra. Grokking: Generalization beyond overfitting on small algorithmic datasets. arXiv preprint arXiv:2201.02177, 2022.</p>
+<p>Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et al. Language models are unsupervised multitask learners. OpenAI blog, 1(8):9, 2019.</p>
+<p>Alex Rogozhnikov. Einops: Clear and reliable tensor manipulations with einstein-like notation. In International Conference on Learning Representations, 2022. URL https://openreview. net/forum?id=oapKSVM2bcj.</p>
+<p>Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. Dropout: a simple way to prevent neural networks from overfitting. The journal of machine learning research, 15(1):1929-1958, 2014.</p>
+<p>Jacob Steinhardt. More is different for ai, Feb 2022. URL https://bounded-regret. ghost.io/more-is-different-for-ai/.</p>
+<p>Vimal Thilak, Etai Littwin, Shuangfei Zhai, Omid Saremi, Roni Paiss, and Joshua Susskind. The slingshot mechanism: An empirical study of adaptive optimizers and the grokking phenomenon. arXiv preprint arXiv:2206.04817, 2022.</p>
+<p>Kevin Wang, Alexandre Variengien, Arthur Conmy, Buck Shlegeris, and Jacob Steinhardt. Interpretability in the wild: a circuit for indirect object identification in gpt-2 small. arXiv preprint arXiv:2211.00593, 2022.</p>
+<p>Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, et al. Emergent abilities of large language models. arXiv preprint arXiv:2206.07682, 2022a.</p>
+<p>Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Ed Chi, Quoc Le, and Denny Zhou. Chain of thought prompting elicits reasoning in large language models. arXiv preprint arXiv:2201.11903, 2022b.</p>
+<p>Wes McKinney. Data Structures for Statistical Computing in Python. In Stéfan van der Walt and Jarrod Millman (eds.), Proceedings of the 9th Python in Science Conference, pp. 56 - 61, 2010. doi: 10.25080/Majora-92bf1922-00a.</p>
+<h1>A Mathematical Structure of the Transformer</h1>
+<p>We follow the conventions and notation of Elhage et al. (2021) in describing our model. Here, we briefly recap their notation and examine it in our specific case.
+We denote our hyperparameters as follows: $d_{\text {vocab }}=113$ is the size of the input and output spaces (treating ' $=$ ' separately), $d_{\text {model }}=128$ is the width of the residual stream (i.e. embedding size), $d_{\text {head }}=32$ is the size of query, key and value vectors for a single attention head, and $d_{\text {mlp }}=512$ is the number of neurons.</p>
+<p>We denote the parameters as follows: $W_{E}$ (embedding layer); $W_{\text {pos }}$ (positional embedding); $W_{Q}^{j}$ (queries), $W_{K}^{j}$ (keys), $W_{V}^{j}$ (values), $W_{O}^{j}$ (attention output) (the 4 weight matrices of head $j$ in the attention layer); $W_{\text {in }}$ and $b_{\text {in }}$ for the input linear map of the MLP layer; $W_{\text {out }}$ and $b_{\text {out }}$ for the output linear map of the MLP layer; and $W_{U}$ (unembedding layer). Note that we do not have biases in our embedding, attention layer or unembedding, and we do not tie the matrices for the embedding/unembedding layers.</p>
+<p>We now describe the mathematical structure of our network. Note that loss is only calculated from the logits on the final token, and information only moves between tokens during the attention layer, so our variables from the end of the attention layer onwards only refer to the final token. We use $t_{i}$ to denote the token in position $i$ (as a one-hot encoded vector), $p_{i}$ to denote the $i$ th positional embedding, $x_{i}^{(0)}$ to denote the initial residual stream on token with index $i, A^{(i)}$ to denote the attention scores from $=$ to all previous tokens from head $i, x^{(1)}$ to denote the residual stream after the attention layer on the final token, MLP to denote the neuron activations in the MLP layer on the final token, $x^{(2)}$ the final residual stream on the final token, Logits the logits on the final token.</p>
+<p>The logits are calculated via the following equations:</p>
+<p>$$
+\begin{aligned}
+x_{i}^{(0)} &amp; =W_{E} t_{i}+p_{i} \
+A^{j} &amp; =\text { softmax }\left(x^{(0)^{T}} W_{K}^{j^{T}} W_{Q}^{j} x_{2}^{(0)}\right) \
+x^{(1)} &amp; =\left[\sum_{j} W_{O}^{j} W_{V}^{j}\left(x^{(0)} \cdot A^{j}\right)\right]+x_{2}^{(0)} \
+\text { MLP } &amp; =\operatorname{ReLU}\left(W_{i n} x^{(1)}\right) \
+x^{(2)} &amp; =W_{\text {out }} N+x^{(1)}=W_{\text {out }} \operatorname{ReLU}\left(W_{i n} x^{(1)}\right)+x^{(1)} \
+\text { Logits } &amp; =W_{U} x^{(2)}
+\end{aligned}
+$$</p>
+<p>As in Elhage et al. (2021), we refer to the term $W_{O}^{j} W_{V}^{j}\left(x^{(0)}\right)$ as the OV circuit for head $j$.</p>
+<h2>A. 1 Empirical Model Simplifications</h2>
+<p>We make two empirical observations:</p>
+<ul>
+<li>The attention paid from ' $=$ ' to itself is trivial. In practice, the average attention paid is $0.1 \%$ to $0.4 \%$ for each head, and ablating this does not affect model performance at all.</li>
+<li>The skip connection around the MLP layer is not important for the model's computation and can be ignored. Concretely, if we set it to zero or to its average (zero or mean ablation) then model accuracy is unchanged, and loss goes from $2.4 \cdot 10^{-7}$ to $9.12 \cdot 10^{-7}$ and $7.25 \cdot$ $10^{-7}$ respectively. This is a significant increase in loss, but from such a small baseline that we can still ignore it and reverse engineer the model's computation. (That being said, both the attention heads and the skip connection around them are crucial to the functioning of the model: zero ablating attention heads increases loss to 24.3, while zero ablating the skip connection around the attention heads increases loss to 19.1, both significantly worse than chance.)</li>
+</ul>
+<p>A consequence of the first observation is that the attention is now a softmax over 2 elements, i.e. a sigmoid over the difference. And $x_{2}^{(0)}$ is constant, as it is independent of $x$ and $y$, and the embedding</p>
+<p>Constructive Interference of Cosine Waves of Different Frequencies
+<img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 8: As discussed in Appendix B, while for every $k \in[0, \ldots P-1], \cos \left(\frac{2 k \pi}{P} x\right)$ achieves its maximum value (1) at $x=0 \bmod 113$, it still has additional peaks at different values that are close to the maximum value. However, by adding together cosine waves of the 5 keyfrequencies, the model constructs a periodic function where the value at $x=0 \bmod 113$ is significantly larger than its value anywhere else.
+and positional embedding of ' $=$ ' are fixed. So $A_{0}^{j}=\sigma\left(x_{2}^{(0)^{T}} W_{Q}^{j^{T}} W_{K}\left(x_{0}^{(0)}-x_{1}^{(0)}\right)\right)$ (and $A_{1}^{j}=$ $\left.1-A_{0}^{j}\right)$
+A consequence of the second observation is that Logits $\approx W_{U} W_{\text {out }} \mathrm{MLP}$, which we denote as $W_{L}=W_{U} W_{\text {out }}$. From the perspective of the network, $W_{L}$ is the meaningful matrix, not either of its constituents, since they compose linearly.</p>
+<h1>B WHY USE CONSTRUCTIVE INTEREFERENCE?</h1>
+<p>As demonstrated in Section 4 and Appendix C.2.1, small transformers trained on this task use several different frequencies which they add together. The reason for this is to end up with a function whose value at $x=0 \bmod 113$ is significantly larger than any other $x$.
+For example, consider the function $f_{14}(x)=\cos \left(\frac{2 \pi \cdot 14}{113} x\right)$. This function has period 113 and is maximized at $x=0 \bmod 113$. However, other values of $x$ cause this function to be close to 1 : $f_{14}(8)=f_{14}(105)=0.998, f_{14}(16)=f_{14}(89)=0.994$, etc.
+Now consider $f_{35}(x)=\cos \left(\frac{2 \pi \cdot 35}{113} x\right)$. While this function also has period 113 and is maximized at $x=0 \bmod 113$, it turns out that $f_{35}(8)=f_{35}(105)=-0.990$. This means that by adding together $f_{14}$ and $f_{35}$, we end up with a function that is not close to 1 at $x=8 \bmod 113$. Similarly, while $f_{35}(16)=0.961, f_{52}(16)=-0.56$, and so adding a third frequency reduces the peak at $x=16 \bmod 113$.</p>
+<p>We show the constructive interference resulting from the cosine waves for the five frequencies used by the mainline model in Figure 8.</p>
+<h2>C SUPPORTING EVIDENCE FOR MECHANISTIC ANALYSIS OF MODULAR ARITHMETIC NETWORKS</h2>
+<h2>C. 1 FURTHER ANALYSIS OF THE SPECIFIC TRAINING RUN DISCUSSED IN THE PAPER</h2>
+<p>In this section, we provide additional evidence relating to the mainline model.</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 9: Attention patterns for each head, from the ' $=$ ' token at the third sequence position to the $a$ token at the first sequence position, as a heatmap over the inputs. All four attention heads exhibit striking periodicity.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Head</th>
+<th style="text-align: center;">$k$</th>
+<th style="text-align: center;">$\alpha^{j}$</th>
+<th style="text-align: center;">$\beta^{j}$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">-0.26</td>
+<td style="text-align: center;">-0.14</td>
+<td style="text-align: center;">$99.03 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">-0.04</td>
+<td style="text-align: center;">$98.49 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: center;">0.29</td>
+<td style="text-align: center;">-0.05</td>
+<td style="text-align: center;">$99.07 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">-0.26</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">$97.91 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2: For each attention head, we show the pattern from ' $=$ ' to $a$ is well approximated by $0.5+$ $\alpha\left(\cos \left(w_{k} a\right)-\cos \left(w_{k} b\right)\right)+\beta\left(\sin \left(w_{k} a\right)-\sin \left(w_{k} b\right)\right)$ and give the coefficients and fraction of variance explained for this approximation.</p>
+<h1>C.1.1 PERIODICITY IN THE ACTIVATIONS OF OTHER ATTENTION HEADS</h1>
+<p>In Figure 9 we plot the attention patterns from the final token ' $=$ ' to the first token $a$ for all 4 attention heads, as a heatmap over the inputs $a$ and $b$, as this is a scalar for each head. We observe a striking periodicity and further that heads 1 and 3 represent the same frequency while heads 0 and 2 are different.
+As shown in Appendix A.1, the attention paid from ' $=$ ' to itself is negligible, so $A_{0}^{j}=1-A_{1}^{j}$ and it suffices to plot attention to $a$.</p>
+<h2>C.1.2 Approximating attention heads with Sines and Cosines</h2>
+<p>Attention heads approximately compute degree-2 polynomials of a single frequency or are used to amplify $W_{E}$. In order to compute terms like $\cos \left(w_{k}(a+b)\right)$, the model needs to compute the product of the sine and cosine embeddings output by $W_{E}$. As the attention heads are approximately bilinear (product of attention weights and OV circuit), they are a natural place to perform this computation. Indeed, for each head, the attention scores' Fourier transform is concentrated on a single frequency $w_{k}$. For two of the four heads, the corresponding OV circuit is concentrated on that same frequency. Moreover, the softmax mapping the attention scores to attention weights is in a regime where it behaves approximately linearly (and replacing it with a linear function actually improves performance). Thus the attention weights multiply with the OV output to create degree-2 polynomials of the frequency $w_{k}$, as would be needed for the cosine/sine addition formulas.
+For the remaining two heads, their attention scores approximately sum to one and the OV circuits contain all five key frequencies, suggesting that they are used to increase the magnitude of key frequencies in the residual stream. We confirm all of these claims in Appendix C.1.3.</p>
+<h2>C.1.3 THE ATTENTION PATTERN WEIGHTS ARE WELL APPROXIMATED BY DIFFERENCES OF SINES AND COSINES OF A SINGLE FREQUENCY.</h2>
+<p>The periodicity of the attention heads has a striking form- $A_{0}^{j}$ is well approximated by $0.5+$ $\alpha^{j}\left(\cos \left(w_{k} a\right)-\cos \left(w_{k} b\right)\right)+\beta^{j}\left(\sin \left(w_{k} a\right)-\sin \left(w_{k} b\right)\right)$, for some frequency $w_{k}$ and constants $\alpha^{j}$ and $\beta^{j}$ (which may differ for each head). Note further that this simplifies to $0.5+\gamma\left(\cos \left(w_{k}(a+\right.\right.$ $\theta))-\cos \left(w_{k}(b+\theta)\right)$ ) for some constants $\gamma$ and $\theta$. We show the coefficients and fraction of variance explained in Table 1</p>
+<p><img alt="img-9.jpeg" src="img-9.jpeg" /></p>
+<p>Figure 10: We plot the attention pattern weights $C_{j}$ in the Fourier basis for each of the four heads $j \in{0,1,2,3}$. We observe significant sparsity, with almost all of each term being associated with a single frequency.</p>
+<p>Mechanistic Analysis of Attention Patterns. We can further mechanistically analyse how the model achieves this form. The following is a high-level sketch of what is going on:
+First, note that the attention score on position 0 and head $j$ is just a lookup table on the input token $a$ (of size $P$ ). To see why, note that $A_{0}^{j}=m x_{0}^{(0)^{T}} W_{K}^{j^{T}} W_{Q}^{j} x_{2}^{(0)}$. $x_{2}^{(0)}$ is constant since the token is always ' $=$ ' and $x_{0}^{(0)}=W_{E} t_{0}+p_{0}$. So this reduces to $t_{0} \cdot C_{j}+D$ for some constant vector $C_{j}=W_{E}^{T} W_{K}^{j^{T}} W_{Q}^{j} x_{2}^{(0)} \in \mathbb{R}^{p}$ and some scalar $D=p_{0}^{T} W_{K}^{j}{ }^{T} W_{Q}^{j} x_{2}^{(0)}$. As $t_{0}$ is one-hot encoded, this is just a lookup table, which we may instead denote as $C_{j}[a]$.
+Next, note that the attention pattern from $=\rightarrow 0$ is $\sigma\left(C_{j}[a]-C_{j}[b]\right)$. As argued in Appendix A.1, the attention paid $=\rightarrow=$ is negligible and can be ignored. So the softmax reduces to a softmax over two elements, which is a sigmoid on their difference. As form of $C_{j}$ does not mention the token index or value, it is the same for position 0 and 1.
+We now show that $C_{j}$ is well-approximated by a wave of frequency $w_{k_{j}}$ for some integer $k_{j}$. That is, $C_{j}[a] \approx F_{j} \cos \left(w_{k_{j}} a\right)+G_{j} \sin \left(w_{k_{j}} a\right)$. We do this by simply computing $C_{j}$ and fitting the constants $F_{j}$ and $G_{j}$ to minimize $\ell_{2}$ loss, and display the resulting coefficients for each head in Figure 10. This fit explain $99.02 \%, 95.21 \%, 99.10 \%, 92.42 \%$ of the variance of $C_{j}$ respectively. Interestingly, the coefficients of heads 1 and 3 are almost exactly the opposite of each other.
+For each head $j, \sigma\left(C_{j}[a]-C_{j}[b]\right) \approx 0.5+E_{j}\left(C_{j}[a]-C_{j}[b]\right)$ for some constant $E_{j}$-that is, the sigmoid has some linear approximation. (The intercept will be 0.5 by symmetry.) The striking thing is that, because the inputs to the sigmoid for the attention heads are over a fairly wide range ( $[-5,5]$ roughly), the linear approximation to the sigmoid is a fairly good fit, explaining $97.5 \%$ of the variance.
+We validate that this is all that is going on, by replacing the sigmoid with the best linear fit. This improves performance, decreasing test loss from $2.41 \cdot 10^{-7}$ to $2.12 \cdot 10^{-7}$.
+By properties of sinusoidal functions, the attention patterns of each head will be well approximated by $0.5 \pm C_{j}\left(\cos \left(w_{k_{j}}\left(a+\theta_{j}\right)\right)-\cos \left(w_{k_{j}}\left(b+\theta_{j}\right)\right)\right)$ - the softmax is linear, with an intercept of 0.5 , and the weights $C_{j}$ map each token to a score that is a wave in a single frequency. This exactly gives us the periodic form shown in Figure 9.</p>
+<p><img alt="img-10.jpeg" src="img-10.jpeg" /></p>
+<p>Figure 11: We plot the output of the OV circuit $W_{O}^{j} W_{V}^{j} x^{(0)}$ in the Fourier basis for each of the four heads $j \in{0,1,2,3}$. As with the attention pattern weights $C_{j}$ in Figure 10, we observe that the only components with significant norm are those corresponding to key frequencies, and that the largest component corresponds to the frequencies of the attention patterns of the attention heads. As attention pattern of heads 1 and 3 are sum to one, but their OV circuits are almost exactly the same and consist of all five key frequencies, this implies that heads 1 and 3 are used to increase the magnitude of key frequencies in the residual stream (Section C.1.3).</p>
+<p>Finally, for each head $j$, we plot the output of the OV circuit $W_{O}^{j} W_{V}^{j} x^{(0)}$ in the Fourier basis and display the results in Figure 11). The largest component of each head corresponding to the frequency of the attention pattern $C_{j}$, with heads 0 and 2 being almost entirely composed of a sines and cosines of a single frequency. On the other hand, the norms for the components of heads 1 and 3 are almost exactly the same, and contain all five key frequencies. As the coefficients of the attention pattern weights have the opposite non-constant components (Table 2, Figure 10), their attention scores sum almost exactly to 1 across all inputs. This implies that heads 1 and 3 are used to output the first order terms $\sin \left(w_{k}\right), \cos \left(w_{k}\right)$ in the five key frequencies. We speculate that this is because of weight decay encouraging the embeddings $W_{E}$ to be small, causing the network to allocate two of its attention heads to effectively increasing the size of $W_{E}$.
+Bringing it all together, this implies that attention heads 0 and 2 are approximately computing a degree 2 polynomial of cosines and sines of a single frequency each, while heads 1 and 3 amplify the key frequencies in the residual stream.</p>
+<h1>C.1.4 PERIODICITY IN THE ACTIVATIONS OF ADDITIONAL NEURONS</h1>
+<p>In Figure 12, we display the activations of four more MLP neurons, as a function of the inputs. As with neuron 0 , the activations of these neurons are also periodic in the inputs.</p>
+<h2>C.1.5 ADDITIONAL GROKKING FIGURES FOR MAINLINE RUN</h2>
+<p>In Figure 13, we display the accuracy of the model when restricting the model to use only the five key frequencies. As with restricted loss, this improves model performance during training.
+In Figure 14, we show the coefficients of the five key frequencies in the logits, calculated by regressing the logits against the five $\cos \left(w_{k}(a+b-c)\right)$ terms.
+In Figure 15, we plot the excluded loss if we exclude each of the five key frequencies (as opposed to all five key frequencies).</p>
+<p><img alt="img-11.jpeg" src="img-11.jpeg" /></p>
+<p>Figure 12: Plots of neuron activations for MLP neurons 1, 2, 3 and 4, for inputs $a, b \in{0,1, \ldots, 112}$. As with Neuron 0 , all of the activation patterns are periodic in both inputs.
+<img alt="img-12.jpeg" src="img-12.jpeg" /></p>
+<p>Figure 13: Accuracy when restricting Fourier Components to the five key frequencies. As with restricted loss, this shows that the model figures out how to generalize modulo deleting noise before it removes the noise.</p>
+<p>All three of these figures have inflection points corresponding to the relevant phases of grokking, discussed in Section 5.1.</p>
+<h1>C. 2 ADDITIONAL RESULTS FROM DIFFERENT RUNS</h1>
+<p>In this section, we plot relevant figures from other runs, either with the same architecture (Appendix C.2.1) or with different architectures or experimental setups (Appendix C.2.2). Note that in general, while all models learn to use variants of the modular arithmetic algorithm, they use a varying number of different key frequencies. In order to find the key frequencies to calculate the excluded and restricted loss, we perform a DFT on the neuron-logit map $W_{L}$, then take the frequencies with nontrivial coefficients. ${ }^{3}$</p>
+<h2>C.2.1 ADDITIONAL RESULTS FOR DIFFERENT RUNS WITH THE SAME ARCHITECTURE</h2>
+<p>In this section, we provide evidence that all 4 other runs (i.e., random seeds) using the experimental setup of our mainline model also use the Fourier multiplication algorithm, and then confirm that the same phases of grokking also occur on these runs.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-13.jpeg" src="img-13.jpeg" /></p>
+<p>Figure 14: The coefficients of $\cos (w(a+b-c))$ in the logits over the model's training. As with the metrics in the paper, this shows a nice internalation and growth of each cosine term
+<img alt="img-14.jpeg" src="img-14.jpeg" /></p>
+<p>Figure 15: The excluded accuracy (left) and loss (right) if we exclude each of the five key frequencies for our mainline model. As with the excluded loss results in Section 5.1, this shows that the model interpolates between memorising and generalising.
+<img alt="img-15.jpeg" src="img-15.jpeg" /></p>
+<p>Figure 16: The norms of the Fourier components in the embedding matrix $W_{E}$ for each of four other random seeds for the original (1 layer) architecture. As discussed in Section 4.1 and Appendix C.2.1, the sparsity of $W_{E}$ in the Fourier basis is evidence that the network is operating in a Fourier basis.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$W_{L}$ Component</th>
+<th style="text-align: center;">Fourier components of $u_{k}^{T} \operatorname{MLP}(a, b)$ or $v_{k}^{T} \operatorname{MLP}(a, b)$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{2} c\right)$</td>
+<td style="text-align: center;">$147.4 \cos \left(w_{2} a\right) \cos \left(w_{2} b\right)-145.8 \sin \left(w_{2} a\right) \sin \left(w_{2} b\right) \approx 146.6 \cos \left(w_{2}(a+b)\right)$</td>
+<td style="text-align: center;">$99.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{2} c\right)$</td>
+<td style="text-align: center;">$145.5 \cos \left(w_{2} a\right) \sin \left(w_{2} b\right)+145.6 \sin \left(w_{2} a\right) \cos \left(w_{2} b\right) \approx 145.5 \sin \left(w_{2}(a+b)\right)$</td>
+<td style="text-align: center;">$99.1 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{9} c\right)$</td>
+<td style="text-align: center;">$49.3 \cos \left(w_{9} a\right) \cos \left(w_{9} b\right)-48.0 \sin \left(w_{9} a\right) \sin \left(w_{9} b\right) \approx 48.6 \cos \left(w_{9}(a+b)\right)$</td>
+<td style="text-align: center;">$96.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{9} c\right)$</td>
+<td style="text-align: center;">$48.6 \cos \left(w_{9} a\right) \sin \left(w_{9} b\right)+48.5 \sin \left(w_{9} a\right) \cos \left(w_{9} b\right) \approx 48.5 \sin \left(w_{9}(a+b)\right)$</td>
+<td style="text-align: center;">$96.7 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{19} c\right)$</td>
+<td style="text-align: center;">$58.0 \cos \left(w_{19} a\right) \cos \left(w_{19} b\right)-58.3 \sin \left(w_{19} a\right) \sin \left(w_{19} b\right) \approx 58.2 \cos \left(w_{19}(a+b)\right)$</td>
+<td style="text-align: center;">$95.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{19} c\right)$</td>
+<td style="text-align: center;">$59.3 \cos \left(w_{19} a\right) \sin \left(w_{19} b\right)+59.4 \sin \left(w_{19} a\right) \cos \left(w_{19} b\right) \approx 59.4 \sin \left(w_{19}(a+b)\right)$</td>
+<td style="text-align: center;">$93.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{31} c\right)$</td>
+<td style="text-align: center;">$94.4 \cos \left(w_{31} a\right) \cos \left(w_{31} b\right)-96.4 \sin \left(w_{31} a\right) \sin \left(w_{31} b\right) \approx 95.4 \cos \left(w_{31}(a+b)\right)$</td>
+<td style="text-align: center;">$98.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{31} c\right)$</td>
+<td style="text-align: center;">$97.2 \cos \left(w_{31} a\right) \sin \left(w_{31} b\right)+97.1 \sin \left(w_{31} a\right) \cos \left(w_{31} b\right) \approx 97.2 \sin \left(w_{31}(a+b)\right)$</td>
+<td style="text-align: center;">$98.7 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>(a) Seed 1</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$W_{L}$ Component</th>
+<th style="text-align: center;">Fourier components of $u_{k}^{T} \operatorname{MLP}(a, b)$ or $v_{k}^{T} \operatorname{MLP}(a, b)$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{40} c\right)$</td>
+<td style="text-align: center;">$97.0 \cos \left(w_{40} a\right) \cos \left(w_{40} b\right)-99.4 \sin \left(w_{40} a\right) \sin \left(w_{40} b\right) \approx 98.2 \cos \left(w_{40}(a+b)\right)$</td>
+<td style="text-align: center;">$97.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{40} c\right)$</td>
+<td style="text-align: center;">$81.3 \cos \left(w_{40} a\right) \sin \left(w_{40} b\right)+81.3 \sin \left(w_{40} a\right) \cos \left(w_{40} b\right) \approx 81.3 \sin \left(w_{40}(a+b)\right)$</td>
+<td style="text-align: center;">$92.7 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{44} c\right)$</td>
+<td style="text-align: center;">$309.1 \cos \left(w_{44} a\right) \cos \left(w_{44} b\right)-338.7 \sin \left(w_{44} a\right) \sin \left(w_{44} b\right) \approx 323.9 \cos \left(w_{44}(a+b)\right)$</td>
+<td style="text-align: center;">$98.5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{44} c\right)$</td>
+<td style="text-align: center;">$327.3 \cos \left(w_{44} a\right) \sin \left(w_{44} b\right)+327.2 \sin \left(w_{44} a\right) \cos \left(w_{44} b\right) \approx 327.3 \sin \left(w_{44}(a+b)\right)$</td>
+<td style="text-align: center;">$98.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{53} c\right)$</td>
+<td style="text-align: center;">$192.1 \cos \left(w_{53} a\right) \cos \left(w_{53} b\right)-192.2 \sin \left(w_{53} a\right) \sin \left(w_{53} b\right) \approx 192.1 \cos \left(w_{53}(a+b)\right)$</td>
+<td style="text-align: center;">$97.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{53} c\right)$</td>
+<td style="text-align: center;">$166.7 \cos \left(w_{53} a\right) \sin \left(w_{53} b\right)+166.8 \sin \left(w_{53} a\right) \cos \left(w_{53} b\right) \approx 166.8 \sin \left(w_{53}(a+b)\right)$</td>
+<td style="text-align: center;">$95.7 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>(b) Seed 2</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$W_{L}$ Component</th>
+<th style="text-align: center;">Fourier components of $u_{k}^{T} \operatorname{MLP}(a, b)$ or $v_{k}^{T} \operatorname{MLP}(a, b)$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{31} c\right)$</td>
+<td style="text-align: center;">$156.1 \cos \left(w_{31} a\right) \cos \left(w_{31} b\right)-156.5 \sin \left(w_{31} a\right) \sin \left(w_{31} b\right) \approx 156.3 \cos \left(w_{31}(a+b)\right)$</td>
+<td style="text-align: center;">$99.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{31} c\right)$</td>
+<td style="text-align: center;">$150.7 \cos \left(w_{31} a\right) \sin \left(w_{31} b\right)+150.7 \sin \left(w_{31} a\right) \cos \left(w_{31} b\right) \approx 150.7 \sin \left(w_{31}(a+b)\right)$</td>
+<td style="text-align: center;">$98.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{45} c\right)$</td>
+<td style="text-align: center;">$72.5 \cos \left(w_{45} a\right) \cos \left(w_{45} b\right)-76.8 \sin \left(w_{45} a\right) \sin \left(w_{45} b\right) \approx 74.6 \cos \left(w_{45}(a+b)\right)$</td>
+<td style="text-align: center;">$95.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{45} c\right)$</td>
+<td style="text-align: center;">$74.7 \cos \left(w_{45} a\right) \sin \left(w_{45} b\right)+74.6 \sin \left(w_{45} a\right) \cos \left(w_{45} b\right) \approx 74.6 \sin \left(w_{45}(a+b)\right)$</td>
+<td style="text-align: center;">$96.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{49} c\right)$</td>
+<td style="text-align: center;">$45.9 \cos \left(w_{49} a\right) \cos \left(w_{49} b\right)-45.5 \sin \left(w_{49} a\right) \sin \left(w_{49} b\right) \approx 45.7 \cos \left(w_{49}(a+b)\right)$</td>
+<td style="text-align: center;">$97.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{49} c\right)$</td>
+<td style="text-align: center;">$45.8 \cos \left(w_{49} a\right) \sin \left(w_{49} b\right)+45.8 \sin \left(w_{49} a\right) \cos \left(w_{49} b\right) \approx 45.8 \sin \left(w_{49}(a+b)\right)$</td>
+<td style="text-align: center;">$96.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{52} c\right)$</td>
+<td style="text-align: center;">$71.6 \cos \left(w_{52} a\right) \cos \left(w_{52} b\right)-72.1 \sin \left(w_{52} a\right) \sin \left(w_{52} b\right) \approx 71.9 \cos \left(w_{52}(a+b)\right)$</td>
+<td style="text-align: center;">$98.5 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{52} c\right)$</td>
+<td style="text-align: center;">$68.7 \cos \left(w_{52} a\right) \sin \left(w_{52} b\right)+68.7 \sin \left(w_{52} a\right) \cos \left(w_{52} b\right) \approx 68.7 \sin \left(w_{52}(a+b)\right)$</td>
+<td style="text-align: center;">$97.9 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>(c) Seed 3</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$W_{L}$ Component</th>
+<th style="text-align: center;">Fourier components of $u_{k}^{T} \operatorname{MLP}(a, b)$ or $v_{k}^{T} \operatorname{MLP}(a, b)$</th>
+<th style="text-align: center;">FVE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{17} c\right)$</td>
+<td style="text-align: center;">$66.0 \cos \left(w_{17} a\right) \cos \left(w_{17} b\right)-63.5 \sin \left(w_{17} a\right) \sin \left(w_{17} b\right) \approx 64.8 \cos \left(w_{17}(a+b)\right)$</td>
+<td style="text-align: center;">$96.4 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{17} c\right)$</td>
+<td style="text-align: center;">$66.4 \cos \left(w_{17} a\right) \sin \left(w_{17} b\right)+66.4 \sin \left(w_{17} a\right) \cos \left(w_{17} b\right) \approx 66.4 \sin \left(w_{17}(a+b)\right)$</td>
+<td style="text-align: center;">$94.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{32} c\right)$</td>
+<td style="text-align: center;">$68.7 \cos \left(w_{32} a\right) \cos \left(w_{32} b\right)-68.4 \sin \left(w_{32} a\right) \sin \left(w_{32} b\right) \approx 68.5 \cos \left(w_{32}(a+b)\right)$</td>
+<td style="text-align: center;">$96.2 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{32} c\right)$</td>
+<td style="text-align: center;">$68.0 \cos \left(w_{32} a\right) \sin \left(w_{32} b\right)+68.0 \sin \left(w_{32} a\right) \cos \left(w_{32} b\right) \approx 68.0 \sin \left(w_{32}(a+b)\right)$</td>
+<td style="text-align: center;">$96.3 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{42} c\right)$</td>
+<td style="text-align: center;">$100.4 \cos \left(w_{42} a\right) \cos \left(w_{42} b\right)-96.0 \sin \left(w_{42} a\right) \sin \left(w_{42} b\right) \approx 98.2 \cos \left(w_{42}(a+b)\right)$</td>
+<td style="text-align: center;">$97.9 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{42} c\right)$</td>
+<td style="text-align: center;">$100.2 \cos \left(w_{42} a\right) \sin \left(w_{42} b\right)+100.1 \sin \left(w_{42} a\right) \cos \left(w_{42} b\right) \approx 100.1 \sin \left(w_{42}(a+b)\right)$</td>
+<td style="text-align: center;">$98.6 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\cos \left(w_{51} c\right)$</td>
+<td style="text-align: center;">$118.0 \cos \left(w_{51} a\right) \cos \left(w_{51} b\right)-116.2 \sin \left(w_{51} a\right) \sin \left(w_{51} b\right) \approx 117.1 \cos \left(w_{51}(a+b)\right)$</td>
+<td style="text-align: center;">$99.0 \%$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\sin \left(w_{51} c\right)$</td>
+<td style="text-align: center;">$114.3 \cos \left(w_{51} a\right) \sin \left(w_{51} b\right)+114.2 \sin \left(w_{51} a\right) \cos \left(w_{51} b\right) \approx 114.2 \sin \left(w_{51}(a+b)\right)$</td>
+<td style="text-align: center;">$98.5 \%$</td>
+</tr>
+</tbody>
+</table>
+<p>(d) Seed 4</p>
+<p>Table 3: For each of the directions in the neuron-logit map $W_{L}$ of the final models from 4 other random seeds (Appendix C.2.1), we project the MLP activations in that direction then perform a Fourier transform. For brevity, we omit terms with coefficients less than $15 \%$ of the largest coefficient. We then compute the fraction of variance explained (FVE) if we replace the projection with a multiple of a single term of the form $\cos \left(w_{k}(a+b)\right)$ or $\sin \left(w_{k}(a+b)\right)$, and find that this is consistently close to 1 .</p>
+<p><img alt="img-16.jpeg" src="img-16.jpeg" /></p>
+<p>Figure 17: The norms of the direction corresponding to sine and cosine waves in the neuron-logit map weights $W_{L}$. As with the mainline model discussed in the main body and discussed in Appendix C.2.1, $W_{L}$ is consistently sparse, providing is evidence that all four are operating in a Fourier basis.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Seed</th>
+<th style="text-align: center;">Test Loss</th>
+<th style="text-align: center;">Loss (Key frequencies removed)</th>
+<th style="text-align: center;">Loss (All other frequencies removed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$2.07 \cdot 10^{-7}$</td>
+<td style="text-align: center;">$6.5 \cdot 10^{0}$</td>
+<td style="text-align: center;">$5.7 \cdot 10^{-8}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">$2.1 \cdot 10^{-7}$</td>
+<td style="text-align: center;">$1.1 \cdot 10^{1}$</td>
+<td style="text-align: center;">$6.2 \cdot 10^{-8}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$2.05 \cdot 10^{-7}$</td>
+<td style="text-align: center;">$6.7 \cdot 10^{0}$</td>
+<td style="text-align: center;">$5.5 \cdot 10^{-8}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">$2.33 \cdot 10^{-7}$</td>
+<td style="text-align: center;">$6.8 \cdot 10^{0}$</td>
+<td style="text-align: center;">$6.0 \cdot 10^{-8}$</td>
+</tr>
+</tbody>
+</table>
+<p>Table 4: As discussed in Appendix C.2.1, ablating the key frequencies for each of the networks reduces performance to worse than chance, while ablating all other frequencies improves performance.</p>
+<p>Confirming that the other seeds use the Fourier Multiplication Algorithm. In Figure 16, we show the norms of the Fourier components of the embedding matrix $W_{E}$ for each of the 4 other random seeds. As with the mainline model, the matrices are sparse in the Fourier basis. In Figure 17, we show the norms of the Fourier components of the neuron-logit map $W_{L}$ for the 4 other random seeds. The matrices are sparse in the Fourier basis, enabling us to identify 3 or 4 key frequencies for each of the seeds. Again, note that the specific frequencies differ by seed.</p>
+<p>Using the key frequencies identified in the neuron-logit map, we repeat the experiment in Section 4.2, where we "read off" the MLP activations in the 6 or 8 directions corresponding to the key frequencies. As with our mainline model, this lets us identify the trigonometric identities for $\cos \left(w_{k}(a+b)\right)$ and $\sin \left(w_{k}(a+b)\right)$ being computed at the MLP layer. We confirm that the trigonometric identities are a good approximation by approximating the activations with a single term of the form $\cos \left(w_{k}(a+b)\right)$ or $\sin \left(w_{k}(a+b)\right)$-as with the mainline model, the fraction of variance explained is consistently close to $100 \%$.</p>
+<p>Next, we ablate the key frequencies from the logits as in Section 4.4 and report the results in Table 4. As with the mainline model, ablating all of the key frequencies reduces performance to worse than chance, while ablating everything but the key frequencies improves test performance.</p>
+<p>Progress measures and grokking. Finally, we confirm the progress measure and grokking results from the mainline model on other runs with the same architecture. In Figure 18, we display the train, test, and restricted loss for each of the four other random seeds. In Figure 19, we display the Gini coefficients of the Fourier components of the embedding matrix $W_{E}$ and the neuron-logit map $W_{L}$ for each of the four other random seeds. The shape of the curves are very similar to those of the mainline model, allowing us to divide grokking on these models into the same three phases</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{3}$ One method for getting a general (model-independent) progress measure for this task is to compute the excluded loss for each of the 56 unique frequencies and then take the max. We omit the plots for this variant of the excluded loss as they are broadly similar.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

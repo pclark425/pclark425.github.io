@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8830 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8830</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8830</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-154.html">extraction-schema-154</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of language models being evaluated on strict logical reasoning tasks, including details about the models, the logical reasoning tasks or benchmarks, the methods or approaches used to improve logical reasoning, the performance or results, comparisons to baselines or ablations, and any reported limitations or failure cases.</div>
+                <p><strong>Paper ID:</strong> paper-d4c60620570801a231a7756f931dda1740288fb9</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/d4c60620570801a231a7756f931dda1740288fb9" target="_blank">Looped Transformers as Programmable Computers</a></p>
+                <p><strong>Paper Venue:</strong> International Conference on Machine Learning</p>
+                <p><strong>Paper TL;DR:</strong> It is demonstrated that a constant number of encoder layers can emulate basic computing blocks, including embedding edit operations, non-linear functions, function calls, program counters, and conditional branches, and using these building blocks to emulate a small instruction-set computer.</p>
+                <p><strong>Paper Abstract:</strong> We present a framework for using transformer networks as universal computers by programming them with specific weights and placing them in a loop. Our input sequence acts as a punchcard, consisting of instructions and memory for data read/writes. We demonstrate that a constant number of encoder layers can emulate basic computing blocks, including embedding edit operations, non-linear functions, function calls, program counters, and conditional branches. Using these building blocks, we emulate a small instruction-set computer. This allows us to map iterative algorithms to programs that can be executed by a looped, 13-layer transformer. We show how this transformer, instructed by its input, can emulate a basic calculator, a basic linear algebra library, and in-context learning algorithms that employ backpropagation. Our work highlights the versatility of the attention mechanism, and demonstrates that even shallow transformers can execute full-fledged, general-purpose programs.</p>
+                <p><strong>Cost:</strong> 0.008</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <p class="empty-note">No extracted data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <p class="empty-note">No potentially relevant new papers extracted.</p>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8830",
+    "paper_id": "paper-d4c60620570801a231a7756f931dda1740288fb9",
+    "extraction_schema_id": "extraction-schema-154",
+    "extracted_data": [],
+    "potentially_relevant_new_papers": [],
+    "cost": 0.008277,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Looped Transformers as Programmable Computers</h1>
+<p>Angeliki Giannou ${ }^{u}$, Shashank Rajput ${ }^{u *}$, Jy-yong Sohn ${ }^{u}$, Kangwook Lee ${ }^{u}$, Jason D. Lee ${ }^{p}$, Dimitris Papailiopoulos ${ }^{u}$<br>${ }^{p}$ Princeton University<br>${ }^{u}$ University of Wisconsin-Madison</p>
+<p>January 31, 2023</p>
+<h4>Abstract</h4>
+<p>We present a framework for using transformer networks as universal computers by programming them with specific weights and placing them in a loop. Our input sequence acts as a punchcard, consisting of instructions and memory for data read/writes. We demonstrate that a constant number of encoder layers can emulate basic computing blocks, including embedding edit operations, non-linear functions, function calls, program counters, and conditional branches. Using these building blocks, we emulate a small instruction-set computer. This allows us to map iterative algorithms to programs that can be executed by a looped, 13-layer transformer. We show how this transformer, instructed by its input, can emulate a basic calculator, a basic linear algebra library, and in-context learning algorithms that employ backpropagation. Our work highlights the versatility of the attention mechanism, and demonstrates that even shallow transformers can execute full-fledged, general-purpose programs.</p>
+<h2>1 Introduction</h2>
+<p>Transformers (TFs) have become a popular choice for a wide range of machine learning tasks, achieving state-of-the-art results in fields such as natural language processing and computer vision [Vaswani et al., 2017, Khan et al., 2022, Yuan et al., 2021, Dosovitskiy et al., 2020]. One key reason for their success is their ability to capture higher-order relationships and long-range dependencies across tokens, through attention. This allows TFs to model contextual information and makes them effective in tasks such as machine translation and language modeling, where they have consistently outperformed other methods [Vaswani et al., 2017, Kenton and Toutanova, 2019].</p>
+<p>Language models with billions of parameters, such as GPT-3 (175B parameters Brown et al. [2020]) and PaLM (540B parameters Chowdhery et al. [2022]), have achieved state-of-the-art</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>performance on many natural language processing tasks. Interestingly, some of these large language models (LLMs) can also perform in-context learning, adapting to and performing a specific task, on-the-fly, based on a brief prompt and a few examples. The ability to perform in-context learning (ICL) arises without explicit training for it, and allows these large models to efficiently perform new tasks without requiring weight updates.</p>
+<p>Surprisingly, through in-context learning LLMs can perform algorithmic tasks and reasoning, as demonstrated in several works including Nye et al. [2021], Wei et al. [2022c], Lewkowycz et al. [2022], Wei et al. [2022b], Zhou et al. [2022], Dasgupta et al. [2022], Chung et al. [2022]. For example, Zhou et al. [2022] showed that LLMs can successfully perform addition on unseen examples when prompted with a multidigit addition algorithm and a few examples of addition. These results suggest that LLMs can apply algorithmic principles and perform pre-instructed commands on a given input at inference time, as if interpreting natural language as code.</p>
+<p>Constructive arguments have demonstrated that Transformers can simulate Turing Machines with enough depth or recursive links between attention layers Pérez et al. [2021], Pérez et al. [2019], Wei et al. [2022a]. This demonstrates the potential of transformer networks to precisely follow algorithmic instructions specified by the input. Yet, these constructions are more generalized and do not provide insight into how to create Transformers that can carry out particular algorithmic tasks, or compile programs in a higher-level programming language.</p>
+<p>More specialized designs can however allow TFs to execute higher level programs. For example, in Weiss et al. [2021], the authors design a computational model and a programming language that maps simple selection and aggregation commands on indexed input tokens. This language can be used to create several interesting algorithms, such as counting tokens, sorting, creating histograms, and recognizing Dyck- $k$ languages. Programs written in Restricted Access Sequence Processing Language (RASP) can then be mapped into transformer networks, which typically scale in size with the size of the program.</p>
+<p>Another line of research has demonstrated methods for selecting the weights of a Transformer model to function as an optimization algorithm for learning linear regression models on-the-fly, performing implicit training at inference time when given training data as input [Akyürek et al., 2022, von Oswald et al., 2022]. These methods typically require a number of layers proportional to the number of iterations of the learning algorithm and are limited to a small set of loss functions and models.</p>
+<p>The ability to program transformer models to emulate the abstract computation of a Turing Machine, the specialized commands of languages like RASP, and the specific algorithms of incontext learning, highlights the potential for transformer networks as versatile programmable computers. Our research aims to explore this promising prospect, uncovering how the mechanics of attention can enable the emulation of a general-purpose computer inspired by instruction-set architectures.</p>
+<p>Our Contributions: In this paper, we demonstrate that transformer networks can simulate complex algorithms and programs by hardcoding them with specific weights and placing them in a loop. We do this by reverse engineering attention to emulate basic computing blocks, such as edit operations on the input sequence, nonlinear functions, function calls, program counters and conditional branches. Our paper demonstrates the importance of using a single loop or recursion to connect the transformer's output sequence back to its input, avoiding the need for a deep model.</p>
+<p>We accomplish this by designing a transformer that can execute programs written in a generalized version of a single instruction, known as $\operatorname{SUBLEQ}(\mathrm{A}, \mathrm{B}, \mathrm{C})$, i.e., SUBtract and branch if Less-than or EQual to zero. SUbLEQ is a single instruction language, defining a one-instruction set computer (OISC, pronounced "whisk"). SUbLEQ consists of 3 memory address operands and when executed it subtracts the value at memory address A from the value at memory address B , and stores the result in B. If the result in B is less than or equal to zero, the execution jumps to address C, otherwise it proceeds to the next instruction. Programs written in SUbLEQ language use only this command, yet this single instruction is capable of defining a universal computer [Mavaddat and Parhami, 1988, Esolangs].</p>
+<p>We construct explicit transformers that implement SUbLEQ-like programs, of a more flexible single instruction which we call FLEQ which takes the form</p>
+<p>$$
+\begin{aligned}
+&amp; \operatorname{mem}[c]=f_{m}(\operatorname{mem}[a], \operatorname{mem}[b]) \
+&amp; \text { if } \operatorname{mem}[\text { flag }] \leq 0 \
+&amp; \quad \text { goto instruction } p
+\end{aligned}
+$$</p>
+<p>where $f_{m}$ can be selected from a set of functions (matrix multiplication/non-linear functions/polynomials/etc), which we can hardcode into the network. The depth of a looped transformer that can execute FLEQ programs is not dependent on the depth of the program or the number of lines of code, but rather on the depth required to implement a single FLEQ instruction, which is constant. This is achieved by running the transformer in cycles over the input sequence, similar to how a CPU operates.</p>
+<p>Using this framework, we demonstrate the ability to emulate a variety of functions at inference time, including a basic calculator, a basic linear algebra library (matrix transpose, multiplication, inversion, power iteration) and an in-context learning algorithm that implements backpropagation on implicit fully-connected networks. The input sequence, or the prompt, acts as a punchcard that includes the program in the form of instructions that the transformer needs to execute, while providing space for storing and processing the variables used in the program. The transformer networks used to execute these programs are all of depth smaller or equal to thirteen, and the exact weight matrices for all these models are provided. The following informal theorem summarizes our main findings:</p>
+<p>Theorem 1 (Informal). There exists a looped transformer with less than 13 layers that can emulate a general purpose computer (see Sec. 5), a basic calculator (see Sec. 7), numerical linear algebra methods, such as approximate matrix inverse and power iteration (see Sec. 8), and in-context learning algorithms, such as SGD, on neural networks (See Sec. 9).</p>
+<p>The precise size of the transformers constructed in this paper is also summarized in Section 1.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"># Layers</th>
+<th style="text-align: center;"># Heads</th>
+<th style="text-align: center;">Formal Statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">SUBLEQ</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Lemma. 4</td>
+</tr>
+<tr>
+<td style="text-align: center;">Matrix Inversion</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Lemma. 12</td>
+</tr>
+<tr>
+<td style="text-align: center;">Power Iteration</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Lemma. 13</td>
+</tr>
+<tr>
+<td style="text-align: center;">SGD</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Lemma. 15</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1: Looped transformer sizes required to successfully emulate the functionalities of a one instruction set computer (OISC), perform basic calculations, run numerical linear algebra algorithms, and incontext learning using Stochastic Gradient Descent on a neural network. The width of these networks depends on the complexity of the functions implemented, and typically range from $O(\log ($ length_input) + embedding_dimension) to at most polynomial in the approximation error required when implementing arbitrary loss functions for in-context learning.</p>
+<p>Our research highlights the flexibility of the attention mechanism and the importance of even a single loop making it possible to design models that can emulate complex iterative algorithms and execute general programs. It further demonstrates the ability of transformer models to efficiently perform complex mathematical and algorithmic tasks. It is conceivable that modern transformers, such as GPT-3, utilize similar internal subroutines when performing various tasks. In a way, these models may possess the ability to elicit a specific skill or algorithm, akin to a function call, when given in-context examples and instructions. However, this hypothesis should be taken with caution, as the way we design our constructions shares no similarities with how real-world language models are trained.</p>
+<p>We hope that our study will encourage further research into the potential of attention mechanisms, and the ability of language models to execute algorithmic instructions. Our proposed designs can aid in determining the minimal transformer network size required to perform specific algorithmic tasks. Additionally, we hope that our findings will contribute to the development of methods to enhance the capabilities of trained language models by utilizing smaller, reverse-engineered transformer networks for specific algorithmic tasks</p>
+<h1>2 Prior Work</h1>
+<p>Our work is inspired by the recent results on the expressive power of Transformer networks and their in-context learning capabilities.</p>
+<p>In [Pérez et al., 2021, Pérez et al., 2019, Wei et al., 2022a] the authors explore the computational properties of Transformers establishing that they are Turing complete, meaning that they can simulate a Turing machine. The constructions typically require high/infinite precision (apart from that of Wei et al. [2022a]), and recursion around attention layers. In Yun et al. [2019], the authors prove that given access to sufficient width/depth TFs can act as universal sequence to sequence approximators.</p>
+<p>In Weiss et al. [2021], the authors propose a computational model for the transformer-encoder in the form of a domain-specific language called the Restricted Access Sequence Processing Language (RASP). The model maps the basic components of a TF encoder into simple primitives. Examples of tasks that could be learned by a Transformer are provided, and the maximum number of heads and layers necessary to encode a task in a transformer are analyzed.</p>
+<p>In a recent and related work, Lindner et al. [2023] suggests using transformer networks as programmable units and introduces a compiler called Tracr which utilizes RASP. However, the expressivity limitations and unclear Turing completeness of the language are discussed in Weiss et al. [2021], Merrill et al. [2022], Lindner et al. [2023]. Our approach, in contrast, demonstrates the potential of transformer networks to serve as universal computers, enabling the implementation of arbitrary nonlinear functions and emulating iterative, non-linear algorithms. Furthermore, our framework allows the depth of our transformers to not scale in proportion to the lines of code that they execute, allowing the implementation of iterative algorithms, expanding the potential applications.</p>
+<p>In Garg et al. [2022] the authors demonstrate that standard Transformers (e.g., GPT-2) can be trained from scratch to perform in-context learning of linear functions and more complex model classes, such as two-layer neural networks, with performance that matches or exceeds task-specific learning algorithms. A useful element of their analysis is the fact that language is completely removed from the picture, and they perform all operations on the level of vector embeddings. This allows a higher abstraction level than using language as an input, and in fact is what also allows us to obtain our derivations.</p>
+<p>Motivated by the above experimental work, in Akyürek et al. [2022], the authors investigate the hypothesis that TF-based in-context learners emulate standard learning algorithms implicitly at inference time. The authors provide evidence for this hypothesis by constructing transformers that implement SGD for linear models, showing that trained in-context learners closely match the predictors computed by these algorithms.</p>
+<p>In a similar vein, von Oswald et al. [2022] argues that training Transformers on auto-regressive tasks is closely related to gradient-based meta-learning formulations. The authors also provide a hard-coded weight construction showing the equivalence between data transformations induced by a single linear self-attention layer and gradient descent on a regression loss. The authors empirically show that when training linear attention TFs on simple regression tasks, the models learned by GD and Transformers have intriguing similarities.</p>
+<p>In Liu et al. [2022], the authors test the hypothesis that TFs can perform algorithmic reasoning using fewer layers than the number of reasoning steps, in the context of finite automata. The authors characterized "shortcut solutions" that allow shallow Transformer models to exactly replicate the computation of an automaton on an input sequence, and showed that these solutions can be learned through standard training methods. As is expected this hypothesis is only true for a certain family of automata, as the general existence of shortcut solutions would imply the collapse of complexity classes that are widely believed not to be identical.</p>
+<p>Other experimental studies have utilized recursion in transformer architectures in a similar manner to our constructions, although in our case we only utilize a single recursive link that feeds the output of the transformer back as an input [Hutchins et al., 2022, Shen et al., 2022, Dehghani et al., 2018].</p>
+<h1>3 Preliminaries</h1>
+<p>The transformer architecture. Our work follows a similar problem setting as previous studies (e.g. Yun et al. [2019], Garg et al. [2022], Akyürek et al. [2022], von Oswald et al. [2022]) in which the input sequence consists of $d$-dimensional embedding vectors rather than tokens. This</p>
+<p>simplifies our results without sacrificing generality, as an embedding layer can map tokens to the desired vector constructions.</p>
+<p>The input to each layer, $\mathbf{X} \in \mathbb{R}^{d \times n}$, is a vector representation of a sequence of $n$ tokens, where each token is a $d$-dimensional column. In this paper, the terms "token" and "column" may be used interchangeably.</p>
+<p>A transformer layer outputs $f(\mathbf{X})$, where $f$ is defined as follows:</p>
+<p>$$
+\begin{aligned}
+\operatorname{Attn}(\mathbf{X}) &amp; =\mathbf{X}+\sum_{i=1}^{H} \mathbf{V}^{i} \mathbf{X} \sigma_{\mathrm{S}}\left(\mathbf{X}^{\top} \mathbf{K}^{i \top} \mathbf{Q}^{i} \mathbf{X}\right) \
+f(\mathbf{X}) &amp; =\operatorname{Attn}(\mathbf{X})+\mathbf{W}<em 1="1">{2} \operatorname{ReLU}\left(\mathbf{W}</em>} \operatorname{Attn}(\mathbf{X})+\mathbf{b<em n="n">{1} \mathbf{1}</em>}^{\top}\right)+\mathbf{b<em n="n">{2} \mathbf{1}</em>
+\end{aligned}
+$$}^{\top</p>
+<p>where $\sigma_{\mathrm{S}}$ is the softmax function applied on the columns of the input matrix, i.e.,</p>
+<p>$$
+\left[\sigma_{\mathrm{S}}(\mathbf{X}, \lambda)\right]<em i_="i," j="j">{i, j}=\frac{e^{\lambda X</em>
+$$}}}{\sum_{k=1}^{n} e^{\lambda X_{k, j}}</p>
+<p>where $\lambda \geq 0$ is the temperature parameter, $\operatorname{ReLU}(x)=x \cdot 1_{x&gt;0}$ is the ReLU activation, and $\mathbf{1}_{n}$ is the all ones vector of length $n$. We refer to the $\mathbf{K}, \mathbf{Q}$, and $\mathbf{V}$ matrices as the key, query, and value matrices respectively ${ }^{1}$; the superscript $i$ that appears on the weight matrices indicates those corresponding to the $i$-th attention head.Consistent with previous literature, the first equation Eq. (1a) represents the attention layer. We refer to the combination of attention and ReLU layers as a single transformer layer.</p>
+<p>Iterative computation through a simple loop. In the following sections, we utilize TF networks with multiple transformer layers. Let us refer to the output of such a multilayer TF as $\operatorname{TF}(\mathbf{W} ; \mathbf{X})$, where for simplicity $\mathbf{W}$ is the collection of all weight matrices required to define such a multi-layer TF.</p>
+<p>We use our constructions recursively, and feed the output back as an input sequence, allowing the network to perform iterative computation through a simple fixed-point like iteration. This recursive transformer is similar to past work on adding recursion to TF networks. We refer to these simple recursive TFs as Looped Transformers.</p>
+<p>Feeding the output back to its input is similar to how a</p>
+<h2>Algorithm 1</h2>
+<p>Looped Transformer</p>
+<div class="codehilite"><pre><span></span><code><span class="o">:</span><span class="w"> </span><span class="nt">for</span><span class="w"> </span><span class="err">\</span><span class="o">(</span><span class="nt">i</span><span class="o">=</span><span class="nt">1</span><span class="o">:</span><span class="w"> </span><span class="nt">T</span><span class="err">\</span><span class="o">)</span><span class="w"> </span><span class="nt">do</span>
+<span class="w">    </span><span class="err">\</span><span class="o">(</span><span class="err">\</span><span class="nt">mathbf</span><span class="p">{</span><span class="err">X</span><span class="p">}</span><span class="w"> </span><span class="err">\</span><span class="nt">leftarrow</span><span class="w"> </span><span class="err">\</span><span class="nt">mathrm</span><span class="p">{</span><span class="err">TF</span><span class="p">}</span><span class="o">(</span><span class="err">\</span><span class="nt">mathbf</span><span class="p">{</span><span class="err">W</span><span class="p">}</span><span class="w"> </span><span class="o">;</span><span class="w"> </span><span class="err">\</span><span class="nt">mathbf</span><span class="p">{</span><span class="err">X</span><span class="p">}</span><span class="o">)</span><span class="err">\</span><span class="o">)</span>
+<span class="w">    </span><span class="nt">end</span><span class="w"> </span><span class="nt">for</span>
+</code></pre></div>
+
+<p>traditional computer processes machine code, where it continually reads/writes data in memory, by executing one instruction at a time. The input sequence $\mathbf{X}$ includes the instructions and memory. Similar to how a CPU processes each line of code in a program, the transformer network processes parts of the input sequence to perform complex computations. Like a CPU, the TF acts as a self-contained computational unit. The use of loops in this process is analogous to how CPUs operate using cycles.</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>While the analogy between TFs and CPUs can be entertaining, there are also many differences in implementation. It is important to keep these differences in mind and not rely too heavily on the analogy. The results obtained from using TFs as computational units do not require the analogy to be valid.</p>
+<p>To be able to build compute boxes out of a TF network, it is crucial to format the input sequence $\mathbf{X}$ in a way that separates memory, a cache-like scratchpad, and commands.</p>
+<p>Input sequence format. The input to our transformer network has the following abstract form:</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{cc|cc}
+\mathbf{S} &amp; &amp; \mathbf{M} &amp; &amp; \mathbf{C} &amp; \
+\mathbf{p}<em s="s">{1} &amp; \ldots &amp; \mathbf{p}</em>} &amp; \mathbf{p<em s_m="s+m">{s+1} &amp; \ldots &amp; \mathbf{p}</em>} &amp; \mathbf{p<em n="n">{s+m+1} &amp; \ldots &amp; \mathbf{p}</em>
+\end{array}\right]
+$$</p>
+<p>where $\mathbf{S}$ represents the portion of the input that serves as a "scratchpad," $\mathbf{M}$ represents the portion that acts as memory that can be read from and written to, and $\mathbf{C}$ represents the portion that contains the commands provided by the user. The $\mathbf{p}<em n="n">{1}, \ldots, \mathbf{p}</em>$ are positional encodings for the $n$ columns, which will be described in more detail in the following paragraph, and will be used as pointers to data and instructions. The structure of our input sequence bares similarities to that of Wei et al. [2022a], Akyürek et al. [2022] that also use scratchspace, and have a separate part for the input data.</p>
+<p>Scratchpad. The scratchpad is a crucial component of our constructions. This is the central location where the inputs and outputs of all computation are recorded. It is perhaps useful to think of this as an analogue to a CPU's cache memory. It functions as a temporary workspace where data is copied, transformed, and manipulated in order to perform a wide variety of operations, ranging from simple arithmetic to more complex tasks such as matrix inversion. Regardless of the specific computation that is performed, the data necessary for the operation is always transferred from the memory to the scratchpad, and once the computation is completed, the data is transferred back to the memory. This allows the TF to perform the necessary calculations in a designated area, separate from other parts of the input sequence.</p>
+<p>Memory. All the compute boxes we create require memory to perform specific actions. The memory component of the input sequence serves as a storage location for data. This data can take various forms, including scalars, vectors, and matrices, and is subject to manipulation through various operations. When computation is needed, the data is first copied from the memory to the scratchpad, where it is updated and transformed as necessary. Once the computation is complete, the updated data is then returned and copied back to the memory for future use or reference. In this way, the memory serves as a central repository for all relevant data, allowing it to be accessed and manipulated as needed.</p>
+<p>Commands. Our framework implements a set of commands within a transformer network; these serve as instructions that guide the internal functioning of the transformer, similar to a low-level programming language. These commands include indicators for memory locations and operation directives, allowing the TF to execute complex computations and tasks in a consecutive and organized manner.</p>
+<h1>4 Building Transformer Blocks towards General Computation</h1>
+<p>To build general compute boxes using transformer networks, specialized compute blocks are required. These blocks will be assembled to create the desired end functionality. In this section, we highlight various operations that transformer layers can perform. These operations will serve the building blocks to create more complex routines and algorithms. These operations are designed to be interoperable with each other, leveraging the ability of attention to perform various tasks, such as producing approximate permutation matrices and approximating general functions through sigmoid activations.</p>
+<p>In the following sections, we focus on the fundamental components necessary to emulate a general-purpose computer, reserving the examination of how attention can replicate sigmoid-based functions in the sections that follow.</p>
+<h3>4.1 Positional Encodings, Program Counter, and Data Pointers</h3>
+<p>To aid the transformer in locating the position of each token, each column of $\mathbf{X}$ is appended with positional encodings that is based on the column index. In this case, similar to Wei et al. [2022a], the positional encodings is the binary representation of the column index, which is appended to each column to keep the encoding dimension low, i.e., logarithmic in the sequence length. This approach to using positional encodings is slightly different from the typical method of adding them to the encodings of the input sequence. However, in this case, appending them as suffixes to the encodings allows for cleaner arguments and constructions.</p>
+<p>In particular, the encoding for token/column indexed by $i$ is a $\log (n)$-dimensional $\pm 1$ binary vector $\mathbf{p}<em k="0">{i} \in \pm 1^{\log (n)}$, where $n$ is the length of the input sequence. Using the standard binary representation of an integer $i$, meaning $i=\sum</em>}^{\log (n)-1} 2^{k} \cdot b_{k}$, the positional encoding vector $\mathbf{p<em i="i">{i}$ is set to -1 at index $j$ if the binary representation of $i$ has 0 at the $j$-th index, i.e., $b</em>}=0$, otherwise it is +1 . As a result, we have $\mathbf{p<em i="i">{i}^{T} \mathbf{p}</em>}=\log (n)$ and by Cauchy-Schwarz inequality, $\mathbf{p<em j="j">{i}^{T} \mathbf{p}</em>}&lt;\left|\mathbf{p<em j="j">{i}\right|\left|\mathbf{p}</em>}\right|=\sqrt{\log (n)} \sqrt{\log (n)}=\log (n)$ whenever $i \neq j$, since $\mathbf{p<em j="j">{i}, \mathbf{p}</em>$ differ in at least one coordinate.</p>
+<p>In the applications presented, the transformer often needs to execute iterative algorithms or go through a sequence of commands. To achieve this, we utilize a program counter that iterates through the commands. The counter contains the encoding of the location where the next command is stored. Additionally, a command may have data pointers that point to the location of the data the command needs to read and write to. Both the program counter and data pointers utilize the same</p>
+<p>positional encodings as discussed in the previous paragraph. Using binary vectors as positional encodings allows us to easily increment the program counter by 1 (or any other amount) using the feed forward ReLU layers in the transformer architecture (1). This is formalized in the following lemma, for the proof see Lemma 16.</p>
+<p>Lemma 1. Given two d-dimensional binary vectors representing two non-negative integers, there exists a 1-hidden layer feedforward network with ReLU activation, containing 8d activations in the hidden layer and d neurons in the output layer, that can output the binary vector representation of their sum, as long as the sum is less than $2^{d+1}$.</p>
+<p>Our positional encoding scheme can also be used to point to specific data locations for reading or writing, as discussed in the following section. This is achieved by using the same binary vectors as positional encodings for both the program counter and data pointers. Furthermore, this technique for pointing to specific data locations enables the transformer to effectively read and write from/to data during the execution of the algorithm or sequence of commands that is build to implement.</p>
+<h1>4.2 read / write: Copying Data/Instructions to/from the Scratchpad</h1>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 3: A sketch of the read operation. Arrows show command blocks being copied from the part of the input that is allocated to commands to the scratchpad. Typically an instruction is another set of pointers. Positional encodings and counters are used for tracking what is copied where.</p>
+<p>As previously stated, the scratchpad serves as a temporary memory for storing all information needed for computation. This includes copying commands and data to it, performing computation, and writing results back to memory. This process has similarities with the copy/write mechanism developed in Akyürek et al. [2022].</p>
+<p>The following lemma states that the command pointed to by the program counter or the data from a location specified in the current command can be copied to the scratchpad for further computation. The location of the program counter is conventionally placed right below the contents of the scratchpad, but it can be changed arbitrarily. Keeping it in a specific location throughout the entire computation helps retain a good organization of the construction.</p>
+<p>Lemma 2 (read). A transformer with one layer, one head, and width of $O(\log n+d)$, where $d$ is the dimension of the data vectors and $n$ is the length of the input, can read data/command vectors</p>
+<p>from the input to the scratchpad from the location pointed to by the position embedding vector in the scratchpad.</p>
+<p>Proof. Consider a simplified input where the scratchpad only has one column, and we have positional encodings, denoted as $\mathbf{p}_{i}$, that point to the location where data or commands should be copied from. In this case, the operation we want to perform is as follows:</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{c|ccc}
+\mathbf{0} &amp; \boldsymbol{v}<em i="i">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{1} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \ldots &amp; 0 &amp; \cdots
+\end{array}\right] \rightarrow\left[\begin{array}{c|ccc}
+\mathbf{0} &amp; \boldsymbol{v}<em i="i">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{i} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \ldots &amp; 0 &amp; \cdots
+\end{array}\right]
+$$</p>
+<p>which moves data/command embedding vector $\boldsymbol{v}_{i}$ from the memory/command part of the input to the scratchpad. The first row contains the data to be read, the second row has the data written in the scratchpad, the third row contains the program counter, the fourth row contains the positional encodings, the fifth row is used by for temporary storage and the last row is just a bit that indicates whether the column is in the scratchpad or not.</p>
+<p>We use the following key and query matrices: $\mathbf{K}=\mathbf{Q}=\left[\begin{array}{lllll}\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{I} &amp; \mathbf{I} &amp; \mathbf{0} &amp; 0\end{array}\right]$, so that the key and query become equal to $\mathbf{K X}=\mathbf{Q X}=\left[\begin{array}{lllll}\mathbf{p}<em 2="2">{i} &amp; \mathbf{p}</em>\right]$, and hence,} &amp; \cdots &amp; \mathbf{p}_{i} &amp; \cdots\end{array</p>
+<p>$$
+(\mathbf{K X})^{\top} \mathbf{Q X}=\left[\begin{array}{cccc}
+\mathbf{p}<em i="i">{i}^{\top} \mathbf{p}</em>} &amp; \mathbf{p<em 2="2">{i}^{\top} \mathbf{p}</em> &amp; \cdots \
+\mathbf{p}<em i="i">{2}^{\top} \mathbf{p}</em>} &amp; \mathbf{p<em 2="2">{2}^{\top} \mathbf{p}</em> &amp; \cdots \
+\vdots &amp; \vdots &amp; \vdots \
+\mathbf{p}<em i="i">{i}^{\top} \mathbf{p}</em>} &amp; \mathbf{p<em 2="2">{i}^{\top} \mathbf{p}</em> &amp; \cdots \
+\vdots &amp; \vdots &amp; \vdots
+\end{array}\right]
+$$</p>
+<p>Recall that $\mathbf{p}<em i="i">{i}$ is a $\log (n)$-dimensional $\pm 1$ vector such that $\mathbf{p}</em>}^{T} \mathbf{p<em i="i">{i}=\log (n)$ and each $\mathbf{p}</em>}^{T} \mathbf{p<em _mathrm_S="\mathrm{S">{j} \leq$ $\log (n)-1$ for $j \neq i$. We show in the appendix that if we apply the softmax with temperature $\lambda \geq \log \frac{n^{2}}{\epsilon}$, we have $\sigma</em>\right)$ to be an $n \times n$ matrix of the following form}}\left((\mathbf{K X})^{\top} \mathbf{Q X</p>
+<p>$$
+\left[\begin{array}{cccccc}
+\frac{1}{2} &amp; 0 &amp; 0 &amp; \cdots &amp; \frac{1}{2} &amp; \cdots &amp; 0 \
+0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 &amp; \cdots &amp; 0 \
+0 &amp; 0 &amp; 1 &amp; \cdots &amp; 0 &amp; \cdots &amp; 0 \
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \ddots &amp; \vdots \
+\frac{1}{2} &amp; 0 &amp; 0 &amp; \cdots &amp; \frac{1}{2} &amp; \cdots &amp; 0 \
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \ddots &amp; \vdots \
+0 &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; \cdots &amp; 1
+\end{array}\right]+\epsilon \mathbf{M}=\left[\begin{array}{llllll}
+\frac{\boldsymbol{e}<em i="i">{1}+\boldsymbol{e}</em>}}{2} &amp; \boldsymbol{e<em 3="3">{2} &amp; \boldsymbol{e}</em>} &amp; \cdots &amp; \frac{\boldsymbol{e<em i="i">{1}+\boldsymbol{e}</em> &amp; \cdots
+\end{array}\right]+\epsilon \mathbf{M}
+$$}}{2</p>
+<p>where $\boldsymbol{e}_{i}$ is the $i$ th column of the identity matrix, $|\mathbf{M}| \leq 1$, and $\epsilon$ is as defined in Appendix B. For the purpose of the proof, we ignore the error term $\epsilon \mathbf{M}$, because it can be reduced arbitrarily by increasing the temperature (it can be made precisely equal to 0 , if we consider hardmax instead of softmax), and overall does not limit us from deriving arbitrarily small error bounds.</p>
+<p>Next we set the output and value weight matrices as follows</p>
+<p>$$
+\mathbf{V}=\left[\begin{array}{llllll}
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \
+\mathbf{I} &amp; \mathbf{I} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0
+\end{array}\right]
+$$</p>
+<p>Using this, the output of the head is</p>
+<p>$$
+\mathbf{X}+\mathbf{V X} \sigma_{\mathbf{S}}\left((\mathbf{K X})^{\top} \mathbf{Q X}\right)=\left[\begin{array}{c|ccc}
+\mathbf{0} &amp; \boldsymbol{v}<em i="i">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{1} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\frac{\boldsymbol{v}<em i="i">{1}+\boldsymbol{v}</em>}}{2} &amp; \boldsymbol{v<em 1="1">{2} &amp; \cdots &amp; \frac{\boldsymbol{v}</em> &amp; \cdots \
+1 &amp; 0 &amp; \cdots &amp; 0 &amp; \cdots
+\end{array}\right]
+$$}+\boldsymbol{v}_{i}}{2</p>
+<p>Each column above has the following form:</p>
+<p>$$
+\left[\begin{array}{c}
+\boldsymbol{v}<em _orig="{orig" _text="\text">{\text {orig }}^{0} \
+\boldsymbol{v}</em> \
+\boldsymbol{v}}}^{1<em _new="{new" _text="\text">{\text {orig }} \
+\mathbf{p}^{(0)} \
+\mathbf{p}^{(1)} \
+\boldsymbol{v}</em> \
+b
+\end{array}\right]
+$$}</p>
+<p>where $\boldsymbol{v}<em _orig="{orig" _text="\text">{\text {orig }}^{(0)}$ and $\boldsymbol{v}</em>$ is the new value, and $b$ is the bit indicating whether the column is part of the scratchpad or not.}}^{(1)}$ are the original value vectors (present in the top two row blocks) contained in that column, $\mathbf{p}^{(0)}$ and $\mathbf{p}^{(1)}$ are the corresponding embeddings of each column, $\boldsymbol{v}_{\text {new }</p>
+<p>The feedforward layers have the following form:</p>
+<p>$$
+\begin{aligned}
+&amp; \boldsymbol{v}<em _orig="{orig" _text="\text">{\text {orig }}^{(1)}:=\boldsymbol{v}</em>}}^{(1)}+\operatorname{ReLU}\left(C(b-1) \mathbf{1}+2 \boldsymbol{v<em _orig="{orig" _text="\text">{\text {new }}-2 \boldsymbol{v}</em>}}^{(1)}\right)-\operatorname{ReLU}\left(C(b-1) \mathbf{1}-2 \boldsymbol{v<em _orig="{orig" _text="\text">{\text {new }}+2 \boldsymbol{v}</em>\right) \
+&amp; \boldsymbol{v}}}^{(1)<em _new="{new" _text="\text">{\text {new }}:=\boldsymbol{v}</em>}}-\operatorname{ReLU}\left(\boldsymbol{v<em _new="{new" _text="\text">{\text {new }}\right)+\operatorname{ReLU}\left(-\boldsymbol{v}</em>
+\end{aligned}
+$$}}\right)=\mathbf{0</p>
+<p>where $C$ is a large positive constant. The first equation is performing the operation of subtracting $\boldsymbol{v}<em _orig="{orig" _text="\text">{\text {new }}$ from $\boldsymbol{v}</em>}}$ but only when the sum and difference of $C(b-1) \mathbf{1}$ and $\boldsymbol{v<em _new="{new" _text="\text">{\text {new }}$ are positive, otherwise the subtraction does not occur. The second equation is resetting the value of $\boldsymbol{v}</em>}}$ to zero after it has been copied to $\boldsymbol{v<em _new="{new" _text="\text">{\text {orig }}$, where $\operatorname{ReLU}\left(-\boldsymbol{v}</em>$.}}\right)$ is the rectified linear unit ( ReLU$)$ applied to the negative of $\boldsymbol{v}_{\text {new }</p>
+<p>It can be verified that the output of the feedforward layers would then be the desired result</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{c|ccc}
+\mathbf{0} &amp; \boldsymbol{v}<em i="i">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{i} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \cdots &amp; 0 &amp; \cdots
+\end{array}\right]
+$$</p>
+<p>The next lemma explains that the vector $\boldsymbol{v}$ stored in the scratchpad can be copied to a designated location in memory, as specified within the scratchpad itself. This allows for the transfer of data from the scratchpad to a specific location in memory for further use or storage.
+<img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 4: A sketch of the write operation. Arrows show data blocks being copied from the scratchpad to a designated location in the part of the input allocated for memory. Positional encodings are used for tracking the destination location and ensuring data is written at the correct memory location.</p>
+<p>Lemma 3 (write). A transformer network with a single layer, one head, and width $O(\log n+d)$, where $d$ is the dimension of the data vectors and $n$ is the length of the input, can effectively write a data vector stored in the scratchpad to a specific location in the input, as designated by a positional encoding vector in the scratchpad.</p>
+<p>Proof. We want to achieve the following operation</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{ccccc}
+\mathbf{0} &amp; \boldsymbol{v}<em i="i">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{1} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \ldots &amp; 0 &amp; \ldots
+\end{array}\right] \rightarrow\left[\begin{array}{ccccc}
+\mathbf{0} &amp; \boldsymbol{v}<em 1="1">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{1} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \ldots &amp; 0 &amp; \ldots
+\end{array}\right]
+$$</p>
+<p>The construction for this is identical to the one for read (see the proof of Lemma 2), except that the feedforward layers are outputting the following:</p>
+<p>$$
+\begin{aligned}
+&amp; \boldsymbol{v}<em _orig="{orig" _text="\text">{\text {orig }}^{(0)}:=\boldsymbol{v}</em>}}^{(0)}+\operatorname{ReLU}\left(-C b \mathbf{1}+2 \boldsymbol{v<em _orig="{orig" _text="\text">{\text {new }}-2 \boldsymbol{v}</em>}}^{(0)}\right)+\operatorname{ReLU}\left(-C b \mathbf{1}-2 \boldsymbol{v<em _orig="{orig" _text="\text">{\text {new }}+2 \boldsymbol{v}</em>\right) \
+&amp; \boldsymbol{v}}}^{(0)<em _new="{new" _text="\text">{\text {new }}:=\boldsymbol{v}</em>}}-\operatorname{ReLU}\left(\boldsymbol{v<em _new="{new" _text="\text">{\text {new }}\right)+\operatorname{ReLU}\left(-\boldsymbol{v}</em>
+\end{aligned}
+$$}}\right)=\mathbf{0</p>
+<p>where $C$ is a large positive constant. The first equation updates the value of a vector $\boldsymbol{v}<em _new="{new" _text="\text">{\text {orig }}$ in memory with the value of a vector $\boldsymbol{v}</em>$ from the scratchpad. The second equation is resetting the}</p>
+<p>new vector in the scratchpad to zero. It can be verified that the output of the feedforward layers would be</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{c|ccc}
+\mathbf{0} &amp; \boldsymbol{v}<em 1="1">{2} &amp; \cdots &amp; \boldsymbol{v}</em> &amp; \cdots \
+\boldsymbol{v}<em i="i">{1} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+\mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{p}} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0<em i="i">{2} &amp; \cdots &amp; \mathbf{p}</em> &amp; \cdots \
+\mathbf{0} &amp; \mathbf{0} &amp; \cdots &amp; \mathbf{0} &amp; \cdots \
+1 &amp; 0 &amp; \cdots &amp; 0 &amp; \cdots
+\end{array}\right]
+$$</p>
+<h1>4.3 if $\langle$ condition $\rangle$ then goto $\langle$ instruction $\rangle$ : Conditional branching</h1>
+<p>In this subsection, we will implement a conditional branching instruction that evaluates a condition and sets the program counter to a specified location if the condition is true, or increments the program counter by 1 if the condition is false. The form of the command is as follows: if $\operatorname{mem}[a] \leq 0$, then goto $i$, where $\operatorname{mem}[a]$ is a value of some location in the memory part of the input sequence. This command has two parts: evaluating the inequality and modifying the program counter accordingly.</p>
+<p>The first thing we do is read from $\operatorname{mem}[a]$, as described in the previous subsection. Then, we evaluate the inequality. Let us say that "flag" is the truth value of the inequality. Since we assume that for such conditional branching command, $\operatorname{mem}[a]$ contains an integer, the following ReLU network can be used to compute the flag:</p>
+<p>$$
+\text { flag }=1-\operatorname{ReLU}(\operatorname{mem}[a])+\operatorname{ReLU}(\operatorname{mem}[a]-1)
+$$</p>
+<p>In Section 5.1, we consider $\operatorname{mem}[a]$ to be vectors contain the binary $\pm 1$ representation of integers. There we use 2's complement convention to represent negative integers. Let the vector be $\left[b_{N} \ldots b_{1}\right]$, where $b_{N}$ is the most significant bit and $b_{1}$ the least significant. As we explain in that section, the sign of $b_{N}$ indicates whether the integer is negative or positive (The number is negative if $b_{N}=+1$ and non-negative otherwise). Hence, the flag is 1 if $b_{N}=+1$ or if all the bits are -1 (which is the case when $\operatorname{mem}[a]$ represents the integer 0 ).</p>
+<p>$$
+\operatorname{flag}=\operatorname{ReLU}\left(b_{N}\right)+\operatorname{ReLU}\left(1+N-\sum_{i=1}^{N} b_{i}\right)
+$$</p>
+<p>Let the current Program Counter be $\mathbf{p}<em i="i">{\mathrm{PC}}$, which points to a given command. Thus, if flag is 1 , we want the program counter to "jump" and become $\mathbf{p}</em>$.}$, else if flag is 0 the program counter will be incremented by one, and set to be $\mathbf{p}_{\mathrm{PC}+1</p>
+<p>Consider that the simplified input currently has the following scratchpad</p>
+<p>$$
+\left[\begin{array}{ccccc}
+* &amp; * &amp; \ldots &amp; * &amp; * \
+\text { flag } &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}<em i="i">{\mathrm{PC}} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}</em>
+\end{array}\right]
+$$} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0</p>
+<p>where ' $*$ ' are inconsequential values. The incremented pointer, $\mathbf{p}_{\mathrm{PC}+1}$, can be computed using the pointer incrementing operation that we described in the Subsection 4.1, using one feedforward layer of (1b).Then,</p>
+<p>$$
+\mathbf{p}<em _mathrm_PC="\mathrm{PC">{\text {next }}=2 \operatorname{ReLU}\left(\mathbf{p}</em>)\right)-1
+$$}+1}-\mathbf{1} \text { flag }\right)+2 \operatorname{ReLU}\left(\mathbf{p}_{i}-\mathbf{1}(1-\text { flag </p>
+<p>where $\mathbf{1}$ is the all ones vector. Notice that we can implement this with just the feed forward layers of Eq. (1b). To account for the residual connection we can add the expression $-\operatorname{ReLU}\left(\mathbf{p}<em _mathrm_PC="\mathrm{PC">{\mathrm{PC}}\right)+$ $\operatorname{ReLU}\left(-\mathbf{p}</em>\right)$ in the equation above.}</p>
+<p>Hence, this entire operation requires 3 feed forward layers of Eq. (1b), and hence 2 transformer layers. Note that to ensure that the attention layer of the transformer do not modify the input, we simply set the $\mathbf{V}$ matrix to zero in (1a).</p>
+<h1>5 Emulating a Generalized One-instruction Set Computer</h1>
+<h3>5.1 A SUbLEQ Transformer</h3>
+<p>Mavaddat and Parhami [1988] showed that there exists an instruction such that any computer program can be translated to a program consisting of instantiation of this single instructions. A variant of such an instruction is SUBLEQ, where different registers, or memory locations are accessed. The way that SUBLEQ works is simple. It accesses two registers in memory, takes the difference of their contents and stores it back to one of the registers, and then if the result is negative it jumps to a different predefined line of code, or continues on the next instruction from the current line of code. ${ }^{2}$ A computer that is built to execute SUBLEQ programs is called an One-Instruction Set Computer, and is a universal computer, i.e., it is Turing Complete, if given access to infinite memory.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">SUBLEQ</span><span class="w"> </span><span class="err">\</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">operatorname</span><span class="err">{</span><span class="n">mem</span><span class="err">}</span><span class="o">[</span><span class="n">b</span><span class="o">]=</span><span class="err">\</span><span class="n">operatorname</span><span class="err">{</span><span class="n">mem</span><span class="err">}</span><span class="o">[</span><span class="n">b</span><span class="o">]-</span><span class="err">\</span><span class="n">operatorname</span><span class="err">{</span><span class="n">mem</span><span class="err">}</span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="err">\</span><span class="n">operatorname</span><span class="err">{</span><span class="n">mem</span><span class="err">}</span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="w"> </span><span class="err">\</span><span class="n">leq</span><span class="w"> </span><span class="mi">0</span><span class="err">\</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="k">goto</span><span class="w"> </span><span class="nl">instruction</span><span class="w"> </span><span class="err">\</span><span class="p">(</span><span class="n">c</span><span class="err">\</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="nl">next</span><span class="w"> </span><span class="n">instruction</span>
+<span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">if</span>
+</code></pre></div>
+
+<p>The following describes the construction of a looped transformer that can execute a program written in a specific set of instructions. The transformer keeps track of the lines of code, memory locations, and a program counter, using the memory part of the input as memory registers and the command part as lines of code/instructions. The scratchpad is used to record the additions and pointers involved in each instruction, and the read, write, and conditional branch operations are utilized.</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 5: Graphical representation of the building blocks necessary to implement the OISC instruction. The first two blocks transfer the data/command to the scratchpad, the second and third implement the substraction and store the result, while the last one implements the if goto command that completes the instruction.</p>
+<p>Lemma 4. There exists a looped transformer architecture that can run SUBLEQ programs. This architecture has nine layers, two heads, and a width of $O(\log (n)+N)$, where $n$ is the length of the input sequence that is proportional to the length of the program and memory used by the emulated OISC, and $N$ is the number of bits we use to store each integer. The integers are considered to be in the range $\left[-2^{N-1}+1,2^{N-1}-1\right]$</p>
+<p>Before we present our construction some observations are in place.</p>
+<p>The importance of loops. The use of a loop outside the transformer is crucial as it allows the computer to keep track of the program counter and execute the instructions in the correct order. Without this loop, the size of the transformer would have to scale with the number of lines of code, making the implementation impractical. Note that the overall complexity of running a SUBLEQ program is going to scale with the number of lines of code, which is to be expected given standard complexity theoretic assumptions on the circuit depth of functions. Note however that the depth of the looped transfromer itself does not scale with the size of the program.</p>
+<p>Can we avoid the logarithmic width scaling? Finally note, that the width of the transformer scales logarithmically with the length of the program, and memory used. This is a side-effect of the bit-complexity of our positional encodings, and could be overcome by considering higher bit-complexity.</p>
+<p>OISC as a basis for a more flexible attention-based computer. The following construction describes an implementation of a fully functioning one-instruction set computer (OISC) using a transformer architecture. The memory stores integers and the instructions are executed in a sequential manner. The key to this construction is the reverse engineering of the attention mechanism to perform read/write operations and taking full advantage of each piece of the transformer architecture, including the feedforward layers. This implementation serves as the foundation for a more general attention-based computer presented in the next subsection, where the subtraction of two contents of memory can be replaced with a general function, allowing for the implementation of arbitrary iterative algorithms.</p>
+<p>Proof of Lemma 4. Looking at Algorithm 2, note that each instruction can be specified by just 3 indices, $a, b$, and $c$. Since we use binary representation of indices to form positional encodings and pointers, each of these indices can be represented by a $\log n$ dimensional vector. We represent</p>
+<p>each instruction by simply concatenating these embedding vectors to form a $3 \log n$ dimensional vector as follows:</p>
+<p>$$
+\mathbf{c}=\left[\begin{array}{l}
+\mathbf{p}<em b="b">{a} \
+\mathbf{p}</em> \
+\mathbf{p}_{c}
+\end{array}\right]
+$$</p>
+<p>The input then takes the following form:
+<img alt="img-3.jpeg" src="img-3.jpeg" />
+where $\mathbf{c}_{i} \in \mathbb{R}^{3 \log (n)}, \mathbf{M} \in \mathbb{R}^{N \times m}$ and $\mathbf{X} \in \mathbb{R}^{(8 \log (n)+3 N+1) \times n}$. The first $s$ columns constitute the scratchpad, the next $m$ constitute the memory section, and the last $n-m-s$ columns contain the instructions.</p>
+<p>The program counter, $\mathbf{p}<em _mathrm_PC="\mathrm{PC">{\mathrm{PC}}$ points to the next instruction that is to be executed, and hence it is initialized to the first instruction as $\mathbf{p}</em>}}:=\mathbf{p<em N="N">{s+m+1}$. The contents of the memory section are $N$ dimensional $\pm 1$ binary vectors which represent the corresponding integers. We follow the 2's complement convention to represent the integers, described as follows. Let's say the bits representing an integer are $b</em>$ being the most significant bit. Then,}, \ldots, b_{1}$, with $b_{N</p>
+<ol>
+<li>If $b_{N}=-1$, then the integer is considered positive with the value $\sum_{i=1}^{N-1} 2^{i-1} \frac{b_{i}+1}{2}$.</li>
+<li>If $b_{N}=+1$, then the integer is considered negative with the value $-2^{N-1}+\sum_{i=1}^{N-1} 2^{i-1} \frac{b_{i}+1}{2}$.</li>
+</ol>
+<p>Step 1 - Read the instruction $\mathbf{c}<em _mathrm_PC="\mathrm{PC">{\text {PC }}$. The first thing to do is to read and copy the instruction pointed to by $\mathbf{p}</em>}}$ in the scratchpad. The current instruction is located at column index PC, and is pointed to by the current program counter $\mathbf{p<em _mathrm_PC="\mathrm{PC">{\mathrm{PC}}$. The instruction, $\mathbf{c}</em>)$ to the location $(3 \log (n)+4: 6 \log (n)+3,1)$. This can be done using the read operation as described in Section 4.2. Hence, after this operation, the input looks as follows:}}$ consists of three pointers, each of length $\log n$. In particular we copy the elements at the location $(1: 3 \log (n), \mathrm{PC</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{cc|ccc}
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{c}<em 2="2">{1} &amp; \mathbf{c}</em>} &amp; \ldots &amp; \mathbf{c<em _mathrm_EOF="\mathrm{EOF">{n-m-s} &amp; \mathbf{c}</em> \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{M} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{c}}<em _mathrm_PC="\mathrm{PC">{\mathrm{PC}} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}</em> \
+\mathbf{0} &amp; \mathbf{p}}} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0<em s_1:="s+1:" s_m="s+m">{2: s} &amp; \mathbf{p}</em>} &amp; \mathbf{p<em s_m_2="s+m+2">{s+m+1} &amp; \mathbf{p}</em>} &amp; \ldots &amp; \mathbf{p<em n="n">{n-1} &amp; \mathbf{p}</em> \
+1 &amp; 1_{2: s} &amp; 0_{s+1: s+m} &amp; 0_{s+m+1} &amp; 0_{s+m+2} &amp; \ldots &amp; 0_{n-1} &amp; 0_{n}
+\end{array}\right]
+$$</p>
+<p>$$
+=\left[\begin{array}{cc|cccc}
+0 &amp; 0 &amp; 0 &amp; \mathbf{c}<em 2="2">{1} &amp; \mathbf{c}</em>} &amp; \ldots &amp; \mathbf{c<em _mathrm_EOF="\mathrm{EOF">{n-m-s-1} &amp; \mathbf{c}</em> \
+0 &amp; 0 &amp; \mathrm{M} &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}}<em b="b">{a} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}</em> &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}<em _mathrm_PC="\mathrm{PC">{c} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}</em> &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+0 &amp; \mathbf{p}}<em s_1:="s+1:" s_m="s+m">{2: s} &amp; \mathbf{p}</em>} &amp; \mathbf{p<em s_m_2="s+m+2">{s+m+1} &amp; \mathbf{p}</em>} &amp; \ldots &amp; \mathbf{p<em n="n">{n-1} &amp; \mathbf{p}</em> \
+1 &amp; 1_{2: s} &amp; 0_{s+1: s+m} &amp; 0_{s+m+1} &amp; 0_{s+m+2} &amp; \ldots &amp; 0_{n-1} &amp; 0_{n}
+\end{array}\right]
+$$</p>
+<p>This step can be done in one layer.</p>
+<p>Step 2 - Read the data required by the instruction. We need to read the data that the columns $a, b$ contain. To do so, we again use the read operation on the pointers $\mathbf{p}<em b="b">{a}, \mathbf{p}</em>$. Note that we need two heads for this operation, one each for reading $a$ and $b$. The resulting output sequence looks like</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{cc|cccc}
+0 &amp; 0 &amp; 0 &amp; \mathbf{c}<em 2="2">{1} &amp; \mathbf{c}</em>} &amp; \ldots &amp; \mathbf{c<em _mathrm_EOF="\mathrm{EOF">{n-m-s-1} &amp; \mathbf{c}</em> \
+0 &amp; 0 &amp; \mathrm{M} &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\hline \mathrm{mem}[a] &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathrm{mem}[b] &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}}<em b="b">{a} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}</em> &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}<em _mathrm_PC="\mathrm{PC">{c} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+\mathbf{p}</em> &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \ldots &amp; 0 &amp; 0 \
+0 &amp; \mathbf{p}}<em s_1:="s+1:" s_m="s+m">{2: s} &amp; \mathbf{p}</em>} &amp; \mathbf{p<em s_m_2="s+m+2">{s+m+1} &amp; \mathbf{p}</em>} &amp; \ldots &amp; \mathbf{p<em n="n">{n-1} &amp; \mathbf{p}</em> \
+1 &amp; 1_{2: s} &amp; 0_{s+1: s+m} &amp; 0_{s+m+1} &amp; 0_{s+m+2} &amp; \ldots &amp; 0_{n-1} &amp; 0_{n}
+\end{array}\right]
+$$</p>
+<p>This step can be done in one layer.</p>
+<p>Step 3 - Perform subtraction. Let $\boldsymbol{x}$ denote a column of the input $\mathbf{X}$. Let it have the following structure:</p>
+<p>$$
+\boldsymbol{x}=\left[\begin{array}{r}
+* \
+* \
+\boldsymbol{b}<em s="s">{r} \
+\boldsymbol{b}</em> \
+* \
+* \
+* \
+* \
+* *
+\end{array}\right]
+$$</p>
+<p>where each entry above represents the corresponding column element of the matrix $\mathbf{X}$ in (6). Thus, $\boldsymbol{b}<em s="s">{r}=\operatorname{mem}[a], \boldsymbol{b}</em>}=\operatorname{mem}[b]$ for the first column, and $\boldsymbol{b<em s="s">{r}=\boldsymbol{b}</em>$ otherwise.}=\mathbf{0</p>
+<p>Hence, to perform $\boldsymbol{b}<em -r="-r">{s-r}$, we first need to compute the binary representation of $-r$, which is $\boldsymbol{b}</em>}$, and then simply add it to $\boldsymbol{b<em -r="-r">{s}$. To compute $\boldsymbol{b}</em>}$, which is the 2 's complement of $\boldsymbol{b<em r="r">{r}$, we just need to flip the bits of $\boldsymbol{b}</em>}$ and add 1. Bit flipping a $\pm 1$ bit can be done with a neuron simply as $b_{\text {flipped }}=2 * \operatorname{ReLU}(-b)-1$. For adding 1 , we can use Lemma 16. Hence, each of these operations can be done using 1 ReLU layer of width $O(N)$, and so we need 2 transformer layers to perform this (Here we make the intermediate attention layers become the identity mapping by setting their value matrices to $\mathbf{0}$ ). Finally, we need one more ReLU layer to add $\boldsymbol{b<em -r="-r">{s}$ to $\boldsymbol{b}</em>$, hence bringing the total to 3 transformer layers.</p>
+<p>This results in the following:</p>
+<p>Note that since this can be done in the feedforward layers of the previous step, this does not require an additional layer.</p>
+<p>Step 4 - Write the result back to memory. Writing $\operatorname{mem}[b]-\operatorname{mem}[a]$ back to location $b$ can be done using the pointer $\mathbf{p}_{b}$ and the set of embeddings and applying the write operation described in Section 4.2. This operation requires one layer.</p>
+<p>Step 5 - Conditional branching. We first use Eq. (4) as described in Section 4.3 to create the flag, which is 1 if $\operatorname{mem}[b]-\operatorname{mem}[a] \leq 0$ and 0 otherwise. This can be done using the Eq. (1b) of the transformer. Thus, we have</p>
+<p>$$
+\mathbf{X}=\left[\begin{array}{cc|cccccc}
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{c}<em 2="2">{1} &amp; \mathbf{c}</em>} &amp; \ldots &amp; \mathbf{c<em _mathrm_EOF="\mathrm{EOF">{n-m-s-1} &amp; \mathbf{c}</em> \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{M} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\operatorname{mem}[b]-\operatorname{mem}[a] &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}}<em b="b">{a} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}</em> \
+\mathbf{p}} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0<em _mathrm_FC="\mathrm{FC">{c} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0} \
+\mathbf{p}</em> \
+\mathbf{0} &amp; \mathbf{p}}} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \mathbf{0} &amp; \ldots &amp; \mathbf{0} &amp; \mathbf{0<em s_1:="s+1:" s_m="s+m">{2: s} &amp; \mathbf{p}</em>} &amp; \mathbf{p<em s_m_2="s+m+2">{s+m+1} &amp; \mathbf{p}</em>} &amp; \ldots &amp; \mathbf{p<em n="n">{n-1} &amp; \mathbf{p}</em> \
+1 &amp; 1_{2: s} &amp; 0_{s+1: s+m} &amp; 0_{s+m+1} &amp; 0_{s+m+2} &amp; \ldots &amp; 0_{n-1} &amp; 0_{n}
+\end{array}\right]
+$$</p>
+<p>This operation requires one layer.
+Next we use the construction described in Section 4.3 to choose, depending on the value of the flag, whether we want to increment the current program counter or we want to jump in the command $c$. Similar to Section 4.3, this step needs 2 layers of transformers.</p>
+<p>Step 6 - Error Correction. Note that some of the steps above we incur some error while reading and writing due to the fact that we are using softmax instead of hardmax. This error can be made arbitrarily small by increasing the temperature of the softmax. In this step, we push the error down to zero. Note that all the elements of $\mathbf{X}$ can only be one of ${-1,0,1}$, with some additive error from reads and writes as explained before. Assume that the temperature is set high enough that the error is at most $\epsilon&lt;0.5$. Then, a noisy bit $b$ can be fixed using the following ReLU:</p>
+<p>$$
+\begin{aligned}
+b_{\text {noiseless }} &amp; =\frac{1}{1-2 \epsilon}(\operatorname{ReLU}(b+1-\epsilon)-\operatorname{ReLU}(b+\epsilon)) \
+&amp; +\frac{1}{1-2 \epsilon}(\operatorname{ReLU}(b-\epsilon)-\operatorname{ReLU}(b-1+\epsilon))-1
+\end{aligned}
+$$</p>
+<p>This operation can be done with a single layer of transformer.</p>
+<p>Step 7 - Program Termination. The special command $\mathbf{c}<em s_1="s+1">{\text {EOF }}$ is used to signal the end of a program to the transformer. This command is made up of three encodings: $\mathbf{p}</em>}, \mathbf{p<em n="n">{s+2}$, and $\mathbf{p}</em>}$. The first encoding, $\mathbf{p<em s_2="s+2">{s+1}$, points to the first entry in the memory, which we hard-code to contain the value 0 . The second encoding, $\mathbf{p}</em>$, points to itself, signaling the end of the program and preventing further execution of commands. Hence, on executing this command, the next command pointer is set to point to this command again. This ensures that the transformer maintains the final state of the input.}$, points to the second entry in the memory, which is hard-codeded to contain the value -1 . The third encoding, $\mathbf{p}_{n</p>
+<ul>
+<li>For this, we ensure that the last instruction in each program is $\mathbf{c}_{\text {EOF }}$, and that $\operatorname{mem}[s+1]=0$ and $\operatorname{mem}[s+2]=-1$.</li>
+<li>For this case $a=s+1, b=s+2$, and $c=n$.</li>
+<li>The memory is updated with the value $\operatorname{mem}[b]=\operatorname{mem}[b]-\operatorname{mem}[a]$. Since $\operatorname{mem}[a]=0$ here, the memory remains unchanged.</li>
+<li>Since $\operatorname{mem}[b] \leq 0$ here, the branch is always true and thus the pointer for the next instruction is again set to point to $\mathbf{c}_{\text {EOF }}$.</li>
+</ul>
+<h1>5.2 FLEQ: A More Flexible Attention-based Computer</h1>
+<p>In this section, we introduce FLEQ, a generalization of SUBLEQ that defines a more flexible reduced-instruction set computer. This implied set of additional instructions is based on a more advanced version of SUBLEQ that allows for the implementation of multiple functions within the same transformer network. This is achieved by generalizing the previous OISC construction to include not just addition of registers, but any function from a set of $M$ predefined functions implementable by a transformer network. In the following, we use the term FLEQ to refer interchangably to the instruction, the language, and the attention-based computer it defines.</p>
+<p>The design of FLEQ allows for the implementation of complex and sophisticated algorithms by generating more general functions beyond simple subtraction, such as matrix multiplication, computation of square roots, activation functions, etc. This not only increases the flexibility of the system, but also makes it possible to implement nonlinear computations, linear algebra calculations, and iterative optimization algorithms for in-context learning while containing the length of the corresponding programs.</p>
+<p>Definition 1. Let $\mathcal{T}<em i="i">{i}$ be a transformer network of the form (1) with $l</em> \leq d$. Finally, the sequence length of the block is $s \geq 3 d$. Similarly to $d$, $s$ is a predetermined constant.}$-layers, $h_{i}$-heads and dimensionality $r$. We call this a "transformer-based function block" if it implements a function $f(\mathbf{A}, \mathbf{B})$ where the input and output sequence format is assumed to be the following: $\mathbf{A} \in \mathbb{R}^{d_{h} \times d_{w}}$ is assumed to be provided in the first set of $d$ columns (columns 1 to d ) and $\mathbf{B} \in \mathbb{R}^{d_{h} \times d_{w}}$ the second set of $d$ columns (columns $d+1$ to $2 d$ ); after passing the input through the $l_{i}$ layers, the output of $f(\mathbf{A}, \mathbf{B}) \in \mathbb{R}^{d_{h} \times d_{w}}$ is stored in the third $d$ columns (columns $2 d+1$ to $3 d$ ), where $d$ is the maximum size that the input could have and it is a constant that we determine. Note that $d_{h}, d_{w</p>
+<p>The parameters $\mathbf{A}, \mathbf{B}$ can be scalars, vectors or matrices as long as they can fit within a $d \times d$ matrix. Hence, the above definition is minimally restrictive, with the only main constraint being the input and output locations. More details about the input and output requirements will be explained towards the end of this subsection.</p>
+<p>Theorem 2. Given $M$ different transformer-based function blocks $\mathcal{T}<em M="M">{1}, \cdots, \mathcal{T}</em>\right)$, and executes the following:}$, there exists a transformer $\mathcal{T}$ of the form (1) with number of layers $9+\max \left{l_{1}, \cdots, l_{M}\right}$, a number of $\sum_{i=1}^{M} h_{i}$ heads, and dimensionality $O(M d+\log n)$ such that running it recurrently $T$ times can run $T$ instructions of any program where each instruction is $\operatorname{FLEQ}\left(a, b, c, m\right.$, flag, $\left.p, d_{h}, d_{w</p>
+<p>$$
+\operatorname{mem}[c]=f_{m}(\operatorname{mem}[a], \operatorname{mem}[b]) \quad ; \quad \text { if } \operatorname{mem}[\text { flag }] \leq 0 \text { goto instruction } p
+$$</p>
+<p>Here $n$ is the total length of the program and we assume that mem[flag] is an integer. The parameters $d_{h}, d_{w}$ are explained in Remark 1 below.</p>
+<p>Remark 1. Note that, the transformer $\mathcal{T}$ contains $M$ transformer-based function blocks and each one may use different input parameters. We thus define with $d$ the max length that each of the parameters $\mathbf{A}, \mathbf{B}, \mathbf{C}$ (stored in locations $a, b, c$ ) as in Definition 1 can have; this is a global constant and it is fixed for all the different instances that we can create. Now, $d_{h}, d_{w}$ refer to the maximum dimension that the parameters can have in a specific instance of the transformer $\mathcal{T}$; the rest of the columns $d-d_{w}$ and rows $d-d_{h}$ are set to zero.</p>
+<p>The proof of this theorem can be found in Appendix D. Below we explain some of our design choices.</p>
+<p>Execution cycle of the unified attention-based computer. In each iteration of the looped transformer, one instruction is fetched from the set of instructions in the input according to the program counter. The instruction is then copied to the scratchpad. Depending on the function to be implemented, a different function block location is used to locally record the results of that</p>
+<p>function. Once the result is calculated, it is copied back to a specified memory location provided by the instruction. The execution cycle is similar to the one-instruction set computer (OISC) in the previous section, with the main difference being that for each instruction, we can choose from a pre-selected list of functions that take inputs in the form of arbitrary arrays of numbers, such as matrices, vectors, and scalars.</p>
+<p>The format of the input sequence. In Fig. 6, we illustrate the input $\mathbf{X}$ to our looped transformer, which can execute a program written as a series of FLEQ instructions. Note that $\mathbf{X}$ is divided into three sections: Scratchpad, Memory, and Instructions. As in the left bottom part of Fig. 6, we allocate a separate part of the scratchpad for each of the $M$ functions that are internally implemented by the transformer. For example, if we have matrix multiplication and element-wise square root as two functions, we would allocate a different function block for each one.
+<img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 6: The structure of input $\mathbf{X}$, to execute FLEQ commands.</p>
+<p>This design may not be the most efficient, but our goal is to demonstrate the possibilities of looped transformers. Additionally, since the number of different functions is typically small in the applications we have in mind, the design does not significantly increase in size. The choice to reserve different function blocks for each predefined function is for convenience, as it allows for separate treatment of functions without worrying about potentially overlapping results. We believe that a design with a single function block is feasible, but it would significantly complicate the rest of the transformer construction.</p>
+<p>Instruction format. The instruction in Theorem 2 is essentially a composition of the following two components: the function call to $f_{m}$ and the conditional branching (if ... goto ...). The instruction, located at the top right side of Fig. 6 contains the following components:</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{2}$ This version of the SUBLEQ instruction is a slightly restricted version of the original instruction; here we separate the memory / registers from the instructions. We show that this restriction does not make our version computationally less powerful by proving in Appendix C that our version is also Turing Complete.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>

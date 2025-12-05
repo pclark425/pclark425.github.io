@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction extraction-result-8392 - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Extracted Data Details for extraction-result-8392</h1>
+
+        <div class="section">
+            <h2>Extracted Data (Header)</h2>
+            <div class="info-section">
+                <p><strong>Extraction ID:</strong> extraction-result-8392</p>
+                <p><strong>Extraction Schema Used (ID):</strong> <a href="../schemas/extraction-schema-149.html">extraction-schema-149</a></p>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <p><strong>Paper ID:</strong> paper-2aeaad5548229dec7fdf716f7e83a5a359665852</p>
+                <p><strong>Paper Title:</strong> <a href="https://www.semanticscholar.org/paper/2aeaad5548229dec7fdf716f7e83a5a359665852" target="_blank">Carrying over algorithm in transformers</a></p>
+                <p><strong>Paper Venue:</strong> arXiv.org</p>
+                <p><strong>Paper TL;DR:</strong> A simple way of precisely identifying which neurons are responsible for that task in the carrying over algorithm is provided, across a range of hyperparameters for two as well as three-layer models.</p>
+                <p><strong>Paper Abstract:</strong> Addition is perhaps one of the simplest arithmetic tasks one can think of and is usually performed using the carrying over algorithm. This algorithm consists of two tasks: adding digits in the same position and carrying over a one whenever necessary. We study how transformer models implement this algorithm and how the two aforementioned tasks are allocated to different parts of the network. We first focus on two-layer encoder-only models and show that the carrying over algorithm is implemented in a modular fashion. The first layer is mostly responsible for adding digits in the same position. The second layer first decides, in the attention, which positions need a carried one or not, and then performs the carrying of the one in the final MLP. We provide a simple way of precisely identifying which neurons are responsible for that task. This implementation of the carrying over algorithm occurs across a range of hyperparameters for two as well as three-layer models. For small decoder-only models, we observe the same implementation and provide suggestive evidence for its existence in three 7B large language models.</p>
+                <p><strong>Cost:</strong> 0.017</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Details)</h2>
+            <div class="extraction-instance-container" id="e8392.0">
+                <h3 class="extraction-instance">Extracted Data Instance 0 (e8392.0)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>2-layer encoder</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Two-layer encoder-only transformer (small models, main experiments)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Small transformer models (d_model=128, d_ff=128, 2 attention heads, RoFormer positional embeddings) trained on tokenized 3-digit addition; reach perfect accuracy and implement the carrying-over algorithm in a modular way across components.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Two-layer encoder-only transformer (128 dim, 2 heads)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Encoder-only transformer with 2 layers, LayerNorm, dropout p=0.1, d_model=128, d_ff=128, 2 attention heads, RoFormer positional embeddings; trained on 3-digit addition dataset (~500k examples) with AdamW (lr=1.4e-4), weight decay λ (varied).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-digit addition (3-digit addition as tokenized digits; also extended to 4 and 6 via priming/finetuning in experiments).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Modular implementation: layer 0 attention acts as digit-wise adders (staircase attention transfers digit embeddings and, via residual connections, performs addition), layer 0 MLP refines grouping (detects sum >=10 and special-cases '9'), layer 1 attention (a 'decision head') routes previous-sum information to output positions to decide where carries are needed, and the final layer-1 MLP implements the actual addition of the carried one (specialized neurons rotate/squash embeddings toward final outputs).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Ablations of single attention heads (zeroing heads), ablation of entire final MLP, neuron-level ablation based on activation thresholds (z_i>z_NC), PCA of residual-stream activations, SVD on MLP pre-activation weights, tracking model after each epoch (ablating after every epoch).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Trained 2-layer models reach near-perfect accuracy on 3-digit addition (all runs reported reach perfect accuracy on the task). Ablation results (Table 1) show: ablating the decision head yields task- and position-dependent accuracies (examples in table); ablating the final MLP causes almost complete inability to perform carries (corrected accuracy indicates model often simply forgot to add/subtract one).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Without the final MLP, model fails on positions that require carrying (for non-carry examples it may output off-by-one errors); ablating decision head causes confusion specifically on determining where to add a carry, splitting its outputs between correct and off-by-one; some runs route carry-determination via alternate heads so single-head ablation effects can vary between runs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Attention patterns show clear staircase structure transferring digit embeddings; PCA of residual stream: layer 0 groups examples by sum >=10 vs <10, layer 1 groups by whether a carry is needed and final MLP outputs cluster by final digit; ablation of the 'decision head' degrades carry-decision behavior (Table 1); ablating ~86 neurons identified via activation thresholding eliminates carry behavior while non-carry accuracy remains high; SVD aligns a leading axis with carry feature.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>One-layer models do not fully implement the algorithm; some two-layer runs route carry-decision differently (not always through the same head), meaning the identified head is not strictly unique; length-generalization fails out-of-the-box (3-digit-trained models fail on 6-digit inputs unless primed/fine-tuned).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.1">
+                <h3 class="extraction-instance">Extracted Data Instance 1 (e8392.1)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>1-layer encoder</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>One-layer encoder-only transformer (small models)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Single-layer transformers trained on 3-digit addition exhibit a sudden phase transition in the QK attention circuit forming staircase attention patterns and partial addition behavior but do not reach perfect accuracy; the MLP is less interpretable.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>One-layer encoder-only transformer (128 dim, 2 heads)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Single-layer encoder-only transformer with same embedding/positional settings as the main models, trained on 3-digit addition dataset (same training regimen variations).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Multi-digit addition (3-digit digit-tokenized addition).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Phase transition in QK circuit produces staircase attention patterns that act as naive adders (attention copies and, combined with residual connection, behaves like addition); the model distinguishes digit sums but does not implement full carry algorithm; representations show ordering of digits and grouping by summed value but not by carry-needed.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Monitoring dynamics across epochs (loss, weight norms), PCA of residual-stream activations after attention and MLP, inspection of attention patterns across training (phase transition), ablation of skip connections (shown important in other models).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>One-layer models do not reach perfect accuracy on 3-digit addition; exact numeric final accuracies vary across runs and hyperparameters (noted as significantly below perfect), and behavior depends on weight decay and train/test split; no single global numeric accuracy reported in main text.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Fail to implement carry correctly; produce naive addition that distinguishes (e.g.) 2+1 vs 3+0 and requires downstream corrections the model does not reliably perform; MLP is not clearly specialized so carry handling is inconsistent.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Sudden changes in attention patterns and weight norms during training coincide with improved loss/accuracy (phase transition). PCA shows grouping by summed digit values and an ordering of digit outcomes, but no grouping by need-for-carry.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Despite staircase attention, one-layer models still fail at full addition—MLP specialization seen in deeper models is missing; behavior sensitive to weight decay and initialization; the phase transition is sudden and run-dependent.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.2">
+                <h3 class="extraction-instance">Extracted Data Instance 2 (e8392.2)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>staircase attention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Staircase attention / addition heads</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>An attention-head pattern that attends in a staircase-like way between digit positions, enabling transfer of digit embeddings across positions so that residual-addition via skip connections yields digit-wise sums.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Observed across small encoder models and in LLMs (Alpaca, Llemma, Zephyr)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Pattern observed in attention weight matrices where heads attend from each answer-position to the relevant input digit tokens in a stepwise/staircase manner; occurs in multiple heads and layers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Digit-by-digit addition (tokenized digits).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Attention copies embeddings of input digits to positions where they should be combined; residual connections then effect addition (attention acting as copier + residual stream = adder). Staircase geometry arises because each output digit must aggregate two input digit tokens and sometimes previous sum information.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Visual inspection/averaging of attention maps across task subsets and examples; counting heads exhibiting staircase patterns; targeted ablation of heads identified via frequency-of-staircase metric.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>In small two-layer models these heads are part of circuits enabling perfect 3-digit accuracy; in LLM probes, numbers of heads with partial staircase patterns reported: Alpaca 164 heads, Llemma 190 heads, Zephyr 239 heads (counts across multi-layer attention head inventory).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Staircase attention alone is 'naive adder' and distinguishes sums with same numerical result but different decompositions (e.g., 2+1 vs 3+0), so downstream components must correct; if skip connections are removed, accuracy drops drastically (example: accuracy averaged over runs drops to ~0.13±0.1 when skip info removed).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Averaged attention maps show staircase patterns (Figures 2,3,6); ablation of identified addition heads in LLMs reduces accuracy substantially; PCA/residual analyses show stage-wise transformation consistent with staircase attention providing inputs for subsequent carry-decision and MLP carry addition.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.3">
+                <h3 class="extraction-instance">Extracted Data Instance 3 (e8392.3)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>decision head</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Decision attention head (carry-decider)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A specific attention head in the second layer that transfers previous-sum information to current output positions and functions primarily to decide whether a carried one should be added.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Second-layer attention head in two-layer encoder models (and analogous heads in larger LLMs)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Typically one head in layer 1 that attends from output positions to positions containing previous-sum information (from layer 0), often called the 'decision' head because ablating it changes carry-decisions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Carry determination for multi-digit addition.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Routes the summarized digit-sum information from lower-layer attention outputs into positions where the model must decide to add a carry; its output is used by subsequent MLP to effect the actual +1 when needed.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Head ablation (zeroing the attention head) and measuring per-position/per-task accuracy across five task subsets; PCA showing separation of tasks in residual stream collapses when decision head ablated.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Ablating the decision head yields strongly task-dependent degradation: Table 1 reports per-position accuracies (examples: for NC task pos7: 0.52, pos8:0.31, pos9:1.0 after decision-head ablation averaged over 6 runs); when decision head removed the model often either correctly places carries or is off-by-one (accuracy is split between correct and off-by-one).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>When ablated, the model becomes 'unsure' for some positions and sometimes adds an unnecessary carry or fails to add one — resulting behavior is often exactly off-by-one; however, alternative pathways sometimes mitigate the effect (variation across runs).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Ablation experiments show that removing the decision head removes the residual-stream separation between tasks (carry-needed vs not), producing the confusion recorded in Table 1; PCA comparisons before/after ablation confirm loss of task separation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.4">
+                <h3 class="extraction-instance">Extracted Data Instance 4 (e8392.4)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>final MLP carry neurons</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Final-layer MLP neurons specialized for carry addition</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A subset of neurons in the final MLP that implement the addition of the carried one by rotating/squashing the residual representations toward the correct output digit clusters.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Final MLP of two-layer encoder-only transformer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>The MLP block after the second layer attention/LayerNorm that contains a hidden layer (ReLU) of size d_ff (128 typically) whose activations and weight SVD reveal a 'carry' axis and a set of neurons critical for carrying.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Addition including carry propagation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Mechanistically, these neurons effect a rotation/squashing of embedding vectors corresponding to intermediate sums so that examples with same final digit outcome are drawn together; one leading SVD axis corresponds to carry-feature magnitude.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Ablating the entire final MLP, targeted neuron ablation by activation-threshold heuristic (select neurons with activations z_i > z_NC for carry tasks), SVD on pre-activation weights to identify a carry axis, measuring pairwise cosine similarity matrices of hidden reps.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Ablating the entire final MLP causes near-total loss of carry capability while leaving non-carry outputs intact in many runs (corrected accuracies indicate the ablated model often simply 'forgot' to add/ remove one). Targeted ablation of ~86 neurons caused inability to carry (accuracy 0 on carry tasks, corrected accuracy 1 for non-carry).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>If MLP is ablated, model can still compute naive digit sums but fails to add carried ones; targeted ablation isolates carry functionality but other runs show carry information can be distributed and may require different ablation criteria.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Targeted neuron ablation removes carry capability (empirical ~86 neurons in one model); SVD identifies a leading axis aligned with carry feature; PCA and cosine similarity experiments demonstrate that removal of these neurons turns the hidden-rep similarity structure into a checkerboard corresponding to un-carried sums.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.5">
+                <h3 class="extraction-instance">Extracted Data Instance 5 (e8392.5)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>priming/finetuning generalisation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Priming and fine-tuning to extend length generalization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>Small models trained on 3-digit addition do not generalize to 6-digit inputs without intervention; adding a tiny number of longer examples (priming) or fine-tuning on a small set of longer sums enables near-perfect generalization by reusing early-developed carry components.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td>here</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Two-layer encoder models (and fine-tuned variants)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Same small transformer models trained on 3-digit addition, then primed by augmenting training with 100 six-digit sums or fine-tuned with 500 six-digit sums for 50 epochs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Length generalization for multi-digit addition (3-digit → 6-digit).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Priming leverages existing carry-detection and carry-adding components; small injections of longer examples prompt reuse/adaptation of the same modular components across extended positions.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Augment training set with a small number of longer examples (priming) and rapid fine-tuning on few-shot longer examples; inspect attention, PCA, and circuit structure post-priming/fine-tuning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Unprimed 3-digit-trained models achieve only ~10-15% accuracy on 6-digit sums. Priming with 100 six-digit sums enabled models to achieve near-perfect 6-digit addition. Fine-tuning with 500 six-digit sums for 50 epochs yielded test accuracies of 0.94 on six-digit and 0.97 on three-digit additions, with only tiny weight changes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Without priming/fine-tuning the learned algorithm is unstable: the parts for carry exist around epoch ~500 but later training focuses on 3-digit accuracy and forgets generalizable structure. Priming fixes this by directing training to reuse components.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Comparison of primed vs unprimed models shows same modular carrying components are present and reused after priming; fine-tuning experiments achieved high 6-digit accuracy with minimal weight changes, indicating reuse rather than wholesale re-learning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.6">
+                <h3 class="extraction-instance">Extracted Data Instance 6 (e8392.6)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Alpaca 7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Alpaca 7B (instruction-fine-tuned LLaMA-1 7B)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>An instruction-finetuned LLaMA-derived 7B model probed zero-shot on 4-digit addition; shows low addition accuracy but exhibits some staircase-like attention heads.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Alpaca 7B (instruction-fine-tuned LLaMA-1 7B)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Alpaca 7B: instruction-following variant of LLaMA-1 fine-tuned as in Alpaca repo; probed with 1k four-digit a+b= prompts using Alpaca template; attention inspected via HuggingFace model hooks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Zero-shot 4-digit integer addition (next-token generation of result).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Some heads exhibit staircase attention patterns; specific heads (noted as e.g. 6:23 and 13:15) transfer information between integer tokens and output positions similar to small models, but overall arithmetic capability is limited.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Prompting (Alpaca prompt template), extraction/averaging of attention maps across generated tokens, identification of heads with staircase patterns, ablation of frequent staircase heads and measuring accuracy impact.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Accuracy on 1k four-digit sums: 0.33. Number of heads with staircase-like patterns counted: 164. Ablating frequent pairs of identified heads reduced accuracy to 0.17 in reported ablations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Low accuracy overall; many errors are not strictly carry mistakes alone; ablation of staircase heads reduces arithmetic accuracy but does not prevent model from generating text responses (ablations did not globally break generation).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Observed staircase patterns in averaged attention maps; ablating candidate heads degrades arithmetic accuracy; attention-pattern inspection consistent with transfer-of-information roles analogous to small models (Appendix G and A.3 details).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Alpaca's low baseline accuracy makes mechanistic conclusions tentative; staircase heads are numerous and not unique; generation sometimes includes extraneous text formatting or tokens requiring cleanup for evaluation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.7">
+                <h3 class="extraction-instance">Extracted Data Instance 7 (e8392.7)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Llemma 7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Llemma 7B (mathematics-tuned 7B model)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A 7B model tuned for mathematical tasks that performs well on 4-digit addition and exhibits staircase attention heads and residual-stream structure that mirrors the small models' carry algorithm components.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Llemma 7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Llemma 7B: open model trained/tuned for math (ref. in paper); probed zero-shot with 1k four-digit sums a+b=; attention and residual-stream PCA analyzed across layers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Zero-shot 4-digit integer addition.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Multiple heads show staircase attention and addition behavior; residual stream (e.g., layer 25 at output positions) shows separations first by sum >=10 then by whether a carry is needed, and MLP-like rearrangements that cluster by needed carry vs final digit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Averaged attention-pattern inspection, identification of addition heads (noted pair (13:23,15:15)), layerwise PCA of residual stream, head ablation experiments via HuggingFace hooks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Accuracy on 1k four-digit sums: 0.87. Number of heads with staircase patterns: 190. Ablating important head pair reduced accuracy to 0.30 (single reported ablation result). 64% of Llemma's mistakes were carrying-over mistakes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>Majority of errors are carry-related (64% of mistakes); ablation of identified heads drastically reduces accuracy indicating reliance on these heads for arithmetic; mistakes often correspond to incorrect carry decisions or missing/extra carries.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Layerwise PCA shows the same sequence of representational transformations as in small models (>=10 vs <10 separation then carry-needed grouping); attention maps show staircase heads (Figure 6); head ablation lowers accuracy and confirms functional importance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Although strong evidence exists, the implementation is not guaranteed to be as clean/modular as in small models due to many redundant heads and distributed representations; ablation results vary and do not fully prove causal mechanistic chain across all runs.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="extraction-instance-container" id="e8392.8">
+                <h3 class="extraction-instance">Extracted Data Instance 8 (e8392.8)</h3>
+                <div class="extraction-query"><strong>Extraction Query:</strong> Extract any mentions of how language models perform arithmetic, including mechanisms, representations, probing results, interventions, performance, and error analysis.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Field</th>
+                            <th style="width: 70%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>name_short</strong></td>
+                            <td>Zephyr 7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name_full</strong></td>
+                            <td>Zephyr 7B (7B instruction-distilled model)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>brief_description</strong></td>
+                            <td>A distilled instruction-tuned 7B model that attains high accuracy on 4-digit addition and exhibits multiple staircase attention heads and residual-stream patterns consistent with modular carry processing; many of its errors are carry-related.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>citation_title</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>mention_or_use</strong></td>
+                            <td>use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_name</strong></td>
+                            <td>Zephyr 7B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>model_description</strong></td>
+                            <td>Zephyr 7B: instruction-tuned/distilled 7B model (reference in paper); probed zero-shot on 1k four-digit sums; attention and residual-stream analyses performed similarly to Llemma.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>arithmetic_task_type</strong></td>
+                            <td>Zero-shot 4-digit integer addition.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>mechanism_or_representation</strong></td>
+                            <td>Multiple heads with staircase patterns (more heads than Llemma), attention-based addition plus downstream residual/MLP transformations that separate carry-needed cases; additional redundancy in attention heads.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>probing_or_intervention_method</strong></td>
+                            <td>Attention-pattern detection across generated tokens, identification of key head pairs (reported pairs e.g. (17:25,17:26),(20:30,20:31)), head ablation experiments and residual-stream inspection.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>performance_metrics</strong></td>
+                            <td>Accuracy on 1k four-digit sums: 0.85. Number of heads with staircase patterns: 239. Ablation of listed head pairs reduced accuracy to ~0.34–0.35. 74% of Zephyr's mistakes were carrying-over mistakes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>error_types_or_failure_modes</strong></td>
+                            <td>A large fraction of errors are carry-related (74%); despite many staircase heads, carry decisions still fail on many examples; ablations reduce arithmetic performance but do not abolish generation capability.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>evidence_for_mechanism</strong></td>
+                            <td>Averaged attention maps show staircase patterns (Figure 6); PCA of residuals at intermediate layers shows groupings by carry-needed similar to small models; ablation of head pairs strongly degrades arithmetic accuracy.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>counterexamples_or_challenges</strong></td>
+                            <td>Large number of heads and distributed circuitry makes causal interpretation harder; while patterns are suggestive of modular carry implementation, redundancy and non-uniqueness of heads limit certainty of a single neat circuit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>source_info</strong></td>
+                            <td>{'paper_title': 'Carrying over algorithm in transformers', 'publication_date_yy_mm': '2024-01'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Potentially Relevant New Papers (mentioned by this paper)</h2>
+            <ol>
+                <li>Length generalization in arithmetic transformers <em>(Rating: 2)</em></li>
+                <li>In-context learning and induction heads <em>(Rating: 2)</em></li>
+                <li>What algorithms can transformers learn? a study in length generalization <em>(Rating: 2)</em></li>
+                <li>Progress measures for grokking via mechanistic interpretability <em>(Rating: 1)</em></li>
+                <li>Investigating the limitations of transformers with simple arithmetic tasks <em>(Rating: 1)</em></li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Extracted Data (Debug)</h2>
+            <pre><code>{
+    "id": "extraction-result-8392",
+    "paper_id": "paper-2aeaad5548229dec7fdf716f7e83a5a359665852",
+    "extraction_schema_id": "extraction-schema-149",
+    "extracted_data": [
+        {
+            "name_short": "2-layer encoder",
+            "name_full": "Two-layer encoder-only transformer (small models, main experiments)",
+            "brief_description": "Small transformer models (d_model=128, d_ff=128, 2 attention heads, RoFormer positional embeddings) trained on tokenized 3-digit addition; reach perfect accuracy and implement the carrying-over algorithm in a modular way across components.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Two-layer encoder-only transformer (128 dim, 2 heads)",
+            "model_description": "Encoder-only transformer with 2 layers, LayerNorm, dropout p=0.1, d_model=128, d_ff=128, 2 attention heads, RoFormer positional embeddings; trained on 3-digit addition dataset (~500k examples) with AdamW (lr=1.4e-4), weight decay λ (varied).",
+            "arithmetic_task_type": "Multi-digit addition (3-digit addition as tokenized digits; also extended to 4 and 6 via priming/finetuning in experiments).",
+            "mechanism_or_representation": "Modular implementation: layer 0 attention acts as digit-wise adders (staircase attention transfers digit embeddings and, via residual connections, performs addition), layer 0 MLP refines grouping (detects sum &gt;=10 and special-cases '9'), layer 1 attention (a 'decision head') routes previous-sum information to output positions to decide where carries are needed, and the final layer-1 MLP implements the actual addition of the carried one (specialized neurons rotate/squash embeddings toward final outputs).",
+            "probing_or_intervention_method": "Ablations of single attention heads (zeroing heads), ablation of entire final MLP, neuron-level ablation based on activation thresholds (z_i&gt;z_NC), PCA of residual-stream activations, SVD on MLP pre-activation weights, tracking model after each epoch (ablating after every epoch).",
+            "performance_metrics": "Trained 2-layer models reach near-perfect accuracy on 3-digit addition (all runs reported reach perfect accuracy on the task). Ablation results (Table 1) show: ablating the decision head yields task- and position-dependent accuracies (examples in table); ablating the final MLP causes almost complete inability to perform carries (corrected accuracy indicates model often simply forgot to add/subtract one).",
+            "error_types_or_failure_modes": "Without the final MLP, model fails on positions that require carrying (for non-carry examples it may output off-by-one errors); ablating decision head causes confusion specifically on determining where to add a carry, splitting its outputs between correct and off-by-one; some runs route carry-determination via alternate heads so single-head ablation effects can vary between runs.",
+            "evidence_for_mechanism": "Attention patterns show clear staircase structure transferring digit embeddings; PCA of residual stream: layer 0 groups examples by sum &gt;=10 vs &lt;10, layer 1 groups by whether a carry is needed and final MLP outputs cluster by final digit; ablation of the 'decision head' degrades carry-decision behavior (Table 1); ablating ~86 neurons identified via activation thresholding eliminates carry behavior while non-carry accuracy remains high; SVD aligns a leading axis with carry feature.",
+            "counterexamples_or_challenges": "One-layer models do not fully implement the algorithm; some two-layer runs route carry-decision differently (not always through the same head), meaning the identified head is not strictly unique; length-generalization fails out-of-the-box (3-digit-trained models fail on 6-digit inputs unless primed/fine-tuned).",
+            "uuid": "e8392.0",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "1-layer encoder",
+            "name_full": "One-layer encoder-only transformer (small models)",
+            "brief_description": "Single-layer transformers trained on 3-digit addition exhibit a sudden phase transition in the QK attention circuit forming staircase attention patterns and partial addition behavior but do not reach perfect accuracy; the MLP is less interpretable.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "One-layer encoder-only transformer (128 dim, 2 heads)",
+            "model_description": "Single-layer encoder-only transformer with same embedding/positional settings as the main models, trained on 3-digit addition dataset (same training regimen variations).",
+            "arithmetic_task_type": "Multi-digit addition (3-digit digit-tokenized addition).",
+            "mechanism_or_representation": "Phase transition in QK circuit produces staircase attention patterns that act as naive adders (attention copies and, combined with residual connection, behaves like addition); the model distinguishes digit sums but does not implement full carry algorithm; representations show ordering of digits and grouping by summed value but not by carry-needed.",
+            "probing_or_intervention_method": "Monitoring dynamics across epochs (loss, weight norms), PCA of residual-stream activations after attention and MLP, inspection of attention patterns across training (phase transition), ablation of skip connections (shown important in other models).",
+            "performance_metrics": "One-layer models do not reach perfect accuracy on 3-digit addition; exact numeric final accuracies vary across runs and hyperparameters (noted as significantly below perfect), and behavior depends on weight decay and train/test split; no single global numeric accuracy reported in main text.",
+            "error_types_or_failure_modes": "Fail to implement carry correctly; produce naive addition that distinguishes (e.g.) 2+1 vs 3+0 and requires downstream corrections the model does not reliably perform; MLP is not clearly specialized so carry handling is inconsistent.",
+            "evidence_for_mechanism": "Sudden changes in attention patterns and weight norms during training coincide with improved loss/accuracy (phase transition). PCA shows grouping by summed digit values and an ordering of digit outcomes, but no grouping by need-for-carry.",
+            "counterexamples_or_challenges": "Despite staircase attention, one-layer models still fail at full addition—MLP specialization seen in deeper models is missing; behavior sensitive to weight decay and initialization; the phase transition is sudden and run-dependent.",
+            "uuid": "e8392.1",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "staircase attention",
+            "name_full": "Staircase attention / addition heads",
+            "brief_description": "An attention-head pattern that attends in a staircase-like way between digit positions, enabling transfer of digit embeddings across positions so that residual-addition via skip connections yields digit-wise sums.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Observed across small encoder models and in LLMs (Alpaca, Llemma, Zephyr)",
+            "model_description": "Pattern observed in attention weight matrices where heads attend from each answer-position to the relevant input digit tokens in a stepwise/staircase manner; occurs in multiple heads and layers.",
+            "arithmetic_task_type": "Digit-by-digit addition (tokenized digits).",
+            "mechanism_or_representation": "Attention copies embeddings of input digits to positions where they should be combined; residual connections then effect addition (attention acting as copier + residual stream = adder). Staircase geometry arises because each output digit must aggregate two input digit tokens and sometimes previous sum information.",
+            "probing_or_intervention_method": "Visual inspection/averaging of attention maps across task subsets and examples; counting heads exhibiting staircase patterns; targeted ablation of heads identified via frequency-of-staircase metric.",
+            "performance_metrics": "In small two-layer models these heads are part of circuits enabling perfect 3-digit accuracy; in LLM probes, numbers of heads with partial staircase patterns reported: Alpaca 164 heads, Llemma 190 heads, Zephyr 239 heads (counts across multi-layer attention head inventory).",
+            "error_types_or_failure_modes": "Staircase attention alone is 'naive adder' and distinguishes sums with same numerical result but different decompositions (e.g., 2+1 vs 3+0), so downstream components must correct; if skip connections are removed, accuracy drops drastically (example: accuracy averaged over runs drops to ~0.13±0.1 when skip info removed).",
+            "evidence_for_mechanism": "Averaged attention maps show staircase patterns (Figures 2,3,6); ablation of identified addition heads in LLMs reduces accuracy substantially; PCA/residual analyses show stage-wise transformation consistent with staircase attention providing inputs for subsequent carry-decision and MLP carry addition.",
+            "uuid": "e8392.2",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "decision head",
+            "name_full": "Decision attention head (carry-decider)",
+            "brief_description": "A specific attention head in the second layer that transfers previous-sum information to current output positions and functions primarily to decide whether a carried one should be added.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Second-layer attention head in two-layer encoder models (and analogous heads in larger LLMs)",
+            "model_description": "Typically one head in layer 1 that attends from output positions to positions containing previous-sum information (from layer 0), often called the 'decision' head because ablating it changes carry-decisions.",
+            "arithmetic_task_type": "Carry determination for multi-digit addition.",
+            "mechanism_or_representation": "Routes the summarized digit-sum information from lower-layer attention outputs into positions where the model must decide to add a carry; its output is used by subsequent MLP to effect the actual +1 when needed.",
+            "probing_or_intervention_method": "Head ablation (zeroing the attention head) and measuring per-position/per-task accuracy across five task subsets; PCA showing separation of tasks in residual stream collapses when decision head ablated.",
+            "performance_metrics": "Ablating the decision head yields strongly task-dependent degradation: Table 1 reports per-position accuracies (examples: for NC task pos7: 0.52, pos8:0.31, pos9:1.0 after decision-head ablation averaged over 6 runs); when decision head removed the model often either correctly places carries or is off-by-one (accuracy is split between correct and off-by-one).",
+            "error_types_or_failure_modes": "When ablated, the model becomes 'unsure' for some positions and sometimes adds an unnecessary carry or fails to add one — resulting behavior is often exactly off-by-one; however, alternative pathways sometimes mitigate the effect (variation across runs).",
+            "evidence_for_mechanism": "Ablation experiments show that removing the decision head removes the residual-stream separation between tasks (carry-needed vs not), producing the confusion recorded in Table 1; PCA comparisons before/after ablation confirm loss of task separation.",
+            "uuid": "e8392.3",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "final MLP carry neurons",
+            "name_full": "Final-layer MLP neurons specialized for carry addition",
+            "brief_description": "A subset of neurons in the final MLP that implement the addition of the carried one by rotating/squashing the residual representations toward the correct output digit clusters.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Final MLP of two-layer encoder-only transformer",
+            "model_description": "The MLP block after the second layer attention/LayerNorm that contains a hidden layer (ReLU) of size d_ff (128 typically) whose activations and weight SVD reveal a 'carry' axis and a set of neurons critical for carrying.",
+            "arithmetic_task_type": "Addition including carry propagation.",
+            "mechanism_or_representation": "Mechanistically, these neurons effect a rotation/squashing of embedding vectors corresponding to intermediate sums so that examples with same final digit outcome are drawn together; one leading SVD axis corresponds to carry-feature magnitude.",
+            "probing_or_intervention_method": "Ablating the entire final MLP, targeted neuron ablation by activation-threshold heuristic (select neurons with activations z_i &gt; z_NC for carry tasks), SVD on pre-activation weights to identify a carry axis, measuring pairwise cosine similarity matrices of hidden reps.",
+            "performance_metrics": "Ablating the entire final MLP causes near-total loss of carry capability while leaving non-carry outputs intact in many runs (corrected accuracies indicate the ablated model often simply 'forgot' to add/ remove one). Targeted ablation of ~86 neurons caused inability to carry (accuracy 0 on carry tasks, corrected accuracy 1 for non-carry).",
+            "error_types_or_failure_modes": "If MLP is ablated, model can still compute naive digit sums but fails to add carried ones; targeted ablation isolates carry functionality but other runs show carry information can be distributed and may require different ablation criteria.",
+            "evidence_for_mechanism": "Targeted neuron ablation removes carry capability (empirical ~86 neurons in one model); SVD identifies a leading axis aligned with carry feature; PCA and cosine similarity experiments demonstrate that removal of these neurons turns the hidden-rep similarity structure into a checkerboard corresponding to un-carried sums.",
+            "uuid": "e8392.4",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "priming/finetuning generalisation",
+            "name_full": "Priming and fine-tuning to extend length generalization",
+            "brief_description": "Small models trained on 3-digit addition do not generalize to 6-digit inputs without intervention; adding a tiny number of longer examples (priming) or fine-tuning on a small set of longer sums enables near-perfect generalization by reusing early-developed carry components.",
+            "citation_title": "here",
+            "mention_or_use": "use",
+            "model_name": "Two-layer encoder models (and fine-tuned variants)",
+            "model_description": "Same small transformer models trained on 3-digit addition, then primed by augmenting training with 100 six-digit sums or fine-tuned with 500 six-digit sums for 50 epochs.",
+            "arithmetic_task_type": "Length generalization for multi-digit addition (3-digit → 6-digit).",
+            "mechanism_or_representation": "Priming leverages existing carry-detection and carry-adding components; small injections of longer examples prompt reuse/adaptation of the same modular components across extended positions.",
+            "probing_or_intervention_method": "Augment training set with a small number of longer examples (priming) and rapid fine-tuning on few-shot longer examples; inspect attention, PCA, and circuit structure post-priming/fine-tuning.",
+            "performance_metrics": "Unprimed 3-digit-trained models achieve only ~10-15% accuracy on 6-digit sums. Priming with 100 six-digit sums enabled models to achieve near-perfect 6-digit addition. Fine-tuning with 500 six-digit sums for 50 epochs yielded test accuracies of 0.94 on six-digit and 0.97 on three-digit additions, with only tiny weight changes.",
+            "error_types_or_failure_modes": "Without priming/fine-tuning the learned algorithm is unstable: the parts for carry exist around epoch ~500 but later training focuses on 3-digit accuracy and forgets generalizable structure. Priming fixes this by directing training to reuse components.",
+            "evidence_for_mechanism": "Comparison of primed vs unprimed models shows same modular carrying components are present and reused after priming; fine-tuning experiments achieved high 6-digit accuracy with minimal weight changes, indicating reuse rather than wholesale re-learning.",
+            "uuid": "e8392.5",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "Alpaca 7B",
+            "name_full": "Alpaca 7B (instruction-fine-tuned LLaMA-1 7B)",
+            "brief_description": "An instruction-finetuned LLaMA-derived 7B model probed zero-shot on 4-digit addition; shows low addition accuracy but exhibits some staircase-like attention heads.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Alpaca 7B (instruction-fine-tuned LLaMA-1 7B)",
+            "model_description": "Alpaca 7B: instruction-following variant of LLaMA-1 fine-tuned as in Alpaca repo; probed with 1k four-digit a+b= prompts using Alpaca template; attention inspected via HuggingFace model hooks.",
+            "arithmetic_task_type": "Zero-shot 4-digit integer addition (next-token generation of result).",
+            "mechanism_or_representation": "Some heads exhibit staircase attention patterns; specific heads (noted as e.g. 6:23 and 13:15) transfer information between integer tokens and output positions similar to small models, but overall arithmetic capability is limited.",
+            "probing_or_intervention_method": "Prompting (Alpaca prompt template), extraction/averaging of attention maps across generated tokens, identification of heads with staircase patterns, ablation of frequent staircase heads and measuring accuracy impact.",
+            "performance_metrics": "Accuracy on 1k four-digit sums: 0.33. Number of heads with staircase-like patterns counted: 164. Ablating frequent pairs of identified heads reduced accuracy to 0.17 in reported ablations.",
+            "error_types_or_failure_modes": "Low accuracy overall; many errors are not strictly carry mistakes alone; ablation of staircase heads reduces arithmetic accuracy but does not prevent model from generating text responses (ablations did not globally break generation).",
+            "evidence_for_mechanism": "Observed staircase patterns in averaged attention maps; ablating candidate heads degrades arithmetic accuracy; attention-pattern inspection consistent with transfer-of-information roles analogous to small models (Appendix G and A.3 details).",
+            "counterexamples_or_challenges": "Alpaca's low baseline accuracy makes mechanistic conclusions tentative; staircase heads are numerous and not unique; generation sometimes includes extraneous text formatting or tokens requiring cleanup for evaluation.",
+            "uuid": "e8392.6",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "Llemma 7B",
+            "name_full": "Llemma 7B (mathematics-tuned 7B model)",
+            "brief_description": "A 7B model tuned for mathematical tasks that performs well on 4-digit addition and exhibits staircase attention heads and residual-stream structure that mirrors the small models' carry algorithm components.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Llemma 7B",
+            "model_description": "Llemma 7B: open model trained/tuned for math (ref. in paper); probed zero-shot with 1k four-digit sums a+b=; attention and residual-stream PCA analyzed across layers.",
+            "arithmetic_task_type": "Zero-shot 4-digit integer addition.",
+            "mechanism_or_representation": "Multiple heads show staircase attention and addition behavior; residual stream (e.g., layer 25 at output positions) shows separations first by sum &gt;=10 then by whether a carry is needed, and MLP-like rearrangements that cluster by needed carry vs final digit.",
+            "probing_or_intervention_method": "Averaged attention-pattern inspection, identification of addition heads (noted pair (13:23,15:15)), layerwise PCA of residual stream, head ablation experiments via HuggingFace hooks.",
+            "performance_metrics": "Accuracy on 1k four-digit sums: 0.87. Number of heads with staircase patterns: 190. Ablating important head pair reduced accuracy to 0.30 (single reported ablation result). 64% of Llemma's mistakes were carrying-over mistakes.",
+            "error_types_or_failure_modes": "Majority of errors are carry-related (64% of mistakes); ablation of identified heads drastically reduces accuracy indicating reliance on these heads for arithmetic; mistakes often correspond to incorrect carry decisions or missing/extra carries.",
+            "evidence_for_mechanism": "Layerwise PCA shows the same sequence of representational transformations as in small models (&gt;=10 vs &lt;10 separation then carry-needed grouping); attention maps show staircase heads (Figure 6); head ablation lowers accuracy and confirms functional importance.",
+            "counterexamples_or_challenges": "Although strong evidence exists, the implementation is not guaranteed to be as clean/modular as in small models due to many redundant heads and distributed representations; ablation results vary and do not fully prove causal mechanistic chain across all runs.",
+            "uuid": "e8392.7",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        },
+        {
+            "name_short": "Zephyr 7B",
+            "name_full": "Zephyr 7B (7B instruction-distilled model)",
+            "brief_description": "A distilled instruction-tuned 7B model that attains high accuracy on 4-digit addition and exhibits multiple staircase attention heads and residual-stream patterns consistent with modular carry processing; many of its errors are carry-related.",
+            "citation_title": "",
+            "mention_or_use": "use",
+            "model_name": "Zephyr 7B",
+            "model_description": "Zephyr 7B: instruction-tuned/distilled 7B model (reference in paper); probed zero-shot on 1k four-digit sums; attention and residual-stream analyses performed similarly to Llemma.",
+            "arithmetic_task_type": "Zero-shot 4-digit integer addition.",
+            "mechanism_or_representation": "Multiple heads with staircase patterns (more heads than Llemma), attention-based addition plus downstream residual/MLP transformations that separate carry-needed cases; additional redundancy in attention heads.",
+            "probing_or_intervention_method": "Attention-pattern detection across generated tokens, identification of key head pairs (reported pairs e.g. (17:25,17:26),(20:30,20:31)), head ablation experiments and residual-stream inspection.",
+            "performance_metrics": "Accuracy on 1k four-digit sums: 0.85. Number of heads with staircase patterns: 239. Ablation of listed head pairs reduced accuracy to ~0.34–0.35. 74% of Zephyr's mistakes were carrying-over mistakes.",
+            "error_types_or_failure_modes": "A large fraction of errors are carry-related (74%); despite many staircase heads, carry decisions still fail on many examples; ablations reduce arithmetic performance but do not abolish generation capability.",
+            "evidence_for_mechanism": "Averaged attention maps show staircase patterns (Figure 6); PCA of residuals at intermediate layers shows groupings by carry-needed similar to small models; ablation of head pairs strongly degrades arithmetic accuracy.",
+            "counterexamples_or_challenges": "Large number of heads and distributed circuitry makes causal interpretation harder; while patterns are suggestive of modular carry implementation, redundancy and non-uniqueness of heads limit certainty of a single neat circuit.",
+            "uuid": "e8392.8",
+            "source_info": {
+                "paper_title": "Carrying over algorithm in transformers",
+                "publication_date_yy_mm": "2024-01"
+            }
+        }
+    ],
+    "potentially_relevant_new_papers": [
+        {
+            "paper_title": "Length generalization in arithmetic transformers",
+            "rating": 2
+        },
+        {
+            "paper_title": "In-context learning and induction heads",
+            "rating": 2
+        },
+        {
+            "paper_title": "What algorithms can transformers learn? a study in length generalization",
+            "rating": 2
+        },
+        {
+            "paper_title": "Progress measures for grokking via mechanistic interpretability",
+            "rating": 1
+        },
+        {
+            "paper_title": "Investigating the limitations of transformers with simple arithmetic tasks",
+            "rating": 1
+        }
+    ],
+    "cost": 0.017204499999999998,
+    "model_str": "gpt-5-mini"
+}</code></pre>
+        </div>
+        <div class="section">
+            <h2>Paper</h2>
+            <div class="paper-content"><h1>Carrying over Algorithm in Transformers</h1>
+<p>Jorrit Kruthoff<br>School of Natural Sciences, Institute for Advanced Study, Princeton, NJ 08540<br>kruthoff@ias.edu</p>
+<h4>Abstract</h4>
+<p>Addition is perhaps one of the simplest arithmetic tasks one can think of and is usually performed using the carrying over algorithm. This algorithm consists of two tasks: adding digits in the same position and carrying over a one whenever necessary. We study how transformer models implement this algorithm and how the two aforementioned tasks are allocated to different parts of the network. We first focus on two-layer encoder-only models and show that the carrying over algorithm is implemented in a modular fashion. The first layer is mostly responsible for adding digits in the same position. The second layer first decides, in the attention, which positions need a carried one or not, and then performs the carrying of the one in the final MLP. We provide a simple way of precisely identifying which neurons are responsible for that task. This implementation of the carrying over algorithm occurs across a range of hyperparameters for two as well as three-layer models. For small decoder-only models, we observe the same implementation and provide suggestive evidence for its existence in three 7B large language models.</p>
+<h2>1 Introduction</h2>
+<p>While large language models (LLMs) continue to shown fascinating capabilities across many different modalities and tasks [1-4], their mathematical reasoning abilities seem to be lagging behind. Various direction on how to improve this have been explored, for instance, using carefully selected data [5,6] or different inference strategies [7]. Nevertheless, at its core, mathematics is about various logical implications and algorithms that have to be employed in order to perform well on a given task. It therefore seems natural to ask how LLMs implement such algorithms. By itself this is a difficult endeavour because of the complexity of these models, but one fruitful approach is to first study smaller, interpretable toy models and apply the lessons learned there to the larger, more complex models [8-10].</p>
+<p>In this work we utilize this approach for understanding integer addition in transformer based models. Working with the digit representation of integers, a natural algorithm that could be implemented by the model is the carrying over algorithm. We study how this algorithm is implemented in transformer</p>
+<p><img alt="img-0.jpeg" src="img-0.jpeg" /></p>
+<p>Figure 1: Summary of two-layer models' implementation of the carrying over algorithm. Note that when we write the addition of two vectors, we mean a linear combination, but for clarity we did not write the coefficients. The light blue indicates $\geqslant 10$ and darker $&lt;10$. Similarly, the light orange indicates that a carried one needs to be added, whereas for the dark orange it is not necessary.
+models ranging from one to three layers, focussing first on encoder-only architectures, but also elaborate on decoder-only models. We then try to apply our findings to understand length generalisation for integer addition and integer addition in the fine-tuned LLMs Alpaca 7B [11], Llemma 7B [6] and Zephyr 7B [12].</p>
+<p>The combination of the dataset and the simplicity of the carrying over algorithm, provides a rich playground to test and interpret various aspects. There are two reasons for this. First, the algorithm combines two tasks: addition of the digits within each integer and carrying of the one. This gives ample insight into the models' performance. Second, the dataset has natural subsets, depending on where a carried one is to be added or not, which can be used to assess the model's performance and inner workings at a more fine-grained level.</p>
+<p>Intuitively speaking, the reasons why one can expect the transformer architecture to implement at least part of the carrying over algorithm is due to the self-attention. In the digit representation, once the digits are converted to vectors in the latent space, the operations one would like to perform are addition of vectors at different positions. The self-attention mechanism makes that possible once the correct pattern has been learned.</p>
+<h1>1.1 Our contributions</h1>
+<p>To stipulate our contributions more clearly, we think of the carrying over algorithm as consisting of four steps: 1) Add digits at each position of each integer. 2) Determine whether resulting sums are bigger or smaller than 10. 3) Determine where a carried one needs to be added. 4) Add carried one.</p>
+<ol>
+<li>For two-layer encoder-only models, each step of the carrying over algorithm is implemented in a parallel fashion by a particular part of the architecture, see Fig. 1 for a summary of the 3 digit addition case. For 4 digit addition we reach the same conclusion, see App. F. We find the same</li>
+</ol>
+<p>implementation in three layers as well as decoder-only models, see App. C. 3 and D.
+2. Some of the lessons learned for smaller models carry over to fine-tuned LLMs, Alpaca 7B [11], Llemma 7B [6] and Zephyr 7B [12]. We provide suggestive evidence for this.
+3. The implementation of the carrying over algorithm for short length (3 digits) generalizes to larger ones after priming [13] the training with a tiny set of larger addition sums. With finetuning we also achieve similar generalisation.
+4. One-layer models experience a novel phase transition in the models learning dynamics, where the QK circuit suddenly changes and the attention blocks become adders. For larger models this transition happens very early on in training.</p>
+<h1>1.2 Related works</h1>
+<p>Considerable effort has been devoted to understanding if and when transformers trained on algorithmic tasks can generalize to out-of-distribution examples, e.g. length generalisation for integer addition. For instance, [14] considers modifications to the standard transformer architecture, whereas $[13,15]$ focus on different positional embeddings. The input format is also crucial for good performance as shown by $[16,17]$. From a more computational point of view, using RASP [18], the abilities and limitations of transformers has been studied in [19]. On the interpretability side, there has also some recent interest into reverse-engineering small transformers trained on addition tasks, see for instance [20].</p>
+<h2>2 Set-up</h2>
+<p>Dataset For concreteness we focus on three digit addition, but see App. F for four digit addition. In Sec. 6 we also study generalisation to six digit, using priming [13]. Our dataset is constructed using positive integers $a, b$ such that $a+b&lt;1000$ and we tokenize at the digit level. This means we split $a, b$ as $a \rightarrow a_{0} a_{1} a_{2}, b \rightarrow b_{0} b_{1} b_{2}$ with each digit a separate token. We also add a token + in between the two integers and attach three $=$ at the end, which we use to read out the model's output. This results in a vocabulary of size 12 and sequence length 10 .</p>
+<p>As mentioned above, the beauty of this dataset is its natural division in subsets depending on: noncarrying over sums and the carrying of the one. This division will be an integral part of our discussion and is important to keep in mind. For three-digit addition there are 5 such tasks (subsets):</p>
+<ol>
+<li>Non-carry (NC): $a_{i}+b_{i}&lt;10 \forall i$</li>
+<li>Sum is larger than 10 only at position 1 (C@1): $a_{1}+b_{1} \geqslant 10, a_{i}+b_{i}&lt;10$ for $i \neq 1$</li>
+<li>Sum is larger than 10 only at position 2 (C@2): $a_{2}+b_{2} \geqslant 10, a_{1}+b_{1}&lt;9$</li>
+</ol>
+<p><img alt="img-1.jpeg" src="img-1.jpeg" /></p>
+<p>Figure 2: Left: Loss and norm of the weights as a function of epochs for both the training and test data. Train/test split is $s=0.3$ and $\lambda=0.2$. Right: Attention pattern for each head at epoch 50, 200 and 400. There is a distinct pattern after each transition (we checked the transition is indeed sudden), which can happen separately in each head and has the structure so as to add embedding vectors and transfer them to the output positions. The attention patterns are averaged over the test dataset.
+4. All but the first sums $\geqslant 10$ (C all): $a_{i}+b_{i} \geqslant 10$ for $i \neq 0$
+5. Outer most sum $\geqslant 10$ but second to last equal to 9 (Consecutive carrying over, C all con.): $a_{2}+b_{2} \geqslant 10, a_{1}+b_{1}=9$</p>
+<p>We will also distinguish examples according to the digit at the last three positions, which reflects the carrying of the one. To avoid confusion, we will count the positions of the digits from the left.</p>
+<p>Models \&amp; Training In the main text we consider either one or two layer transformer models [21,22] with LayerNorm and dropout $(p=0.1)$. The model dimensions are $d_{\text {model }}=128$ and $d_{\mathrm{ff}}=128$ (although we also consider larger $d_{\mathrm{ff}}$ ). Furthermore, we consider models with two heads, and used the RoFormer for positional embedding [23]. In App. C we consider other hyperparameters and discuss a three layer model. These models and dataset size ( 500500 examples) puts us in the overparametrized regime. With the four digit case considered in App. F, we will be in the underparametrized regime.</p>
+<p>The models are trained on the (shuffled) dataset with a train/test split $s=0.3$ and weight decay $\lambda=0.2$. We use a constant learning rate $\eta=1.4 \times 10^{-4}$, a batch size of 1024 and train for 1000 epochs with AdamW. We consider sets of six trained models with different random initializations. See App. A for more details. While we mostly focus on encoder-only models, we also discuss generative models in App. D and reach similar conclusions as the ones presented below.</p>
+<p>Methodology To reverse engineer the aforementioned models, we employ two strategies:</p>
+<ol>
+<li>We judge the importance of parts of the model based on the per token accuracy (instead of the loss) before and after (zero) ablation and combine this with the 5 tasks discussed above. This</li>
+</ol>
+<p>division allows us to clearly distinguish which parts are necessary for what tasks and will give a fairly precise understanding of the models' performance.
+2. We study how residual stream gets transformed by the model and perform a PCA on the output of the attention and MLP to gain mechanical insight into the model.</p>
+<p>We found the actual embedding and unembedding to not be very interesting, so we will refrain from discussing them in the main text. A short discussion can be found in App. C.</p>
+<h1>3 One layer</h1>
+<p>Phase transitions in the Attention To set the stage, we first consider one-layer models. Fig. 2 shows the loss, accuracy and the weight norm as a function of epochs for one of the six runs. The one-layer models do not reach perfect accuracy, but experience a phase transition where suddenly the models loss and accuracy improve and weight norm bounces [24]. This non-grokking transition is driven by a phase transition in the QK-circuit [9] in the attention block. In particular the attention pattern suddenly changes for the second and third position by forming a staircase pattern, as can be seen in the right panel of Fig. 2.</p>
+<p>These staircase patterns after the transitions are actually very intuitive. Not only do they provide the necessary attention between the digits one wants to add (and hence the drop in loss), but also perform a literal (naive) addition of the embedding vectors for each position in parallel. It is naive, as it will distinguish between e.g. $2+1$ and $3+0$, which the rest of the model needs to correct for.</p>
+<p>MLP The one-layer models are not perfect at 3-digit addition and as a result are harder to fully reverse engineer, especially the MLP. In App. B we will study these models in some more detail. In the two-layer models to be discussed below, there is much more structure beyond just the attention patterns and in particular, the final MLP has a dedicated functionality that will help us understand the mechanics of these models much better.</p>
+<h2>4 Two layers</h2>
+<p>Let us now consider two layer models. In this section we will show that the carrying over algorithm ${ }^{1}$ is implemented in a modular fashion according to the steps shown in Fig. 1. An interesting analogy with an electrical circuit is discussed in App. I. We will consider one single run (the same every time) or the average over all six. All models reach perfect accuracy and determine the staircase attention pattern</p>
+<p><sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-2.jpeg" src="img-2.jpeg" /></p>
+<p>Figure 3: Attention pattern for each head and layer for a particular run (of the six). Each column represents one of the five tasks (see Sec. 2). For the last layer we only plotted the three output positions $(=)$. Again we see the staircase patterns for an interaction between the digits $(*)$ of each integer. Furthermore, in head 1:0 we see how information from the previous sum gets transferred to the current sum so as to determine whether a carried one is needed or not. It is slightly different for each column in the way one expects. For instance, in the third column, the second position of the outcome gets attention from the sum of digits of the last position of each integer.
+quickly. They do not experience interesting behaviour in their learning dynamics, so we will move on to interpret the trained model, but see Fig. 11 for the learning dynamics.</p>
+<p>Attention The attention blocks are again adders and transfer information from the relevant digits to each other. The attention patterns are shown in Fig. 3, where each column represents one of the five tasks discussed in Sec. 2, and the rows correspond to the layer and head. Let us focus on the first layer. We see that the first seven rows are for attention between the digits of each integer. This staircase pattern is important for transferring information from one digit to another and although it makes the attention itself a copier, the inclusion of the residual stream (skip connections) makes it into an adder. This suggests the skip connections are crucial for it to add and indeed the average accuracy (over six runs) drops to $0.13 \pm 0.1$ if we remove the information in the skip connection.</p>
+<p>For the second layer, we see that head 1:0 transfers information from the previous sum to the current sum. For instance, for C01 we see that the first row receives attention from the first and fifth position. These contain the information from the sum at the second position of each integer, obtained from the first layer. The information of the sum relevant for the first position is then transferred by head 1:1 and the skip connections. This is the models' implementation for determining whether a one needs to be carried or not, but, from what we have seen in other runs, this is typically not the only path.</p>
+<p>To understand these pathways, we study the effect of ablating the heads in the second layer. We found there to always be one head that was more important than the other. We call this head a decision head because it turns out to help decide whether or not to add a carried one. The accuracies for the five tasks after ablating the decision head are shown in Tab. 1. There are two interesting observations: 1) The ablated model is very confident where to add a one when it indeed should. 2) when it is not</p>
+<p>Table 1: Accuracy after ablating the decision head and final MLP for the 5 tasks, averaged over six runs. The 'corrected' accuracy for non-carry sums are obtained by manually subtracting one from each position of the output of the model and comparing that with the target. This reveals how many of the non-carry sums got an incorrect carried one. For carrying over sums we added a one so as to see for what example the model forgot to add a carried one. For ablating the decision heads: whenever it is unsure, the variation between runs is large $(\sim 0.38)$.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Decision head</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Final MLP</th>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Task</td>
+<td style="text-align: center;">pos. 7</td>
+<td style="text-align: center;">pos. 8</td>
+<td style="text-align: center;">pos. 9</td>
+<td style="text-align: center;">pos. 7</td>
+<td style="text-align: center;">pos. 8</td>
+<td style="text-align: center;">pos. 9</td>
+</tr>
+<tr>
+<td style="text-align: left;">NC</td>
+<td style="text-align: center;">0.52</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">$\mathbf{0 . 9 0}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 5}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corrected NC</td>
+<td style="text-align: center;">0.48</td>
+<td style="text-align: center;">0.69</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">0.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">C@1</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">0.49</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 6}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corrected C@1</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.51</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">$\mathbf{0 . 8 6}$</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">0.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">C@2</td>
+<td style="text-align: center;">0.58</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">$\mathbf{0 . 8 9}$</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corrected C@2</td>
+<td style="text-align: center;">0.42</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">$\mathbf{0 . 9 0}$</td>
+<td style="text-align: center;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">C all</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corrected C all</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">$\mathbf{0 . 8 6}$</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9}$</td>
+<td style="text-align: center;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">C all con.</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">0.12</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">$\mathbf{0 . 9 9}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corrected C all con.</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">$\mathbf{0 . 8 8}$</td>
+<td style="text-align: center;">$\mathbf{1 . 0}$</td>
+<td style="text-align: center;">0.01</td>
+</tr>
+</tbody>
+</table>
+<p>supposed to add a one, it either adds the one or it does not, i.e. the accuracy is exactly divided between correct or off by one. This suggests the decision heads are necessary to make a proper decision on where a carried one is needed. In the next subsection we will discuss another piece of evidence for this behaviour.</p>
+<p>MLP Despite the attention making the decision, the final MLP actually adds the carried one. To show this, we performed two experiments: 1) ablate the MLP, 2) study its action on sums with a fixed outcome. The results for the former experiment are shown in Tab. 1. We see the ablated model can perform all calculations almost perfectly, except at positions where carrying over is necessary. We added or subtracted a one for the non-carry or carry sums, respectively, to see whether it simply forgot to add a carried one. The results indeed confirm this and suggest that the final MLP is responsible for adding the carried one.</p>
+<p>Furthermore, we saw that ablating the decision heads, the model becomes unsure about non-carry sums at positions 7 and 8 and sometimes adds a one. If the MLP indeed carries the one whenever necessary, it should also mean that when we ablate it, the model should become very good again at non-carry sums, but bad at everything else. This is indeed what we found.</p>
+<p>For the second experiment we study the action of the final MLP on embedding vectors for sums with the same outcome. The model should rotate those embedding vectors towards each other, i.e.</p>
+<p><img alt="img-3.jpeg" src="img-3.jpeg" /></p>
+<p>Figure 4: PCA for the outputs of the attention and MLP blocks in each layer for the two leading principal axes. First three columns are the first layer and positions 0, 1 and 2 (other positions are not shown as they are similar), the last three columns are the second layer at the positions of the outcome. For rows 0 and 1: layer 0 plots are labelled according to the sum (ignoring any carried one) at that position, layer 1 plots according to the answer at that position. For rows 2 and 3 we labelled according to the tasks discussed in Sec. 2. We see the first layer determines whether sum $&lt;10$ or $\geqslant 10$ and groups those examples (separating also the 9 as a special case). The second layer instead groups examples according to whether they need a carried one or not. Notice that position 9 never needs a carried one and so the examples are grouped in the same way as in the first layer.
+squashing them together. Averaged over six runs, we find this to be the case. The squashing ${ }^{2}$ is $0.42,0.13$ and 0.28 , with standard deviation $0.20,0.02$ and 0.11 for position 7,8 and 9 .</p>
+<h1>4.1 A journey of hidden representations</h1>
+<p>In the previous subsections we found evidence that the model implements the carrying over algorithm in a rather modular way. To provide more evidence and get a more detailed understanding of what those modular parts are doing, it is useful to consider the model's residual stream. We consider a set of $20 k$ random examples and perform a PCA after the attention and MLP of each layer. For the two leading principal axes this resulted in Fig. 4. Lets unpack this figure.</p>
+<p>Layer 0: Determining whether sum $&lt;10$ or $\geqslant 10$. The first two rows display the attention and MLP (resp.) output labelled according to the outcome ignoring any carrying. The last two rows are labelled according to the 5 tasks. We saw that the attention is acting like an adder, which manifests itself in the $2 d$ projection by the leading axis corresponding to whether the sums at the input integers' digits are $\geqslant 10$ or not. E.g., at position 2, NC and C@1 (which have sums $&lt;10$ ) have clearly separated themselves from the other examples that have a sum $\geqslant 10$. After the MLP these groups are</p>
+<p><sup id="fnref2:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>more localized and the subleading direction (for positions 1 and 2) now distinguishes when a sum (at positions $i$ and $i+4$ ) resulted in a nine or not. It makes sense that a nine is treated differently as it can only arise from non-carrying over sums.</p>
+<p>Layer 1: Determining whether a carried one needs to be added and adding it. The labelling for rows is the same as for layer 0 , but we did include any carried one for the first two rows. We already know that the attention in the second layer transfers the information in the positions of the the two digits to the outcome positions. This results in a clear separation between the 5 tasks along the leading principal axis and an (rough) ordering of the digits along the first subleading axis at positions 7 and 8 . At position 7 we see non-carry sums ( NC and C 2 ) are separated from the ones that require a carried one at that position (C@1, C all and C all con.). The same is true for position 8. For position 9 there is no carrying and so the structure is similar to the output of the previous layer. These observations also supports our earlier observation that in the second layer one of the heads is responsible for deciding whether a one needs to be added later. ${ }^{3}$ This job, as we saw, is performed by the final MLP. The outputs of this block are not grouped according to task, but rather through their outcome; each integer roughly has its own localized region in the $2 d$ projection.</p>
+<p>In some cases, one of the two leading principal directions did not correspond to whether a carried one is needed or not. For those cases we could find a more subleading one that was. Further structure in the residual stream (such as a pentagonic arrangement of the inputs) is discussed in App. E.</p>
+<h1>5 A closer look at the final MLP</h1>
+<p>We argued that the final MLP is responsible for adding the carried one. How does this specialization develop over the course of training and are all neurons necessary for that?</p>
+<p>Dissection In general we found the answer to the last question to be no. Finding the subset of neurons that are important is not easy, however. The task could not be aligned with the activations $[8,10]$ or because part of the calculation is done elsewhere in the network. This calls for a more systematic approach. For instance, by studying the activations or do an SVD on the pre-activation weights to determine what neurons are most relevant, see e.g. [25].</p>
+<p>In the former case we found that ablating those neurons whose activations statisfy $z_{i}&gt;z_{\mathrm{NC}}$ where $i$ is any of the five tasks that requires carrying over, has profound effects on just the carrying over capabilities and not the non-carry over sums. For the two-layer model discussed thus far, this procedure results in a set of $\sim 86$ ablated neurons that cause a total inability to carry the one, i.e. the accuracy is</p>
+<p><sup id="fnref3:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p><img alt="img-4.jpeg" src="img-4.jpeg" /></p>
+<p>Figure 5: MLP evolution. Left: Pearsons correlation coefficients of accuracies (corrected and non-corrected) of ablated model with the accuracies expect when no carrying of the one can be performed. Middle: Accuracy for carrying of the one at position 7 (i.e. set C01). Note the corrected accuracy is obtained by adding a one at position 7 to see if it 'forgot' to add a one. Right: Test/train loss. The dashed vertical lines indicates the kink discussed in the main text.</p>
+<p>1 on sums that do not require carrying over and 0 otherwise, but in which case the corrected accuracy is 1. In App. C.4 we employ this protocol on models with other hyperparameters, including those where ablating the entire MLP caused the accuracy to drop on all tasks.</p>
+<p>Using the SVD approach we can associate the leading axis with the feature carrying over. The value along that axis determines how important the neuron is for carrying over. For the model discussed so far, see Fig. 14. See also Fig. 13.</p>
+<p>Mechanistically, the ablated neurons rotate the hidden reps of each task towards the (correct) output. This can be made more explicit by giving the ablated model a set of examples with fixed outcome. The matrix of cosine similarities between the hidden reps then follows a checkerboard pattern (following the carrying over nature of the sum) instead of roughly equal to 1 everywhere.</p>
+<p>Evolutions Besides looking at the trained MLP, we also considered its training development and how that relates to features in the loss. We do this by ablating the final MLP of the trained model after every epoch and record the accuracy (corrected and non-corrected) for each of the five tasks. We then determine the Pearson correlation coefficient (PCC) with the pattern of accuracies in the situation for which the ability of carrying the one is removed entirely. The resulting dynamics is shown in Fig. 5.</p>
+<p>We see the final MLP's function already starts developing quite early on in the training. If we look at the test loss, there is a kink which coincides with the moment the PCC starts increasing or the non-corrected accuracy in the second panel of Fig. 5 starts decaying. After this kink the test loss has a long period of exponential decay with approximately constant decay rate. Here we plotted only 400 of the 1000 epochs, but the PCC reaches 0.98 at the end.</p>
+<p>The analysis performed here also highlights that the different tasks can be used to not only measure performance in a more fine-grained way at the end of training but also during. It can be used as a progress measure, but due to the exponential decay of the test loss it is not as hidden as was, for instance, discussed in $[20,26]$.</p>
+<h1>6 Generalisations</h1>
+<p>Length generalisation A fundamental limitation of our discussion so far is that we just looked at 3 digit addition and not studied the behaviour on larger integers not seen in training. To study this, we need to add padding to our inputs to allow for additional positions and train new models. For instance, let us consider training on 3 digit and testing on 6 digit addition, keeping other hyperparameters fixed. As expected, these models do not generalise, reaching only $10-15 \%$ accuracy on 6 digit sums. We will discuss a specific model in detail in App. H. The upshot of that discussion is actually that all the parts of the carrying over algorithm are in place around epoch 500 (and at which point the accuracy is relatively high), but after this time the model starts to forget this and focusses purely on doing three digit addition well. This instability seems to suggest one should prime the model with very few examples [13]. Indeed, following the prescription in [13] with 100 six digit sums added to the 3 digit training set, we can train models with close to perfect addition capabilities on six digits. Performing the same deep dive as in Sec. 4, we find that the primed model indeed implements the carrying over algorithm, see App. H.1. By comparing to the unprimed model, we suspect that the reason why generalisation using a tiny set of priming examples works, is because it utilizes the carrying over components for just three digit addition developed early on in training.</p>
+<p>One way to study that further is to see whether finetuning the unprimed model (at, say, epoch 500) would learn six digit addition relatively fast without changing the model's weights too much. We find evidence for this, see App. H.2. There we took only 500 six digit sums as our finetuning dataset and trained for 50 epochs. This caused the model to reach a test accuracy of 0.94 and 0.97 on six and three digit addition sums, respectively, but with tiny changes to the model weights.</p>
+<p>Large language models Returning to our initial (rather ambitious) motivation, let us now try to apply our lessons to LLMs. As already noted, LLMs are not great at integer addition, which might complicate finding clues for an implementation of the carrying over algorithm. Furthermore, due to the large number of ways the model could implement the algorithm and transfer information from token to token, a fully interpretable implementation is unlikely. A partial implementation seems more reasonable. Let us start by studying the attention patterns and the occurrence of the staircases. For this we prompted (zero-shot) Alpaca 7B [11], Llemma 7B [6] and Zephyr 7B [12,27] to compute a set of $1 k$ four digit addition sums ${ }^{4}$. For simplicity, the sums are such that the integers are in between $10^{3}$ and $10^{4}$. The results are shown in Tab. 2. Alpaca's accuracy is low, but Llemma's and Zephyr's accuracies are rather high, which, for Llemma, is not surprising as it is trained to do well on mathematics. We also found that $64 \%$ and $74 \%$ of Llemma's and Zephyr's mistakes are carrying over mistakes, respectively.</p>
+<p>For these LLMs we found two heads to be of most importance, see Tab. 2 and App. A. 3 for how we</p>
+<p><sup id="fnref4:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<p>Table 2: Accuracy, number of heads with a (partial) staircase pattern and addition heads for Alpaca 7B, Llemma 7B and Zephyr 7B.</p>
+<table>
+<thead>
+<tr>
+<th>model</th>
+<th>acc.</th>
+<th># of heads with staircases</th>
+<th>addition heads</th>
+<th>ablated acc. ${ }^{5}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alpaca 7B</td>
+<td>0.33</td>
+<td>164</td>
+<td>$(6: 23,13: 15)$</td>
+<td>0.17</td>
+</tr>
+<tr>
+<td>Llemma 7B</td>
+<td>0.87</td>
+<td>190</td>
+<td>$(13: 23,15: 15)$</td>
+<td>0.30</td>
+</tr>
+<tr>
+<td>Zephyr 7B</td>
+<td>0.85</td>
+<td>239</td>
+<td>$(17: 25,17: 26),(20: 30,20: 31)$</td>
+<td>$0.34,0.35$</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="img-5.jpeg" src="img-5.jpeg" /></p>
+<p>Figure 6: Top: Attention pattern of addition heads of Llemma 7B. We see the same staircase patterns as before. Mean and variance is over $1 k$ examples. The variance is mostly located at the staircases. Bottom: Residual stream at layer 25. At the third position we see the MLP rearranging the hidde states according to whether a carried one is need or not instead of the value of the summed digits. Due to the large number of cases, we labelled them using a trinary system, where a 0 means $&lt;9$ at this position, 1 means $\geqslant 10$ and 2 means equal to 9 (if previous sum was $\geqslant 10$ ). determined this. For Alpaca, these were heads 6:23 and 13:15. The former transfers information from the first to the second integer, whereas the latter provides the attention of the second integer to the output; similar to what we saw previously, but see also App. D. For Llemma 7B both addition heads perform addition and information transfer to the output positions simultaneously. See Fig. 6 for the average attention patterns and their variance. Zephyr is similar to Llemma, but has more attention heads with staircase patterns. In Tab. 2 we give the two most important pairs of heads.</p>
+<p>To get a more detailed understanding of how these LLMs do integer addition, we study the residual stream of the first five output positions of Llemma. It turns out this model establishes the same division between $\geqslant 10$ or $&lt;10$ and whether a carried one is needed or not, just as we saw before in Sec. 4. It will do so throughout the network, starting at around layer 15 and using different layers to manipulate the data from a division between $\geqslant 10$ or not to division between whether a carried one is needed or not, similar to the behaviour in Fig. 4. This is particularly visible for the third position in layer 25 as shown in Fig. 6. Zephyr has similar features of the small models' implementation of the carrying over algorithm. In App. G we consider Alpaca in some more detail.</p>
+<p><sup id="fnref5:0"><a class="footnote-ref" href="#fn:0">1</a></sup> <sup id="fnref6:0"><a class="footnote-ref" href="#fn:0">1</a></sup>: ${ }^{5}$ Importantly, this did not spoil the models' ability to generate responses in the same way as in the unablated model.</p>
+<p>These two observations of the attention patterns and residual stream having some similarities with the smaller models, potentially suggest that the modular implementation of the carrying over algorithm we found previously is perhaps also present in LLMs. With an eye towards improving LLMs' arithmetic abilities, it would be worthwhile to explore this further.</p>
+<h1>7 Conclusion</h1>
+<p>We studied small encoder-only transformer models trained on 3-digit addition. One-layer models showed a novel non-grokking phase transition in their QK-circuit, but did not learn addition perfectly. Twolayer models, on the other hand, implement the carrying over algorithm in a modular fashion with each step in the algorithm having a dedicated part of the network. With priming or finetuning these implementations generalize to six digit addition. We also looked at three LLMs as an application of our learned intuition and found typically 1) two relevant attention heads with the staircase patterns and 2) a residual stream having similarities with the ones found in smaller models.</p>
+<h2>Acknowledgements</h2>
+<p>We would like to thank Venkatesa Chandrasekaran for initial collaboration and Paolo Glorioso, Lampros Lamprou and Aitor Lewkowycz for valuable comments and discussions. JK is supported by NSF grant PHY-2207584.</p>
+<h2>Reproducibility statement</h2>
+<p>In an effort to ensure reproducibility, we have explained in Sec. 2 what type of dataset was considered, how it was tokenized and what type of models and hyperparameters we used. More details can be found in App. A, which also includes details on the decoder-only models and LLMs we discussed in Sec. 6. Additionally, at https://github.com/ffohturk/CarryingTransformers.git we provide the code for training the models discussed in the main text and appendices and jupyter notebooks to reproduce Fig. 2-4, 7-17, 20-25, Tab. 1, 3-5 and the claims in the main text. For Fig. 5 we saved the model after each epoch, so this too much to share, but it can be reproduced using the training code provided. For the figures relevant for App. F the dataset is too large to share, but again one can train a model with the code provided. In the repository we also provided the attention patterns and the PCA of the two leading axes of the residual stream of the three LLMs to support our claims.</p>
+<h1>References</h1>
+<p>[1] R. Anil, A. M. Dai, O. Firat, M. Johnson, D. Lepikhin, A. Passos, S. Shakeri, E. Taropa, P. Bailey, Z. Chen, et al., "Palm 2 technical report," arXiv preprint arXiv:2305.10403 (2023) .
+[2] H. Touvron, T. Lavril, G. Izacard, X. Martinet, M.-A. Lachaux, T. Lacroix, B. Rozière, N. Goyal, E. Hambro, F. Azhar, et al., "Llama: Open and efficient foundation language models," arXiv preprint arXiv:2302.13971 (2023) .
+[3] H. Touvron, L. Martin, K. Stone, P. Albert, A. Almahairi, Y. Babaei, N. Bashlykov, S. Batra, P. Bhargava, S. Bhosale, et al., "Llama 2: Open foundation and fine-tuned chat models," arXiv preprint arXiv:2307.09288 (2023) .
+[4] OpenAI, "Gpt-4 technical report," 2023.
+[5] A. Lewkowycz, A. Andreassen, D. Dohan, E. Dyer, H. Michalewski, V. Ramasesh, A. Slone, C. Anil, I. Schlag, T. Gutman-Solo, et al., "Solving quantitative reasoning problems with language models," Advances in Neural Information Processing Systems 35 (2022) 3843-3857.
+[6] Z. Azerbayev, H. Schoelkopf, K. Paster, M. D. Santos, S. McAleer, A. Q. Jiang, J. Deng, S. Biderman, and S. Welleck, "Llemma: An open language model for mathematics," arXiv preprint arXiv:2310.10631 (2023) .
+[7] S. Imani, L. Du, and H. Shrivastava, "Mathprompter: Mathematical reasoning using large language models," arXiv preprint arXiv:2303.05398 (2023) .
+[8] N. Elhage, T. Hume, C. Olsson, N. Nanda, T. Henighan, S. Johnston, S. ElShowk, N. Joseph, N. DasSarma, B. Mann, D. Hernandez, A. Askell, K. Ndousse, A. Jones, D. Drain, A. Chen, Y. Bai, D. Ganguli, L. Lovitt, Z. Hatfield-Dodds, J. Kernion, T. Conerly, S. Kravec, S. Fort, S. Kadavath, J. Jacobson, E. Tran-Johnson, J. Kaplan, J. Clark, T. Brown, S. McCandlish, D. Amodei, and C. Olah, "Softmax linear units," Transformer Circuits Thread (2022) . https://transformer-circuits.pub/2022/solu/index.html.
+[9] C. Olsson, N. Elhage, N. Nanda, N. Joseph, N. DasSarma, T. Henighan, B. Mann, A. Askell, Y. Bai, A. Chen, et al., "In-context learning and induction heads," arXiv preprint arXiv:2209.11895 (2022) .
+[10] N. Elhage, T. Hume, C. Olsson, N. Schiefer, T. Henighan, S. Kravec, Z. Hatfield-Dodds, R. Lasenby, D. Drain, C. Chen, et al., "Toy models of superposition," arXiv preprint arXiv:2209.10652 (2022) .
+[11] R. Taori, I. Gulrajani, T. Zhang, Y. Dubois, X. Li, C. Guestrin, P. Liang, and T. B. Hashimoto, "Stanford alpaca: An instruction-following llama model." https://github.com/tatsu-lab/stanford_alpaca, 2023.</p>
+<p>[12] L. Tunstall, E. Beeching, N. Lambert, N. Rajani, K. Rasul, Y. Belkada, S. Huang, L. von Werra, C. Fourrier, N. Habib, et al., "Zephyr: Direct distillation of lm alignment," arXiv preprint arXiv:2310.16944 (2023) .
+[13] S. Jelassi, S. d'Ascoli, C. Domingo-Enrich, Y. Wu, Y. Li, and F. Charton, "Length generalization in arithmetic transformers," arXiv preprint arXiv:2306.15400 (2023) .
+[14] R. Csordás, K. Irie, and J. Schmidhuber, "The neural data router: Adaptive control flow in transformers improves systematic generalization," arXiv preprint arXiv:2110.07732 (2021) .
+[15] A. Kazemnejad, I. Padhi, K. N. Ramamurthy, P. Das, and S. Reddy, "The impact of positional encoding on length generalization in transformers," arXiv preprint arXiv:2305.19466 (2023) .
+[16] R. Nogueira, Z. Jiang, and J. Lin, "Investigating the limitations of transformers with simple arithmetic tasks," arXiv preprint arXiv:2102.13019 (2021) .
+[17] N. Lee, K. Sreenivasan, J. D. Lee, K. Lee, and D. Papailiopoulos, "Teaching arithmetic to small transformers," arXiv preprint arXiv:2307.03381 (2023) .
+[18] G. Weiss, Y. Goldberg, and E. Yahav, "Thinking like transformers," in International Conference on Machine Learning, pp. 11080-11090, PMLR. 2021.
+[19] H. Zhou, A. Bradley, E. Littwin, N. Razin, O. Saremi, J. Susskind, S. Bengio, and P. Nakkiran, "What algorithms can transformers learn? a study in length generalization," arXiv preprint arXiv:2310.16028 (2023) .
+[20] N. Nanda, L. Chan, T. Liberum, J. Smith, and J. Steinhardt, "Progress measures for grokking via mechanistic interpretability," arXiv preprint arXiv:2301.05217 (2023) .
+[21] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, and I. Polosukhin, "Attention is all you need," Advances in neural information processing systems 30 (2017) .
+[22] J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, "Bert: Pre-training of deep bidirectional transformers for language understanding," arXiv preprint arXiv:1810.04805 (2018) .
+[23] J. Su, Y. Lu, S. Pan, A. Murtadha, B. Wen, and Y. Liu, "Roformer: Enhanced transformer with rotary position embedding," arXiv preprint arXiv:2104.09864 (2021) .
+[24] A. Lewkowycz, "How to decay your learning rate," arXiv preprint arXiv:2103.12682 (2021) .
+[25] C. Voss, G. Goh, N. Cammarata, M. Petrov, L. Schubert, and C. Olah, "Branch specialization," Distill (2021) . https://distill.pub/2020/circuits/branch-specialization.</p>
+<p>[26] B. Barak, B. Edelman, S. Goel, S. Kakade, E. Malach, and C. Zhang, "Hidden progress in deep learning: Sgd learns parities near the computational limit," Advances in Neural Information Processing Systems 35 (2022) 21750-21764.
+[27] A. Q. Jiang, A. Sablayrolles, A. Mensch, C. Bamford, D. S. Chaplot, D. d. l. Casas, F. Bressand, G. Lengyel, G. Lample, L. Saulnier, et al., "Mistral 7b," arXiv preprint arXiv:2310.06825 (2023) .
+[28] D. P. Kingma and J. Ba, "Adam: A method for stochastic optimization," arXiv preprint arXiv:1412.6980 (2014) .
+[29] M. Morrison Mano, Digital Logic and Computer Design. Englewood Cliffs, N.J. : Prentice-Hall, 1979 .</p>
+<h1>Appendices</h1>
+<p>In the main text we referred to a couple of appendices, which can be found below.</p>
+<h2>A Model and training details</h2>
+<h2>A. 1 Encoder-only models</h2>
+<p>Here we outline in more detail the model and training details. After the tokenization discussed in the main text, we use a one-hot encoding to embed our tokens in a 128 dimensional $\left(d_{\text {model }}=128\right)$ embedding space. After the embedding we have a couple of layers consisting of: LayerNorm, softmax self-Attention with RoFormer, LayerNorm and finally an MLP (of size $d_{\mathrm{ff}}$ ). Around the first two and last two constituents of each layer we also have a skip connection. After the final layer we go through another LayerNorm and then we generate an output distribution with an unembedding and softmax layer. The prediction for the outcome is generated using greedy search.</p>
+<p>Furthermore we note that except for the embedding matrix, no biases have been turned off ${ }^{6}$ and that the MLP block has one hidden layer with a ReLU activation.</p>
+<p>The models were trained using AdamW [28] with parameters $\left(\beta_{1}, \beta_{2}\right)=(0.9,0.98), \varepsilon=10^{-8}$ and learning rate $\eta=1.4 \times 10^{-4}$ and weight decay $\lambda$. We used a mini-batch size of 1024 . The parameters (except for biases) are initialized using Glorot initialization.</p>
+<p><sup id="fnref7:0"><a class="footnote-ref" href="#fn:0">1</a></sup></p>
+<h1>A. 2 Decoder-only models</h1>
+<p>We used the same architecture as above, but treated the problem in a next-word prediction fashion. This changes how one computes the loss, which can be seen in the source code provided in the Github repository. As an end-of-sequence token we used an $=-\mathrm{sign}$.</p>
+<p>For training we also kept the same hyperparameters.</p>
+<h2>A. 3 Alpaca 7B details</h2>
+<p>We used the Alpaca repository to instruction fine-tune LLaMA-1 7B to obtain Alpaca 7B. For the training we used 4 x 40 GB A100s and kept all their hyperparameters, except we had to use a per-device batch size of 2 instead of their 4 and employed deepspeed.</p>
+<p>We constructed a set of 1000 examples of the form $\mathrm{a}+\mathrm{b}=$ with $a$ and $b$ two random four-digit integers (this means $10^{3} \leqslant a, b&lt;10^{4}$ so that it is easier to study the attention patterns). The prompts for the model are then generated using the Alpaca template:
+"Below is an instruction that describes a task."
+"Write a response that appropriately completes the request. $\backslash \mathrm{n} \backslash \mathrm{n}$ "
+"### Instruction: \n{EXAMPLE} \n\n### Response:"
+with EXAMPLE substituted by our addition example. For instance, if we prompt the model with
+"Below is an instruction that describes a task."
+"Write a response that appropriately completes the request. $\backslash \mathrm{n} \backslash \mathrm{n}$ "
+"### Instruction: \n5542 + 2067 = \n\n### Response:"
+the response we got is 7519 (we omitted BOS and EOS tokens). In the majority of the responses the response was just an integer, but sometimes it would repeat the sum and give the answer as $a+b=c$. We removed all those additional tokens so that we would be left with just the model's answer for the sum. We used that to calculate the accuracy. After the model generated the responses we looked at the attention patterns and searched for the staircase pattern we have been seeing in the smaller models. We did this search for every generated token, so at step 0 in the generation we get the attention pattern of the input prompt, which we search and then at subsequent steps in the generation we just focus on the newly generated row in the attention map. We then record the frequency of each head and consider the 8 most frequent heads. We then study ablating pairs of heads in this list, starting with the most frequent pair and if that did not affect accuracy we considered other pairs in this list of 8 most frequent heads.</p>
+<p>For the ablation study, we modified the huggingface implementation of the LLaMA models so that they gave not only the output of each layer, but also after the attention. Furthermore, we added a routine to ablate a specific head.</p>
+<p><img alt="img-6.jpeg" src="img-6.jpeg" /></p>
+<p>Figure 7: PCA analysis for the outputs of the attention and MLP blocks. Columns are positions 0,1 and 2 of the outcome. Rows 1, 2: after attention, MLP (resp.) labelled according to the five tasks, NC (blue), C@1 (orange), C@2 (green), C all. (red) and C all con. (purple). Rows 3, 4: after attention, MLP (resp.) labelled according to the digit in the answer at each position.</p>
+<p>Here we focussed one one single way of prompting the model to do addition, but there are perhaps better ways of doing it that get higher accuracies. It would be interesting to explore that, but might make interpretability more complicated.</p>
+<h1>A. 4 Llemma 7B and Zephyr 7B</h1>
+<p>We prompted Llemma 7B [6] and Zephyr 7B [6] using just $\mathrm{a}+\mathrm{b}=$ and using the same sums as for Alpaca. We can again use the huggingface implementation of the LLaMA models to do the ablation tests.</p>
+<h2>B A journey of the hidden representations in one-layer models</h2>
+<p>In this appendix we elaborate a bit more on the residual stream of one-layer models for the model discussed in the main text with $s=0.3$ and $\lambda=0.2$. We again look at $20 k$ examples from the entire dataset. We then perform a principal component analysis to isolate the important directions after the attention and MLP blocks. For the $20 k$ examples we distinguish between the five cases mentioned in Sec. 2 and project the data to the two leading principal axes. The results are shown in Fig. 7.</p>
+<p>There are a few interesting things we can note from this figure:</p>
+<ol>
+<li>In the first row (i.e. after the attention) we see examples are roughly grouped according to whether the sum at a given position was $\geqslant 10$ or not. At position 0 they are all grouped together, because it is always less than 10 , at position 1 the examples with no carrying over and carrying over at position 2 are grouped, since only for those the sum is $\geqslant 10$ and for non-carrying over and carrying at position 1 the sum is always $&lt;10$ and so are also grouped. Similarly for position 2 .</li>
+<li>Within each of the groups in the first two rows, the examples are grouped according to what their outcome is going to be. However, for positions 0 and 1 there is a big spread with a lot of overlap. This indicates that when examples are different, the model does not localize them according to some underlying structure but just gives them a different location in the residual stream. For position 2 there are more localized pockets. This is very different from the two-layer models discussed in Sec. 4 as there we see a clear division in the residual stream.</li>
+<li>Despite there being this big spread, the datapoints corresponding to a particular outcome at a certain position do follow the ordering of the digits 0 through 9 .</li>
+<li>Examples are never grouped according to whether a carried one needs to be added or not. So it does not implement the carrying over algorithm. This is again very different from the two-layer models, which do 'realize' this.</li>
+</ol>
+<p>The first three points are actually rather remarkable, since this information is not supplied while training and seem to indicate that the model is ordering the data in an rather interesting way. Especially the fact it learned to order of the digits is something we did not expect in such a small model to occur. The same behaviour we saw in the other runs with these hyperparameters. For other weight decay or train/test split we see the same structures, but if we turn off weight decay however, this structure seems to be lost.</p>
+<p>The PCA in Fig. 7 shows some spiral like behaviour, which usually indicates one needs a non-linear version of PCA, which might be fruitful to study.</p>
+<h1>C More models</h1>
+<p>Here we discuss some more results on models trained with different train/test split and weight decay. All models discussed here have $d_{\text {model }}=128$ and $d_{\mathrm{ff}}=128$ unless stated otherwise. One can see that with our digit representation we did not see any grokking.</p>
+<h2>C. 1 One layer</h2>
+<p>As we mentioned, the one-layer models are not necessarily worthwhile for studying their performance, but rather they exhibit an interesting transition in their QK circuit.</p>
+<p><img alt="img-7.jpeg" src="img-7.jpeg" /></p>
+<p>Figure 8: Loss, accuracy and norm of the weights as a function of epochs for both the training and test data. Here the train/test split is $s=0.3$ and $\lambda=0.2$. The accuracy is computed as the minimum over all three positions in the answer and we plotted six runs and their average (bold). The final average test accuracy is shown boxed.</p>
+<p><img alt="img-8.jpeg" src="img-8.jpeg" /></p>
+<p>Figure 9: Loss, accuracy and norm-squared of weights as a function of epochs for $s=0.3$ and no weight decay. Thick lines are averages over six runs.</p>
+<p>$s=0.3$ and $\lambda=0.2$ : In Fig. 8 we plotted the loss, accuracy and norm-squared of the weights for all the runs we performed for the hyperparameters discussed in the main text. Again, each run has a transition in its QK-circuit.</p>
+<p>$s=0.3$ and $\lambda=0$ : For these six runs we also turned off weight decay, but kept the original $s$. We again see a large variance. The runs learned to some reasonable accuracy, but for some the test loss started increasing after some epochs. Longer runs would conclude what happens when the weights become too big. See Fig. 9. It again suggests that weight decay is important to get a consistent and stable output regardless of the initialization.</p>
+<p>$s=0.2$ and $\lambda=1.0$ : As can be seen in Fig. 10 all six runs exhibit the transition.</p>
+<h3>C.2 Two layer</h3>
+<p>$s=0.3$ and $\lambda=0.2$ : The learning dynamics for the six runs can be found in Fig. 11, where we also plotted the per-token accuracy for the run discussed in Sec. 4.</p>
+<p><img alt="img-9.jpeg" src="img-9.jpeg" /></p>
+<p>Figure 10: Top: Loss, accuracy and norm of the weights as a function of epochs for both the training and test data. Here the train/test split is $s=0.2$ and $\lambda=1.0$. The accuracy is correctness of the answer and we plotted six runs and their average (bold). The final average test accuracy is shown boxed. Bottom: Loss, accuracy and norm of the weights for a specific run. The first three plots are accuracies for each position.</p>
+<p>The PCA done in the main text was for a particular run. For the other five runs we also saw the same structure: layer 0 groups according to whether sum is $&lt;10$ or not and layer 1 determines whether a sum needs a carried one.
+$s=0.3$ and $\lambda=0$ : For these six runs we turned off weight decay. Often weight decay can drive the model into adopting a certain algorithm. For instance see [20] (although, here it was also important to have weight decay to drive grokking). In our case the learning dynamics did not show any significant effect from the absence of weight decay; the model did again reach perfect accuracy and the loss decayed. See Fig. 12.</p>
+<p>One reason might be that we still have dropout turned on and so some regularization is present. Nevertheless, the models still seem to develop the carrying over algorithm as described in other cases. However, ablating the full final MLP only worked for one run, the others required dissecting, but that turned out to work successfully also.
+$s=0.1$ and $\lambda=0.2$ : Very similar learning dynamics and perfect accuracy was obtained, but weights did not saturated after 1000 epochs. For some runs the ablation of the MLP is too much and we used the criterion discussed in the main text to identify a set of neurons responsible for carrying over the one. For the PCA analysis performed in the main text, we see most of the models have the same structure as in the main text, but for one run we saw a clear difference in the second layer. In particular, it did not use the second attention block to determine sums that needed a carried one or not. This is curious, but when we then study the attention pattern for that particular run, we see the model has</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:0">
+<p>${ }^{6}$ It turns out that for models with more than one layer, the biases are irrelevant and can be set to zero without affecting the model's performance. For one-layer models the biases are important, which is curious.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:0" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>            </div>
+        </div>
+
+    </div>
+</body>
+</html>
