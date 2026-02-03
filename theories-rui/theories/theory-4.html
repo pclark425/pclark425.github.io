@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinetostatic Energy Minimization Theory - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-4</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-4</p>
+                <p><strong>Name:</strong> Kinetostatic Energy Minimization Theory</p>
+                <p><strong>Type:</strong> specific</p>
+                <p><strong>Theory Query:</strong> Build a theory of how proteins can be folded algorithmically and deterministically without using black-box machine learning solutions, based on the following results.</p>
+                <p><strong>Description:</strong> Protein folding can be treated as a quasi-static energy minimization problem where the backbone is modeled as rigid peptide linkages connected by torsional hinges (dihedral angles), and iterative updates of dihedral angles driven by torques from interatomic forces lead to progressive energy minimization toward local minima representing folded states. The theory posits that neglecting inertial effects (kinetostatic approximation) is justified when folding timescales >> vibrational periods, enabling deterministic optimization algorithms. Success depends on: (1) appropriate force field capturing electrostatics and van der Waals interactions, (2) efficient Jacobian mapping from Cartesian forces to joint torques, (3) stable step-size selection balancing convergence speed and numerical stability, and (4) global optimization strategies to escape local minima.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2029</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+                <p><strong>Base Model:</strong> claude-sonnet-4-5-20250929</p>
+            </div>
+        </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Statement/Laws)</h2>
+
+            <h3>Theory Statements/Laws</h3>
+            <hr/>
+            <h3>Statement 0: Kinetostatic Approximation Validity</h3>
+            <p><strong>Statement:</strong> For protein folding problems where barrier-crossing timescales (microseconds-milliseconds) are 10⁶-10⁹ times longer than bond vibrational periods (femtoseconds), inertial terms can be neglected and dynamics approximated as overdamped or quasi-static motion along the energy gradient, reducing 6N-dimensional phase space to 3N-dimensional configuration space optimization.</p>
+            <p><strong>Domain/Scope:</strong> Applies to conformational search and energy minimization for proteins in implicit solvent where explicit dynamics are not required; not suitable for studying kinetics or dynamic properties.</p>
+            <h4>Special Cases</h4>
+            <ol>
+                <li>Breaks down for high-frequency vibrational modes if time-stepping is too coarse</li>
+                <li>Not appropriate for studying dynamic properties like protein-ligand encounter rates</li>
+                <li>May miss rare events requiring thermal activation if used as pure optimization</li>
+            </ol>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>KCM treats protein as rigid peptide planes with torsional hinges, neglecting inertia (kinetostatic assumption), enabling energy-minimization-based folding <a href="../results/extraction-result-9.html#e9.2" class="evidence-link">[e9.2]</a> <a href="../results/extraction-result-6.html#e6.5" class="evidence-link">[e6.5]</a> </li>
+    <li>Protofold KCM approach successfully finds low-energy conformations through successive kinetostatic compliance without explicit dynamics <a href="../results/extraction-result-6.html#e6.5" class="evidence-link">[e6.5]</a> <a href="../results/extraction-result-9.html#e9.2" class="evidence-link">[e9.2]</a> </li>
+    <li>Sign gradient descent on KCM converges to local free-energy minima in ~600 iterations for small backbone chains <a href="../results/extraction-result-9.html#e9.4" class="evidence-link">[e9.4]</a> </li>
+    <li>LQR-based CG optimization uses overdamped limit (mass neglected) to synthesize harmonic approximations of local energy wells <a href="../results/extraction-result-2.html#e2.1" class="evidence-link">[e2.1]</a> <a href="../results/extraction-result-2.html#e2.7" class="evidence-link">[e2.7]</a> </li>
+</ol>            <h4>Self-Evaluation of Law Novelty (produced by the generation model)</h4>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+        <p><strong>Explanation:</strong> While overdamped dynamics and energy minimization are well-established, the specific kinematic formulation with rigid peptide planes and formal justification via timescale separation represents an incremental advance.</p>            <p><strong>What Already Exists:</strong> Overdamped and quasi-static approximations are standard in many optimization contexts, and energy minimization for protein structure has been used since the 1970s (Levitt & Lifson).</p>            <p><strong>What is Novel:</strong> The explicit quantification of timescale separation (10⁶-10⁹ fold) justifying kinetostatic approximation specifically for protein folding and the formulation as rigid-linkage kinematics represents a systematic application.</p>
+        <p><strong>References:</strong> <ul>
+    <li>Levitt & Lifson (1969) Refinement of protein conformations using a macromolecular energy minimization procedure [Early energy minimization]</li>
+    <li>Schlick (2010) Molecular Modeling and Simulation [Overview of minimization and quasi-static approximations]</li>
+    <li>Dokholyan et al. (1998) Discrete molecular dynamics studies of the folding of a protein-like model [Simplified dynamics approaches]</li>
+</ul>
+            <h4>External Evaluations of this Law</h4>
+            <p><strong>Predictive Accuracy Evaluation:</strong> <span class="empty-note">Not available.</span></p>
+            <p><strong>Novelty Evaluation:</strong> <span class="empty-note">Not available (available only for a randomly selected subset of 100 laws, due to cost).</span></p>
+            <hr/>
+            <h3>Statement 1: Sign-Gradient Descent Convergence</h3>
+            <p><strong>Statement:</strong> Updating dihedral angles via θ_{k+1} = θ_k + κ_k·sgn(τ(θ_k)) where τ is the torque vector and κ_k is an adaptively decaying step-size (e.g., geometric decay with β₀∈(0,1)) provides asymptotic convergence to local energy minima under neighborhood sign-consistency conditions (θ*-θ_k)ᵀsgn(τ(θ_k))>0, with 2-3x faster convergence and improved numerical stability compared to normalized-torque heuristics.</p>
+            <p><strong>Domain/Scope:</strong> Applies to deterministic energy minimization on smooth energy landscapes where gradient information is available; demonstrated for small backbone chains with 15-32 dihedral angles.</p>
+            <h4>Special Cases</h4>
+            <ol>
+                <li>Convergence guarantees are local and depend on neighborhood sign-consistency condition</li>
+                <li>Requires step-size sequence satisfying specific decay conditions from sign-descent theory</li>
+                <li>May not converge if started far from any local minimum or in highly frustrated regions</li>
+            </ol>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Sign gradient descent KCM with adaptive step-size converged to lower free energy in 600 iterations vs 1500 for conventional normalized-torque method <a href="../results/extraction-result-9.html#e9.4" class="evidence-link">[e9.4]</a> <a href="../results/extraction-result-9.html#e9.3" class="evidence-link">[e9.3]</a> </li>
+    <li>SGD-based update provides formal convergence conditions via sign-descent theory (Moulay et al.) unlike heuristic normalized-torque <a href="../results/extraction-result-9.html#e9.4" class="evidence-link">[e9.4]</a> </li>
+    <li>Conventional KCM iteration acts like steepest descent but normalization by infinity-norm limits step size, requiring smaller fixed steps <a href="../results/extraction-result-9.html#e9.3" class="evidence-link">[e9.3]</a> <a href="../results/extraction-result-6.html#e6.8" class="evidence-link">[e6.8]</a> </li>
+</ol>            <h4>Self-Evaluation of Law Novelty (produced by the generation model)</h4>
+            <p><strong>Likely Classification:</strong> <span style="color: orange; font-weight: bold;">somewhat-related-to-existing</span></p>
+        <p><strong>Explanation:</strong> While sign-gradient methods exist in optimization literature, the specific application to KCM protein folding with convergence analysis and performance comparison is novel.</p>            <p><strong>What Already Exists:</strong> Sign-based gradient methods and coordinate descent algorithms have been studied in optimization theory; steepest descent and conjugate gradients are standard minimizers.</p>            <p><strong>What is Novel:</strong> The specific application to protein folding via kinetostatic compliance with formal convergence analysis from sign-descent theory and demonstrated 2-3x speedup represents a novel algorithmic contribution to protein structure prediction.</p>
+        <p><strong>References:</strong> <ul>
+    <li>Moulay et al. (2013) Fixed-point convergence of gradient methods [Sign-descent theory foundation]</li>
+    <li>Nocedal & Wright (2006) Numerical Optimization [Standard gradient methods]</li>
+    <li>Al Nahas et al. (2015) Protofold [Original KCM formulation]</li>
+</ul>
+            <h4>External Evaluations of this Law</h4>
+            <p><strong>Predictive Accuracy Evaluation:</strong> <span class="empty-note">Not available.</span></p>
+            <p><strong>Novelty Evaluation:</strong> <span class="empty-note">Not available (available only for a randomly selected subset of 100 laws, due to cost).</span></p>
+            <hr/>
+        </div>
+        <div class="section">
+            <h2>Theory (Additional Details)</h2>
+                        <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Sign gradient descent KCM with optimal step-size schedule (κ₀=0.02, β₀=0.98) should converge 2.5-3x faster than conventional KCM for backbone chains up to 100 residues</li>
+                <li>Combining KCM with hybrid Monte Carlo for occasional large moves should enable escape from local minima and improve global optimization by 50-100% (measured by final energy)</li>
+                <li>Adding explicit side-chain optimization (beyond rigid rotamer approximations) to KCM should reduce final RMSD by 1-2Å for polar residues</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether KCM-based approaches can scale to proteins >200 residues with competitive performance to stochastic methods</li>
+                <li>Whether sign-gradient descent remains effective for highly frustrated energy landscapes with many shallow local minima</li>
+                <li>Whether KCM can be extended to include explicit solvent degrees of freedom while maintaining computational efficiency</li>
+                <li>Whether adaptive step-size schedules can be optimized online during folding using curvature information</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that sign-gradient KCM frequently fails to converge or oscillates for well-behaved proteins would challenge the convergence principle</li>
+                <li>Demonstrating that normalized-torque methods with carefully tuned step-sizes match or exceed SGD performance would question the algorithmic advantage</li>
+                <li>Showing that kinetostatic approximation produces systematically incorrect structures (>5Å RMSD) even when initialized near native would challenge validity of the approximation</li>
+                <li>Finding that computational cost scales worse than quadratically with protein size would limit practical applicability</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>How to choose optimal step-size parameters (κ₀, β₀) a priori for different protein sizes and types not provided <a href="../results/extraction-result-9.html#e9.4" class="evidence-link">[e9.4]</a> </li>
+    <li>Global optimization strategy to escape local minima not fully developed beyond mention of hybrid MC <a href="../results/extraction-result-6.html#e6.8" class="evidence-link">[e6.8]</a> </li>
+    <li>Extension to explicit solvent and non-rigid bond lengths not addressed <a href="../results/extraction-result-9.html#e9.2" class="evidence-link">[e9.2]</a> </li>
+    <li>Relationship between convergence rate and energy landscape ruggedness not characterized </li>
+</ol>        </div>        <div style="height: 30px;"></div>
+    </div>
+</body>
+</html>
