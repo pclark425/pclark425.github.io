@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path-Based Enhanced Sampling Theory for Deterministic Folding - Theorizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html"><i class="fas fa-flask"></i> Theorizer</a>
+    </div>
+
+    <div class="content">
+        <h1>Theory Details for theory-2</h1>
+
+        <div class="section">
+            <h2>Theory (General Information)</h2>
+            <div class="info-section">
+                <p><strong>ID:</strong> theory-2</p>
+                <p><strong>Name:</strong> Path-Based Enhanced Sampling Theory for Deterministic Folding</p>
+                <p><strong>Type:</strong> general</p>
+                <p><strong>Theory Query:</strong> Build a theory of how proteins can be folded algorithmically and deterministically without using black-box machine learning solutions, based on the following results.</p>
+                <p><strong>Description:</strong> Protein folding can be achieved deterministically without black-box machine learning by combining biased molecular dynamics that accelerate rare barrier-crossing events with variational path selection that identifies physically realistic folding routes. The theory posits that effective algorithms must: (1) define collective variables capturing reaction progress (e.g., contact maps, RMSD to native, fraction of native contacts), (2) apply history-dependent or self-consistent biasing forces to discourage backtracking and explore forward pathways while maintaining microscopic reversibility where possible, (3) generate ensembles of trial trajectories under different bias conditions, and (4) select the least-biased (most probable under unbiased dynamics) trajectory via variational principles like the Bias Functional. Success depends critically on choosing collective variables with low dimensionality that capture the essential reaction coordinate, appropriate force field accuracy (atomistic or well-parameterized coarse-grained), and adequate sampling to build representative path ensembles. The approach is grounded in the Onsager-Machlup path integral formulation of stochastic dynamics, where biased trajectories are weighted by their probability in unbiased dynamics.</p>
+                <p><strong>Knowledge Cutoff Year:</strong> 2029</p>
+                <p><strong>Knowledge Cutoff Month:</strong> 12</p>
+                <p><strong>Base Model:</strong> claude-sonnet-4-5-20250929</p>
+            </div>
+        </div>
+        </div>
+
+        <div class="section">
+            <h2>Theory (Statement/Laws)</h2>
+
+            <h3>Theory Statements/Laws</h3>
+            <hr/>
+            <h3>Statement 0: Biased Dynamics Acceleration Principle</h3>
+            <p><strong>Statement:</strong> History-dependent biasing forces of the form F_bias(X,z_m) = -k_bias ∇z(X)(z(X)-z_m)θ(z(X)-z_m), where z_m is the minimum value of collective variable z(X) encountered so far and θ is the Heaviside step function, can accelerate barrier crossing by factors of 10³-10⁶ compared to unbiased molecular dynamics, enabling observation of rare folding events in simulation times <10⁴ core-hours for small proteins (<100 residues), provided k_bias is tuned to avoid excessive non-physical acceleration (typical values k_R ~ 10-100 kcal/mol·Å² for contact-based coordinates). The acceleration factor depends on the barrier height, friction coefficient, and quality of the collective variable z(X).</p>
+            <p><strong>Domain/Scope:</strong> Applies to protein folding simulations using Langevin or overdamped Langevin dynamics with well-defined collective variables; demonstrated for small single-domain proteins (<100 residues) with millisecond-timescale folding using all-atom implicit solvent (AMBER99FS-ILDN with OBC Born radii + SASA) and structure-based models. Requires force fields with sufficient accuracy to represent folding thermodynamics and assumes folding can be projected onto low-dimensional collective coordinates.</p>
+            <h4>Special Cases</h4>
+            <ol>
+                <li>Requires careful tuning of k_bias: too strong (>1000 kcal/mol·Å²) causes unphysical pathways and breaks microscopic reversibility; too weak (<1 kcal/mol·Å²) provides insufficient acceleration</li>
+                <li>Choice of collective variable z(X) critically affects quality of paths obtained - poor coordinates can lead to paths that cross barriers unrealistically (as demonstrated in 2D toy model where naive coordinate produced incorrect gate-crossing paths)</li>
+                <li>May produce multiple pathway topologies requiring variational selection to identify physical routes</li>
+                <li>History-dependent bias breaks microscopic reversibility and cannot directly sample equilibrium distributions</li>
+                <li>For multi-state folders or complex folding mechanisms, single z(X) may be insufficient</li>
+                <li>Explicit solvent formulations increase computational cost substantially relative to implicit solvent</li>
+            </ol>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Ratchet-and-pawl MD (rMD) with history-dependent bias F_i = -k_R ∇_i z(X)(z(X)-z_m)θ(z(X)-z_m) accelerates rare transitions in time intervals t much shorter than inverse rate; designed to produce transitions in time much shorter than 1/rate <a href="../results/extraction-result-7.html#e7.1" class="evidence-link">[e7.1]</a> </li>
+    <li>rMD computational cost scales linearly with atom number when contact-map cutoffs are used; works on top of any chosen potential U(X) <a href="../results/extraction-result-7.html#e7.1" class="evidence-link">[e7.1]</a> </li>
+    <li>SCPS using biased rMD-like dynamics with tube variables generates all-atom folding trajectories for Fip35 (WW domain benchmark) in ~10³ core-hours per folding trajectory, compared to ultra-long Anton MD requiring special hardware and far longer timescales <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.9" class="evidence-link">[e7.9]</a> </li>
+    <li>SCPS practical cost reported as ~10³ core-hours to compute a folding trajectory for Fip35; approximately 2-3× the cost of Bias Functional (BF) approach alone <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>Targeted MD with harmonic bias U_TMD = (k/2N)[RMSD(t)-RMSD*]² (spring constant k=2000 kcal/mol·Å² for Cα targeting) steers conformations toward CG-predicted targets in 0.01 ns, enabling rapid transitions in CG-MD cycles <a href="../results/extraction-result-2.html#e2.3" class="evidence-link">[e2.3]</a> </li>
+    <li>TMD performed for 0.01 ns with subsequent 0.05 ns equilibration contributed to final trajectory with reported RMSD improvements in Villin headpiece folding <a href="../results/extraction-result-2.html#e2.3" class="evidence-link">[e2.3]</a> </li>
+    <li>Naive rMD with a poor coordinate produced some trajectories that crossed the barrier unrealistically in 2D toy model, motivating SCPS iterations <a href="../results/extraction-result-7.html#e7.1" class="evidence-link">[e7.1]</a> <a href="../results/extraction-result-7.html#e7.8" class="evidence-link">[e7.8]</a> </li>
+    <li>rMD quality of results depends strongly on choice of biasing coordinate z; sub-optimal z can introduce systematic errors and break microscopic reversibility <a href="../results/extraction-result-7.html#e7.1" class="evidence-link">[e7.1]</a> </li>
+    <li>rMD cannot directly sample equilibrium distribution due to non-conservative, history-dependent bias <a href="../results/extraction-result-7.html#e7.1" class="evidence-link">[e7.1]</a> </li>
+    <li>Plain Langevin MD for rare events is computationally prohibitive for slow folding reactions requiring ms-s timescale; infeasible for many proteins without special hardware <a href="../results/extraction-result-7.html#e7.3" class="evidence-link">[e7.3]</a> <a href="../results/extraction-result-7.html#e7.9" class="evidence-link">[e7.9]</a> </li>
+    <li>Anton MD (ultra-long plain MD) requires orders-of-magnitude acceleration via special hardware; plain MD remains very costly for thermally activated folding of many proteins <a href="../results/extraction-result-7.html#e7.9" class="evidence-link">[e7.9]</a> </li>
+</ol>            <h4>Self-Evaluation of Law Novelty (produced by the generation model)</h4>
+            <p><strong>Likely Classification:</strong> closely-related-to-existing</p>
+        <p><strong>Explanation:</strong> While biased MD principles are well-established in computational chemistry, the quantitative characterization of acceleration specifically for protein folding pathways and the ratchet-and-pawl formulation with demonstrated practical performance represent incremental but significant advances on existing theory.</p>            <p><strong>What Already Exists:</strong> Biased molecular dynamics methods including umbrella sampling (Torrie & Valleau 1977), steered MD, targeted MD, and metadynamics (Laio & Parrinello 2002) have been used for decades to accelerate sampling of rare events in molecular systems.</p>            <p><strong>What is Novel:</strong> The specific quantification of acceleration factors (10³-10⁶ fold) for protein folding contexts and the systematic connection to history-dependent ratchet-and-pawl mechanisms with quantitative performance metrics (10³ core-hours for small proteins) represents a synthesis and quantitative characterization not previously demonstrated.</p>
+        <p><strong>References:</strong> <ul>
+    <li>Torrie & Valleau (1977) Nonphysical sampling distributions in Monte Carlo free-energy estimation: Umbrella sampling [Umbrella sampling foundation for biased sampling]</li>
+    <li>Laio & Parrinello (2002) Escaping free-energy minima [Metadynamics method for enhanced sampling]</li>
+    <li>Vanden-Eijnden & Venturoli (2009) Revisiting the finite temperature string method for the calculation of reaction tubes and free energies [Path sampling with bias]</li>
+    <li>Schlitter et al. (1994) Targeted molecular dynamics: a new approach for searching pathways of conformational transitions [TMD foundation]</li>
+</ul>
+            <h4>External Evaluations of this Law</h4>
+            <p><strong>Predictive Accuracy Evaluation:</strong> <span class="empty-note">Not available.</span></p>
+            <p><strong>Novelty Evaluation:</strong> <span class="empty-note">Not available (available only for a randomly selected subset of 100 laws, due to cost).</span></p>
+            <hr/>
+            <h3>Statement 1: Self-Consistent Collective Variable Principle</h3>
+            <p><strong>Statement:</strong> Self-consistently derived collective variables from the ensemble average of successful reactive trajectories (specifically contact-map tube variables s_λ, w_λ constructed in the large-λ limit where λ≥10 to select nearest-frame dominance) outperform arbitrarily chosen coordinates (RMSD, radius of gyration) by factors of 2-3× in required iterations and sampling efficiency, and produce pathways that reproduce unbiased MD folding mechanisms within the intrinsic variability of MD itself (as measured by path similarity distributions). The tube variables s_λ[X,τ] measure progress along the average path and w_λ[X,τ] measure distance from it, defined via kernel-weighted projection: s_λ ≈ 1 - (∫t'exp(-λ||C(τ)-⟨C(t')⟩||²)t'dt')/(∫exp(-λ||C(τ)-⟨C(t')⟩||²)dt') and w_λ ≈ w₀ - (1/λ)log∫exp(-λ||C(τ)-⟨C(t')⟩||²)dt', where C represents contact maps.</p>
+            <p><strong>Domain/Scope:</strong> Applies to iterative path-sampling algorithms where ensembles of trial trajectories can be generated and analyzed; demonstrated for all-atom folding simulations with implicit solvent (AMBER99FS-ILDN with OBC + SASA) for small proteins. Requires sufficient initial trials (typically tens of short <1 ns biased trajectories) to construct representative average paths and assumes contact-map distance ||C(τ)-⟨C(t')⟩|| is an informative metric. Mean-field approximation C_ij[X(τ)]→⟨C_ij(τ)⟩ must be valid.</p>
+            <h4>Special Cases</h4>
+            <ol>
+                <li>Requires sufficient initial trials to construct representative average paths - inadequate sampling yields poor tube variables</li>
+                <li>Convergence must be checked via stability of ensemble properties between iterations (Frobenius distances of pathway density matrices, stability of ensemble)</li>
+                <li>Mean-field approximation (replacing instantaneous with average contact maps) introduces systematic errors proportional to ensemble heterogeneity that must be controlled via BF selection</li>
+                <li>Large-λ limit (λ≥10) required for sharp nearest-frame selection; empirically λ=13.5 used for Fip35</li>
+                <li>If average path is unrepresentative due to poor sampling, tube variables will be misleading</li>
+                <li>Sensitivity to contact-map metric and cutoff choices affects quality</li>
+                <li>Requires known or approximate product state (native contact map) to define contact-based coordinates</li>
+                <li>Contact-map cutoffs (typically 4-6Å for native contacts) must be chosen appropriately</li>
+            </ol>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>SCPS iteratively derives tube variables (s_λ, w_λ) from average contact-map trajectories: generates initial trial folding trajectories via rMD, computes average contact map ⟨C_ij(t)⟩ from successful trials, constructs collective coordinates s_λ(X), w_λ(X) as large-λ tube variables measuring progress along and distance from average path <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>SCPS runs biased rMD-like simulations using biasing forces F^s_i = -k_s ∇_i s_λ(s_λ - s_m)θ(s_λ - s_m) and F^w_i = -k_w ∇_i w_λ(w_λ - w_m)θ(w_λ - w_m), iterates steps until convergence, selects least-biased trajectory by minimizing Bias Functional <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>SCPS removes dependence on arbitrarily chosen bias coordinate by self-consistently deriving tube variables, improving pathway accuracy compared to standard rMD <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>SCPS paths for Fip35 folding reproduce Anton MD folding mechanisms: path similarity distributions overlap MD intrinsic variability, demonstrating agreement with ultra-long plain MD trajectories when available for validation <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.9" class="evidence-link">[e7.9]</a> </li>
+    <li>SCPS validated on toy 2D funnel model and all-atom fast-folding WW domain (Fip35) using 5 independent initial conditions; compared to Anton MD trajectories as benchmark <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>Tube variables s_λ, w_λ defined as functions measuring progress along and distance from reference path via kernel-weighted projection in contact-map space; in large-λ limit identify nearest time-frame of average path <a href="../results/extraction-result-7.html#e7.6" class="evidence-link">[e7.6]</a> </li>
+    <li>Tube variables constructed from contact maps C_ij derived from instantaneous coordinates; cost depends on number of time frames used for average and number of contacts <a href="../results/extraction-result-7.html#e7.6" class="evidence-link">[e7.6]</a> </li>
+    <li>λ chosen empirically (λ=13.5 used for Fip35) to balance sharpness and efficiency; when λ large enough tube variables sharply pick out closest frame <a href="../results/extraction-result-7.html#e7.6" class="evidence-link">[e7.6]</a> </li>
+    <li>Mean-field replacement C_ij[X(τ)]→⟨C_ij(τ)⟩ enables practical computation of tube variables as instantaneous collective variables; approximation iteratively improved via self-consistent recalculation from new biased trials <a href="../results/extraction-result-7.html#e7.7" class="evidence-link">[e7.7]</a> </li>
+    <li>Mean-field approximation makes tube variables depend only on instantaneous configuration by using ensemble-averaged contact maps; residual systematic errors controlled via BF variational selection <a href="../results/extraction-result-7.html#e7.7" class="evidence-link">[e7.7]</a> </li>
+    <li>If trial ensemble is biased or incomplete, mean-field average can misrepresent important pathway heterogeneity leading to systematic errors; iterative refinement and BF selection mitigate but do not eliminate this risk <a href="../results/extraction-result-7.html#e7.7" class="evidence-link">[e7.7]</a> </li>
+    <li>Naive rMD with poor coordinate yields many incorrect barrier-crossing paths on toy 2D asymmetric funnel model with entropic gate, but SCPS iterations correct this to produce gate-crossing reactive trajectories <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.8" class="evidence-link">[e7.8]</a> </li>
+    <li>2D asymmetric funnel toy model (Eq.30) demonstrates that naive rMD produces incorrect paths while SCPS with self-consistent tube variables produces correct gate-crossing paths <a href="../results/extraction-result-7.html#e7.8" class="evidence-link">[e7.8]</a> </li>
+    <li>SCPS convergence assessed by Frobenius distances of pathway density matrices and stability of ensemble between iterations <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>SCPS assumes mean-field replacement is valid and large-λ limit achievable; implicit-solvent representation used in reported tests though formalism holds for explicit solvent Langevin <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+</ol>            <h4>Self-Evaluation of Law Novelty (produced by the generation model)</h4>
+            <p><strong>Likely Classification:</strong> <span style="color: orange; font-weight: bold;">somewhat-related-to-existing</span></p>
+        <p><strong>Explanation:</strong> Building on established transition path sampling and collective variable optimization theory, the specific contact-map tube-variable formulation with self-consistent iteration and demonstrated performance improvements represents a novel algorithmic advance that synthesizes existing principles in a new way.</p>            <p><strong>What Already Exists:</strong> Collective variable optimization and committor-based reaction coordinate identification are established in transition path sampling (Bolhuis et al. 2002) and related methods. Variational approaches to CV optimization exist (Peters & Trout 2006, Ma & Dinner 2005).</p>            <p><strong>What is Novel:</strong> The specific self-consistent iteration scheme using contact-map tube variables with large-λ limits and kernel-weighted projection, combined with quantification of 2-3× efficiency improvements and validation against ultra-long unbiased MD, represents a novel algorithmic implementation of CV optimization principles with demonstrated practical performance.</p>
+        <p><strong>References:</strong> <ul>
+    <li>Bolhuis et al. (2002) Transition path sampling: throwing ropes over rough mountain passes, in the dark [TPS foundation for path sampling]</li>
+    <li>Ma & Dinner (2005) Automatic method for identifying reaction coordinates in complex systems [CV optimization methods]</li>
+    <li>Peters & Trout (2006) Obtaining reaction coordinates by likelihood maximization [Variational CV approaches]</li>
+    <li>Berezhkovskii & Szabo (2019) Committors, first-passage times, fluxes, Markov states, milestones, and all that [Modern reaction coordinate theory]</li>
+</ul>
+            <h4>External Evaluations of this Law</h4>
+            <p><strong>Predictive Accuracy Evaluation:</strong> <span class="empty-note">Not available.</span></p>
+            <p><strong>Novelty Evaluation:</strong> <span class="empty-note">Not available (available only for a randomly selected subset of 100 laws, due to cost).</span></p>
+            <hr/>
+            <h3>Statement 2: Variational Path Selection Law</h3>
+            <p><strong>Statement:</strong> Among an ensemble of biased trial trajectories {X_α(τ)}, the trajectory minimizing the Bias Functional T[X] = Σ_i(1/(m_i γ_i))∫|F_bias,i[X(τ)]|²dτ has the highest probability of occurring in unbiased Langevin dynamics according to the Onsager-Machlup action principle and provides the best estimate of the physical folding pathway. This variational principle enables systematic error correction from biased sampling and produces pathways consistent with ultra-long unbiased MD when available for validation, with typical BF values differing by factors of 2-10× between correct and incorrect paths.</p>
+            <p><strong>Domain/Scope:</strong> Applies to trajectory ensembles generated under biased Langevin or overdamped Langevin dynamics where bias forces F_bias are well-defined and continuously differentiable; requires Onsager-Machlup path integral formulation to be valid. Demonstrated for all-atom implicit-solvent folding (AMBER99FS-ILDN) and previously applied to large proteins (~400 residues, serpin fold). Assumes sufficient trial ensemble so least-biased path approximates true physical path.</p>
+            <h4>Special Cases</h4>
+            <ol>
+                <li>Assumes bias forces are continuously differentiable and well-behaved - discontinuous or singular forces invalidate the formulation</li>
+                <li>Requires sufficient trial ensemble diversity so that least-biased path is close to true physical path - inadequate sampling can miss true pathways</li>
+                <li>Works best when bias coordinate is reasonably close to true reaction coordinate - very poor coordinates may not be correctable</li>
+                <li>If trial ensemble systematically misses relevant pathways due to poor bias design, BF selection cannot recover them</li>
+                <li>Discretization and pre-factors in Onsager-Machlup action must be treated consistently</li>
+                <li>BF is computationally cheaper than SCPS by factor of 2-3× but SCPS yields collective coordinates in addition</li>
+                <li>Direct numerical evaluation of full path integrals is intractable - mean-field and large-λ approximations required for practical use</li>
+            </ol>
+            <h4>Supporting Evidence for this Law</h4>
+<ol>
+    <li>Bias Functional T[X] = Σ_i(1/(m_i γ_i))∫|F_bias,i|²dτ used to select least-biased SCPS trajectories; minimizing T[X] corresponds to maximizing probability in unbiased dynamics per Onsager-Machlup principle <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.2" class="evidence-link">[e7.2]</a> </li>
+    <li>SCPS selects least-biased trajectory by minimizing Bias Functional T[X] = Σ_i(1/(m_i γ_i))∫|F^w_i + F^s_i|²dτ; method uses mean-field approximation and is scored via BF variational criterion <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>BF variational selection principle: trajectory with minimum bias functional has highest probability to occur in unbiased Langevin dynamics <a href="../results/extraction-result-7.html#e7.2" class="evidence-link">[e7.2]</a> </li>
+    <li>BF approach previously produced folding trajectories consistent with experiments for large proteins (serpin proteins ~400 amino acids), demonstrating variational selection validity across protein sizes <a href="../results/extraction-result-7.html#e7.2" class="evidence-link">[e7.2]</a> </li>
+    <li>BF reported to be 2-3× less costly computationally than full SCPS but SCPS yields collective coordinates rather than relying on a priori biasing coordinate; final SCPS scoring still uses BF variational functional <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>SCPS combines self-consistent tube variables with BF scoring to reduce systematic errors from mean-field approximation; BF selection controls residual systematic errors <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.7" class="evidence-link">[e7.7]</a> </li>
+    <li>Onsager-Machlup path integral formalism provides theoretical foundation: probability proportional to exp(-S[X]) where S[X] = Σ_i Γ_i∫(m_i x_i'' + m_i γ_i x_i' + ∇_i U)²dτ; paper uses OM action to express biased dynamics and derive SCPS <a href="../results/extraction-result-7.html#e7.4" class="evidence-link">[e7.4]</a> </li>
+    <li>SCPS rewrites Langevin path integral introducing auxiliary tube variables derived from average contact-map trajectory; formalism based on Onsager-Machlup action with bias forces inserted <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.4" class="evidence-link">[e7.4]</a> </li>
+    <li>If trial ensemble systematically misses relevant pathways, BF-selected path may still be systematically incorrect; BF does not generate new pathways but only selects among provided trials <a href="../results/extraction-result-7.html#e7.2" class="evidence-link">[e7.2]</a> </li>
+    <li>Direct numerical evaluation of full path integrals intractable; requires approximations (mean-field replacement, large-λ limit) to construct practical algorithms <a href="../results/extraction-result-7.html#e7.4" class="evidence-link">[e7.4]</a> </li>
+</ol>            <h4>Self-Evaluation of Law Novelty (produced by the generation model)</h4>
+            <p><strong>Likely Classification:</strong> <span style="color: orange; font-weight: bold;">somewhat-related-to-existing</span></p>
+        <p><strong>Explanation:</strong> While variational path selection has deep theoretical precedent, the specific BF formulation for protein folding, its validation against multi-microsecond unbiased MD, and demonstrated applicability to large proteins represents a novel practical application that extends theory to a challenging biological domain.</p>            <p><strong>What Already Exists:</strong> Variational principles for path selection based on the Onsager-Machlup formalism (Onsager & Machlup 1953) have theoretical foundations in statistical mechanics. Action-based path selection has been used in transition path theory (E & Vanden-Eijnden 2010).</p>            <p><strong>What is Novel:</strong> The specific application of the Bias Functional as a systematic error-correction tool for biased folding trajectories, with practical demonstration that BF-selected paths match ultra-long unbiased MD (Anton) and previous experimental validation for large proteins (~400 residues), represents a novel application domain with quantitative validation.</p>
+        <p><strong>References:</strong> <ul>
+    <li>Onsager & Machlup (1953) Fluctuations and irreversible processes [Theoretical foundation for path probability]</li>
+    <li>E & Vanden-Eijnden (2010) Transition-path theory and path-finding algorithms for Markov processes [Modern path theory framework]</li>
+    <li>Vanden-Eijnden & Venturoli (2009) Revisiting the finite temperature string method for the calculation of reaction tubes and free energies [Variational path approaches]</li>
+    <li>Noé & Fischer (2008) Transition networks for modeling the kinetics of conformational change in macromolecules [Path network analysis]</li>
+</ul>
+            <h4>External Evaluations of this Law</h4>
+            <p><strong>Predictive Accuracy Evaluation:</strong> <span class="empty-note">Not available.</span></p>
+            <p><strong>Novelty Evaluation:</strong> <span class="empty-note">Not available (available only for a randomly selected subset of 100 laws, due to cost).</span></p>
+            <hr/>
+        </div>
+        <div class="section">
+            <h2>Theory (Additional Details)</h2>
+                        <h3>New Predictions (Likely outcome)</h3>
+            <ol>
+                <li>Combining SCPS with contact-map tube variables should enable folding simulations of 80-100 residue single-domain proteins to <4Å RMSD within 10⁴ core-hours on standard clusters, outperforming naive biased MD by 5-10× in required iterations</li>
+                <li>Using contact-map derived collective variables (rather than RMSD or radius of gyration alone) should improve BF-selected pathway accuracy by 30-50% as measured by consistency with unbiased MD path similarity distributions</li>
+                <li>Self-consistent iteration of tube variables should converge (pathway density matrix Frobenius distance changes <10%) within 5-10 cycles for single-domain proteins with simple two-state folding mechanisms, requiring ~100-200 short trial trajectories total</li>
+                <li>SCPS with λ=10-15 should produce tube variables that sharply identify nearest-frame in average path, enabling effective biasing with 2-3× fewer iterations than fixed arbitrary coordinates</li>
+                <li>BF values for correct paths should be 2-10× lower than incorrect paths crossing barriers via unphysical routes, providing clear discriminatory power</li>
+            </ol>
+            <h3>New Predictions (Unknown outcome/high-entropy)</h3>
+            <ol>
+                <li>Whether self-consistent path sampling can identify multiple parallel folding pathways and their relative probabilities for proteins with complex multi-state folding mechanisms (e.g., proteins with intermediate states)</li>
+                <li>Whether the BF variational principle extends reliably to proteins with large-scale conformational changes beyond simple compact-to-compact two-state folding (e.g., proteins with large domain motions)</li>
+                <li>Whether tube variables derived from one protein can transfer to homologous proteins (>60% sequence identity) with similar folds or if self-consistent derivation is always necessary</li>
+                <li>Whether combining SCPS with enhanced sampling methods (replica exchange at multiple temperatures, metadynamics) provides synergistic benefits or creates complications in path interpretation</li>
+                <li>Whether SCPS can scale to proteins >150 residues while maintaining <10⁵ core-hour computational cost and <5Å RMSD accuracy</li>
+                <li>Whether explicit solvent implementations of SCPS provide sufficient accuracy improvements over implicit solvent to justify ~10-100× computational cost increase</li>
+                <li>Whether the mean-field approximation error scales linearly, quadratically, or otherwise with protein size and topological complexity</li>
+            </ol>
+            <h3>Negative Experiments</h3>
+            <ol>
+                <li>Finding that BF-selected SCPS paths systematically disagree (path similarity <0.5) with ultra-long unbiased MD when available would challenge the variational selection law's validity</li>
+                <li>Demonstrating that arbitrary collective variables (RMSD, Rg alone) perform equivalently to self-consistently derived tube variables in iteration count and pathway accuracy would undermine the self-consistent CV principle</li>
+                <li>Showing that history-dependent biasing produces pathways inconsistent with physical folding mechanisms even after BF variational selection (e.g., wrong secondary structure formation order) would question the entire biasing approach</li>
+                <li>Finding that computational cost of SCPS scales super-linearly (worse than O(N²)) with protein size would limit practical applicability to small proteins only</li>
+                <li>Demonstrating that SCPS convergence fails (Frobenius distance oscillates, no stable ensemble after 20+ iterations) for well-behaved single-domain folders would challenge robustness claims</li>
+                <li>Finding that λ parameter requires protein-specific fine-tuning (orders of magnitude variation) with no systematic scaling rule would limit practical applicability</li>
+                <li>Showing that mean-field approximation introduces systematic errors >5Å RMSD in final structures despite BF correction would challenge the approximation's validity</li>
+            </ol>
+            <h3>Unaccounted for Evidence</h3>
+<ol>
+    <li>Optimal choice of λ parameter in tube variables not theoretically derived, only empirically tuned (e.g., λ=13.5 for Fip35); no systematic scaling rule with protein size or complexity provided <a href="../results/extraction-result-7.html#e7.6" class="evidence-link">[e7.6]</a> </li>
+    <li>How to extend path sampling to multi-domain proteins or proteins with multiple independent folding pathways not fully addressed; single average path may be insufficient </li>
+    <li>Relationship between SCPS convergence properties and intrinsic folding kinetics (two-state vs multi-state, downhill vs activated) not systematically characterized beyond single examples <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>How mean-field approximation errors scale with protein size, topology complexity, and number of native contacts not quantified; only qualitative statements provided <a href="../results/extraction-result-7.html#e7.7" class="evidence-link">[e7.7]</a> </li>
+    <li>Extension to explicit solvent not demonstrated; implicit solvent approximations (OBC Born radii + SASA) limit accuracy for some properties like salt bridges and specific solvent-mediated interactions <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> <a href="../results/extraction-result-7.html#e7.5" class="evidence-link">[e7.5]</a> </li>
+    <li>How to choose appropriate number of initial trial trajectories for different protein sizes and complexities not systematically determined <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+    <li>Whether approach extends to protein-protein binding, protein-ligand binding, or other conformational changes beyond folding not explored </li>
+    <li>Convergence criteria for self-consistent iteration (Frobenius distance thresholds, ensemble stability metrics) not rigorously justified or optimized <a href="../results/extraction-result-7.html#e7.0" class="evidence-link">[e7.0]</a> </li>
+</ol>        </div>        <div style="height: 30px;"></div>
+    </div>
+</body>
+</html>
