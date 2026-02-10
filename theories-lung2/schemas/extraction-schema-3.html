@@ -19,7 +19,7 @@
             <h2>Extraction Schema (General Information)</h2>
             <div class="info-section">
                 <p><strong>Schema ID:</strong> extraction-schema-3</p>
-                <p><strong>Extraction Query:</strong> Extract any mentions of inverse correlations between cancer and neurodegenerative diseases, including the specific diseases involved, proposed molecular mechanisms, shared pathways or genes, and evidence supporting or challenging the inverse relationship.</p>
+                <p><strong>Extraction Query:</strong> Extract any mentions of proposed or discovered driver alterations/mechanisms in lung adenocarcinoma cases described as driver-negative/oncogene-negative/unknown-driver (often RTK/RAS/RAF-negative), including the evidence supporting driver status and any therapeutic or functional validation.</p>
             </div>
         </div>
 
@@ -35,69 +35,99 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>cancer_type</strong></td>
+                        <td><strong>cohort_description</strong></td>
                         <td>str</td>
-                        <td>The specific type(s) of cancer discussed (e.g. 'lung cancer', 'breast cancer', 'melanoma', 'glioblastoma', etc.). Be specific.</td>
+                        <td>Description of the studied cohort relevant to driver-negative LUAD (e.g., TCGA LUAD, clinical sequencing cohort, never-smoker enriched cohort), including inclusion/exclusion criteria if stated.</td>
                     </tr>
                     <tr>
-                        <td><strong>neurodegenerative_disease</strong></td>
-                        <td>str</td>
-                        <td>The specific neurodegenerative disease(s) discussed (e.g. 'Alzheimer's disease', 'Parkinson's disease', 'ALS', 'Huntington's disease', etc.). Be specific.</td>
+                        <td><strong>sample_size_total</strong></td>
+                        <td>int</td>
+                        <td>Total number of lung adenocarcinoma tumors/samples analyzed (integer). Null if not stated.</td>
                     </tr>
                     <tr>
-                        <td><strong>correlation_type</strong></td>
+                        <td><strong>definition_of_driver_negative</strong></td>
                         <td>str</td>
-                        <td>What is the nature of the correlation between the cancer and neurodegenerative disease? (e.g. 'inverse correlation', 'positive correlation', 'no correlation', 'mixed results'). Include quantitative measures if available.</td>
+                        <td>How the paper defines 'driver-negative/unknown driver/pan-negative' (e.g., negative for EGFR/KRAS/ALK/ROS1/BRAF and other common RTK/RAS/RAF alterations; negative on a specific NGS panel; MAPK-pathway negative).</td>
                     </tr>
                     <tr>
-                        <td><strong>epidemiological_evidence</strong></td>
+                        <td><strong>driver_negative_fraction</strong></td>
                         <td>str</td>
-                        <td>What epidemiological evidence is provided for the correlation? Include statistics like odds ratios, relative risks, hazard ratios, prevalence rates, etc. Be specific and quantitative.</td>
+                        <td>Reported fraction/percentage of tumors that are driver-negative in that cohort (include numerator/denominator if provided, e.g., '120/400 (30%)').</td>
                     </tr>
                     <tr>
-                        <td><strong>proposed_mechanism</strong></td>
+                        <td><strong>assay_and_platforms</strong></td>
                         <td>str</td>
-                        <td>What molecular or biological mechanism is proposed to explain the inverse correlation? Be detailed and specific (e.g. 'p53 hyperactivation leads to increased apoptosis in neurons but tumor suppression in dividing cells').</td>
+                        <td>Genomic/omic assays used to search for drivers (e.g., targeted DNA panel, WES, WGS, RNA-seq for fusions, long-read sequencing, methylation arrays, proteogenomics) and key platform details if provided.</td>
                     </tr>
                     <tr>
-                        <td><strong>genes_involved</strong></td>
+                        <td><strong>candidate_driver_event</strong></td>
                         <td>str</td>
-                        <td>What specific genes are mentioned as having opposing or relevant roles in both cancer and neurodegeneration? List gene names and briefly describe their roles.</td>
+                        <td>Specific candidate driver alteration/mechanism proposed for driver-negative LUAD (e.g., 'NRG1 fusion', 'MET exon 14 skipping', 'ERBB2 amplification', 'RET fusion', 'EGFR kinase domain duplication', 'ALK IGR fusion', 'KRAS amplification', 'MAPK pathway activation via X', 'MYC amplification', 'TERT promoter mutation', 'STK11/KEAP1-driven metabolic state', 'epigenetic silencing of Y', etc.).</td>
                     </tr>
                     <tr>
-                        <td><strong>proteins_involved</strong></td>
+                        <td><strong>event_class</strong></td>
                         <td>str</td>
-                        <td>What specific proteins are mentioned as having opposing or relevant roles in both cancer and neurodegeneration? List protein names and briefly describe their roles.</td>
+                        <td>Class of alteration: 'SNV/indel', 'copy-number amplification', 'copy-number deletion', 'structural variant/rearrangement', 'gene fusion', 'splice alteration', 'noncoding/regulatory mutation', 'viral insertion', 'epigenetic alteration', 'expression outlier', 'protein activation', or 'microenvironmental/lineage state mechanism'.</td>
                     </tr>
                     <tr>
-                        <td><strong>pathways_involved</strong></td>
+                        <td><strong>genes_and_pathways_implicated</strong></td>
                         <td>str</td>
-                        <td>What biological pathways are mentioned as being relevant to both diseases? (e.g. 'PI3K/AKT pathway', 'Wnt signaling', 'cell cycle regulation', 'apoptosis', 'autophagy', 'DNA repair', etc.)</td>
+                        <td>Key genes and pathways implicated by the event (e.g., RTK/MAPK, PI3K/AKT/mTOR, WNT, Hippo/YAP, NRF2/KEAP1 oxidative stress, cell cycle, telomere maintenance), including whether it is RTK/RAS/RAF-related or an alternative pathway.</td>
                     </tr>
                     <tr>
-                        <td><strong>cellular_process</strong></td>
+                        <td><strong>frequency_in_driver_negative_subset</strong></td>
                         <td>str</td>
-                        <td>What fundamental cellular processes are implicated in the inverse relationship? (e.g. 'cell proliferation vs cell death', 'cell cycle arrest', 'senescence', 'protein aggregation', 'oxidative stress response', etc.)</td>
+                        <td>How often this event occurs among driver-negative tumors (e.g., '10% of driver-negative cases', '5/60'), including denominators when possible.</td>
                     </tr>
                     <tr>
-                        <td><strong>experimental_evidence</strong></td>
+                        <td><strong>frequency_in_overall_luad</strong></td>
                         <td>str</td>
-                        <td>What experimental evidence supports the proposed mechanism? Describe the experiments and key findings briefly but specifically (e.g. 'knockout of gene X in mice increased cancer but decreased neurodegeneration').</td>
+                        <td>How often the event occurs in the overall LUAD cohort/population in that paper (e.g., '2% overall'), if stated.</td>
                     </tr>
                     <tr>
-                        <td><strong>counter_examples</strong></td>
+                        <td><strong>mutual_exclusivity_or_cooccurrence</strong></td>
                         <td>str</td>
-                        <td>Are there any counter-examples, exceptions, or cases where the inverse correlation does not hold? Or cases where both diseases co-occur?</td>
+                        <td>Any reported mutual exclusivity with known drivers (EGFR, KRAS, ALK, ROS1, BRAF, MET, RET, ERBB2, NTRK, etc.) or notable co-occurrence patterns (e.g., with TP53, STK11, KEAP1).</td>
                     </tr>
                     <tr>
-                        <td><strong>study_type</strong></td>
+                        <td><strong>evidence_type_for_driver_status</strong></td>
                         <td>str</td>
-                        <td>What type of study is this? (e.g. 'epidemiological study', 'molecular biology study', 'genetic study', 'animal model study', 'computational study', 'review/meta-analysis', etc.)</td>
+                        <td>Evidence supporting that the event is a driver: statistical recurrence, hotspot pattern, known oncogene mechanism, mutual exclusivity, pathway activation signatures, clonal dominance/VAF, focal amplification, oncogenic fusion structure, etc.</td>
                     </tr>
                     <tr>
-                        <td><strong>key_finding</strong></td>
+                        <td><strong>functional_validation</strong></td>
                         <td>str</td>
-                        <td>What is the key finding or conclusion of the paper regarding the inverse correlation between cancer and neurodegeneration? Be concise but information-dense.</td>
+                        <td>Any functional experiments supporting driver role (e.g., cell line/organoid dependency, transformation assays, CRISPR knock-in/out, xenograft response). Include model system names if provided.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>therapeutic_implications_and_response</strong></td>
+                        <td>str</td>
+                        <td>Any targeted therapy suggested or tested for the event and outcomes (e.g., drug names, sensitivity/resistance, clinical responses, trial references). Include response metrics if reported.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>omics_signatures_in_driver_negative_tumors</strong></td>
+                        <td>str</td>
+                        <td>Reported expression/proteomic/phosphoproteomic/methylation signatures in driver-negative tumors (e.g., MAPK activation, immune-hot/cold, neuroendocrine features, EMT), and how they relate to proposed drivers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>tumor_mutational_burden_and_signatures</strong></td>
+                        <td>str</td>
+                        <td>Any reported TMB values or mutational signatures (e.g., smoking signature, APOBEC) specifically discussed for driver-negative tumors or for specific candidate driver groups.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>histologic_or_clinical_associations</strong></td>
+                        <td>str</td>
+                        <td>Associations with histology, stage, smoking status, sex, ethnicity, age, or prognosis specific to driver-negative tumors or specific candidate drivers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>alternative_explanations_or_limitations</strong></td>
+                        <td>str</td>
+                        <td>Counterpoints/limitations discussed: assay blind spots (e.g., SVs missed by WES/panels), low tumor purity, subclonality, undetected fusions, technical artifacts, passenger vs driver ambiguity, or need for WGS/RNA-seq.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>proposed_mechanistic_model</strong></td>
+                        <td>str</td>
+                        <td>Concise statement of the paper’s mechanistic explanation for how the alteration drives tumorigenesis in these LUADs (e.g., ligand-dependent signaling, enhancer hijacking, kinase activation, transcriptional reprogramming).</td>
                     </tr>
                 </tbody>
             </table>
